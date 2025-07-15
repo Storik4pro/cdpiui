@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="GoodbyeDPI_UI.Views.ComponentsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:helper="using:GoodbyeDPI_UI.Helper"
+    xmlns:behaviors="using:GoodbyeDPI_UI.Helper"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls" 
+    xmlns:animation="using:System.Windows.Media.Animation">
+
+    <Page.Resources>
+        <Style x:Key="BreadcrumbButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter x:Name="ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+
+        <Style x:Key="SettingsSectionHeaderTextBlockStyle"
+               BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+               TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="Margin" Value="1,20,0,6" />
+            </Style.Setters>
+        </Style>
+        <Style x:Key="AnimatedStoreHeaderButtonStyle" TargetType="Button">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Margin" Value="0, 0, 0, 10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="RootGrid"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}"
+                              CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid.Background>
+                                <SolidColorBrush x:Name="ButtonBackgroundBrush" Color="Transparent"/>
+                            </Grid.Background>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ContentTranslateTransform"
+                                                             Storyboard.TargetProperty="X"
+                                                             To="-10"
+                                                             Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ExponentialEase Exponent="4"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <ColorAnimation Storyboard.TargetName="ButtonBackgroundBrush"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="Transparent"
+                                                            Duration="0:0:0"/>
+                                            <ColorAnimation Storyboard.TargetName="TextBlockForegroundBrush"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="{ThemeResource TextFillColorPrimary}" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ContentTranslateTransform"
+                                                             Storyboard.TargetProperty="X"
+                                                             To="2"
+                                                             Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <ExponentialEase Exponent="4"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <ColorAnimation Storyboard.TargetName="ButtonBackgroundBrush"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="{ThemeResource ControlFillColorSecondary}"
+                                                            Duration="0:0:0.2"/>
+                                            <ColorAnimation Storyboard.TargetName="TextBlockForegroundBrush"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="{ThemeResource SystemAccentColorLight3}" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Border x:Name="ContentBorder" Padding="{TemplateBinding Padding}">
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel.RenderTransform>
+                                        <TranslateTransform x:Name="ContentTranslateTransform"/>
+                                    </StackPanel.RenderTransform>
+                                    <TextBlock x:Name="TextBlock"
+                                               FontWeight="SemiBold"
+                                               Style="{ThemeResource SubtitleTextBlockStyle}">
+                                        <TextBlock.Foreground>
+                                            <SolidColorBrush x:Name="TextBlockForegroundBrush" Color="{ThemeResource TextFillColorPrimary}"/>
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+                                    <FontIcon x:Name="FontIcon"
+                                              FontSize="15" FontWeight="Black"
+                                              VerticalAlignment="Bottom" Margin="0,0,0,3"
+                                              Foreground="{ThemeResource AccentAAFillColorSecondaryBrush}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        
+        
+        <ScrollViewer
+            x:Name="contentSV"
+            Grid.Row="1"
+            Padding="20,0,20,0"
+            IsTabStop="False"
+            UseSystemFocusVisuals="False"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto"
+            Visibility="Collapsed">
+            
+            <ItemsControl ItemsSource="{Binding Components}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="helper:ComponentManager">
+                        <Border Margin="0, 3" Background="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" CornerRadius="6"
+                                BorderBrush="{ThemeResource ControlAltFillColorSecondaryBrush}" BorderThickness="1" >
+                            <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Center" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                    
+                                <Grid Grid.Column="0" VerticalAlignment="Center" Width="40">
+                                    <RadioButton IsChecked="{x:Bind IsSelected, Mode=TwoWay}" Width="40" 
+                                                 ToolTipService.ToolTip="Use component by default"/>
+                                </Grid>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <RichTextBlock>
+                                        <Paragraph>
+                                            <Run Text="{x:Bind Name}"/>
+                                        </Paragraph>
+                                    </RichTextBlock>
+                                    <RichTextBlock>
+                                        <Paragraph>
+                                            <Run Text="Текущая версия: " />
+                                            <Run Text="{x:Bind CurrentVersion}"/>
+                                        </Paragraph>
+                                    </RichTextBlock>
+                                    <RichTextBlock>
+                                        <Paragraph>
+                                            <Run Text="Версия на сервере: " />
+                                            <Run Text="{x:Bind ServerVersion}"/>
+                                        </Paragraph>
+                                    </RichTextBlock>
+                                </StackPanel>
+                                
+                                <Grid Margin="0,5,0,0" Grid.Column="2" VerticalAlignment="Center" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Button Grid.Row="0" Content="Обновить/Переустановить" Command="{x:Bind UpdateCommand}" 
+                                            Margin="0, 3" Height="28" Padding="5, 0"/>
+                                    <StackPanel Grid.Row="1" Spacing="3"  Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Command="{x:Bind OpenDirectoryCommand}" Padding="5, 0" Height="28" >
+                                            <FontIcon Glyph="&#xE838;" FontSize="18"/>
+                                        </Button>
+                                        <Button Command="{x:Bind ConfigureCommand}" Padding="5, 0" Height="28">
+                                            <FontIcon Glyph="&#xE713;" FontSize="18"/>
+                                        </Button>
+                                        <Button Command="{x:Bind DeleteCommand}" Padding="5, 0" Height="28"
+                                                CommandParameter="{x:Bind Name}">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="18" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <ScrollViewer
+            x:Name="StoreScrollViewer"
+            Grid.Row="1"
+            Padding="20,0,20,0"
+            Margin="0, 20, 0, 0"
+            IsTabStop="False"
+            UseSystemFocusVisuals="False"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <StackPanel>
+                <StackPanel x:Name="ComponentsStackPanel">
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0, 0, 0, 35" Spacing="15">
+                        <local:StoreItemLargeButton CardImageSource="/Assets/Store/zapret.png" 
+                                                    CardPrice="Установлено"
+                                                    CardTitle="Zapret" CardBackgroundColor="Yellow"/>
+
+                        <local:StoreItemLargeButton CardImageSource="/Assets/StoreLogo.png"
+                                                    CardPrice="Получить"
+                                                    CardTitle="GoodbyeDPI" CardBackgroundColor="LightBlue"/>
+
+                        <local:StoreItemLargeButton CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardTitle="ByeDPI" 
+                                                    CardPrice="Получить"
+                                                    CardBackgroundColor="#323232"/>
+
+                        <local:StoreItemLargeButton CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardTitle="SpoofDPI"
+                                                    CardPrice="Получить"
+                                                    CardBackgroundColor="#323232"/>
+
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0, 0, 0, 35" Spacing="15">
+                        <local:StoreItemSmallButton CardTitle="Proxifyre" CardDeveloper="wiresock" 
+                                                    CardPrice="Получить" 
+                                                    CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardBackgroundBrush="{ThemeResource ControlFillColorTertiaryBrush}"/>
+                        <local:StoreItemSmallButton CardTitle="GoodCheck" CardDeveloper="Ori" 
+                                                    CardPrice="Установлено" 
+                                                    CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardBackgroundBrush="Azure"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0, 0, 0, 35" Spacing="15">
+                        <local:StoreItemSmallButton CardTitle="Набор пресетов для Zapret (YTDisBystro)" CardDeveloper="KDS"
+                                                    CardPrice="Установлено"
+                                                    CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardBackgroundBrush="{ThemeResource ControlFillColorTertiaryBrush}"/>
+                        <local:StoreItemSmallButton CardTitle="Набор пресетов для Zapret (zapret-discord-youtube)" CardDeveloper="Flowseal"
+                                                    CardPrice="Установлено"
+                                                    CardImageSource="/Assets/Square44x44Logo.png"
+                                                    CardBackgroundBrush="{ThemeResource ControlFillColorTertiaryBrush}"/>
+
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

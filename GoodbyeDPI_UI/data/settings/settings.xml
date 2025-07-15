@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Settings>
+  <Group Name="APPEARANCE">
+    <Setting Key="Theme" Type="string" Value="Dark" />
+  </Group>
+  <Group Name="SYSTEM">
+    <Setting Key="autorun" Type="bool" Value="true" />
+  </Group>
+  <Group Name="PSEUDOCONSOLE">
+    <Setting Key="outputMode" Type="bool" Value="true" />
+    <Setting Key="fontSize" Type="double" Value="16" />
+    <Setting Key="fontFamily" Type="string" Value="Consolas" />
+  </Group>
+  <Group Name="COMPONENTS">
+    <Setting Key="goodbyedpiVersion" Type="string" Value="0.0"/>
+    <Setting Key="goodbyedpiServerVersion" Type="string" Value="0.0"/>
+    <Setting Key="zapretVersion" Type="string" Value="0.0"/>
+    <Setting Key="zapretServerVersion" Type="string" Value="0.0"/>
+    <Setting Key="byedpiVersion" Type="string" Value="0.0"/>
+    <Setting Key="byedpiServerVersion" Type="string" Value="0.0"/>
+    <Setting Key="spoofdpiVersion" Type="string" Value="0.0"/>
+    <Setting Key="spoofdpiServerVersion" Type="string" Value="0.0"/>
+  </Group>
+</Settings>

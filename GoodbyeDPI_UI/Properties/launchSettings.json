@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "GoodbyeDPI_UI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "GoodbyeDPI_UI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
