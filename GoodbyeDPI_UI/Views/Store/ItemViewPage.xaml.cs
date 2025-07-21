@@ -1,5 +1,6 @@
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using GoodbyeDPI_UI.Helper;
+using GoodbyeDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,6 +13,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -35,6 +37,8 @@ namespace GoodbyeDPI_UI.Views.Store
             get => _config;
             set => _config = value;
         }
+
+        private bool errorHappens = false;
 
         public ItemViewPage()
         {
@@ -73,7 +77,16 @@ namespace GoodbyeDPI_UI.Views.Store
                 ItemWarningAera.Visibility = item.display_warning ? Visibility.Visible : Visibility.Collapsed;
                 ItemWarningText.Text = StoreHelper.Instance.ExecuteScript(item.warning_text, "RU");
 
-                ItemActionButtonText.Text = StoreHelper.Instance.IsItemInstalled(storeId) ? "Настроить" : "Установить";
+                if (DatabaseHelper.Instance.IsItemInstalled(storeId))
+                {
+                    ItemActionButtonText.Text = "Настроить";
+                    ItemMoreButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ItemActionButtonText.Text = "Установить";
+                    ItemMoreButton.Visibility = Visibility.Collapsed;
+                }
 
                 if (item.links.Count > 0)
                     CreateLinks(item.links);
@@ -112,16 +125,147 @@ namespace GoodbyeDPI_UI.Views.Store
             LinksStackPanel.Children.Add(itemsControl);
 
         }
-        private void OnActionButtonClicked(object sender, RoutedEventArgs e)
+
+        private void ConnectHandlers()
         {
-            var dialog = new ContentDialog
+            StoreHelper.Instance.ItemDownloadStageChanged += (data) =>
             {
-                Title = "Действие",
-                Content = $"Будет выполнено действие по товару {_storeId}",
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot,
+                string operationId = data.Item1;
+                string stage = data.Item2;
+
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                    return;
+
+                string stageHeaderText;
+
+                CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
+
+                switch (stage)
+                {
+                    case "GETR":
+                        stageHeaderText = "Подготовка";
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
+                    case "END":
+                        stageHeaderText = "Завершение";
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
+                    case "Downloading":
+                        stageHeaderText = "Скачивание";
+                        StatusProgressbar.IsIndeterminate = false;
+                        CurrentStatusSpeedTextBlock.Visibility = Visibility.Visible;
+                        break;
+                    case "Extracting":
+                        stageHeaderText = "Установка";
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
+                    case "ErrorHappens":
+                        stageHeaderText = "Произошла ошибка";
+                        break;
+                    case "Completed":
+                        stageHeaderText = "Завершение";
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
+                    case "CANC":
+                        stageHeaderText = "Отмена";
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
+                    default:
+                        stageHeaderText = "";
+                        break;
+                }
+
+                CurrentStatusTextBlock.Text = stageHeaderText;
             };
-            _ = dialog.ShowAsync();
+
+            StoreHelper.Instance.ItemDownloadSpeedChanged += (data) =>
+            {
+                string operationId = data.Item1;
+                double speed = data.Item2;
+
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                    return;
+
+                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
+            };
+
+            StoreHelper.Instance.ItemTimeRemainingChanged += (data) =>
+            {
+                string operationId = data.Item1;
+                TimeSpan time = data.Item2;
+
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                    return;
+
+                if (time.Minutes > 0)
+                    CurrentStatusTipTextBlock.Text = $"Осталось {time.Minutes} мин.";
+                else
+                    CurrentStatusTipTextBlock.Text = "Осталось менее минуты";
+            };
+
+            StoreHelper.Instance.ItemDownloadProgressChanged += (data) =>
+            {
+                string operationId = data.Item1;
+                double progress = data.Item2;
+
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                    return;
+
+                StatusProgressbar.IsIndeterminate = false;
+                StatusProgressbar.Value = progress;
+            };
+
+            StoreHelper.Instance.ItemInstallingErrorHappens += (data) =>
+            {
+                string operationId = data.Item1;
+                string errorCode = data.Item2;
+
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                    return;
+
+                ErrorStatusGrid.Visibility = Visibility.Visible;
+                ItemActionButton.Visibility = Visibility.Collapsed;
+                DownloadStatusGrid.Visibility = Visibility.Collapsed;
+
+                ErrorNameTextBlock.Text = errorCode;
+                errorHappens = true;
+            };
+
+            StoreHelper.Instance.ItemActionsStopped += (id) =>
+            {
+                StatusProgressbar.Value = 0;
+                StatusProgressbar.IsIndeterminate = true;
+
+                CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
+                CurrentStatusSpeedTextBlock.Text = "";
+                CurrentStatusTipTextBlock.Text = "Идет работа над этим";
+
+                if (id == _storeId && !errorHappens)
+                {
+                    ItemActionButton.Visibility = Visibility.Visible;
+                    DownloadStatusGrid.Visibility = Visibility.Collapsed;
+                    
+                    if (DatabaseHelper.Instance.IsItemInstalled(id))
+                    {
+                        ItemActionButtonText.Text = "Настроить";
+                        ItemMoreButton.Visibility = Visibility.Visible;
+                    }
+                }
+            };
+        }
+
+        private void InstallingItemActions()
+        {
+            ConnectHandlers();
+            errorHappens = false;
+
+            StatusProgressbar.IsIndeterminate = true;
+            ErrorStatusGrid.Visibility = Visibility.Collapsed;
+            ItemActionButton.Visibility = Visibility.Collapsed;
+            DownloadStatusGrid.Visibility = Visibility.Visible;
+
+            CurrentStatusTextBlock.Text = "Ожидание";
+            StoreHelper.Instance.AddItemToQueue(_storeId, string.Empty);
         }
 
         private void ItemCategoryButton_Click(object sender, RoutedEventArgs e)
@@ -134,14 +278,36 @@ namespace GoodbyeDPI_UI.Views.Store
 
         }
 
-        private async void ItemActionButton_Click(object sender, RoutedEventArgs e)
+        private void ItemActionButton_Click(object sender, RoutedEventArgs e)
         {
-            await StoreHelper.Instance.InstallItem(_storeId);
+            if (!Helper.DatabaseHelper.Instance.IsItemInstalled(_storeId))
+            {
+                InstallingItemActions();
+            }
+            else
+            {
+                //TODO: open settings in main window
+            }
         }
 
         private void StopActionButton_Click(object sender, RoutedEventArgs e)
         {
+            StoreHelper.Instance.RemoveItemFromQueue(_storeId);
+        }
 
+        private void ErrorHelpButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ReinstallButton_Click(object sender, RoutedEventArgs e)
+        {
+            InstallingItemActions();
         }
     }
 }
