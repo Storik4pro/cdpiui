@@ -28,6 +28,15 @@ namespace GoodbyeDPI_UI.Helper
 
         public string workDirectory = Directory.GetCurrentDirectory();
 
+        // Store
+
+        public const string StoreRepo = "Storik4pro/CDPIUI-Store";
+        public const string StoreDirName = "Store";
+        public const string StoreItemsDirName = "Items";
+        public const string StoreRepoDirName = "Repo";
+        public const string StoreRepoCache = "Cache";
+        public const string StoreLocalDirName = "Local";
+
         // Components
 
         public ComponentSettings goodbyedpiSettings = new("goodbyedpi");
