@@ -1,4 +1,5 @@
 using GoodbyeDPI_UI.Helper;
+using GoodbyeDPI_UI.Helper.Static;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -202,7 +203,7 @@ public sealed partial class HomePage : Page
         string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
         BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
-        Windows.UI.Color color = Helper.UIHelper.HexToColorConverter(backgroundColor);
+        Windows.UI.Color color = UIHelper.HexToColorConverter(backgroundColor);
 
         storeItemLargeButton = new StoreItemLargeButton
         {
@@ -233,7 +234,7 @@ public sealed partial class HomePage : Page
         string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
         BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
-        SolidColorBrush solidColorBrush = Helper.UIHelper.HexToSolidColorBrushConverter(backgroundColor);
+        SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(backgroundColor);
 
         storeItemSmallButton = new StoreItemSmallButton
         {
