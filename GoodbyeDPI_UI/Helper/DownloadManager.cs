@@ -33,10 +33,16 @@ namespace GoodbyeDPI_UI.Helper
         private const string AppTempDirectory = "TempFiles";
         private const string DownloadManagerDirectory = "Downloads";
 
+        private CancellationTokenSource source;
+        private CancellationToken cancellationToken;
+
         public readonly string OperationId;
 
-        public DownloadManager(string operationId, HttpClient client = null)
+        public DownloadManager(string operationId, CancellationTokenSource cancellationTokenSource, HttpClient client = null)
         {
+            source = cancellationTokenSource;
+            cancellationToken = source.Token;
+
             OperationId = operationId;
             _client = client ?? new HttpClient();
 
@@ -56,8 +62,7 @@ namespace GoodbyeDPI_UI.Helper
             bool extractArchive = false,
             IEnumerable<string> extractSkipFiletypes = null,
             string extractRootFolder = null,
-            string executableFileName = "executableFile",
-            CancellationToken cancellationToken = default
+            string executableFileName = "executableFile"
         )
         {
             bool success = false;
@@ -261,6 +266,8 @@ namespace GoodbyeDPI_UI.Helper
         }
         public void Dispose()
         {
+            source?.Cancel();
+            source?.Dispose();
             _client.Dispose();
         }
     }
