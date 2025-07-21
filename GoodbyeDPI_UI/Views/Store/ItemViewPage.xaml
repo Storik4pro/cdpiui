@@ -88,7 +88,7 @@
                            TextTrimming="CharacterEllipsis"
                            ToolTipService.ToolTip="{Binding Text, ElementName=SmallDescriptionText}"/>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button x:Name="ItemActionButton" Style="{StaticResource AccentButtonStyle}" MinWidth="180" Height="55" Visibility="Collapsed"
+                    <Button x:Name="ItemActionButton" Style="{StaticResource AccentButtonStyle}" MinWidth="180" Height="55" Visibility="Visible"
                             Click="ItemActionButton_Click" IsEnabled="True" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0">
                         <Button.Content>
                             <Grid>
@@ -97,9 +97,10 @@
                             </Grid>
                         </Button.Content>
                     </Button>
-                    <Grid CornerRadius="4" MinWidth="180" Height="55">
+                    <Grid x:Name="DownloadStatusGrid" CornerRadius="4" MinWidth="180" Height="55"
+                          Visibility="Collapsed">
                         <Rectangle Fill="{ThemeResource ControlFillColorDefaultBrush}"/>
-                        <Grid x:Name="DownloadStatusGrid" HorizontalAlignment="Stretch">
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="auto"/>
@@ -111,7 +112,11 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Spacing="0" VerticalAlignment="Center">
                                     <TextBlock x:Name="CurrentStatusTextBlock" Text="Установка" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                    <TextBlock x:Name="CurrentStatusTipTextBlock" Text="Осталось совсем немного..."/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="CurrentStatusSpeedTextBlock" Text="" Margin="0, 0, 5, 0"
+                                                   Visibility="Collapsed"/>
+                                        <TextBlock x:Name="CurrentStatusTipTextBlock" Text="Идет работа над этим"/>
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10, 0, 0, 0">
                                     <Button x:Name="StopActionButton" Background="Transparent" BorderBrush="Transparent" 
@@ -123,11 +128,69 @@
                                     </Button>
                                 </StackPanel>
                             </Grid>
-                            <ProgressBar Grid.Row="1" HorizontalAlignment="Stretch" IsIndeterminate="True" CornerRadius="0"/>
+                            <ProgressBar x:Name="StatusProgressbar" Grid.Row="1" HorizontalAlignment="Stretch" 
+                                         IsIndeterminate="True" CornerRadius="0" Background="Transparent"/>
                         </Grid>
                     </Grid>
-                    
-                    <Button x:Name="ItemShareButton" Background="Transparent" BorderBrush="Transparent" Padding="6" VerticalAlignment="Center">
+                    <Grid x:Name="ErrorStatusGrid" CornerRadius="4" MinWidth="180" Height="55"
+                          Visibility="Collapsed">
+                        <Rectangle Fill="{ThemeResource ControlFillColorDefaultBrush}"/>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Padding="10, 5, 10, 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEB90;" FontSize="15" VerticalAlignment="Top"
+                                          Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                          Margin="0, 7, 5, 0"/>
+                                <StackPanel Grid.Column="1" Spacing="0" VerticalAlignment="Center"
+                                            Margin="0, 0, 0, 5">
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <TextBlock x:Name="ErrorTitleTextBlock" Text="Произошла ошибка —" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                        <TextBlock x:Name="ErrorNameTextBlock" Text="ERR_NET_IO" Margin="0, 0, 5, 0"
+                                                   IsTextSelectionEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <HyperlinkButton x:Name="RetryButton" Content="Повторить попытку" Padding="0, 0" Click="ItemActionButton_Click"/>
+                                        <HyperlinkButton x:Name="ErrorHelpButton" Content="[Предлагаемые действия]" Padding="0, 0" Click="ErrorHelpButton_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Button x:Name="ItemMoreButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
+                            ToolTipService.ToolTip="Показать больше действий"
+                            Visibility="Collapsed">
+                        <Button.Content>
+                            <FontIcon Glyph="&#xE712;" FontSize="16" />
+                        </Button.Content>
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Name="DeleteButton" Text="Удалить с устройства" Click="DeleteButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE74D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Name="ReinstallButton" Text="Выполнить принудительную переустановку"
+                                                Click="ReinstallButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE895;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
+
+                    </Button>
+                    <Button x:Name="ItemShareButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
+                            Visibility="Collapsed">
                         <Button.Content>
                             <FontIcon Glyph="&#xE72D;" FontSize="16" />
                         </Button.Content>
