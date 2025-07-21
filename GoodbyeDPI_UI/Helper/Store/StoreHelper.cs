@@ -1,10 +1,13 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using GoodbyeDPI_UI.Helper.Static;
+using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -14,6 +17,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Services.Maps.LocalSearch;
 using static GoodbyeDPI_UI.Helper.ErrorsHelper;
@@ -31,12 +35,6 @@ namespace GoodbyeDPI_UI.Helper
     }
     public class StoreHelper
     {
-        private const string StoreRepo = "Storik4pro/CDPIUI-Store";
-        private const string StoreDirName = "Store";
-        private const string StoreItemsDirName = "Items";
-        private const string StoreRepoDirName = "Repo";
-        private const string StoreRepoCache = "Cache";
-        private const string StoreLocalDirName = "Local";
         private const string GitHubApiToken = "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";
 
         private string LocalDatabaseConnectionString;
@@ -48,6 +46,8 @@ namespace GoodbyeDPI_UI.Helper
         private Dictionary<string, string> StoreLocalizationPaths;
         public List<RepoCategory> FormattedStoreDatabase;
 
+        private CancellationTokenSource cancellationTokenSource;
+        private CancellationToken cancellationToken;
         private DownloadManager DownloadManager { get; set; }
 
         private class RepoInit
@@ -101,23 +101,12 @@ namespace GoodbyeDPI_UI.Helper
             public string archive_root_folder;
             public string target_executable_file;
             public string after_install_actions;
+            public List<Tuple<string, string>> dependencies;
             public string target_minversion;
             public string target_maxversion;
         }
 
-        public class DatabaseStoreItem
-        {
-            public string Id { get; set; }
-            public string Directory { get; set; }
-            public string UpdateCheckUrl { get; set; }
-            public string DownloadUrl { get; set; }
-            public string VersionControlType { get; set; }
-            public string CurrentVersion { get; set; }
-            public List<string> RequiredItemIds { get; set; }
-            public List<string> DependentItemIds { get; set; }
-            public string IconPath { get; set; }
-            public string Name { get; set; }
-        }
+        
 
         // Download queue
 
@@ -126,16 +115,20 @@ namespace GoodbyeDPI_UI.Helper
             public string OperationId { get; }
             public string ItemId { get; }
             public string Version { get; }
+            public string Status { get; set; } = "WAIT";
 
             public QueueItem(string itemId, string operationId, string version=null)
             {
                 ItemId = itemId;
-                Version = version;
+                Version = version?? string.Empty;
                 OperationId = operationId;
+                Logger.Instance.CreateDebugLog(nameof(QueueItem), Version);
             }
         }
         private readonly Queue<QueueItem> _queue = new();
         private readonly object _queueLock = new();
+
+        private QueueItem CurrentDownloadingItem;
 
         private class StoreLocaleHelper
         {
@@ -176,14 +169,7 @@ namespace GoodbyeDPI_UI.Helper
 
         private StoreHelper()
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string DatabaseFolderPath = Path.Combine(localAppData, StoreDirName, StoreRepoCache, StoreLocalDirName);
-            Directory.CreateDirectory(DatabaseFolderPath);
 
-            string DatabaseFilePath = Path.Combine(DatabaseFolderPath, "storedata.db");
-            LocalDatabaseConnectionString = $"Data Source={DatabaseFilePath}";
-
-            InitializeDatabase();
         }
 
         public async Task<bool> LoadAllStoreDatabase()
@@ -196,9 +182,10 @@ namespace GoodbyeDPI_UI.Helper
                 }
 
                 string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-                string targetFolder = Path.Combine(localAppData, StoreDirName, StoreRepoCache, StoreRepoDirName);
+                string targetFolder = Path.Combine(
+                    localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
 
-                string zipUrl = $"https://api.github.com/repos/{StoreRepo}/zipball/main";
+                string zipUrl = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
 
                 using HttpClient client = new HttpClient();
 
@@ -269,7 +256,8 @@ namespace GoodbyeDPI_UI.Helper
             List<RepoCategory> categories = new List<RepoCategory>();
 
             string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string localRepoFolder = Path.Combine(localAppData, StoreDirName, StoreRepoCache, StoreRepoDirName);
+            string localRepoFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
 
             string localRepoInitFile = Path.Combine(localRepoFolder, "init.json");
 
@@ -407,7 +395,8 @@ namespace GoodbyeDPI_UI.Helper
             string localizedString = $"slocale:{name}";
 
             string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string localRepoFolder = Path.Combine(localAppData, StoreDirName, StoreRepoCache, StoreRepoDirName);
+            string localRepoFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
 
             try
             {
@@ -445,18 +434,6 @@ namespace GoodbyeDPI_UI.Helper
             return localizedString;
         }
 
-        private static string StaticImageScript(string data)
-        {
-            return $"ms-appx:///Assets/{data}";
-        }
-
-        private static string DynamicPathConverter(string data)
-        {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string targetFolder = Path.Combine(localAppData, StoreDirName, StoreRepoCache, StoreRepoDirName, data);
-            return targetFolder;
-        }
-
         public string ExecuteScript(string scriptString, string scriptArgs=null)
         {
             string executeResult = scriptString;
@@ -475,15 +452,15 @@ namespace GoodbyeDPI_UI.Helper
 
                 if (scriptString.StartsWith("$STATICIMAGE"))
                 {
-                    executeResult = StaticImageScript(scriptData);
+                    executeResult = Static.Utils.StaticImageScript(scriptData);
                 } 
                 else if (scriptString.StartsWith("$DYNAMICIMAGE"))
                 {
-                    executeResult = DynamicPathConverter(scriptData);
+                    executeResult = Static.Utils.DynamicPathConverter(scriptData);
                 } 
                 else if (scriptString.StartsWith("$LOADDYNAMIC"))
                 {
-                    executeResult = LoadAllTextFromFile(DynamicPathConverter(scriptData));
+                    executeResult = Static.Utils.LoadAllTextFromFile(Static.Utils.DynamicPathConverter(scriptData));
                 }
                 Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {scriptString} execute result is {executeResult}, {scriptData}");
             }
@@ -491,123 +468,113 @@ namespace GoodbyeDPI_UI.Helper
             return executeResult;
         }
 
-        public string LoadAllTextFromFile(string filepath)
+        public List<Tuple<string, string>> GetItemRequiredItemsById(string storeId)
         {
-            return File.ReadAllText(filepath);
+            if (!DatabaseHelper.Instance.IsItemInstalled(storeId))
+                return null;
+
+            List<Tuple<string, string>> requiredItems = [];
+
+            DatabaseStoreItem item = DatabaseHelper.Instance.GetItemById(storeId);
+            requiredItems = item.RequiredItemIds;
+
+            return requiredItems;
         }
 
-        
 
-        public void InitializeDatabase()
+
+        // Queue
+
+        public void AddItemToQueue(string itemId, string version)
         {
-            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
-            connection.Open();
+            var opId = Guid.NewGuid().ToString();
+            var qi = new QueueItem(itemId, opId, version);
 
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                CREATE TABLE IF NOT EXISTS Items (
-                    Id TEXT PRIMARY KEY,
-                    Directory TEXT NOT NULL,
-                    UpdateCheckUrl TEXT,
-                    DownloadUrl TEXT,
-                    VersionControlType TEXT NOT NULL,
-                    CurrentVersion TEXT NOT NULL,
-                    RequiredItemIds TEXT,
-                    DependentItemIds TEXT,
-                    Icon TEXT,
-                    Name TEXT NOT NULL,
-                    FileHashes TEXT NOT NULL
-                );";
-            cmd.ExecuteNonQuery();
-        }
-
-        public void AddOrUpdateItem(DatabaseStoreItem item)
-        {
-            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
-            connection.Open();
-
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO Items (Id, Directory, UpdateCheckUrl, DownloadUrl, VersionControlType, CurrentVersion,
-                    RequiredItemIds, DependentItemIds, Icon, Name)
-                VALUES (@Id, @Directory, @UpdateCheckUrl, @DownloadUrl, @VersionControlType, @CurrentVersion,
-                    @RequiredItemIds, @DependentItemIds, @Icon, @Name)
-                ON CONFLICT(Id) DO UPDATE SET
-                    Directory = excluded.Directory,
-                    UpdateCheckUrl = excluded.UpdateCheckUrl,
-                    DownloadUrl = excluded.DownloadUrl,
-                    VersionControlType = excluded.VersionControlType,
-                    CurrentVersion = excluded.CurrentVersion,
-                    RequiredItemIds = excluded.RequiredItemIds,
-                    DependentItemIds = excluded.DependentItemIds,
-                    Icon = excluded.Icon,
-                    Name = excluded.Name;";
-
-            cmd.Parameters.AddWithValue("@Id", item.Id);
-            cmd.Parameters.AddWithValue("@Directory", item.Directory);
-            cmd.Parameters.AddWithValue("@UpdateCheckUrl", (object)item.UpdateCheckUrl ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@DownloadUrl", (object)item.DownloadUrl ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@VersionControlType", item.VersionControlType);
-            cmd.Parameters.AddWithValue("@CurrentVersion", item.CurrentVersion);
-            cmd.Parameters.AddWithValue("@RequiredItemIds", item.RequiredItemIds != null ? string.Join(',', item.RequiredItemIds) : string.Empty);
-            cmd.Parameters.AddWithValue("@DependentItemIds", item.DependentItemIds != null ? string.Join(',', item.DependentItemIds) : string.Empty);
-            cmd.Parameters.AddWithValue("@Icon", item.IconPath);
-            cmd.Parameters.AddWithValue("@Name", item.Name);
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public DatabaseStoreItem GetItemById(string id)
-        {
-            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
-            connection.Open();
-
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM Items WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
-
-            using var reader = cmd.ExecuteReader();
-            if (!reader.Read()) return null;
-
-            var item = new DatabaseStoreItem
+            lock (_queueLock)
             {
-                Id = reader.GetString(reader.GetOrdinal("Id")),
-                Directory = reader.GetString(reader.GetOrdinal("Directory")),
-                UpdateCheckUrl = reader.IsDBNull(reader.GetOrdinal("UpdateCheckUrl"))
-                    ? null : reader.GetString(reader.GetOrdinal("UpdateCheckUrl")),
-                DownloadUrl = reader.IsDBNull(reader.GetOrdinal("DownloadUrl"))
-                    ? null : reader.GetString(reader.GetOrdinal("DownloadUrl")),
-                VersionControlType = reader.GetString(reader.GetOrdinal("VersionControlType")),
-                CurrentVersion = reader.GetString(reader.GetOrdinal("CurrentVersion")),
-                RequiredItemIds = reader.GetString(reader.GetOrdinal("RequiredItemIds"))
-                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                DependentItemIds = reader.GetString(reader.GetOrdinal("DependentItemIds"))
-                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(),
-                IconPath = reader.GetString(reader.GetOrdinal("Icon")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-            };
-
-            return item;
+                _queue.Enqueue(qi);
+                TryProcessNext();
+            }
         }
-        public void DeleteItemById(string id)
+
+        public void RemoveItemFromQueue(string itemId)
         {
-            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
-            connection.Open();
+            var items = _queue.ToList();
+            var removed = items.RemoveAll(i => i.ItemId == itemId) > 0;
+            if (removed)
+            {
+                _queue.Clear();
+                foreach (var i in items) _queue.Enqueue(i);
+            }
 
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = "DELETE FROM Items WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
-
-            cmd.ExecuteNonQuery();
+            if (CurrentDownloadingItem != null && CurrentDownloadingItem.ItemId == itemId)
+            {
+                CurrentDownloadingItem.Status = "CANC";
+                ItemDownloadStageChanged?.Invoke(Tuple.Create(CurrentDownloadingItem.OperationId, CurrentDownloadingItem.Status));
+                DownloadManager?.Dispose();
+                DownloadManager = null;
+            }           
         }
-        public bool IsItemInstalled(string id)
+
+        public string GetCurrentQueueOperationId()
         {
-            if (GetItemById(id) == null) return false; return true;
+            return CurrentDownloadingItem.OperationId;
+        }
+
+        public string GetItemIdFromOperationId(string operationId)
+        {
+            if (CurrentDownloadingItem.OperationId == operationId)
+                return CurrentDownloadingItem.ItemId;
+
+            foreach (var item in _queue)
+            {
+                if (item.OperationId == operationId) 
+                    return item.ItemId;
+            }
+            return null;
+        }
+
+        private void TryProcessNext()
+        {
+            if (_queue.Count == 0)
+                return;
+
+            var next = _queue.Dequeue();
+            CurrentDownloadingItem = next;
+
+            _ = ProcessAsync(next);
+        }
+
+        private async Task ProcessAsync(QueueItem qi)
+        {
+            CreateDownloadManagerAndConnectHandlers(qi.OperationId);
+            try
+            {
+                qi.Status = "GETR";
+                ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
+                await InstallItem(qi);
+                qi.Status = "END";
+                ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
+            }
+            catch
+            {
+                // pass
+            }
+            ItemActionsStopped?.Invoke(qi.ItemId);
+            DeleteDownloadManager(qi.OperationId);
+
+            lock (_lock)
+            {
+                CurrentDownloadingItem = null;
+                TryProcessNext();
+            }
         }
 
         private void CreateDownloadManagerAndConnectHandlers(string operationId)
         {
-            DownloadManager = new(operationId);
+            cancellationTokenSource = new CancellationTokenSource();
+            cancellationToken = cancellationTokenSource.Token;
+            DownloadManager = new(operationId, cancellationTokenSource);
 
             DownloadManager.DownloadSpeedChanged += (speed) =>
             {
@@ -635,17 +602,18 @@ namespace GoodbyeDPI_UI.Helper
 
         private void DeleteDownloadManager(string operationId)
         {
-            if (DownloadManager.OperationId == operationId)
+            if (DownloadManager == null || DownloadManager.OperationId != operationId)
                 return;
             DownloadManager?.Dispose();
             DownloadManager = null;
         }
 
-        private async Task<string> GetVersionDownloadLink(
+        private async Task<Tuple<string, string>> GetVersionDownloadLink(
             string repoUrl, string targetFileOrFileType, string version=null
         )
         {
             string link;
+            string tag;
             try
             {
                 var uri = new Uri(repoUrl);
@@ -655,24 +623,28 @@ namespace GoodbyeDPI_UI.Helper
                 var owner = parts[0];
                 var repo = parts[1];
 
+
                 using var client = new HttpClient();
                 client.DefaultRequestHeaders.UserAgent.Add(
                     new ProductInfoHeaderValue("CDPIStore", "0.0.0.0"));
                 client.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("token", GitHubApiToken);
 
-                string apiUrl = version == null
+                string apiUrl = version == string.Empty
                     ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
                     : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
 
                 var response = await client.GetAsync(apiUrl);
+                Logger.Instance.CreateDebugLog(nameof(StoreHelper), version);
+                Logger.Instance.CreateDebugLog(nameof(StoreHelper), apiUrl);
+
                 response.EnsureSuccessStatusCode();
 
                 using var stream = await response.Content.ReadAsStreamAsync();
                 using var doc = await JsonDocument.ParseAsync(stream);
                 var root = doc.RootElement;
 
-                var tagName = root.GetProperty("tag_name").GetString();
+                tag = root.GetProperty("tag_name").GetString();
 
                 var assets = root.GetProperty("assets").EnumerateArray();
                 var matches = assets
@@ -688,73 +660,71 @@ namespace GoodbyeDPI_UI.Helper
                     .ToList();
 
                 if (matches.Count == 0)
-                    throw new UriFormatException($"Url {repoUrl} isn't correct github url.");
+                    return Tuple.Create<string, string>("ERR_INVALID_URL", tag);
 
                 if (matches.Count > 1)
                 {
-                    SelectFileNeeded?.Invoke(Tuple.Create(repoUrl, tagName, matches.Select(m => m.Name).ToList()));
-                    return "ERR_TOO_MANY_VARIANTS";
+                    SelectFileNeeded?.Invoke(Tuple.Create(repoUrl, tag, matches.Select(m => m.Name).ToList()));
+                    return Tuple.Create<string, string>("ERR_TOO_MANY_VARIANTS", tag);
                 }
 
                 link = matches[0].Url;
 
-                return link;
+                return Tuple.Create<string, string>(link, tag);
             }
             catch (Exception ex)
             {
-                return HandleException(ex);
+                return Tuple.Create<string, string>(HandleException(ex), null);
             }
 
         }
 
-        private static string HandleException(Exception ex)
+        private async Task InstallItem(QueueItem qi)
         {
-            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr);
-            var code = codeObj.ToString();
-            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
-            if (hr != null)
-            {
-                string hrHex = $"0x{hr.Value:X8}";
-                return $"ERR_GET_URL_{code} ({hrHex})";
-            }
-            else
-            {
-                return $"ERR_GET_URL_{code}";
-            }
-        }
-
-        public async Task InstallItem(string id, string version=null)
-        {
+            string id = qi.ItemId;
+            string version = qi.Version;
             NowProcessItemActions?.Invoke(id);
             RepoCategoryItem item = GetItemInfoFromStoreId(id);
 
+            List<Tuple<string, string>> requiredItems = [];
+            if (DatabaseHelper.Instance.IsItemInstalled(id))
+            {
+                requiredItems = DatabaseHelper.Instance.GetItemById(id).RequiredItemIds;
+            }
+
             string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string itemFolder = Path.Combine(localAppData, StoreDirName, StoreItemsDirName, item.store_id);
+            string itemFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, item.store_id);
 
             try
             {
                 if (Path.Exists(itemFolder))
                 {
-                    Directory.Delete(itemFolder);
+                    Directory.Delete(itemFolder, recursive:true);
                 }
                 Directory.CreateDirectory(itemFolder);
             }
             catch (Exception ex)
             {
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create("", HandleException(ex)));
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
                 return;
             }
 
             string downloadUrl = "";
+            string tag = "";
             string filetype = item.filetype;
             
             if (item.version_control == "git_only_last")
             {
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version);
                 downloadUrl = item.download_link;
+                tag = data.Item2;
             } 
             else if (item.version_control == "git")
             {
-                downloadUrl = await GetVersionDownloadLink(item.version_control_link, item.filetype, version:version);
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version:version);
+                downloadUrl = data.Item1;
+                tag = data.Item2;
             }
 
             if (downloadUrl.StartsWith("ERR"))
@@ -765,12 +735,16 @@ namespace GoodbyeDPI_UI.Helper
                 }
                 else
                 {
-                    ItemInstallingErrorHappens?.Invoke(Tuple.Create("", downloadUrl));
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
                     Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{downloadUrl} exception happens.");
                 }
-                ItemActionsStopped?.Invoke(id);
                 return;
             }
+
+            qi.Status = "WORK";
+
+            if (DownloadManager == null)
+                return;
 
             await DownloadManager.DownloadAndExtractAsync(
                 downloadUrl,
@@ -781,40 +755,60 @@ namespace GoodbyeDPI_UI.Helper
                 executableFileName: item.target_executable_file
             );
 
-            ItemActionsStopped?.Invoke(id);
-        }
-        public async void InstallItemFromUrl(string id, string downloadUrl)
-        {
-            NowProcessItemActions?.Invoke(id);
+            if (cancellationToken.IsCancellationRequested)
+                return;
 
-            RepoCategoryItem item = GetItemInfoFromStoreId(id);
-
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
-            string itemFolder = Path.Combine(localAppData, StoreDirName, StoreItemsDirName, item.store_id);
 
             try
             {
-                if (Path.Exists(itemFolder)) {
-                    Directory.Delete(itemFolder);
+                DatabaseStoreItem databaseStoreItem = new DatabaseStoreItem()
+                {
+                    Id = qi.ItemId,
+                    Name = item.name,
+                    CurrentVersion = tag,
+                    Directory = itemFolder,
+                    DownloadUrl = downloadUrl,
+                    IconPath = item.icon,
+                    UpdateCheckUrl = item.version_control_link,
+                    VersionControlType = item.version_control,
+                    DependentItemIds = item.dependencies,
+                    RequiredItemIds = requiredItems,
+                };
+
+                foreach (var dependency in item.dependencies)
+                {
+                    if (!DatabaseHelper.Instance.IsItemInstalled(dependency.Item1))
+                        continue;
+
+                    DatabaseStoreItem dependencyItem = DatabaseHelper.Instance.GetItemById(dependency.Item1);
+                    dependencyItem.RequiredItemIds.Add(Tuple.Create(databaseStoreItem.Id, dependency.Item2));
+                    DatabaseHelper.Instance.AddOrUpdateItem(dependencyItem);
                 }
-                Directory.CreateDirectory(itemFolder);
+
+                DatabaseHelper.Instance.AddOrUpdateItem(databaseStoreItem);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create("", HandleException(ex)));
-                return;
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
             }
-
-            await DownloadManager.DownloadAndExtractAsync(
-                downloadUrl,
-                itemFolder,
-                extractArchive: item.filetype == "archive",
-                extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
-                extractRootFolder: item.archive_root_folder,
-                executableFileName: item.target_executable_file
-            );
-
-            ItemActionsStopped?.Invoke(id);
         }
+
+        private static string HandleException(Exception ex)
+        {
+            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr);
+            var code = codeObj.ToString();
+            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
+            if (hr != null)
+            {
+                string hrHex = $"0x{hr.Value:X8}";
+                return $"ERR_ITEM_INSTALLING_{code} ({hrHex})";
+            }
+            else
+            {
+                return $"ERR_ITEM_INSTALLING_{code}";
+            }
+        }
+
     }
 }
