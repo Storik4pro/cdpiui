@@ -1,3 +1,4 @@
+using GoodbyeDPI_UI.Helper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -54,7 +55,21 @@ public sealed partial class StoreWindow : Window
         SetTitleBar(WindowMoveAera);
         NavView.SelectionChanged += NavView_SelectionChanged;
 
+        StoreHelper.Instance.ItemInstallingErrorHappens += Instance_ItemInstallingErrorHappens;
+
         this.Closed += StoreWindow_Closed;
+    }
+
+    private void Instance_ItemInstallingErrorHappens(Tuple<string, string> obj)
+    {
+        var dialog = new ContentDialog
+        {
+            Title = "Error",
+            Content = $"{obj.Item2}",
+            CloseButtonText = "OK",
+            XamlRoot = this.Content.XamlRoot,
+        };
+        _ = dialog.ShowAsync();
     }
 
     private void StoreWindow_Closed(object sender, WindowEventArgs args)
