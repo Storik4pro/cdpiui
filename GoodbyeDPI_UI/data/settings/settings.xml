@@ -11,14 +11,13 @@
     <Setting Key="fontSize" Type="double" Value="16" />
     <Setting Key="fontFamily" Type="string" Value="Consolas" />
   </Group>
+  <Group Name="CONFIGS">
+    <Group Name="CSZTBN012">
+      <Setting Key="configId" Type="string" Value="CSZEFL002"/>
+      <Setting Key="configFile" Type="string" Value="general.json"/>
+    </Group>
+  </Group>
   <Group Name="COMPONENTS">
-    <Setting Key="goodbyedpiVersion" Type="string" Value="0.0"/>
-    <Setting Key="goodbyedpiServerVersion" Type="string" Value="0.0"/>
-    <Setting Key="zapretVersion" Type="string" Value="0.0"/>
-    <Setting Key="zapretServerVersion" Type="string" Value="0.0"/>
-    <Setting Key="byedpiVersion" Type="string" Value="0.0"/>
-    <Setting Key="byedpiServerVersion" Type="string" Value="0.0"/>
-    <Setting Key="spoofdpiVersion" Type="string" Value="0.0"/>
-    <Setting Key="spoofdpiServerVersion" Type="string" Value="0.0"/>
+    <Setting Key="nowUsed" Type="string" Value="CSZTBN012"/>
   </Group>
 </Settings>
