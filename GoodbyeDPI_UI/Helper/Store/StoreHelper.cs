@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Services.Maps.LocalSearch;
+using WinRT.GoodbyeDPI_UIGenericHelpers;
 using static GoodbyeDPI_UI.Helper.ErrorsHelper;
 using TimeSpan = System.TimeSpan;
 
@@ -101,12 +102,12 @@ namespace GoodbyeDPI_UI.Helper
             public string archive_root_folder;
             public string target_executable_file;
             public string after_install_actions;
-            public List<Tuple<string, string>> dependencies;
+            public List<string[]> dependencies;
             public string target_minversion;
             public string target_maxversion;
         }
 
-        
+
 
         // Download queue
 
@@ -117,10 +118,10 @@ namespace GoodbyeDPI_UI.Helper
             public string Version { get; }
             public string Status { get; set; } = "WAIT";
 
-            public QueueItem(string itemId, string operationId, string version=null)
+            public QueueItem(string itemId, string operationId, string version = null)
             {
                 ItemId = itemId;
-                Version = version?? string.Empty;
+                Version = version ?? string.Empty;
                 OperationId = operationId;
                 Logger.Instance.CreateDebugLog(nameof(QueueItem), Version);
             }
@@ -166,6 +167,8 @@ namespace GoodbyeDPI_UI.Helper
         public event Action<Tuple<string, double>> ItemDownloadProgressChanged;
         public event Action<Tuple<string, TimeSpan>> ItemTimeRemainingChanged;
         public event Action<Tuple<string, string>> ItemDownloadStageChanged;
+
+        public event Action<string> ItemRemoved;
 
         private StoreHelper()
         {
@@ -235,8 +238,8 @@ namespace GoodbyeDPI_UI.Helper
                 FormattedStoreDatabase = GetFormattedStoreDatabase();
 
                 return true;
-            } 
-            catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 StoreInternalErrorHappens?.Invoke($"Error loading store database: {ex.Message}");
                 Debug.WriteLine($"Error loading store database: {ex.Message}");
@@ -244,11 +247,7 @@ namespace GoodbyeDPI_UI.Helper
             return false;
         }
 
-        private static T LoadJson<T>(string filepath)
-        {
-            string json = File.ReadAllText(filepath);
-            return JsonConvert.DeserializeObject<T>(json);
-        }
+
 
         private List<RepoCategory> GetFormattedStoreDatabase()
         {
@@ -266,7 +265,7 @@ namespace GoodbyeDPI_UI.Helper
 
             try
             {
-                RepoInit repoInitData = LoadJson<RepoInit>(localRepoInitFile);
+                RepoInit repoInitData = Utils.LoadJson<RepoInit>(localRepoInitFile);
 
                 StoreLocalizationPaths = repoInitData.localized_strings_directory;
 
@@ -300,7 +299,7 @@ namespace GoodbyeDPI_UI.Helper
                         continue;
                     }
 
-                    RepoCategoryInit repoCategoryInit = LoadJson<RepoCategoryInit>(categoryInitPath);
+                    RepoCategoryInit repoCategoryInit = Utils.LoadJson<RepoCategoryInit>(categoryInitPath);
 
                     if (!SupportedCategoryTypes.Contains(repoCategoryInit.type))
                     {
@@ -320,7 +319,7 @@ namespace GoodbyeDPI_UI.Helper
                             Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"Skip the item: {categoryName}, {categoryPath} >>> {item}");
                             continue;
                         }
-                            
+
                         categoryItemsPathsToCheck.Add(categoryItemsPaths[item]);
                     }
 
@@ -330,13 +329,13 @@ namespace GoodbyeDPI_UI.Helper
                     {
                         string categoryItemInitPath = Path.Combine(localRepoFolder, categoryPath, categoryItemPath, "init.json");
 
-                        if (!Path.Exists(categoryItemInitPath)) 
-                        { 
+                        if (!Path.Exists(categoryItemInitPath))
+                        {
                             Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"Skip the item: {categoryName}, {categoryPath} >>> {categoryItemInitPath}");
                             continue;
                         }
 
-                        RepoCategoryItem repoCategoryItemInit = LoadJson<RepoCategoryItem>(categoryItemInitPath);
+                        RepoCategoryItem repoCategoryItemInit = Utils.LoadJson<RepoCategoryItem>(categoryItemInitPath);
 
                         repoCategoryItemInit.category_id = repoCategoryInit.store_id;
 
@@ -357,10 +356,10 @@ namespace GoodbyeDPI_UI.Helper
                 }
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Cannot load items: {ex}");
-                StoreInternalErrorHappens?.Invoke($"Cannot load items: {ex}");
+                Debug.WriteLine($"Cannot load Items: {ex}");
+                StoreInternalErrorHappens?.Invoke($"Cannot load Items: {ex}");
             }
 
             return categories;
@@ -434,37 +433,44 @@ namespace GoodbyeDPI_UI.Helper
             return localizedString;
         }
 
-        public string ExecuteScript(string scriptString, string scriptArgs=null)
+        public string ExecuteScript(string scriptString, string scriptArgs = null)
         {
             string executeResult = scriptString;
-            if (scriptString.StartsWith("$"))
+            try
             {
-                Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
-                string scriptData = "";
-
-                if (match.Success)
+                if (scriptString != null && scriptString.StartsWith("$"))
                 {
-                    scriptData = match.Groups[1].Value;
+                    Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
+                    string scriptData = "";
+
+                    if (match.Success)
+                    {
+                        scriptData = match.Groups[1].Value;
+                    }
+
+                    if (scriptArgs != null)
+                        scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
+
+                    if (scriptString.StartsWith("$STATICIMAGE"))
+                    {
+                        executeResult = Static.Utils.StaticImageScript(scriptData);
+                    }
+                    else if (scriptString.StartsWith("$DYNAMICIMAGE"))
+                    {
+                        executeResult = Static.Utils.DynamicPathConverter(scriptData);
+                    }
+                    else if (scriptString.StartsWith("$LOADDYNAMIC"))
+                    {
+                        executeResult = Static.Utils.LoadAllTextFromFile(Static.Utils.DynamicPathConverter(scriptData));
+                    }
+                    Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {scriptString} execute result is {executeResult}, {scriptData}");
                 }
-
-                if (scriptArgs != null)
-                    scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
-
-                if (scriptString.StartsWith("$STATICIMAGE"))
-                {
-                    executeResult = Static.Utils.StaticImageScript(scriptData);
-                } 
-                else if (scriptString.StartsWith("$DYNAMICIMAGE"))
-                {
-                    executeResult = Static.Utils.DynamicPathConverter(scriptData);
-                } 
-                else if (scriptString.StartsWith("$LOADDYNAMIC"))
-                {
-                    executeResult = Static.Utils.LoadAllTextFromFile(Static.Utils.DynamicPathConverter(scriptData));
-                }
-                Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {scriptString} execute result is {executeResult}, {scriptData}");
             }
-            
+            catch (Exception ex)
+            {
+                // pass
+            }
+
             return executeResult;
         }
 
@@ -513,7 +519,7 @@ namespace GoodbyeDPI_UI.Helper
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(CurrentDownloadingItem.OperationId, CurrentDownloadingItem.Status));
                 DownloadManager?.Dispose();
                 DownloadManager = null;
-            }           
+            }
         }
 
         public string GetCurrentQueueOperationId()
@@ -528,7 +534,7 @@ namespace GoodbyeDPI_UI.Helper
 
             foreach (var item in _queue)
             {
-                if (item.OperationId == operationId) 
+                if (item.OperationId == operationId)
                     return item.ItemId;
             }
             return null;
@@ -609,7 +615,7 @@ namespace GoodbyeDPI_UI.Helper
         }
 
         private async Task<Tuple<string, string>> GetVersionDownloadLink(
-            string repoUrl, string targetFileOrFileType, string version=null
+            string repoUrl, string targetFileOrFileType, string version = null
         )
         {
             string link;
@@ -627,7 +633,7 @@ namespace GoodbyeDPI_UI.Helper
                 using var client = new HttpClient();
                 client.DefaultRequestHeaders.UserAgent.Add(
                     new ProductInfoHeaderValue("CDPIStore", "0.0.0.0"));
-                client.DefaultRequestHeaders.Authorization = 
+                client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("token", GitHubApiToken);
 
                 string apiUrl = version == string.Empty
@@ -655,7 +661,7 @@ namespace GoodbyeDPI_UI.Helper
                     })
                     .Where(a =>
                         string.Equals(a.Name, targetFileOrFileType, StringComparison.OrdinalIgnoreCase)
-                        || a.Name.EndsWith(targetFileOrFileType, StringComparison.OrdinalIgnoreCase)
+                        || a.Name.EndsWith(StateHelper.Instance.FileTypes[targetFileOrFileType], StringComparison.OrdinalIgnoreCase)
                     )
                     .ToList();
 
@@ -700,7 +706,7 @@ namespace GoodbyeDPI_UI.Helper
             {
                 if (Path.Exists(itemFolder))
                 {
-                    Directory.Delete(itemFolder, recursive:true);
+                    Directory.Delete(itemFolder, recursive: true);
                 }
                 Directory.CreateDirectory(itemFolder);
             }
@@ -713,16 +719,16 @@ namespace GoodbyeDPI_UI.Helper
             string downloadUrl = "";
             string tag = "";
             string filetype = item.filetype;
-            
+
             if (item.version_control == "git_only_last")
             {
                 var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version);
                 downloadUrl = item.download_link;
                 tag = data.Item2;
-            } 
+            }
             else if (item.version_control == "git")
             {
-                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version:version);
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version);
                 downloadUrl = data.Item1;
                 tag = data.Item2;
             }
@@ -761,27 +767,36 @@ namespace GoodbyeDPI_UI.Helper
 
             try
             {
+                List<Tuple<string, string>> _dependencies = new List<Tuple<string, string>>();
+
+                foreach (string[] dependency in item.dependencies)
+                {
+                    _dependencies.Add(Tuple.Create(dependency[0], dependency[1]));
+                }
+
                 DatabaseStoreItem databaseStoreItem = new DatabaseStoreItem()
                 {
                     Id = qi.ItemId,
+                    Type = item.type,
                     Name = item.name,
                     CurrentVersion = tag,
                     Directory = itemFolder,
+                    Executable = item.target_executable_file,
                     DownloadUrl = downloadUrl,
                     IconPath = item.icon,
                     UpdateCheckUrl = item.version_control_link,
                     VersionControlType = item.version_control,
-                    DependentItemIds = item.dependencies,
+                    DependentItemIds = _dependencies,
                     RequiredItemIds = requiredItems,
                 };
 
                 foreach (var dependency in item.dependencies)
                 {
-                    if (!DatabaseHelper.Instance.IsItemInstalled(dependency.Item1))
+                    if (!DatabaseHelper.Instance.IsItemInstalled(dependency[0]))
                         continue;
 
-                    DatabaseStoreItem dependencyItem = DatabaseHelper.Instance.GetItemById(dependency.Item1);
-                    dependencyItem.RequiredItemIds.Add(Tuple.Create(databaseStoreItem.Id, dependency.Item2));
+                    DatabaseStoreItem dependencyItem = DatabaseHelper.Instance.GetItemById(dependency[0]);
+                    dependencyItem.RequiredItemIds.Add(Tuple.Create(databaseStoreItem.Id, dependency[1]));
                     DatabaseHelper.Instance.AddOrUpdateItem(dependencyItem);
                 }
 
@@ -792,6 +807,12 @@ namespace GoodbyeDPI_UI.Helper
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
             }
+        }
+
+        public void RemoveItem(string itemId)
+        {
+            DatabaseHelper.Instance.DeleteItemById(itemId);
+            ItemRemoved?.Invoke(itemId);
         }
 
         private static string HandleException(Exception ex)
@@ -809,6 +830,5 @@ namespace GoodbyeDPI_UI.Helper
                 return $"ERR_ITEM_INSTALLING_{code}";
             }
         }
-
     }
 }
