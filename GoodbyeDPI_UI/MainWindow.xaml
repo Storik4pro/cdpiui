@@ -84,7 +84,7 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Zapret" Tag="SamplePage1" >
+                <NavigationViewItem Content="Zapret" Tag="GoodbyeDPI_UI.Views.ZapretSettingsPage" >
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE839;" />
                         </NavigationViewItem.Icon>
