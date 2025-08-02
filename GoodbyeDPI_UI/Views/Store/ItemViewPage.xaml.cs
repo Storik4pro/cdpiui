@@ -233,25 +233,32 @@ namespace GoodbyeDPI_UI.Views.Store
 
             StoreHelper.Instance.ItemActionsStopped += (id) =>
             {
-                StatusProgressbar.Value = 0;
-                StatusProgressbar.IsIndeterminate = true;
-
-                CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
-                CurrentStatusSpeedTextBlock.Text = "";
-                CurrentStatusTipTextBlock.Text = "Идет работа над этим";
-
-                if (id == _storeId && !errorHappens)
-                {
-                    ItemActionButton.Visibility = Visibility.Visible;
-                    DownloadStatusGrid.Visibility = Visibility.Collapsed;
-                    
-                    if (DatabaseHelper.Instance.IsItemInstalled(id))
-                    {
-                        ItemActionButtonText.Text = "Настроить";
-                        ItemMoreButton.Visibility = Visibility.Visible;
-                    }
-                }
+                ShowItemAfterInstallActions(id);
             };
+        }
+
+        private void ShowItemAfterInstallActions(string id)
+        {
+            StatusProgressbar.Value = 0;
+            StatusProgressbar.IsIndeterminate = true;
+
+            CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
+            CurrentStatusSpeedTextBlock.Text = "";
+            CurrentStatusTipTextBlock.Text = "Идет работа над этим";
+
+            if (id == _storeId && !errorHappens)
+            {
+                ItemActionButtonText.Text = "Установить";
+                ItemMoreButton.Visibility = Visibility.Collapsed;
+                ItemActionButton.Visibility = Visibility.Visible;
+                DownloadStatusGrid.Visibility = Visibility.Collapsed;
+
+                if (DatabaseHelper.Instance.IsItemInstalled(id))
+                {
+                    ItemActionButtonText.Text = "Настроить";
+                    ItemMoreButton.Visibility = Visibility.Visible;
+                }
+            }
         }
 
         private void InstallingItemActions()
@@ -259,6 +266,7 @@ namespace GoodbyeDPI_UI.Views.Store
             ConnectHandlers();
             errorHappens = false;
 
+            StopActionButton.IsEnabled = true;
             StatusProgressbar.IsIndeterminate = true;
             ErrorStatusGrid.Visibility = Visibility.Collapsed;
             ItemActionButton.Visibility = Visibility.Collapsed;
@@ -302,7 +310,21 @@ namespace GoodbyeDPI_UI.Views.Store
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
+            StoreHelper.Instance.ItemRemoved += (id) =>
+            {
+                if (id != _storeId)
+                    return;
+                ShowItemAfterInstallActions(id);
+            };
 
+            StopActionButton.IsEnabled = false;
+            CurrentStatusTextBlock.Text = "Ожидание...";
+            StatusProgressbar.IsIndeterminate = true;
+            ErrorStatusGrid.Visibility = Visibility.Collapsed;
+            ItemActionButton.Visibility = Visibility.Collapsed;
+            DownloadStatusGrid.Visibility = Visibility.Visible;
+
+            StoreHelper.Instance.RemoveItem(_storeId);
         }
 
         private void ReinstallButton_Click(object sender, RoutedEventArgs e)

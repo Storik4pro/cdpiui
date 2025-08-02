@@ -161,7 +161,7 @@ public sealed partial class HomePage : Page
                         CreateLargeButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource:Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
-                            price:Helper.StoreHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
+                            price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
                             title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, "RU"),
                             backgroundColor:repoCategoryItem.background
                         )
@@ -173,7 +173,7 @@ public sealed partial class HomePage : Page
                         CreateSmallButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource: Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
-                            price: Helper.StoreHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
+                            price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
                             title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, "RU"),
                             developer: repoCategoryItem.developer,
                             backgroundColor:repoCategoryItem.background
