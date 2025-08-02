@@ -93,8 +93,15 @@ namespace GoodbyeDPI_UI.Helper
                 _outputBuffer.Clear();
                 _outputDefaultBuffer.Clear();
 
-                var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data\\goodbyeDPI\\x86_64\\goodbyeDPI.exe");
-                var workingDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data\\goodbyeDPI\\x86_64\\");
+                Items.ComponentItemsLoaderHelper.Instance.Init();
+                Items.ComponentHelper componentHelper = 
+                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+
+                var exePath = componentHelper.GetExecutablePath();
+                var workingDirectory = componentHelper.GetDirectory();
+                string args = componentHelper.GetStartupParams();
+
+                Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
@@ -102,7 +109,7 @@ namespace GoodbyeDPI_UI.Helper
                 onProcessStateChanged?.Invoke("started");
                 processState = true;
 
-                await Task.Run(() => RunProcessWithConPTY(exePath, workingDirectory, token));
+                await Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory, token));
                 
             }
             catch (Exception ex)
@@ -254,11 +261,12 @@ namespace GoodbyeDPI_UI.Helper
             str = str.Replace("[4;1H", "\n");
             str = Regex.Replace(str, @"\u001b\]0;.*?\[\?25h", "");
             str = Regex.Replace(str, @"\[\?25l|\[1C|", "");
+            str = Regex.Replace(str, @"\[\?\d{4}\w", "");
             return str;
 
         }
 
-        private void RunProcessWithConPTY(string exePath, string workingDirectory, CancellationToken token)
+        private void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token)
         {
             IntPtr pseudoConsoleHandle = IntPtr.Zero;
             IntPtr hInputRead = IntPtr.Zero;
@@ -316,7 +324,7 @@ namespace GoodbyeDPI_UI.Helper
 
                 var success = CreateProcess(
                     null,
-                    $"\"{exePath}\"",
+                    $"\"{exePath}\" {args}",
                     IntPtr.Zero,
                     IntPtr.Zero,
                     false,
