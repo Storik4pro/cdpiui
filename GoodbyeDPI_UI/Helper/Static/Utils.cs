@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -61,6 +62,12 @@ namespace GoodbyeDPI_UI.Helper.Static
         public static string LoadAllTextFromFile(string filepath)
         {
             return File.ReadAllText(filepath);
+        }
+
+        public static T LoadJson<T>(string filepath)
+        {
+            string json = File.ReadAllText(filepath);
+            return JsonConvert.DeserializeObject<T>(json);
         }
     }
 }
