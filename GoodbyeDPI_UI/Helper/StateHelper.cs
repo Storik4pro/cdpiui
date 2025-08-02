@@ -37,6 +37,8 @@ namespace GoodbyeDPI_UI.Helper
         public const string StoreRepoCache = "Cache";
         public const string StoreLocalDirName = "Local";
 
+        public readonly Dictionary<string, string> FileTypes = new();
+
         // Components
 
         public ComponentSettings goodbyedpiSettings = new("goodbyedpi");
@@ -49,7 +51,7 @@ namespace GoodbyeDPI_UI.Helper
 
         private StateHelper()
         {
-
+            FileTypes.Add("archive", ".zip");
         }
 
     }
