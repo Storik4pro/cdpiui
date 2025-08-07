@@ -18,6 +18,7 @@
     
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
     <None Remove="Controls\SettingTileControlElement.xaml" />
     <None Remove="Controls\StoreCategoryButton.xaml" />
@@ -112,6 +113,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\goodbyeDPI\x86_64\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\Dialogs\ViewApplyArgsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\SettingTileControlElement.xaml">
