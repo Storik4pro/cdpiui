@@ -1,5 +1,6 @@
 ﻿using GoodbyeDPI_UI.Helper.Static;
 using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Devices.Power;
 
 namespace GoodbyeDPI_UI.Helper.Items
@@ -16,13 +18,29 @@ namespace GoodbyeDPI_UI.Helper.Items
     {
         public string file_name;
         public string packId;
-        public string name;
-        public string meta;
-        public List<string> target;
-        public Dictionary<string, bool> jparams;
-        public List<string> variables;
-        public string startup_string;
+        public string name {  get; set; }
+        public string not_converted_name;
+        public string meta { get; set; }
+        public List<string> target { get; set; }
+        public Dictionary<string, bool> jparams { get; set; }
+        public List<string> variables { get; set; }
+        public string startup_string { get; set; }
         public List<string> toggle_lists;
+    }
+
+    public class VariableItem
+    {
+        public string name;
+        public bool value;
+    }
+
+    public class SiteListItem
+    {
+        public string Name;
+        public string Type;
+        public string FilePath;
+        public List<string> ApplyParams;
+        public List<string> PrettyApplyParams;
     }
 
     public class ConfigInitItem
@@ -41,6 +59,7 @@ namespace GoodbyeDPI_UI.Helper.Items
             public string LocaleName;
             public Dictionary<string, string> keyValuePairs;
         }
+        private List<Tuple<string, ConfigLocaleHelper>> ConfigLocaleHelpers = [];
         
 
         private readonly object _lock = new object();
@@ -65,6 +84,7 @@ namespace GoodbyeDPI_UI.Helper.Items
             string[] jsonFiles = Directory.GetFiles(directory, "*.json");
 
             ConfigLocaleHelper localeHelper = new ConfigLocaleHelper();
+            ConfigLocaleHelpers.Add(Tuple.Create(id, localeHelper));
 
             foreach (string jsonFile in jsonFiles)
             {
@@ -91,6 +111,7 @@ namespace GoodbyeDPI_UI.Helper.Items
                         }
                     );
 
+                    configItem.not_converted_name = configItem.name;
                     configItem.name = result;
                     configItem.file_name = Path.GetFileName(jsonFile);
                     configItem.packId = id;
@@ -112,6 +133,7 @@ namespace GoodbyeDPI_UI.Helper.Items
             lock (_lock)
             {
                 Items.Clear();
+                ConfigLocaleHelpers.Clear();
                 List<DatabaseStoreItem> configItems = DatabaseHelper.Instance.GetItemsByType("configlist");
 
                 List<DatabaseStoreItem> itemsToCheck = new List<DatabaseStoreItem>();
@@ -123,6 +145,7 @@ namespace GoodbyeDPI_UI.Helper.Items
 
                     itemsToCheck.Add(item);
                 }
+
 
                 foreach (DatabaseStoreItem item in itemsToCheck)
                 {
@@ -139,7 +162,55 @@ namespace GoodbyeDPI_UI.Helper.Items
             }
         }
 
-        private string GetLocalizedConfigNameString(string name, string langCode, string directory, Dictionary<string, string> locPaths, ConfigLocaleHelper localeHelper)
+        public void ChangeVariableValue(string filename, string packId, string key, bool value)
+        {
+            var configItem = Items.FirstOrDefault(
+                x => string.Equals(x.packId, packId, StringComparison.Ordinal) && string.Equals(x.file_name, filename, StringComparison.Ordinal)
+            );
+
+            if (configItem == null)
+                return;
+
+            configItem.jparams[key] = value;
+
+            SaveConfigItem(filename, packId, configItem);
+        }
+
+        private async void SaveConfigItem(string filename, string packId, ConfigItem item)
+        {
+            string folder = GetItemFolderFromPackId(packId);
+            string fileName = Path.Combine(folder, filename);
+
+            ConfigItem readyToWriteConfigItem = new()
+            {
+                meta = item.meta,
+                name = item.not_converted_name,
+                target = item.target,
+                jparams = item.jparams,
+                variables = item.variables,
+                startup_string = item.startup_string,
+            };
+
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(readyToWriteConfigItem);
+            Logger.Instance.CreateDebugLog(nameof(ConfigHelper), jsonString);
+            File.WriteAllText(fileName, jsonString);
+
+            await Task.CompletedTask;
+        }
+
+        public string GetLocalizedConfigVarName(string name, string packId)
+        {
+            foreach (Tuple<string, ConfigLocaleHelper> localeHelperTuple in ConfigLocaleHelpers) 
+            { 
+                if (localeHelperTuple.Item1 == packId)
+                {
+                    return localeHelperTuple.Item2.keyValuePairs[name];
+                }
+            }
+            return $"Toggle {name}";
+        }
+
+        private static string GetLocalizedConfigNameString(string name, string langCode, string directory, Dictionary<string, string> locPaths, ConfigLocaleHelper localeHelper)
         {
             string localizedString = $"clocale:{name}";
             
@@ -251,6 +322,157 @@ namespace GoodbyeDPI_UI.Helper.Items
             Dictionary<string, string> readyToUseVars = GetReadyToUseVariables(packId, variables, jparams);
 
             return ReplaceVariables(startupString, readyToUseVars);
+        }
+
+        public List<VariableItem> GetVariables(string filename, string packId)
+        {
+            List<VariableItem> variables = [];
+
+            var configItem = Items.FirstOrDefault(
+                x => string.Equals(x.packId, packId, StringComparison.Ordinal) && string.Equals(x.file_name, filename, StringComparison.Ordinal)
+                );
+
+            if (configItem == null)
+                return variables;
+
+            foreach (var variable in configItem.jparams)
+            {
+                VariableItem variableItem = new() 
+                { 
+                    name = variable.Key,
+                    value = variable.Value,
+                };
+                variables.Add(variableItem);
+            }
+
+            return variables;
+        }
+
+        public List<string> GetToggleLists(string filename, string packId)
+        {
+            var configItem = Items.FirstOrDefault(
+                x => string.Equals(x.packId, packId, StringComparison.Ordinal) && string.Equals(x.file_name, filename, StringComparison.Ordinal)
+                );
+
+            return configItem != null ? configItem.toggle_lists:[];
+        }
+
+        public List<SiteListItem> GetSiteListItems(string filename, string packId, bool unique = true)
+        {
+            string localItemFolder = GetItemFolderFromPackId(packId);
+
+            string startupString = GetStartupParameters(filename, packId);
+
+            var windows = startupString
+                .Split(new[] { "--new" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(w => w.Trim())
+                .Where(w => w.Length > 0)
+                .ToList();
+
+            var results = new List<SiteListItem>();
+            var seenNames = new HashSet<string>();
+
+            foreach (var window in windows)
+            {
+                string prettyWindow = string.Empty;
+                prettyWindow = window.Replace(localItemFolder, "");
+
+                var tokenPattern = @"(?<=\s|^)(?:""[^""]*""|[^ ]+)+";
+                var tokens = Regex.Matches(window, tokenPattern)
+                                  .Cast<Match>()
+                                  .Select(m => m.Value.Trim('"'))
+                                  .ToList();
+
+
+
+                bool found = false;
+                for (int i = 0; i < tokens.Count; i++)
+                {
+                    string param = tokens[i];
+                    string name = null, type = null;
+
+                    if (param.StartsWith("--hostlist="))
+                    {
+                        name = param.Substring("--hostlist=".Length);
+                        type = "blacklist";
+                    }
+                    else if (param.StartsWith("--ipset="))
+                    {
+                        name = param.Substring("--ipset=".Length);
+                        type = "iplist";
+                    }
+                    else if (param.StartsWith("--hostlist-auto="))
+                    {
+                        name = param.Substring("--hostlist-auto=".Length);
+                        type = "autoblacklist";
+                    }
+                    else if ((param == "--hostlist" || param == "--ipset" || param == "--hostlist-auto")
+                             && i + 1 < tokens.Count)
+                    {
+                        name = tokens[i + 1];
+                        type = param == "--hostlist"
+                                   ? "blacklist"
+                                   : param == "--ipset"
+                                       ? "iplist"
+                                       : "autoblacklist";
+                        i++;
+                    }
+
+                    if (name != null)
+                    {
+
+                        if (unique && seenNames.Contains(name))
+                        {
+                            var item = results.FirstOrDefault(x => string.Equals(x.Name, Path.GetFileName(name), StringComparison.Ordinal));
+
+                            if (item != null)
+                            {
+                                item.ApplyParams.Add(window);
+                                item.PrettyApplyParams.Add(prettyWindow);
+                            }
+                            found = true;
+                            break;
+                        }
+
+                        seenNames.Add(name);
+
+                        var before = string.Join(" ", tokens.Take(i - (param.Contains('=') ? 0 : 1)));
+                        var after = string.Join(" ", tokens.Skip(i + 1));
+
+                        results.Add(new SiteListItem
+                        {
+                            Name = Path.GetFileName(name),
+                            Type = type,
+                            FilePath = name.Replace("\"", ""),
+                            ApplyParams = [window],
+                            PrettyApplyParams = [prettyWindow]
+                        });
+
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    results.Add(new SiteListItem
+                    {
+                        Name = "",
+                        Type = "NULL",
+                        FilePath = "",
+                        ApplyParams = [window],
+                        PrettyApplyParams = [prettyWindow]
+                    });
+                }
+            }
+            return results;
+        }
+
+        private static string GetItemFolderFromPackId(string packId)
+        {
+            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localItemFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, packId);
+            return localItemFolder;
         }
     }
 }
