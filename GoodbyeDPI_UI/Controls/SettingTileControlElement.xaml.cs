@@ -35,6 +35,7 @@ public class GlyphToFontIconConverter : IValueConverter
 
 public sealed partial class SettingTileControlElement : UserControl
 {
+    public Action Click;
     public SettingTileControlElement()
     {
         InitializeComponent();
@@ -112,6 +113,6 @@ public sealed partial class SettingTileControlElement : UserControl
 
     private void SettingsCard_Click(object sender, RoutedEventArgs e)
     {
-
+        Click?.Invoke();
     }
 }
