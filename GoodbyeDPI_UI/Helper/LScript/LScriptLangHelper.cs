@@ -122,7 +122,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
 
             var exprToEval = condValue ? trueExpr : falseExpr;
 
-            var resultObj = new DataTable().Compute(exprToEval, null);
+            var resultObj = exprToEval;
             return resultObj.ToString();
         }
 
