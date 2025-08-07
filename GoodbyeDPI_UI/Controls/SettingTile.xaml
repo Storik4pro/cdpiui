@@ -14,8 +14,8 @@
         <StackPanel Padding="1" Spacing="0">
             <StackPanel Padding="20" Spacing="10">
                 <FontIcon Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left"/>
-                <TextBlock Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}"/>
-                <TextBlock Text="{x:Bind Description}"/>
+                <TextBlock Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap"/>
+                <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
             </StackPanel>
             <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{ThemeResource CardStrokeColorDefaultSolidBrush}" VerticalAlignment="Top"/>
             <ScrollViewer VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch"
