@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using GoodbyeDPI_UI.Helper.Items;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 using static GoodbyeDPI_UI.Helper.StoreHelper;
 
 namespace GoodbyeDPI_UI.Helper
@@ -24,6 +26,7 @@ namespace GoodbyeDPI_UI.Helper
         public List<Tuple<string, string>> DependentItemIds { get; set; }
         public string IconPath { get; set; }
         public string Name { get; set; }
+        public string ShortName { get; set; }
     }
     public class DatabaseHelper
     {
@@ -51,6 +54,7 @@ namespace GoodbyeDPI_UI.Helper
             string localAppData = AppDomain.CurrentDomain.BaseDirectory;
             string DatabaseFolderPath = Path.Combine(localAppData, 
                 StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreLocalDirName);
+
             Directory.CreateDirectory(DatabaseFolderPath);
             string DatabaseFilePath = Path.Combine(DatabaseFolderPath, "storedata.db");
 
@@ -78,11 +82,19 @@ namespace GoodbyeDPI_UI.Helper
                     RequiredItemIds TEXT,
                     DependentItemIds TEXT,
                     Icon TEXT,
-                    Name TEXT
+                    Name TEXT,
+                    ShortName TEXT
                 );";
             lock (databaseRequestLock)
             {
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.CreateErrorLog(nameof(DatabaseHelper), $"{ex}");
+                }
             }
         }
 
@@ -94,17 +106,17 @@ namespace GoodbyeDPI_UI.Helper
             var cmd = connection.CreateCommand();
             cmd.CommandText = @"
                 INSERT OR REPLACE INTO Items (Id, Type, Directory, Executable, UpdateCheckUrl, DownloadUrl, VersionControlType, 
-                    CurrentVersion, RequiredItemIds, DependentItemIds, Icon, Name)
+                    CurrentVersion, RequiredItemIds, DependentItemIds, Icon, Name, ShortName)
                 VALUES (@Id, @Type, @Directory, @Executable, @UpdateCheckUrl, @DownloadUrl, @VersionControlType, @CurrentVersion,
-                    @RequiredItemIds, @DependentItemIds, @Icon, @Name)";
+                    @RequiredItemIds, @DependentItemIds, @Icon, @Name, @ShortName)";
             cmd.CommandType = CommandType.Text;
 
             cmd.Parameters.AddWithValue("@Id", item.Id);
             cmd.Parameters.AddWithValue("@Type", item.Type);
             cmd.Parameters.AddWithValue("@Directory", item.Directory);
             cmd.Parameters.AddWithValue("@Executable", item.Executable == null? DBNull.Value : item.Executable);
-            cmd.Parameters.AddWithValue("@UpdateCheckUrl", item.UpdateCheckUrl);
-            cmd.Parameters.AddWithValue("@DownloadUrl", item.DownloadUrl);
+            cmd.Parameters.AddWithValue("@UpdateCheckUrl", item.UpdateCheckUrl == null ? DBNull.Value : item.UpdateCheckUrl);
+            cmd.Parameters.AddWithValue("@DownloadUrl", item.DownloadUrl == null ? DBNull.Value : item.DownloadUrl);
             cmd.Parameters.AddWithValue("@VersionControlType", item.VersionControlType);
             cmd.Parameters.AddWithValue("@CurrentVersion", item.CurrentVersion);
             cmd.Parameters.AddWithValue("@RequiredItemIds",
@@ -113,10 +125,18 @@ namespace GoodbyeDPI_UI.Helper
                 (object)Static.Utils.SerializeTuples(item.DependentItemIds) ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@Icon", item.IconPath);
             cmd.Parameters.AddWithValue("@Name", item.Name);
+            cmd.Parameters.AddWithValue("@ShortName", item.ShortName);
 
             lock (databaseRequestLock)
             {
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex) 
+                {
+                    Logger.Instance.CreateErrorLog(nameof(DatabaseHelper), $"{ex}");
+                }
             }
         }
 
@@ -135,8 +155,6 @@ namespace GoodbyeDPI_UI.Helper
 
             return item;
         }
-
-        
 
         public List<DatabaseStoreItem> GetItemsByType(string type)
         {
@@ -173,7 +191,14 @@ namespace GoodbyeDPI_UI.Helper
 
             lock (databaseRequestLock)
             {
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.CreateErrorLog(nameof(DatabaseHelper), $"{ex}");
+                }
             }
         }
 
@@ -197,11 +222,117 @@ namespace GoodbyeDPI_UI.Helper
                                 ? null : reader.GetString(reader.GetOrdinal("DownloadUrl")),
                 VersionControlType = reader.GetString(reader.GetOrdinal("VersionControlType")),
                 CurrentVersion = reader.GetString(reader.GetOrdinal("CurrentVersion")),
-                RequiredItemIds = Static.Utils.DeserializeTuples(reader.GetString(reader.GetOrdinal("RequiredItemIds"))),
-                DependentItemIds = Static.Utils.DeserializeTuples(reader.GetString(reader.GetOrdinal("DependentItemIds"))),
+                RequiredItemIds = reader.IsDBNull(reader.GetOrdinal("RequiredItemIds"))
+                                ? null : Static.Utils.DeserializeTuples(reader.GetString(reader.GetOrdinal("RequiredItemIds"))),
+                DependentItemIds = reader.IsDBNull(reader.GetOrdinal("DependentItemIds"))
+                                ? null : Static.Utils.DeserializeTuples(reader.GetString(reader.GetOrdinal("DependentItemIds"))),
                 IconPath = reader.GetString(reader.GetOrdinal("Icon")),
                 Name = reader.GetString(reader.GetOrdinal("Name")),
+                ShortName = reader.IsDBNull(reader.GetOrdinal("ShortName"))
+                                ? null : reader.GetString(reader.GetOrdinal("ShortName")),
             };
+        }
+
+        public void RegisterUserCustomItem(bool manual=false)
+        {
+            if (GetItemById(StateHelper.LocalUserItemsId) != null && !manual)
+            {
+                return;
+            }
+
+            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string targetFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.LocalUserItemsId);
+
+            try
+            {
+                Directory.CreateDirectory(targetFolder);
+                Directory.CreateDirectory(Path.Combine(targetFolder, StateHelper.LocalUserItemSiteListsFolder));
+                Directory.CreateDirectory(Path.Combine(targetFolder, StateHelper.LocalUserItemBinsFolder));
+            }
+            catch (Exception ex) 
+            {
+                Logger.Instance.RaiseCriticalException(nameof(RegisterUserCustomItem), ex);
+                return;
+            }
+
+            ConfigInitItem configInitItem = new()
+            {
+                toggleListAvailable = [],
+                localized_strings_directory = null,
+            };
+
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(configInitItem);
+            Logger.Instance.CreateDebugLog(nameof(ConfigHelper), jsonString);
+            File.WriteAllText(Path.Combine(targetFolder, "init.json"), jsonString);
+
+            DatabaseStoreItem userItem = new()
+            {
+                Id = StateHelper.LocalUserItemsId,
+                Type = "configlist",
+                Directory = targetFolder,
+                Executable = null,
+                UpdateCheckUrl = null,
+                DownloadUrl = null,
+                VersionControlType = "local",
+                CurrentVersion = StateHelper.Instance.Version,
+                RequiredItemIds = null,
+                DependentItemIds = null,
+                IconPath = "$STATICIMAGE(Store/empty.png)",
+                Name = "Storage for custom items of current user",
+                ShortName = "Local data storage"
+            };
+
+            AddOrUpdateItem(userItem);
+        }
+
+        public void QuickRestore()
+        {
+            RegisterUserCustomItem();
+
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
+            connection.Open();
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Items";
+            using var reader = cmd.ExecuteReader();
+
+            var itemsToUpdate = new List<DatabaseStoreItem>();
+            while (reader.Read())
+            {
+                var item = CreateItemFromReader(reader);
+
+                if (!item.Directory.StartsWith(baseDir) || !Directory.Exists(item.Directory))
+                {
+                    string folderName = Path.GetFileName(item.Directory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+                    string newPath = Path.Combine(baseDir, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, folderName);
+
+                    if (Directory.Exists(newPath))
+                    {
+                        item.Directory = newPath;
+                        itemsToUpdate.Add(item);
+                    }
+                    else
+                    {
+                        QuickRestoreFailure(item);
+                    }
+                }
+            }
+
+            foreach (var item in itemsToUpdate)
+            {
+                AddOrUpdateItem(item);
+            }
+        }
+
+        private void QuickRestoreFailure(DatabaseStoreItem item)
+        {
+            if (item.Id == StateHelper.LocalUserItemsId)
+            {
+                RegisterUserCustomItem(manual: true);
+                return;
+            }
         }
     }
 }
