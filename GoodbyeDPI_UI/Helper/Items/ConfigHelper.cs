@@ -45,8 +45,8 @@ namespace GoodbyeDPI_UI.Helper.Items
 
     public class ConfigInitItem
     {
-        public List<string> toggleListAvailable;
-        public Dictionary<string, string> localized_strings_directory;
+        public List<string> toggleListAvailable { get; set; }
+        public Dictionary<string, string> localized_strings_directory { get; set; }
     }
     public class ConfigHelper
     {
@@ -106,6 +106,9 @@ namespace GoodbyeDPI_UI.Helper.Items
                         match =>
                         {
                             var key = match.Groups[1].Value;
+                            if (configInitItem.localized_strings_directory == null)
+                                return key;
+
                             var localized = GetLocalizedConfigNameString(key, "RU", directory, configInitItem.localized_strings_directory, localeHelper);
                             return localized;
                         }
