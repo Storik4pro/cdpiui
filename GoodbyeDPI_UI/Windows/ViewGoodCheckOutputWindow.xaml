@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="GoodbyeDPI_UI.ViewGoodCheckOutputWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ak="using:AK.Toolkit.WinUI3"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Title="Вывод процесса">
+
+    
+
+    <Grid>
+
+        <Grid.Resources>
+            <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource LayerOnMicaBaseAltFillColorDefault}"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="AppBar" Height="40"/>
+            <RowDefinition x:Name="Content" Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="AppTitleBar"
+            Canvas.ZIndex="1"
+            Grid.Row="0"
+            Height="48"
+            IsHitTestVisible="True"
+            VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"
+                    Source="/Assets/StoreLogo.png"
+                    HorizontalAlignment="Left"
+                    Width="16" Height="16"
+                    Margin="16,0"/>
+                
+            </Grid>
+        </Grid>
+        <TabView x:Name="HeaderTabView" 
+                 Canvas.ZIndex="2"
+                 TabWidthMode="Equal" 
+                 Grid.Row="0" 
+                 IsAddTabButtonVisible="False"
+                 VerticalAlignment="Stretch"
+                 Margin="42 0 150 0"
+                 SelectionChanged="HeaderTabView_SelectionChanged">
+
+        </TabView>
+        <Frame x:Name="ContentFrame"
+               Grid.Row="1"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch" 
+               Padding="0"
+               Margin="0">
+            <Frame.ContentTransitions>
+                <TransitionCollection>
+                    <NavigationThemeTransition  />
+                </TransitionCollection>
+            </Frame.ContentTransitions>
+        </Frame>
+    </Grid>
+</Window>
