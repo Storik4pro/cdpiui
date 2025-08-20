@@ -35,7 +35,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
-                    Source="Assets/StoreLogo.png"
+                    Source="/Assets/StoreLogo.png"
                     HorizontalAlignment="Left"
                     Width="16" Height="16"
                     Margin="16,0"/>

@@ -18,7 +18,7 @@
             Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
             IsHitTestVisible="True"
             VerticalAlignment="Top">
-                <Image Source="Assets/StoreLogo.png"
+                <Image Source="/Assets/StoreLogo.png"
                 HorizontalAlignment="Left"
                 Width="16" Height="16"
                 Margin="0,0"/>
