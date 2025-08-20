@@ -117,6 +117,33 @@
                                 <FontIcon Glyph="&#xE8A7;" />
                             </toolkit:SettingsCard.ActionIcon>
                         </toolkit:SettingsCard>
+                        <toolkit:SettingsCard
+                            x:Name="OpenConfigCreateUtil"
+                            Click="OpenConfigCreateUtil_Click"
+                            IsClickEnabled="True"
+                            Header="Open create config util">
+                            <toolkit:SettingsCard.ActionIcon>
+                                <FontIcon Glyph="&#xE8A7;" />
+                            </toolkit:SettingsCard.ActionIcon>
+                        </toolkit:SettingsCard>
+                        <toolkit:SettingsCard
+                            x:Name="OpenViewGoodCheckWindow"
+                            Click="OpenViewGoodCheckWindow_Click"    
+                            IsClickEnabled="True"
+                            Header="OpenViewGoodCheckWindow">
+                            <toolkit:SettingsCard.ActionIcon>
+                                <FontIcon Glyph="&#xE8A7;" />
+                            </toolkit:SettingsCard.ActionIcon>
+                        </toolkit:SettingsCard>
+                        <toolkit:SettingsCard
+                            x:Name="OpenMessageBox"
+                            Click="OpenMessageBox_Click"    
+                            IsClickEnabled="True"
+                            Header="OpenMessageBox">
+                            <toolkit:SettingsCard.ActionIcon>
+                                <FontIcon Glyph="&#xE8A7;" />
+                            </toolkit:SettingsCard.ActionIcon>
+                        </toolkit:SettingsCard>
                     </toolkit:SettingsExpander.Items>
                 </toolkit:SettingsExpander>
 

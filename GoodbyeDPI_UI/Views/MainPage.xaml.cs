@@ -1,15 +1,16 @@
+using GoodbyeDPI_UI.Helper;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using GoodbyeDPI_UI.Helper;
-using System.Linq;
+using Windows.UI.Popups;
 
 namespace GoodbyeDPI_UI.Views
 {
@@ -72,6 +73,19 @@ namespace GoodbyeDPI_UI.Views
             }
         }
 
+        private void OpenConfigCreateUtil_Click(object sender, RoutedEventArgs e)
+        {
+            if (!((App)Application.Current).CheckWindow<CreateConfigUtilWindow>())
+            {
+                CreateConfigUtilWindow viewWindow = new();
+                viewWindow.Activate();
+            }
+            else
+            {
+                ((App)Application.Current).ShowWindow<CreateConfigUtilWindow>();
+            }
+        }
+
         private void OpenUpdatePageButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(UpdatePage));
@@ -88,6 +102,21 @@ namespace GoodbyeDPI_UI.Views
             {
                 ((App)Application.Current).ShowWindow<StoreWindow>();
             }
+        }
+        private void CommandInvokedHandler(IUICommand command)
+        {
+            
+        }
+
+        private async void OpenMessageBox_Click(object sender, RoutedEventArgs e)
+        {
+            CriticalErrorHandlerWindow window = new();
+            window.Activate();
+        }
+
+        private void OpenViewGoodCheckWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ((App)Application.Current).SafeCreateNewWindow<ViewGoodCheckOutputWindow>();
         }
     }
 }
