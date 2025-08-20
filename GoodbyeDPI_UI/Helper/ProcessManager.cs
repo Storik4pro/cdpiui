@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Devices.Power;
 using GoodbyeDPI_UI;
+using GoodbyeDPI_UI.Helper.Static;
 
 namespace GoodbyeDPI_UI.Helper
 {
@@ -52,6 +53,7 @@ namespace GoodbyeDPI_UI.Helper
         public List<string> LatestErrorMessage = ["", ""];
 
         public bool processState = false;
+        private string ProcessName = string.Empty;
 
         private readonly DispatcherQueue _dispatcherQueue;
 
@@ -97,6 +99,8 @@ namespace GoodbyeDPI_UI.Helper
                 Items.ComponentHelper componentHelper = 
                     Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
 
+                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed")).Name);
+
                 var exePath = componentHelper.GetExecutablePath();
                 var workingDirectory = componentHelper.GetDirectory();
                 string args = componentHelper.GetStartupParams();
@@ -118,6 +122,11 @@ namespace GoodbyeDPI_UI.Helper
                 SendStopMessage("Unexpected error happens while trying to stop process");
                 processState = false;
             }
+        }
+
+        public string GetNowSelectedComponentName()
+        {
+            return ProcessName;
         }
 
         private void SendStopMessage(string output = "Process will be stopped by user")
