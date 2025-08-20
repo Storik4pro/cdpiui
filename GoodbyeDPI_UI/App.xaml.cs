@@ -1,27 +1,28 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using GoodbyeDPI_UI.Common;
+﻿using GoodbyeDPI_UI.Common;
+//using Windows.ApplicationModel.Activation;
+using GoodbyeDPI_UI.DesktopWap.DataModel;
+using GoodbyeDPI_UI.DesktopWap.Helper;
 //using GoodbyeDPI_UI.Data;
 using GoodbyeDPI_UI.Helper;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
-//using Windows.ApplicationModel.Activation;
-using GoodbyeDPI_UI.DesktopWap.DataModel;
-using WASDK = Microsoft.WindowsAppSDK;
-using System.Text;
-using Windows.System;
-using System.Runtime.InteropServices;
-using static GoodbyeDPI_UI.Win32;
+using System;
 using System.Collections.Generic;
-using GoodbyeDPI_UI.DesktopWap.Helper;
+using System.Diagnostics;
 using System.Drawing;
-using Windows.UI;
-using Microsoft.UI;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
+using Windows.UI;
+using WinRT.Interop;
+using static GoodbyeDPI_UI.Win32;
+using WASDK = Microsoft.WindowsAppSDK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,6 +44,8 @@ namespace GoodbyeDPI_UI
 
         public List<Window> OpenWindows { get; private set; } = new List<Window>();
 
+        private Dictionary<IntPtr, bool> _disabledWindows = new Dictionary<IntPtr, bool>();
+        private object _modalLock = new object();
         public App()
         {
             this.InitializeComponent();
@@ -60,6 +63,15 @@ namespace GoodbyeDPI_UI
             var mainWindow = new MainWindow();
             OpenWindows.Add(mainWindow);
             mainWindow.Activate();
+
+            GetReadyFeatures();
+        }
+        
+        public async void GetReadyFeatures()
+        {
+            DatabaseHelper.Instance.QuickRestore();
+
+            await Task.CompletedTask;
         }
 
         public bool CheckWindow<TWindow>() where TWindow : Window
@@ -91,7 +103,7 @@ namespace GoodbyeDPI_UI
             }
             else
             {
-                foreach (var viewWindow in openWindows.OfType<ViewWindow>().ToList())
+                foreach (var viewWindow in openWindows.OfType<TWindow>().ToList())
                 {
                     viewWindow.Close();
                     OpenWindows.Remove(viewWindow);
@@ -111,6 +123,121 @@ namespace GoodbyeDPI_UI
                 throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
             }
             return (TEnum)Enum.Parse(typeof(TEnum), text);
+        }
+
+        public Task ShowWindowModalAsync(Window modalWindow)
+        {
+            if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            var dq = modalWindow.DispatcherQueue;
+            if (dq == null)
+            {
+                _MakeModalAndAwait(modalWindow, tcs);
+            }
+            else
+            {
+                dq.TryEnqueue(() => _MakeModalAndAwait(modalWindow, tcs));
+            }
+
+            return tcs.Task;
+        }
+
+        private void _MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        {
+            lock (_modalLock)
+            {
+                try
+                {
+                    IntPtr modalHwnd = WindowNative.GetWindowHandle(modalWindow);
+                    if (modalHwnd == IntPtr.Zero)
+                    {
+                        tcs.SetException(new InvalidOperationException("HWND err"));
+                        return;
+                    }
+
+                    _disabledWindows.Clear();
+                    foreach (var win in OpenWindows)
+                    {
+                        if (win == null) continue;
+                        try
+                        {
+                            IntPtr h = WindowNative.GetWindowHandle(win);
+                            if (h == IntPtr.Zero) continue;
+
+                            if (win == modalWindow)
+                            {
+                                continue;
+                            }
+
+                            _disabledWindows[h] = true;
+
+                            EnableWindow(h, false);
+                        }
+                        catch
+                        {
+                        }
+                    }
+
+                    SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                    SetForegroundWindow(modalHwnd);
+
+                    void ClosedHandler(object s, WindowEventArgs e)
+                    {
+                        try
+                        {
+                            var dq2 = modalWindow.DispatcherQueue;
+                            if (dq2 != null)
+                            {
+                                dq2.TryEnqueue(() => _RestoreAfterModal(modalWindow, modalHwnd));
+                            }
+                            else
+                            {
+                                _RestoreAfterModal(modalWindow, modalHwnd);
+                            }
+                        }
+                        finally
+                        {
+                            modalWindow.Closed -= ClosedHandler;
+                            tcs.TrySetResult(true);
+                        }
+                    }
+
+                    modalWindow.Closed += ClosedHandler;
+                }
+                catch (Exception ex)
+                {
+                    try { _RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
+                    tcs.TrySetException(ex);
+                }
+            }
+        }
+
+        private void _RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
+        {
+            lock (_modalLock)
+            {
+                try
+                {
+                    if (modalHwnd != IntPtr.Zero)
+                    {
+                        SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                    }
+                }
+                catch { }
+
+                foreach (var kv in _disabledWindows.ToList())
+                {
+                    try
+                    {
+                        EnableWindow(kv.Key, true);
+                    }
+                    catch { }
+                }
+
+                _disabledWindows.Clear();
+            }
         }
 
         public FrameworkElement GetRootFrame()
@@ -180,6 +307,21 @@ namespace GoodbyeDPI_UI
                 }
             }
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_SHOWWINDOW = 0x0040;
 
 
     }
