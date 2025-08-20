@@ -368,7 +368,7 @@ namespace GoodbyeDPI_UI.Views
 
             ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                    ComponentId);
 
             if (componentHelper is null)
                 return;
