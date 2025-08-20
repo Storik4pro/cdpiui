@@ -63,7 +63,7 @@ namespace GoodbyeDPI_UI.Views.Store
 
                 item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
 
-                ItemName.Text = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, "RU");
+                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, "RU");
                 ItemImage.Source = new BitmapImage(new Uri(StoreHelper.Instance.ExecuteScript(item.icon)));
                 ItemDeveloper.Text = item.developer;
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
