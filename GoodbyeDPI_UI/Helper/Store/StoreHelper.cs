@@ -38,8 +38,6 @@ namespace GoodbyeDPI_UI.Helper
     {
         private const string GitHubApiToken = "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";
 
-        private string LocalDatabaseConnectionString;
-
         private List<string> SupportedCategoryTypes = ["basic_category", "second_category"];
 
         private const string ScriptGetArgsRegex = @"\$.*?\((.*?)\)";
@@ -86,6 +84,7 @@ namespace GoodbyeDPI_UI.Helper
             public string category_id;
             public string type;
             public string name;
+            public string short_name;
             public string developer;
             public string icon;
             public string background;
@@ -779,6 +778,7 @@ namespace GoodbyeDPI_UI.Helper
                     Id = qi.ItemId,
                     Type = item.type,
                     Name = item.name,
+                    ShortName = item.short_name,
                     CurrentVersion = tag,
                     Directory = itemFolder,
                     Executable = item.target_executable_file,
