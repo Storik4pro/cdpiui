@@ -307,12 +307,7 @@ namespace GoodbyeDPI_UI.Views
                             editBtn.Content = new FontIcon { Glyph = "\uE70F", FontSize = 16 };
                             editBtn.Click += (s, e) =>
                             {
-                                var psi = new ProcessStartInfo
-                                {
-                                    FileName = Path.GetFullPath(def.EditFilePath),
-                                    UseShellExecute = true
-                                };
-                                Process.Start(psi);
+                                Utils.OpenFileInDefaultApp(def.EditFilePath);
                             };
 
                             var viewBtn = new Button { Padding = new Thickness(6) };
