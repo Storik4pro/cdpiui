@@ -16,10 +16,11 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <FontIcon Glyph="&#xE7C3;" VerticalAlignment="Center" Margin="0 0 10 0"/>
                     <TextBlock Text="{x:Bind Title}" VerticalAlignment="Center" Grid.Column="1" Margin="0 0 10 0"/>
-                    <TextBlock Text="{x:Bind PackName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" Grid.Column="2"/>
+                    <TextBlock Text="{x:Bind PackName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" Grid.Column="3" TextAlignment="Right"/>
                 </Grid>
             </Button.Content>
         </Button>
