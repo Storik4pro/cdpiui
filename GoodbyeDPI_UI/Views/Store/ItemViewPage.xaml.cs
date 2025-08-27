@@ -40,6 +40,12 @@ namespace GoodbyeDPI_UI.Views.Store
 
         private bool errorHappens = false;
 
+        private Action<Tuple<string, string>> _itemDownloadStageChangedHandler;
+        private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
+        private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
+        private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
+        private Action<string> _itemActionsStoppedHandler;
+
         public ItemViewPage()
         {
             InitializeComponent();
@@ -128,7 +134,7 @@ namespace GoodbyeDPI_UI.Views.Store
 
         private void ConnectHandlers()
         {
-            StoreHelper.Instance.ItemDownloadStageChanged += (data) =>
+            _itemDownloadStageChangedHandler  = (data) =>
             {
                 string operationId = data.Item1;
                 string stage = data.Item2;
@@ -177,8 +183,9 @@ namespace GoodbyeDPI_UI.Views.Store
 
                 CurrentStatusTextBlock.Text = stageHeaderText;
             };
+            StoreHelper.Instance.ItemDownloadStageChanged += _itemDownloadStageChangedHandler;
 
-            StoreHelper.Instance.ItemDownloadSpeedChanged += (data) =>
+            _itemDownloadProgressChangedHandler = (data) =>
             {
                 string operationId = data.Item1;
                 double speed = data.Item2;
@@ -188,8 +195,9 @@ namespace GoodbyeDPI_UI.Views.Store
 
                 CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
             };
+            StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
 
-            StoreHelper.Instance.ItemTimeRemainingChanged += (data) =>
+            _itemTimeRemainingChangedHandler = (data) =>
             {
                 string operationId = data.Item1;
                 TimeSpan time = data.Item2;
@@ -203,7 +211,9 @@ namespace GoodbyeDPI_UI.Views.Store
                     CurrentStatusTipTextBlock.Text = "Осталось менее минуты";
             };
 
-            StoreHelper.Instance.ItemDownloadProgressChanged += (data) =>
+            StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
+
+            _itemDownloadProgressChangedHandler = (data) =>
             {
                 string operationId = data.Item1;
                 double progress = data.Item2;
@@ -215,7 +225,9 @@ namespace GoodbyeDPI_UI.Views.Store
                 StatusProgressbar.Value = progress;
             };
 
-            StoreHelper.Instance.ItemInstallingErrorHappens += (data) =>
+            StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
+
+            _itemInstallingErrorHappensHandler = (data) =>
             {
                 string operationId = data.Item1;
                 string errorCode = data.Item2;
@@ -230,11 +242,36 @@ namespace GoodbyeDPI_UI.Views.Store
                 ErrorNameTextBlock.Text = errorCode;
                 errorHappens = true;
             };
+            StoreHelper.Instance.ItemInstallingErrorHappens += _itemInstallingErrorHappensHandler;
 
-            StoreHelper.Instance.ItemActionsStopped += (id) =>
+            _itemActionsStoppedHandler = (id) =>
             {
                 ShowItemAfterInstallActions(id);
             };
+            StoreHelper.Instance.ItemActionsStopped += _itemActionsStoppedHandler;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (_itemDownloadStageChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadStageChanged -= _itemDownloadStageChangedHandler;
+
+            if (_itemDownloadProgressChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadProgressChanged -= _itemDownloadProgressChangedHandler;
+
+            if (_itemTimeRemainingChangedHandler != null)
+                StoreHelper.Instance.ItemTimeRemainingChanged -= _itemTimeRemainingChangedHandler;
+
+            if (_itemInstallingErrorHappensHandler != null)
+                StoreHelper.Instance.ItemInstallingErrorHappens -= _itemInstallingErrorHappensHandler;
+
+            if (_itemActionsStoppedHandler != null)
+                StoreHelper.Instance.ItemActionsStopped -= _itemActionsStoppedHandler;
+
+            this.DataContext = null;
+            MarkdownConfig = null;
         }
 
         private void ShowItemAfterInstallActions(string id)

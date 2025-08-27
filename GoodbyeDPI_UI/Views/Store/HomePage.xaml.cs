@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Windows;
 
 using Windows.Foundation;
@@ -126,6 +127,41 @@ public sealed partial class HomePage : Page
 
     }
 
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+
+        StoreHelper.Instance.StoreInternalErrorHappens -= StoreHelper_ErrorHappens;
+        StoreHelper.Instance.UpdatingDatabaseStarted -= StoreHelper_UpdatingDatabaseStarted;
+        this.LayoutUpdated -= HomePage_LayoutUpdated;
+        StoreScrollViewer.SizeChanged -= OnContainerSizeChanged;
+
+        foreach (var cat in _lastCategories ?? Enumerable.Empty<UICategoryData>())
+        {
+            foreach (var ui in cat.Items)
+            {
+                if (ui is StoreItemLargeButton sb)
+                {
+                    sb.Click -= StoreItemButton_Click;
+                    sb.Tag = null;
+                    sb.CardImageSource = null;
+                }
+                else if (ui is StoreItemSmallButton smb)
+                {
+                    smb.Click -= StoreItemButton_Click;
+                    smb.Tag = null;
+                    smb.CardImageSource = null;
+                }
+            }
+        }
+
+        _panels.Clear();
+        _lastCategories = null;
+
+        StoreStackPanel.Children.Clear();
+    }
+
+
     private bool _isFirstLayout = true;
 
     private void HomePage_LayoutUpdated(object sender, object e)
@@ -214,15 +250,7 @@ public sealed partial class HomePage : Page
             CardBackgroundColor = color,
         };
 
-        storeItemLargeButton.Click += (storeId) =>
-        {
-            Logger.Instance.CreateDebugLog(nameof(HomePage), $"Call {storeId}");
-
-            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", storeItemLargeButton.imageElement);
-
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), storeId, new SuppressNavigationTransitionInfo());
-            // (Window.Current.Content as Frame)?.Navigate(typeof(Views.Store.ItemViewPage), storeId);
-        };
+        storeItemLargeButton.Click += StoreItemButton_Click;
 
         return storeItemLargeButton;
     }
@@ -246,14 +274,27 @@ public sealed partial class HomePage : Page
             CardBackgroundBrush = solidColorBrush,
         };
 
-        storeItemSmallButton.Click += (storeId) =>
-        {
-            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", storeItemSmallButton.imageElement);
-
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), storeId, new SuppressNavigationTransitionInfo());
-        };
+        storeItemSmallButton.Click += StoreItemButton_Click;
 
         return storeItemSmallButton;
+    }
+
+    private void StoreItemButton_Click(UIElement sender)
+    {
+        if (sender is StoreItemLargeButton btn && btn.StoreId is string sid)
+        {
+            ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", btn.imageElement);
+
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), sid, new SuppressNavigationTransitionInfo());
+        }
+        else if (sender is StoreItemSmallButton smallBtn && smallBtn.StoreId is string smallSid)
+        {
+            ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", smallBtn.imageElement);
+
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), smallSid, new SuppressNavigationTransitionInfo());
+        }
     }
 
     public void InitializeAndShow(IEnumerable<UICategoryData> categories)

@@ -237,7 +237,7 @@
                         <controls:MarkdownTextBlock 
                             Grid.Row="2" Margin="20" x:Name="ItemFullDescriptionText" 
                             Config="{x:Bind MarkdownConfig, Mode=OneTime}"
-                            Text="Item Full Descripition Text"
+                            Text="Item Full Description Text"
                             UseAutoLinks="True"
                             UseEmphasisExtras="True"
                             UseListExtras="True"
