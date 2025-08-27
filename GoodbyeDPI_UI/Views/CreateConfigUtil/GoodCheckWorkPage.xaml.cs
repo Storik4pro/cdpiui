@@ -1,4 +1,6 @@
+using GoodbyeDPI_UI.Helper;
 using GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using GoodbyeDPI_UI.Helper.Static;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -14,6 +16,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using TextDecorations = Windows.UI.Text.TextDecorations;
 using static System.Net.Mime.MediaTypeNames;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -35,6 +38,8 @@ public sealed partial class GoodCheckWorkPage : Page
 
     private readonly DispatcherQueue _uiDispatcher;
 
+    private const string AddOnId = "ASGKOI001";
+
     public GoodCheckWorkPage()
     {
         InitializeComponent();
@@ -42,6 +47,7 @@ public sealed partial class GoodCheckWorkPage : Page
         _uiDispatcher = DispatcherQueue.GetForCurrentThread();
 
         CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
+        GoodCheckProcessHelper.Instance.AllComplete += AllCompletedActions;
 
         SiteListProgressText.Text = GoodCheckProcessHelper.Instance.CurrentSiteList;
         GoodStrategyCount.Text = GoodCheckProcessHelper.Instance.CorrectCount.ToString();
@@ -49,6 +55,18 @@ public sealed partial class GoodCheckWorkPage : Page
 
 
         ConnectHandlers();
+    }
+
+    private void AllCompletedActions()
+    {
+        ContentGrid.Visibility = Visibility.Collapsed;
+        LoadingStateGrid.Visibility = Visibility.Collapsed;
+        CancelButton.Visibility = Visibility.Collapsed;
+
+        EndWork.Visibility = Visibility.Visible;
+        ForwardButton.Visibility = Visibility.Visible;
+
+        CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
     }
 
     private void ConnectHandlers()
@@ -152,7 +170,7 @@ public sealed partial class GoodCheckWorkPage : Page
             if (dt > 0.05)
             {
                 int deltaItems = current - _lastProgressCount;
-                double instantSpeed = deltaItems / dt; // e/s
+                double instantSpeed = deltaItems / dt; 
 
                 if (instantSpeed < 0) instantSpeed = 0;
 
@@ -206,19 +224,14 @@ public sealed partial class GoodCheckWorkPage : Page
         }
 
         string speedText = _speedElementsPerSec > 0 ? $"{_speedElementsPerSec:F3} e/s" : "—";
-        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? "Расчет..." : $"Около {(etaSecondsCurrent / 60.0):F0} минут";
-        string allTimeText = double.IsInfinity(allSecondsRemaining) ? "Расчет..." : $"Около {(allSecondsRemaining / 60.0):F0} минут";
+        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? "Расчет..." : Utils.ConvertMinutesToPrettyText((etaSecondsCurrent / 60.0));
+        string allTimeText = double.IsInfinity(allSecondsRemaining) ? "Расчет..." : Utils.ConvertMinutesToPrettyText((allSecondsRemaining / 60.0));
 
         TimeText.Text = etaCurrentText;
         AllTimeText.Text = allTimeText;
     }
 
     private void GetHelpButton_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
 
     }
@@ -235,20 +248,43 @@ public sealed partial class GoodCheckWorkPage : Page
             AdditionalInfo.Visibility = Visibility.Visible;
             ViewMoreText.Text = "Показать меньше";
         }
-        ViewMoreText.TextDecorations = Windows.UI.Text.TextDecorations.Underline;
+        ViewMoreText.TextDecorations = TextDecorations.Underline;
     }
 
     private void ViewMoreButton_PointerEntered(object sender, PointerRoutedEventArgs e)
     {
-        ViewMoreText.TextDecorations = Windows.UI.Text.TextDecorations.None;
+        ViewMoreText.TextDecorations = TextDecorations.None;
     }
 
     private void ViewMoreButton_PointerExited(object sender, PointerRoutedEventArgs e)
     {
-        ViewMoreText.TextDecorations = Windows.UI.Text.TextDecorations.Underline;
+        ViewMoreText.TextDecorations = TextDecorations.Underline;
     }
 
     private void ViewLogHyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+    {
+        string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+        string dirName = Path.Combine(
+            localAppData,
+            StateHelper.StoreDirName,
+            StateHelper.StoreItemsDirName,
+            AddOnId,
+            "Logs");
+
+        Utils.OpenFileInDefaultApp($"{dirName}");
+    }
+
+    private void KillProc_Click(object sender, RoutedEventArgs e)
+    {
+        GoodCheckProcessHelper.Instance.RemoveFromQueueOrStopOperation(GoodCheckProcessHelper.Instance.CurrentOperationId);
+    }
+
+    private void EndAll_Click(object sender, RoutedEventArgs e)
+    {
+        GoodCheckProcessHelper.Instance.Stop();
+    }
+
+    private void ForwardButton_Click(object sender, RoutedEventArgs e)
     {
 
     }

@@ -15,7 +15,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="ContentGrid" Padding="20, 0, 20, 0">
+        <Grid x:Name="ContentGrid" Padding="20, 0, 20, 0" Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
@@ -33,7 +33,7 @@
                     </Paragraph>
                 </RichTextBlock>
             </StackPanel>
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" CornerRadius="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -75,6 +75,26 @@
             
         </Grid>
 
+        <Grid x:Name="EndWork" Padding="20, 0, 20, 0" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="1">
+                <StackPanel.RenderTransform>
+                    <TranslateTransform/>
+                </StackPanel.RenderTransform>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Подбор завершён"/>
+                <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
+                    <Paragraph>
+                        <Run Text="Нажмите на кнопку Далее, чтобы перейти к просмотру результата."/>
+                    </Paragraph>
+                </RichTextBlock>
+            </StackPanel>
+
+        </Grid>
+
         <Grid x:Name="LoadingStateGrid" Grid.Row="1" Visibility="Visible" Margin="0 20 0 0">
             <StackPanel>
                 <TextBlock x:Name="LoadingHeader" Text="Идет работа над этим..." Margin="20 0 0 5" Visibility="Collapsed"/>
@@ -94,11 +114,23 @@
                     <RichTextBlock Margin="0" TextWrapping="Wrap" IsTextSelectionEnabled="False" VerticalAlignment="Center">
                         <Paragraph>
                             <Hyperlink x:Name="ViewLogHyperlink" Click="ViewLogHyperlink_Click">
-                                Открыть вывод процесса
+                                Открыть логи процесса
                             </Hyperlink>
                         </Paragraph>
                     </RichTextBlock>
-                    <Button x:Name="CancelButton" Content="Остановить" MinWidth="150" Click="CancelButton_Click"/>
+                    <Button x:Name="CancelButton" Content="Остановить" MinWidth="150">
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Остановка" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="Выберите вариант остановки."/>
+                                    <Button x:Name="KillProc" Content="Завершить текущий процесс" HorizontalAlignment="Stretch" Click="KillProc_Click"/>
+                                    <Button x:Name="EndAll" Content="Завершить подбор полностью" HorizontalAlignment="Stretch" Click="EndAll_Click"/>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="ForwardButton" Content="Далее" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Visibility="Collapsed" Click="ForwardButton_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
