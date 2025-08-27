@@ -40,7 +40,7 @@ namespace GoodbyeDPI_UI.DataModel
 
             var detailsHyperlinkButton = new HyperlinkButton()
             {
-                Content = "Подробности",
+                Content = "More",
                 Margin = new Thickness(0, 10, 0, 0),
                 Padding= new Thickness(0)
             };
@@ -78,7 +78,7 @@ namespace GoodbyeDPI_UI.DataModel
             icon.Margin = new Thickness(0, 0, 5, 0);
 
             TextBlock textBlock1 = new TextBlock();
-            textBlock1.Text = "Скопировать текст ошибки";
+            textBlock1.Text = "Copy error text";
 
             StackPanel stackPanel1 = new StackPanel();
 
