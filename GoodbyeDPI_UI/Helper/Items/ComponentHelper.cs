@@ -16,6 +16,8 @@ namespace GoodbyeDPI_UI.Helper.Items
         private DatabaseStoreItem DatabaseStoreItem;
 
         private readonly ConfigHelper ConfigHelper;
+
+        public Action ConfigListUpdated;
         
         public ComponentHelper(string id) 
         {
@@ -33,6 +35,7 @@ namespace GoodbyeDPI_UI.Helper.Items
         public void ReInitConfigs()
         {
             ConfigHelper.Init();
+            ConfigListUpdated?.Invoke();
         }
 
         public ConfigHelper GetConfigHelper()
