@@ -25,7 +25,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
             Dictionary<string, bool> jparams = null
             )
         {
-            string executeResult = scriptString;
+            string executeResult = scriptString.Replace("$EMPTY", "");
             try
             {
                 if (scriptString != null && scriptString.StartsWith("$"))
@@ -83,13 +83,98 @@ namespace GoodbyeDPI_UI.Helper.LScript
             return executeResult;
         }
 
+        public static string ExecuteScriptUnsafe(
+            string scriptString,
+            string scriptArgs = null,
+            string callItemId = null,
+            Dictionary<string, bool> jparams = null
+            )
+        {
+            if (string.IsNullOrEmpty(scriptString))
+                return scriptString;
+
+            string result = scriptString.Replace("$EMPTY", "");
+
+            try
+            {
+                string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+                string localItemsFolder = Path.Combine(
+                    localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
+
+                if (callItemId != null)
+                {
+                    localItemsFolder = Path.Combine(localItemsFolder, callItemId);
+                }
+
+                string pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION)(?:\((.*?)\))?";
+
+                result = Regex.Replace(result, pattern, (Match m) =>
+                {
+                    string command = m.Groups[1].Value.ToUpperInvariant();
+                    string rawArg = m.Groups[2].Success ? m.Groups[2].Value : "";
+                    string scriptData = rawArg;
+
+                    if (!string.IsNullOrEmpty(scriptArgs))
+                    {
+                        scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
+                    }
+
+                    string replacement = m.Value;
+
+                    try
+                    {
+                        switch (command)
+                        {
+                            case "STATICIMAGE":
+                                replacement = Static.Utils.StaticImageScript(scriptData);
+                                break;
+
+                            case "DYNAMICIMAGE":
+                                replacement = Static.Utils.DynamicPathConverter(scriptData);
+                                break;
+
+                            case "LOADDYNAMIC":
+                                replacement = Static.Utils.LoadAllTextFromFile(Static.Utils.DynamicPathConverter(scriptData));
+                                break;
+
+                            case "GETCURRENTDIR":
+                                replacement = localItemsFolder;
+                                break;
+
+                            case "LOCALCONDITION":
+                                replacement = LocalCondition(scriptData, jparams);
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Instance.CreateErrorLog(nameof(UIHelper), $"Error executing script {m.Value}: {ex}");
+                        replacement = m.Value;
+                    }
+
+                    Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {m.Value} execute result is {replacement}, {scriptData}");
+                    return replacement ?? "";
+                }, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(UIHelper), $"ExecuteScriptUnsafe general error: {ex}");
+            }
+
+            return result;
+        }
+
         private static string LocalCondition(string condition, Dictionary<string, bool> jparams)
         {
             if (string.IsNullOrWhiteSpace(condition))
                 return string.Empty;
 
             var qPos = condition.IndexOf('?');
-            var cPos = condition.IndexOf(':');
+            int cPos;
+            if (condition.Contains("$SEPARATOR"))
+                cPos = condition.IndexOf("$SEPARATOR");
+            else
+                cPos = condition.IndexOf(':');
             if (qPos < 0 || cPos < 0 || cPos < qPos)
             {
                 Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"0x0 Not correct condition");
@@ -120,7 +205,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
             var literalBool = bool.Parse(literal);
             condValue = (varBool == literalBool);
 
-            var exprToEval = condValue ? trueExpr : falseExpr;
+            var exprToEval = condValue ? trueExpr.Replace("$EMPTY", "") : falseExpr.Replace("$EMPTY", "");
 
             var resultObj = exprToEval;
             return resultObj.ToString();
