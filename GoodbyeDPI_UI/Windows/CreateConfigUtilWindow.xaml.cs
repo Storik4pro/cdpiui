@@ -17,6 +17,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,7 +27,7 @@ namespace GoodbyeDPI_UI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CreateConfigUtilWindow : Window
+    public sealed partial class CreateConfigUtilWindow : WindowEx
     {
         private const int WM_GETMINMAXINFO = 0x0024;
         private IntPtr _hwnd;
@@ -45,7 +46,7 @@ namespace GoodbyeDPI_UI
             appWindowPresenter.IsMaximizable = false;
             appWindowPresenter.IsMinimizable = false;
 
-            WindowHelper.Instance.SetWindowSize(this, 900, 550);
+            WindowHelper.SetWindowSize(this, 900, 550);
 
             
 
@@ -82,11 +83,13 @@ namespace GoodbyeDPI_UI
 
         private void CreateConfigUtilWindow_Closed(object sender, WindowEventArgs args)
         {
+            Instance = null;
             ((App)Application.Current).OpenWindows.Remove(this);
         }
 
         ~CreateConfigUtilWindow()
         {
+            Instance = null;
             ((App)Application.Current).OpenWindows.Remove(this);
         }
 

@@ -1,16 +1,17 @@
-<Window
+<winex:WindowEx
     x:Class="GoodbyeDPI_UI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
     Title="CDPI UI"
     xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml">
 
-    <Window.SystemBackdrop>
+    <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
-    </Window.SystemBackdrop>
+    </winex:WindowEx.SystemBackdrop>
 
     <Grid>
         <Grid x:Name="AppTitleBar"
@@ -148,4 +149,4 @@
 
     </Grid>
 
-</Window>
+</winex:WindowEx>

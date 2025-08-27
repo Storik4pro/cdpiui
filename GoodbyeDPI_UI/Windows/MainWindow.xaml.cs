@@ -1,32 +1,33 @@
+using GoodbyeDPI_UI.Helper;
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Brushes;
+using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using WinRT.Interop;
-using Microsoft.UI.Input;
-using GoodbyeDPI_UI.Helper;
-using Windows.ApplicationModel;
-using Microsoft.UI.Xaml.Media.Animation;
-using System.Runtime.InteropServices;
-using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.UI.Xaml;
-using System.Threading.Tasks;
 using Windows.UI;
-using Microsoft.Graphics.Canvas.Brushes;
-using System.Diagnostics;
+using WinRT.Interop;
+using WinUIEx;
 
 
 namespace GoodbyeDPI_UI
@@ -35,7 +36,7 @@ namespace GoodbyeDPI_UI
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
     
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : WindowEx
     {
         private const int WM_GETMINMAXINFO = 0x0024;
         private IntPtr _hwnd;
@@ -54,7 +55,7 @@ namespace GoodbyeDPI_UI
 
             Instance = this;
 
-            WindowHelper.Instance.SetWindowSize(this, 800, 600);
+            WindowHelper.SetWindowSize(this, 800, 600);
             ((App)Application.Current).OpenWindows.Add(this);
 
             if (this.Content is FrameworkElement rootElement)

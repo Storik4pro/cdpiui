@@ -17,6 +17,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,7 +27,7 @@ namespace GoodbyeDPI_UI;
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class StoreWindow : Window
+public sealed partial class StoreWindow : WindowEx
 {
     private const int WM_GETMINMAXINFO = 0x0024;
     private IntPtr _hwnd;
@@ -74,11 +75,14 @@ public sealed partial class StoreWindow : Window
 
     private void StoreWindow_Closed(object sender, WindowEventArgs args)
     {
+        Instance = null;
+        StoreHelper.Instance.ItemInstallingErrorHappens -= Instance_ItemInstallingErrorHappens;
         ((App)Application.Current).OpenWindows.Remove(this);
     }
 
     ~StoreWindow()
     {
+        StoreHelper.Instance.ItemInstallingErrorHappens -= Instance_ItemInstallingErrorHappens;
         ((App)Application.Current).OpenWindows.Remove(this);
     }
 
@@ -128,18 +132,6 @@ public sealed partial class StoreWindow : Window
     [DllImport("user32.dll", SetLastError = true)]
     private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-    private void ApplyDarkThemeToSystemMenu()
-    {
-        SetPreferredAppMode(2);
-        FlushMenuThemes();
-    }
-
-    [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern int SetPreferredAppMode(int preferredAppMode);
-
-    [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
-    private static extern void FlushMenuThemes();
-
     private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
     {
         AppTitleBar.Margin = new Thickness()
@@ -151,11 +143,6 @@ public sealed partial class StoreWindow : Window
         };
     }
     private double NavViewCompactModeThresholdWidth { get { return NavView.CompactModeThresholdWidth; } }
-
-    private void ContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
-    {
-        throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-    }
 
     private void NavView_Loaded(object sender, RoutedEventArgs e)
     {

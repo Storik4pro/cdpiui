@@ -32,6 +32,8 @@ using Microsoft.Win32;
 using GoodbyeDPI_UI.DataModel;
 using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using GoodbyeDPI_UI.Controls.Dialogs;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,7 +45,7 @@ namespace GoodbyeDPI_UI
     /// </summary>
 
 
-    public sealed partial class ViewWindow : Window
+    public sealed partial class ViewWindow : WindowEx
     {
         private readonly StringBuilder _outputBuffer = new StringBuilder();
 
@@ -56,7 +58,7 @@ namespace GoodbyeDPI_UI
         {
             this.InitializeComponent();
             InitializeWindow();
-            WindowHelper.Instance.SetWindowSize(this, 800, 600);
+            WindowHelper.SetWindowSize(this, 800, 600);
             this.Closed += ViewWindow_Closed;
             TrySetMicaBackdrop(true);
 
@@ -338,59 +340,17 @@ namespace GoodbyeDPI_UI
         }
         private async void ShowFontSettingsDialog()
         {
-            ComboBox fontFamilyComboBox = new ComboBox
-            {
-                Header = "Выберите моноширинный шрифт:",
-                Margin = new Thickness(0, 0, 0, 20)
-            };
-
-            List<string> monoFonts = new List<string>
-            {
-                "Consolas",
-                "Courier New",
-                "Lucida Console",
-                "Cascadia Code",
-                "Cascadia Mono"
-            };
-
-            fontFamilyComboBox.ItemsSource = monoFonts;
-            fontFamilyComboBox.Width = 400;
-            fontFamilyComboBox.SelectedValue = OutputRichTextBlock.FontFamily.Source.ToString(); 
-
-            ComboBox fontSizeComboBox = new ComboBox
-            {
-                Header = "Выберите размер шрифта:",
-                Margin = new Thickness(0, 0, 0, 20),
-                Width=400
-            };
-
-            fontSizeComboBox.ItemsSource = Enumerable.Range(8, 33).Select(i => i.ToString());
-            fontSizeComboBox.SelectedValue = OutputRichTextBlock.FontSize.ToString();
-
-            StackPanel panel = new StackPanel();
-            panel.Children.Add(fontFamilyComboBox);
-            panel.Children.Add(fontSizeComboBox);
-
-            ContentDialog dialog = new ContentDialog
+            FontSettingsContentDialog dialog = new()
             {
                 XamlRoot = this.Content.XamlRoot,
-                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = "Настройки шрифта",
-                PrimaryButtonText = "Применить",
-                CloseButtonText = "Отмена",
-                DefaultButton = ContentDialogButton.Primary,
-                Content = panel
             };
 
             var result = await dialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
             {
-                string selectedFontFamily = fontFamilyComboBox.SelectedItem as string;
-                if (double.TryParse(fontSizeComboBox.SelectedItem as string, out double selectedFontSize))
-                {
-                    ApplyFontSettings(selectedFontFamily, selectedFontSize);
-                }
+                string selectedFontFamily = dialog.FontName as string;
+                ApplyFontSettings(selectedFontFamily, dialog.FontSize);
             }
         }
 

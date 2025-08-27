@@ -60,7 +60,7 @@ namespace GoodbyeDPI_UI
             appWindowPresenter.IsMaximizable = false;
             appWindowPresenter.IsMinimizable = false;
 
-            WindowHelper.Instance.SetWindowSize(this, 900, 550);
+            WindowHelper.SetWindowSize(this, 900, 550);
 
             Instance = this;
 
@@ -94,6 +94,7 @@ namespace GoodbyeDPI_UI
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
         {
             ((App)Application.Current).OpenWindows.Remove(this);
+            this.Closed -= CriticalErrorHandlerWindow_Closed;
             Process.GetCurrentProcess().Kill();
         }
 
@@ -147,18 +148,6 @@ namespace GoodbyeDPI_UI
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private void ApplyDarkThemeToSystemMenu()
-        {
-            SetPreferredAppMode(2);
-            FlushMenuThemes();
-        }
-
-        [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern int SetPreferredAppMode(int preferredAppMode);
-
-        [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern void FlushMenuThemes();
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {

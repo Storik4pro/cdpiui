@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window
+<winex:WindowEx
     x:Class="GoodbyeDPI_UI.CreateConfigUtilWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GoodbyeDPI_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
     Title="Утилита создания пресета"
     xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
 
-    <Window.SystemBackdrop>
+    <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
-    </Window.SystemBackdrop>
+    </winex:WindowEx.SystemBackdrop>
 
     <Grid>
         <Grid x:Name="AppTitleBar"
@@ -80,4 +81,4 @@
             </Frame.ContentTransitions>
         </Frame>
     </Grid>
-</Window>
+</winex:WindowEx>
