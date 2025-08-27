@@ -46,13 +46,9 @@ namespace GoodbyeDPI_UI.Helper
         public const string LocalUserItemsId = "LocalUserStorage";
         public const string LocalUserItemSiteListsFolder = "List";
         public const string LocalUserItemBinsFolder = "Bin";
+        public const string LocalUserItemLocFolder = "Loc";
 
         // Components
-
-        public ComponentSettings goodbyedpiSettings = new("goodbyedpi");
-        public ComponentSettings zapretSettings = new("zapret");
-        public ComponentSettings byedpiSettings = new("byedpi");
-        public ComponentSettings spoofdpiSettings = new("spoofdpi");
 
         public Dictionary<string, string> ComponentIdPairs = new();
 
