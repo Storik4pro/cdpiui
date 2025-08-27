@@ -29,7 +29,7 @@ namespace GoodbyeDPI_UI.Helper.Items
 
         private ComponentItemsLoaderHelper() 
         {
-            
+            Init();
         }
 
         public void Init()
