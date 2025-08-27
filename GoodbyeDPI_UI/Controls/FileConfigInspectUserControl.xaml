@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="GoodbyeDPI_UI.Controls.FileConfigInspectUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="2"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="5" />
+        <Grid Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Margin="0 0 0 10">
+                <TextBlock x:Name="FileNameTextBlock" Text="{x:Bind FilePath, Mode=OneWay}" IsTextSelectionEnabled="True"/>
+                <StackPanel x:Name="AutoCorrectStackPanel">
+                    <TextBlock Text="Autocorrect offer:" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="AutoCorrectOfferTextBlock" Text="{x:Bind AutoCorrectFilePath, Mode=OneWay}" IsTextSelectionEnabled="True"/>
+                        <RichTextBlock Grid.Column="1">
+                            <Paragraph>
+                                <Hyperlink Click="Hyperlink_Click">View</Hyperlink>
+                            </Paragraph>
+                        </RichTextBlock>
+                    </Grid>
+                </StackPanel>
+
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="ApplyAutoCorrectButton" Padding="6"  Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"
+                        Click="ApplyAutoCorrectButton_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE8FB;" FontSize="16"/>
+                        <TextBlock Text="Apply autocorrect"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="SelectNewFile" Padding="6" HorizontalAlignment="Stretch" Grid.Column="2"
+                        Click="SelectNewFile_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE8E5;" FontSize="16"/>
+                        <TextBlock Text="Select manually"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
+        </Grid>
+    </Grid>
+</UserControl>
