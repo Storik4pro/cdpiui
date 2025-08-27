@@ -18,21 +18,33 @@
     
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controls\ConditionUserControl.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
+    <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
+    <None Remove="Controls\FileConfigInspectUserControl.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
     <None Remove="Controls\SettingTileControlElement.xaml" />
     <None Remove="Controls\StoreCategoryButton.xaml" />
     <None Remove="Controls\StoreItemLargeButton.xaml" />
     <None Remove="Controls\StoreItemLinkButton.xaml" />
     <None Remove="Controls\StoreItemSmallButton.xaml" />
+    <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
     <None Remove="SystemPage.xaml" />
     <None Remove="UpdatePage.xaml" />
     <None Remove="UtilsPage.xaml" />
     <None Remove="Views\ComponentsPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\MainPage.xaml" />
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
+    <None Remove="Windows\CreateConfigHelperWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +83,7 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
     <PackageReference Include="TaskScheduler" Version="2.11.0" />
     <PackageReference Include="Unidecode.NET" Version="2.1.0" />
+    <PackageReference Include="WinUIEx" Version="2.6.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -115,9 +128,50 @@
     <Content Include="data\goodbyeDPI\x86_64\*" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\Dialogs\FontSettingsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ConditionUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\VariableUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\EditConfigVarValueDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\FileConfigInspectUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="data\settings\settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\CreateConfigHelper\CreateNewConfigPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\CreateConfigHelperWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\Dialogs\ViewApplyArgsContentDialog.xaml">
