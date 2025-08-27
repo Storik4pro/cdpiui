@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil
         public string PackName { get; set; }
         public string PackId { get; set; }
         public string Directory {  get; set; }
+        public string Hash { get; set; }
     }
     public class SiteListHelper
     {
@@ -43,6 +45,8 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil
 
             List<DatabaseStoreItem> configLists = DatabaseHelper.Instance.GetItemsByType("configlist");
 
+            var namePackIdDict = new Dictionary<(string Name, string PackId), List<SiteListElement>>();
+
             foreach (DatabaseStoreItem config in configLists)
             {
                 string packId = config.Id;
@@ -53,17 +57,56 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil
 
                 foreach (string filePath in filePaths)
                 {
-                    templates.Add(new() 
-                    { 
-                        Name = Path.GetFileName(filePath),
+                    string name = Path.GetFileName(filePath);
+                    string hash = ComputeFileHash(filePath);
+
+                    var element = new SiteListElement
+                    {
+                        Name = name,
                         PackName = packName,
                         PackId = packId,
                         Directory = filePath,
-                    });
+                        Hash = hash
+                    };
+
+                    templates.Add(element);
+
+                    var key = (name, packId);
+                    if (!namePackIdDict.TryGetValue(key, out var list))
+                    {
+                        list = new List<SiteListElement>();
+                        namePackIdDict[key] = list;
+                    }
+                    list.Add(element);
                 }
             }
 
-            return templates;
+            var uniqueTemplates = new List<SiteListElement>();
+            foreach (var pair in namePackIdDict)
+            {
+                var list = pair.Value;
+                if (list.Count > 1)
+                {
+                    
+                    var hashGroups = list.GroupBy(x => x.Hash).ToList();
+                    foreach (var group in hashGroups)
+                    {
+                        uniqueTemplates.Add(group.First());
+                    }
+                    continue;
+                }
+                uniqueTemplates.AddRange(list);
+            }
+
+            return uniqueTemplates;
+        }
+
+        private static string ComputeFileHash(string filePath)
+        {
+            using var sha256 = SHA256.Create();
+            using var stream = File.OpenRead(filePath);
+            var hash = sha256.ComputeHash(stream);
+            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
     }
 }
