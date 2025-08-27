@@ -28,7 +28,7 @@ public sealed partial class StoreItemLargeButton : UserControl
     private Brush _origBrush;
     private Vector3 shadowVector = new Vector3(0, 0, 20);
 
-    public Action<string> Click;
+    public Action<StoreItemLargeButton> Click;
     public UIElement imageElement;
     public StoreItemLargeButton()
     {
@@ -162,6 +162,6 @@ public sealed partial class StoreItemLargeButton : UserControl
 
     private void PART_Button_Click(object sender, RoutedEventArgs e)
     {
-        Click?.Invoke(StoreId);
+        Click?.Invoke(this);
     }
 }

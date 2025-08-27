@@ -32,7 +32,7 @@ public sealed partial class StoreItemSmallButton : UserControl
     private Brush _origBrush;
     private Vector3 shadowVector = new Vector3(0, 0, 20);
 
-    public Action<string> Click;
+    public Action<StoreItemSmallButton> Click;
     public UIElement imageElement;
     public StoreItemSmallButton()
     {
@@ -173,6 +173,6 @@ public sealed partial class StoreItemSmallButton : UserControl
 
     private void PART_Button_Click(object sender, RoutedEventArgs e)
     {
-        Click?.Invoke(StoreId);
+        Click?.Invoke(this);
     }
 }
