@@ -90,12 +90,10 @@ namespace GoodbyeDPI_UI
 
         public async Task SafeCreateNewWindow<TWindow>() where TWindow : Window, new()
         {
-            var openWindows = OpenWindows;
-
-            var findWindows = openWindows.OfType<TWindow>().ToList();
+            var findWindows = OpenWindows.OfType<TWindow>().ToList();
             int findWindowCount = findWindows.Count;
 
-            var activeFindWindow = openWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
+            var activeFindWindow = OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
 
             if (activeFindWindow != null && findWindowCount == 1)
             {
@@ -103,7 +101,7 @@ namespace GoodbyeDPI_UI
             }
             else
             {
-                foreach (var viewWindow in openWindows.OfType<TWindow>().ToList())
+                foreach (var viewWindow in OpenWindows.OfType<TWindow>().ToList())
                 {
                     viewWindow.Close();
                     OpenWindows.Remove(viewWindow);
@@ -111,8 +109,113 @@ namespace GoodbyeDPI_UI
 
                 var newViewWindow = new TWindow();
                 newViewWindow.Activate();
-                await Task.Delay(500);
+
+                RegisterWindow(newViewWindow);
             }
+            await Task.CompletedTask;
+        }
+
+        private void RegisterWindow(Window window)
+        {
+            if (window == null) return;
+
+            if (!OpenWindows.Contains(window))
+                OpenWindows.Add(window);
+
+            window.Closed -= Window_ClosedHandler;
+            window.Closed += Window_ClosedHandler;
+        }
+
+        private void Window_ClosedHandler(object sender, WindowEventArgs e)
+        {
+            if (sender is not Window window) return;
+            GC.Collect();
+            GC.Collect();
+            GC.Collect();
+            try
+            {
+                window.Closed -= Window_ClosedHandler;
+
+                try
+                {
+                    if (window.Content is FrameworkElement fe)
+                    {
+                        fe.DataContext = null;
+
+                        TryDisposeFrameworkElement(fe);
+                    }
+                }
+                catch { }
+
+                window.Content = null;
+            }
+            catch { }
+            finally
+            {
+                try { OpenWindows.Remove(window); } catch { }
+            }
+        }
+
+        private void TryDisposeFrameworkElement(FrameworkElement fe)
+        {
+            if (fe == null) return;
+
+            if (fe is IDisposable d)
+            {
+                try { d.Dispose(); } catch { }
+            }
+
+            try
+            {
+                var feType = fe.GetType();
+
+                var webviewProp = feType.GetProperty("CoreWebView2");
+                if (webviewProp != null)
+                {
+                    var core = webviewProp.GetValue(fe);
+                    if (core != null)
+                    {
+                        var closeMethod = core.GetType().GetMethod("Close") ?? core.GetType().GetMethod("Dispose");
+                        if (closeMethod != null)
+                        {
+                            try { closeMethod.Invoke(core, null); } catch { }
+                        }
+                    }
+
+                    if (fe is IDisposable wc)
+                    {
+                        try { wc.Dispose(); } catch { }
+                    }
+                }
+            }
+            catch { }
+
+            try
+            {
+                if (fe is ContentControl cc && cc.Content is IDisposable ccd)
+                {
+                    try { ccd.Dispose(); } catch { }
+                    cc.Content = null;
+                }
+
+                if (fe is Panel panel) 
+                {
+                    foreach (var child in panel.Children)
+                    {
+                        if (child is IDisposable childD)
+                        {
+                            try { childD.Dispose(); } catch { }
+                        }
+                    }
+                    panel.Children.Clear();
+                }
+            }
+            catch { }
+        }
+
+        public Window GetCurrentWindowFromType<TWindow>() where TWindow:Window
+        {
+            return OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
         }
 
         private Window m_window;
