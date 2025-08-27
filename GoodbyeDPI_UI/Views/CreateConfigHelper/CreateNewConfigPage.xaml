@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Name="RootPage"
+    x:Class="GoodbyeDPI_UI.Views.CreateConfigHelper.CreateNewConfigPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Views.CreateConfigHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:lcontrol="using:GoodbyeDPI_UI">
+    
+    <Page.Resources>
+        <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter ContentMargin="0" Padding="0" Margin="0"  IsTabStop="False" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
+    <Grid>
+        <ScrollViewer Padding="20">
+            <StackPanel Spacing="10">
+                <TextBlock x:Name="PageTitleTextBlock" Text="Create new config" FontWeight="Light" FontSize="28"/>
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Target component*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <ComboBox x:Name="ComponentChooseComboBox" Width="300" DisplayMemberPath="Name" SelectionChanged="ComponentChooseComboBox_SelectionChanged"/>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Display name*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBox x:Name="DisplayNameTextBox" Width="300" HorizontalAlignment="Left" TextChanged="DisplayNameTextBox_TextChanged"/>
+                </StackPanel>
+                <StackPanel x:Name="VariablesStackPanel" Spacing="5" Visibility="Collapsed">
+                    <TextBlock Text="Variables" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <ListView x:Name="VariablesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:VariableModel">
+                                <lcontrol:VariableUserControl 
+                                    VarName="{x:Bind Name, Mode=OneWay}" 
+                                    VarValue="{x:Bind Value, Mode=OneWay}"
+                                    AvailableVarValues="{x:Bind AvailableValues, Mode=OneWay}"
+                                    RemoveCommand="{Binding DataContext.RemoveVariableCommand, ElementName=RootPage}"
+                                    RemoveCommandParameter="{x:Bind}"
+                                    ValueChangedCommand="{Binding DataContext.VariableChangedCommand, ElementName=RootPage}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    
+                </StackPanel>
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Startup string*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBox x:Name="StartupStringTextBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" TextChanged="StartupStringTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                </StackPanel>
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Conditions" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <Button Content="Add new condition">
+                        <Button.Flyout>
+                            <Flyout x:Name="ConditionFlyout" Opened="ConditionFlyout_Opened">
+                                <StackPanel Width="300">
+                                    <TextBlock Text="Variable name" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                    <TextBox x:Name="VarNameTextBox" TextChanged="VarNameTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                    <TextBlock Text="Description" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                    <TextBox x:Name="DescriptionTextBox"/>
+                                    <TextBlock Text="OnValue" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                    <TextBox x:Name="OnValueTextBox" TextChanged="OnValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                    <TextBlock Text="OffValue" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                    <TextBox x:Name="OffValueTextBox" TextChanged="OffValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                    <TextBlock Text="Preview" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                    <Grid>
+                                        <Border BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}" Background="Black" BorderThickness="1" CornerRadius="5"/>
+                                        <TextBlock x:Name="ConditionPreviewTextBlock" Text="Nothing to preview." IsTextSelectionEnabled="True" Margin="5" TextWrapping="Wrap" FontFamily="Consolas"/>
+                                    </Grid>
+                                    <Button x:Name="SaveConditionButton" Margin="0 10 0 0" Width="150" Click="SaveConditionButton_Click" IsEnabled="False">
+                                        <Button.Content>
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <FontIcon Glyph="&#xE74E;" FontSize="16" />
+                                                <TextBlock Text="Save"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <ListView x:Name="ConditionsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:ConditionVariableModel">
+                                <lcontrol:ConditionUserControl VarName="{x:Bind Name, Mode=OneWay}" 
+                                                               OnValue="{x:Bind OnValue, Mode=OneWay}" 
+                                                               OffValue="{x:Bind OffValue, Mode=OneWay}" 
+                                                               Description="{x:Bind Description, Mode=OneWay}" 
+                                                               RemoveCommand="{Binding DataContext.RemoveConditionCommand, ElementName=RootPage}"
+                                                               RemoveCommandParameter="{x:Bind}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+                
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                    <Button x:Name="TestButton" Padding="6" MinWidth="150" Click="TestButton_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <FontIcon x:Name="TestButtonGlyph" Glyph="&#xE768;" FontSize="16" />
+                                <TextBlock x:Name="TestButtonText" Text="Test this"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="SaveConfigButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Click="SaveConfigButton_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <FontIcon Glyph="&#xE74E;" FontSize="16" />
+                                <TextBlock Text="Save"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

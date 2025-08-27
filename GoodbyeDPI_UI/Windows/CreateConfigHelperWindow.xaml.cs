@@ -1,0 +1,270 @@
+using GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using GoodbyeDPI_UI.Helper.Items;
+using GoodbyeDPI_UI.Views.CreateConfigHelper;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Forms;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using WinRT.Interop;
+using WinUIEx;
+using Application = Microsoft.UI.Xaml.Application;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
+
+namespace GoodbyeDPI_UI
+{
+    /// <summary>
+    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class CreateConfigHelperWindow : WindowEx
+    {
+        private const int WM_GETMINMAXINFO = 0x0024;
+        private IntPtr _hwnd;
+        private WindowProc _newWndProc;
+        private IntPtr _oldWndProc;
+
+        public static CreateConfigHelperWindow Instanse { get; private set; }
+        public bool IsOperationExitAskAvailable { get; set; } = false;
+
+        public CreateConfigHelperWindow()
+        {
+            InitializeComponent();
+            InitializeWindow();
+            TrySetMicaBackdrop(true);
+
+            SetTitleBar(AppTitleBar);
+
+            Instanse = this;
+
+            this.ExtendsContentIntoTitleBar = true;
+            ContentFrame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            this.Closed += CreateConfigHelperWindow_Closed;
+        }
+
+        private void CreateConfigHelperWindow_Closed(object sender, WindowEventArgs args)
+        {
+            Instanse = null;
+        }
+
+        private async void AskForExit(NavigatingCancelEventArgs e)
+        {
+            ContentDialog exitDialog = new ContentDialog()
+            {
+                Title = "Exit",
+                Content = "Are you sure you want to exit? Unsaved changes will be lost.",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No",
+                XamlRoot = this.Content.XamlRoot,
+                Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"]
+            };
+            var result = await exitDialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                ContentFrame.DispatcherQueue.TryEnqueue(() =>
+                {
+                    IsOperationExitAskAvailable = false;
+                    if (e.SourcePageType == typeof(MainPage))
+                    {
+                        if (ContentFrame.CanGoBack)
+                        {
+                            RemoveAndGoBackTo(typeof(MainPage), ContentFrame);
+                            return;
+                        }
+                    }
+                    ContentFrame.Navigate(e.SourcePageType, e.Parameter, new DrillInNavigationTransitionInfo());
+                    
+                });
+            }
+        }
+
+        private void AuditMenuItemsEnabled(Type pageType)
+        {
+            HomeItem.IsEnabled = true;
+            CreateNewConfigButton.IsEnabled = true;
+
+            if (pageType == typeof(MainPage))
+                HomeItem.IsEnabled = false;
+            else if (pageType == typeof(CreateNewConfigPage))
+                CreateNewConfigButton.IsEnabled = false;
+        }
+
+        private void ContentFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            if (IsOperationExitAskAvailable)
+            {
+                AskForExit(e);
+                e.Cancel = true;
+                return;
+
+            }
+
+            if (e.Cancel != true)
+            {
+                AuditMenuItemsEnabled(e.SourcePageType);
+                if (e.SourcePageType == typeof(MainPage))
+                {
+                    ContentFrame.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (ContentFrame.CanGoBack)
+                            ContentFrame.BackStack.Clear();
+                    });
+                }
+                
+            }
+        }
+
+        private bool RemoveAndGoBackTo(Type pageType, Frame rootFrame)
+        {
+            if (rootFrame == null) return false;
+
+            var back = rootFrame.BackStack;
+            int targetIndex = -1;
+            for (int i = back.Count - 1; i >= 0; i--)
+            {
+                if (back[i].SourcePageType == pageType)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex == -1) return false;
+
+            for (int i = back.Count - 1; i > targetIndex; i--)
+                back.RemoveAt(i);
+
+            if (rootFrame.CanGoBack)
+            {
+                rootFrame.GoBack();
+                return true;
+            }
+            return false;
+        }
+
+        private void HomeItem_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = RemoveAndGoBackTo(typeof(MainPage), ContentFrame);
+            if (!result)
+            {
+                ContentFrame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        private void CreateNewConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigate(typeof(CreateNewConfigPage), null, new DrillInNavigationTransitionInfo());
+        }
+
+        private async void ImportConfigFromFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot};
+            await dialog.ShowAsync();
+
+            string filePath;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Choose config file";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                openFileDialog.FilterIndex = 4;
+
+                openFileDialog.Filter = "JSON configs (*.json)|*.json|BAT config files (*.bat)|*.bat|CMD config files (*.cmd)|*.cmd|All compacible config files (*.bat, *.cmd, *.json)|*.bat;*.cmd;*.json";
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+                    var (configItem, errorHappens) = ConfigHelper.LoadConfigFromFile(filePath);
+                    ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGIMPORT", configItem, errorHappens, filePath), new DrillInNavigationTransitionInfo());
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+
+        #region WINAPI
+
+        private void InitializeWindow()
+        {
+            _hwnd = WindowNative.GetWindowHandle(this);
+            _newWndProc = new WindowProc(NewWindowProc);
+            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
+        }
+
+        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            if (msg == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+                minMaxInfo.ptMinTrackSize.x = 484;
+                minMaxInfo.ptMinTrackSize.y = 300;
+                Marshal.StructureToPtr(minMaxInfo, lParam, true);
+            }
+            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+
+        private const int GWLP_WNDPROC = -4;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        bool TrySetMicaBackdrop(bool useMicaAlt)
+        {
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
+            {
+                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+                this.SystemBackdrop = micaBackdrop;
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+
+        #endregion
+
+        
+    }
+}

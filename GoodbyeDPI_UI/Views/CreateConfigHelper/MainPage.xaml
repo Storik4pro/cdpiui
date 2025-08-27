@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="GoodbyeDPI_UI.Views.CreateConfigHelper.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Views.CreateConfigHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Padding="20" VerticalAlignment="Center" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Image Source="/Assets/Square44x44Logo.png" Width="60"/>
+                    <StackPanel>
+                        <TextBlock Text="Welcome" Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock Text="What are you looking for?"/>
+                    </StackPanel>
+                </StackPanel>
+                <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="400">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Features" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock Text="Basic" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button x:Name="CreateNewConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="CreateNewConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE710;" />
+                                            <TextBlock Text="Create new config" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="ImportConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="ImportConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE8E5;" />
+                                            <TextBlock Text="Import config from file" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="EditConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="EditConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE70F;" />
+                                            <TextBlock Text="Edit existing config" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock Text="GoodCheck config selection" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xEB9D;" />
+                                            <TextBlock Text="Begin new selection" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE823;" />
+                                            <TextBlock Text="Resent selections" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="10">
+                        <TextBlock Text="Store" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock Text="Explore new AddOns and Components" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <Image Source="/Assets/Square44x44Logo.png" Width="28"/>
+                                            <TextBlock Text="Open store" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" Spacing="10">
+                        <TextBlock Text="Help+Support" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock Text="" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE897;" />
+                                            <TextBlock Text="Open offline help" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE774;" />
+                                            <TextBlock Text="Visit online repository" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </VariableSizedWrapGrid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

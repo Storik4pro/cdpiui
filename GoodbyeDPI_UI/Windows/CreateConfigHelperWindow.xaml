@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<winex:WindowEx
+    x:Class="GoodbyeDPI_UI.CreateConfigHelperWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:winex="using:WinUIEx"
+    Title="CreateConfigHelperWindow">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="AppBar" Height="36"/>
+            <RowDefinition x:Name="FuncBar" Height="36"/>
+            <RowDefinition x:Name="ViewHeader" Height="Auto"/>
+            <RowDefinition x:Name="View" Height="*"/>
+            <RowDefinition x:Name="StatusBar" Height="28"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="AppTitleBar"
+        Canvas.ZIndex="1"
+        Grid.Row="0"
+        Height="48"
+        IsHitTestVisible="True"
+        VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"
+                    Source="/Assets/StoreLogo.png"
+                    HorizontalAlignment="Left"
+                    Width="16" Height="16"
+                    Margin="16,0"/>
+                <TextBlock Grid.Column="1"
+                    x:Name="AppTitleTextBlock" Text="Помошник создания нового пресета"
+                    TextWrapping="NoWrap"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Margin="0, 0, 0, 0" />
+            </Grid>
+
+        </Grid>
+        <Grid Grid.Row="1" Height="36">
+            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
+               VerticalAlignment="Bottom">
+            </Rectangle>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="Menu" Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="Quick" Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
+                    <MenuBarItem Title="File">
+                        <MenuFlyoutItem x:Name="HomeItem" Text="Home" Icon="Home" Click="HomeItem_Click"/>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem x:Name="CreateNewConfigButton" Text="Create new config" Click="CreateNewConfigButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE710;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="N"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="ImportConfigFromFileButton" Text="Import config from file" Click="ImportConfigFromFileButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8E5;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="O"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Edit existing config">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE70F;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="E"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutSubItem Text="GoodCheck config selection">
+                            <MenuFlyoutItem Text="Begin new selection"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Open recent selection report..."/>
+                            <MenuFlyoutItem Text="Open .xml GoodChek report file">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xE8E5;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyoutSubItem>
+                        
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Exit">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE711;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Menu" Key="F4"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+                    <MenuBarItem Title="Edit" Visibility="Collapsed">
+                        <MenuFlyoutSubItem Text="Add sitelist to field">
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Open new sitelist..."/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Add ipset to field">
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="Open new ipset..."/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Add custom variable to field">
+                            
+                        </MenuFlyoutSubItem>
+                        
+                    </MenuBarItem>
+                    <MenuBarItem Title="Store">
+                        <MenuFlyoutItem Text="Explore new components"/>
+                        <MenuFlyoutItem Text="Explore new AddOns"/>
+                        <MenuFlyoutItem Text="Explore new configs"/>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Open Store">
+                            <MenuFlyoutItem.Icon>
+                                <ImageIcon Source="/Assets/Square44x44Logo.png"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+                    <MenuBarItem Title="Help">
+                        <MenuFlyoutItem Text="Open offline help"/>
+                        <MenuFlyoutItem Text="Open online help">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE774;"/>
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F1"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Report a bug"/>
+                    </MenuBarItem>
+                </MenuBar>
+                <Grid Grid.Column="2" >
+                    
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Background="Black">
+
+        </Grid>
+        <Frame x:Name="ContentFrame" 
+               Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}" 
+               Grid.Row="3"
+               Navigating="ContentFrame_Navigating">
+            
+        </Frame>
+        <Grid Grid.Row="4">
+            <Grid Padding="10, 0, 10, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="StatusTextBlock" Grid.Column="0" Text="Ready" VerticalAlignment="Center"/>
+            </Grid>
+            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
+                VerticalAlignment="Bottom"/>
+        </Grid>
+    </Grid>
+</winex:WindowEx>
