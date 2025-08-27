@@ -249,6 +249,7 @@ namespace GoodbyeDPI_UI.Helper
                 Directory.CreateDirectory(targetFolder);
                 Directory.CreateDirectory(Path.Combine(targetFolder, StateHelper.LocalUserItemSiteListsFolder));
                 Directory.CreateDirectory(Path.Combine(targetFolder, StateHelper.LocalUserItemBinsFolder));
+                Directory.CreateDirectory(Path.Combine(targetFolder, StateHelper.LocalUserItemLocFolder));
             }
             catch (Exception ex) 
             {
@@ -256,10 +257,13 @@ namespace GoodbyeDPI_UI.Helper
                 return;
             }
 
+            Dictionary<string, string> localLoc = new();
+            localLoc.Add("EN", $"{StateHelper.LocalUserItemLocFolder}/strings.json");
+
             ConfigInitItem configInitItem = new()
             {
                 toggleListAvailable = [],
-                localized_strings_directory = null,
+                localized_strings_directory = localLoc,
             };
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(configInitItem);
