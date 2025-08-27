@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 {
@@ -29,6 +30,8 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
         public string Output { get; set; } = "";
         public GoodCheckOperationType OperationType { get; set; } = GoodCheckOperationType.Wait;
         public string ErrorCode { get; set; } = "";
+        public CancellationTokenSource CancellationTokenSource { get; set; }
+        public CancellationToken CancellationToken { get; set; }
     }
     public enum GoodCheckOperationType
     {
@@ -40,6 +43,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
     }
     public class GoodCheckProcessHelper
     {
+        public Action AllComplete;
         public Action<string> ErrorHappens;
         public Action<GoodCheckSiteListModel> ProcessCompleted;
         public Action<string> CurrentSiteListChanged;
@@ -66,6 +70,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
         private const string GetProgressRegex = @"Launching '[a-zA-Z]{1,}', strategy (\d{1,})/(\d{1,}): \[(.*?)\]";
         private const string GetStrategyCountRegex = @"worst result for this strategy: (\d{1,})/(\d{1,})\n{1,}Terminating program\.\.\.";
+        private const string AnalyzeRegex = @"Launching '[a-zA-Z]{1,}', strategy (\d{1,})/(\d{1,}): \[(.*?)\](?:.*?)worst result for this strategy: (\d{1,})/(\d{1,})\n{1,}Terminating program\.\.\.";
 
         private CancellationTokenSource CancellationTokenSource;
         private CancellationToken CancellationToken;
@@ -76,7 +81,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
         private static GoodCheckProcessHelper _instance;
         private static readonly object _lock = new object();
 
-        private int CurrentOperationId = 0;
+        public int CurrentOperationId { get; private set; } = 0;
         private List<GoodCheckOperationModel> Operations = new List<GoodCheckOperationModel>();
 
         public static GoodCheckProcessHelper Instance
@@ -189,10 +194,13 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                     StrategyListPath = Path.GetFileName(siteListsToCheck[0].StrategyListPath),
                 };
                 _siteList.Add(model);
+                CancellationTokenSource cancellationTokenSource = new();
                 Operations.Add(new()
                 {
                     OperationId = 0,
                     SiteListName = Path.GetFileName(siteList),
+                    CancellationTokenSource = cancellationTokenSource,
+                    CancellationToken = cancellationTokenSource.Token
                 });
             }
             else
@@ -205,10 +213,14 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                     model.SiteListPath = Path.GetFileName(model.SiteListPath);
                     model.StrategyListPath = Path.GetFileName(model.StrategyListPath);
 
+                    CancellationTokenSource cancellationTokenSource = new();
+
                     Operations.Add(new()
                     {
                         OperationId = i,
                         SiteListName = model.SiteListPath,
+                        CancellationTokenSource= cancellationTokenSource,
+                        CancellationToken = cancellationTokenSource.Token
                     });
                 }
                 _siteList = siteListsToCheck;
@@ -267,6 +279,8 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
                         if (cancellationToken.IsCancellationRequested) break;
                     }
+
+                    CreateAndSaveReport();
                 }
             }
             catch (OperationCanceledException)
@@ -348,7 +362,10 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 if (completedTask == monitorTask)
                 {
                     bool result = await monitorTask.ConfigureAwait(false);
-                    if (cancellationToken.IsCancellationRequested && !proc.HasExited)
+
+                    GoodCheckOperationModel model = GetOperationById(CurrentOperationId);
+
+                    if ((cancellationToken.IsCancellationRequested || model.CancellationToken.IsCancellationRequested) && !proc.HasExited)
                     {
                         TryKillProcess(proc);
                         return false;
@@ -458,9 +475,11 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             StreamReader reader = null;
             FileStream fs = null;
 
+            GoodCheckOperationModel model = GetOperationById(CurrentOperationId);
+
             try
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && !model.CancellationToken.IsCancellationRequested)
                 {
                     string newest = GetNewestLogFile(logsDirectory, logPattern);
 
@@ -540,7 +559,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
                 }
 
-                return false;
+                
             }
             catch (OperationCanceledException)
             {
@@ -559,6 +578,8 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 reader?.Dispose();
                 fs?.Dispose();
             }
+
+            return false;
         }
 
         private string GetNewestLogFile(string directory, string pattern)
@@ -585,6 +606,65 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             ErrorHappens?.Invoke(errorCode);
         }
 
+        public void RemoveFromQueueOrStopOperation(int id)
+        {
+            GoodCheckOperationModel model = GetOperationById(id);
+            model.OperationType = GoodCheckOperationType.UserInterrupt;
+            model.CancellationTokenSource.Cancel();
+            model.CancellationTokenSource.Dispose();
+
+            OperationTypeChanged?.Invoke(Tuple.Create(id, GoodCheckOperationType.UserInterrupt));
+        }
+
+        private void CreateAndSaveReport()
+        {
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int secondsSinceEpoch = (int)t.TotalSeconds;
+
+            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = Path.Combine(
+                localAppData,
+                StateHelper.StoreDirName,
+                StateHelper.StoreItemsDirName,
+                AddonId,
+                "Reports",
+                $"GoodCheckReport_{secondsSinceEpoch}.xml");
+            if (!Path.Exists(Path.GetDirectoryName(filePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
+            var doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"));
+            var root = new XElement("Report");
+            doc.Add(root);
+
+            int opIndex = 0;
+            foreach (var operation in Operations)
+            {
+                opIndex++;
+                string operationName = operation.SiteListName;
+
+                var group = new XElement("Group", new XAttribute("Name", operationName));
+
+                var matches = Regex.Matches(operation.Output, AnalyzeRegex, RegexOptions.Singleline);
+                foreach (Match match in matches)
+                {
+                    string strategy = match.Groups[3].Value;
+                    string success = match.Groups[4].Value;
+                    string all = match.Groups[5].Value;
+
+                    var matchElem = new XElement("StrategyResult",
+                        new XElement("Strategy", strategy),
+                        new XElement("Success", success),
+                        new XElement("All", all)
+                    );
+
+                    group.Add(matchElem);
+                }
+                root.Add(group);
+            }
+            doc.Save(filePath);
+        }
         public List<GoodCheckOperationModel> GetCurrentOperations()
         {
             return Operations;
