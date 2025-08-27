@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="GoodbyeDPI_UI.Controls.Dialogs.EditConfigVarValueDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Controls.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Edit variable"
+    Style="{ThemeResource DefaultContentDialogStyle}"
+    PrimaryButtonText="Save"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonText="Cancel">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Spacing="5" Width="400">
+                <TextBlock x:Name="DescriptionTextBlock" Text="There is no description available for this variable."
+                           FontStyle="Italic" TextWrapping="Wrap"/>
+                <StackPanel x:Name="TemplateSelectorStackPanel" Spacing="5">
+                    <TextBlock Text="Select one of avaliable templates"/>
+                    <ComboBox x:Name="VarValueComboBox" HorizontalAlignment="Stretch" SelectionChanged="VarValueComboBox_SelectionChanged"/>
+                    <TextBlock Text="--OR--" Style="{ThemeResource BodyStrongTextBlockStyle}" TextAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="Edit for yourself" />
+                <TextBox x:Name="VarValueTextBox" TextWrapping="Wrap" MinHeight="100"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</ContentDialog>

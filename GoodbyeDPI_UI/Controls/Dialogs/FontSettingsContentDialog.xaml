@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Name="ContentDialog"
+    x:Class="GoodbyeDPI_UI.Controls.Dialogs.FontSettingsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Controls.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Font Settings"
+    PrimaryButtonText="Apply"
+    SecondaryButtonText="Cancel"
+    DefaultButton="Secondary"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid Width="325">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="1" Padding="0, 0, 0, -10" MaxHeight="300">
+            <StackPanel Spacing="10" Margin="0 0 0 10">
+                <StackPanel>
+                    <TextBlock Text="Font" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <ComboBox x:Name="FontChooseComboBox" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Font size" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <ComboBox x:Name="FontSizeComboBox" IsEditable="False" SelectionChanged="FontSizeComboBox_SelectionChanged" HorizontalAlignment="Stretch" />
+                </StackPanel>
+                <StackPanel x:Name="WarningText" Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE814;" FontSize="16"/>
+                    <TextBlock Text="Size value is incorrect."/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</ContentDialog>
