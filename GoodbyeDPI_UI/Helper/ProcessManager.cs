@@ -69,8 +69,11 @@ namespace GoodbyeDPI_UI.Helper
             { "ERROR:", "UNKNOWN_ERROR" },
             { "Component not installed correctly", "COMPONENT_INSTALL_ERROR" },
             { "error", "UNKNOWN_ERROR" },
-            { "could not read", "READ_ERROR" },
-            { "invalid value", "INVALID_VALUE_ERROR" }
+            { "invalid value", "INVALID_VALUE_ERROR" },
+            { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
+            { "already running", "ALREADY_RUNNING_WARN" },
+            { "could not read", "FILE_READ_ERROR" }
+            
         };
 
         private ProcessManager()
@@ -115,6 +118,47 @@ namespace GoodbyeDPI_UI.Helper
 
                 await Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory, token));
                 
+            }
+            catch (Exception ex)
+            {
+                await ShowErrorMessage($"Unexpected error while trying to start process: {ex.Message}", _object: "console");
+                SendStopMessage("Unexpected error happens while trying to stop process");
+                processState = false;
+            }
+        }
+        public async Task StartProcess(string componentId, string args)
+        {
+            isErrorHappens = false;
+            LatestErrorMessage.Clear();
+            try
+            {
+                if (_processInfo.hProcess != IntPtr.Zero)
+                {
+                    return;
+                }
+
+                _outputBuffer.Clear();
+                _outputDefaultBuffer.Clear();
+
+                Items.ComponentItemsLoaderHelper.Instance.Init();
+                Items.ComponentHelper componentHelper =
+                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId);
+
+                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(componentId).Name);
+
+                var exePath = componentHelper.GetExecutablePath();
+                var workingDirectory = componentHelper.GetDirectory();
+
+                Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
+
+                _cancellationTokenSource = new CancellationTokenSource();
+                var token = _cancellationTokenSource.Token;
+
+                onProcessStateChanged?.Invoke("started");
+                processState = true;
+
+                await Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory, token));
+
             }
             catch (Exception ex)
             {
