@@ -73,11 +73,6 @@ namespace GoodbyeDPI_UI.Views
             }
 
 
-            StateHelper.Instance.goodbyedpiSettings.ErrorHappens += ErrorHappens;
-            StateHelper.Instance.zapretSettings.ErrorHappens += ErrorHappens;
-            StateHelper.Instance.byedpiSettings.ErrorHappens += ErrorHappens;
-            StateHelper.Instance.spoofdpiSettings.ErrorHappens += ErrorHappens;
-
             ReloadCommand = new RelayCommand(o => ReloadComponents());
 
             this.DataContext = this;
@@ -92,26 +87,18 @@ namespace GoodbyeDPI_UI.Views
                 new ComponentManager
                 {
                     Name = "GoodbyeDPI",
-                    CurrentVersion = StateHelper.Instance.goodbyedpiSettings.currentVersion,
-                    ServerVersion = StateHelper.Instance.goodbyedpiSettings.serverVersion,
                 },
                 new ComponentManager
                 {
                     Name = "Zapret",
-                    CurrentVersion = StateHelper.Instance.zapretSettings.currentVersion,
-                    ServerVersion = StateHelper.Instance.zapretSettings.serverVersion,
                 },
                 new ComponentManager
                 {
                     Name = "ByeDPI",
-                    CurrentVersion = StateHelper.Instance.byedpiSettings.currentVersion,
-                    ServerVersion = StateHelper.Instance.byedpiSettings.serverVersion,
                 },
                 new ComponentManager
                 {
                     Name = "SpoofDPI",
-                    CurrentVersion = StateHelper.Instance.spoofdpiSettings.currentVersion,
-                    ServerVersion = StateHelper.Instance.spoofdpiSettings.serverVersion,
                 },
             ];
             foreach (var componentManager in _components)
@@ -142,23 +129,7 @@ namespace GoodbyeDPI_UI.Views
         {
 
             bool reloadNeed = false;
-            if (await StateHelper.Instance.goodbyedpiSettings.IsUpdateAvailable())
-            {
-                reloadNeed = true;
-            }
-            if (await StateHelper.Instance.zapretSettings.IsUpdateAvailable())
-            {
-                reloadNeed = true;
-            }
-            if (await StateHelper.Instance.byedpiSettings.IsUpdateAvailable())
-            {
-                reloadNeed = true;
-            }
-            if (await StateHelper.Instance.spoofdpiSettings.IsUpdateAvailable())
-            {
-                reloadNeed = true;
-            }
-            StateHelper.Instance.isCheckedComponentsUpdateComplete = true;
+            
             if (reloadNeed)
             {
                 ReloadComponents();
