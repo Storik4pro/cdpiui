@@ -62,28 +62,12 @@ namespace GoodbyeDPI_UI.Views
 
         private void OpenViewWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!((App)Application.Current).CheckWindow<ViewWindow>())
-            {
-                ViewWindow viewWindow = new();
-                viewWindow.Activate();
-            }
-            else
-            {
-                ((App)Application.Current).ShowWindow<ViewWindow>();
-            }
+            ((App)Application.Current).SafeCreateNewWindow<ViewWindow>();
         }
 
         private void OpenConfigCreateUtil_Click(object sender, RoutedEventArgs e)
         {
-            if (!((App)Application.Current).CheckWindow<CreateConfigUtilWindow>())
-            {
-                CreateConfigUtilWindow viewWindow = new();
-                viewWindow.Activate();
-            }
-            else
-            {
-                ((App)Application.Current).ShowWindow<CreateConfigUtilWindow>();
-            }
+            ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
         }
 
         private void OpenUpdatePageButton_Click(object sender, RoutedEventArgs e)
@@ -93,15 +77,7 @@ namespace GoodbyeDPI_UI.Views
 
         private void OpenStoreButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!((App)Application.Current).CheckWindow<StoreWindow>())
-            {
-                StoreWindow storeWindow = new();
-                storeWindow.Activate();
-            }
-            else
-            {
-                ((App)Application.Current).ShowWindow<StoreWindow>();
-            }
+            ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
         }
         private void CommandInvokedHandler(IUICommand command)
         {
@@ -116,7 +92,7 @@ namespace GoodbyeDPI_UI.Views
 
         private void OpenViewGoodCheckWindow_Click(object sender, RoutedEventArgs e)
         {
-            ((App)Application.Current).SafeCreateNewWindow<ViewGoodCheckOutputWindow>();
+            ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
         }
     }
 }
