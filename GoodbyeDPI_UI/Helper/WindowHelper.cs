@@ -14,28 +14,12 @@ namespace GoodbyeDPI_UI.Helper
 {
     public class WindowHelper
     {
-        private static WindowHelper _instance;
-        private static readonly object _lock = new object();
-        private WindowHelper()
+        public WindowHelper()
         {
 
         }
 
-        
-        public static WindowHelper Instance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                        _instance = new WindowHelper();
-                    return _instance;
-                }
-            }
-        }
-
-        public void SetWindowSize(Window window, int width, int height)
+        public static void SetWindowSize(Window window, int width, int height)
         {
             var hwnd = WindowNative.GetWindowHandle(window);
 
