@@ -19,6 +19,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,7 +29,7 @@ namespace GoodbyeDPI_UI;
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class ViewGoodCheckOutputWindow : Window
+public sealed partial class ViewGoodCheckOutputWindow : WindowEx
 {
     private const int WM_GETMINMAXINFO = 0x0024;
     private IntPtr _hwnd;
@@ -39,7 +40,7 @@ public sealed partial class ViewGoodCheckOutputWindow : Window
     {
         InitializeComponent();
         InitializeWindow();
-        WindowHelper.Instance.SetWindowSize(this, 800, 600);
+        WindowHelper.SetWindowSize(this, 800, 600);
         this.Closed += ViewGoodCheckOutputWindow_Closed;
         TrySetMicaBackdrop(true);
 
@@ -52,8 +53,11 @@ public sealed partial class ViewGoodCheckOutputWindow : Window
 
         SetOperationPages();
         ConnectHandlers();
+    }
 
-
+    public void CloseWindow()
+    {
+        this.Close();
     }
 
     private void ConnectHandlers()
@@ -85,23 +89,6 @@ public sealed partial class ViewGoodCheckOutputWindow : Window
         _hwnd = WindowNative.GetWindowHandle(this);
         _newWndProc = new WindowProc(NewWindowProc);
         _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-    }
-
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        this.Close();
-    }
-
-    private void ProcessControl_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-
-    
-
-    private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
-    {
-        
     }
 
     public void CreateTab(int id, string title = null)

@@ -1,3 +1,5 @@
+using GoodbyeDPI_UI.DataModel;
+using GoodbyeDPI_UI.Helper;
 using GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -60,14 +62,16 @@ public sealed partial class ViewOutputPage : Page
     private readonly object _lock = new();
     private readonly Timer _flushTimer;
     private const int FlushIntervalMs = 200; 
-    private const int MaxLines = 5000;
+    private const int MaxLines = 500;
+
+    private bool autoScroll = true;
 
     private bool _isLogging = false;
 
     public ViewOutputPage()
     {
         InitializeComponent();
-
+        
         LogListView.ItemsSource = _logLines;
 
         _flushTimer = new Timer(FlushIntervalMs);
@@ -90,18 +94,37 @@ public sealed partial class ViewOutputPage : Page
     private void ConnectHandlers()
     {
         GoodCheckOperationModel model = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId);
-        if (model != null && model.Output != null)
+
+        if (model!=null && model.OperationType == GoodCheckOperationType.WorkInProgress || model.OperationType == GoodCheckOperationType.Wait)
         {
-            foreach (string line in model.Output.Split("\n"))
+            if (model.Output != null)
             {
-                AppendLogLine(line);
+                foreach (string line in model.Output.Split("\n"))
+                {
+                    AppendLogLine(line);
+                }
             }
+            StartLogging();
+        }
+        else
+        {
+            StopLogging();
         }
         GoodCheckProcessHelper.Instance.OperationOutputAdded += (tuple) =>
         {
             if (tuple.Item1 == CurrentId)
             {
                 AppendLogLine(tuple.Item2);
+            }
+        };
+        GoodCheckProcessHelper.Instance.OperationTypeChanged += (tuple) =>
+        {
+            if (tuple.Item1 == CurrentId)
+            {
+                if (tuple.Item2 != GoodCheckOperationType.WorkInProgress && tuple.Item2 != GoodCheckOperationType.Wait)
+                {
+                    StopLogging();
+                }
             }
         };
     }
@@ -112,6 +135,66 @@ public sealed partial class ViewOutputPage : Page
         lock (_lock)
         {
             _pending.Add(line);
+        }
+    }
+
+    public void StartLogging()
+    {
+        _isLogging = true;
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            TargetScrollViewer.Visibility = Visibility.Visible;
+            OutputScrollViewer.Visibility = Visibility.Collapsed;
+
+            OutputParagraph.Inlines.Clear();
+        });
+
+        _flushTimer.Start();
+    }
+
+    public void StopLogging()
+    {
+        _isLogging = false;
+        _flushTimer.Stop();
+
+        FlushPendingToUi();
+
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            TargetScrollViewer.Visibility = Visibility.Collapsed;
+            OutputScrollViewer.Visibility = Visibility.Visible;
+            try
+            {
+                _logLines.Clear();
+
+                GoodCheckOperationModel model = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId);
+                if (model != null && model.Output != null)
+                {
+                    AppendToRichTextBlock(model.Output);
+
+                }
+            }
+            catch { }
+        });
+    }
+
+    public void AppendToRichTextBlock(string text)
+    {
+        if (text == null) return;
+
+        string[] lines = text.Replace("\r", "").Split('\n');
+        lock (_lock)
+        {
+            foreach (var l in lines)
+            {
+                Run run = new Run
+                {
+                    Text = $"{l}\n",
+                    Foreground = new SolidColorBrush(Colors.LightGray)
+                };
+
+                OutputParagraph.Inlines.Add(run);
+            }
         }
     }
 
@@ -143,17 +226,95 @@ public sealed partial class ViewOutputPage : Page
                 }
             }
 
-            if (_logLines.Count > 0)
+            if (_logLines.Count > 0 && autoScroll)
             {
-                var last = _logLines[_logLines.Count - 1];
-                LogListView.ScrollIntoView(last);
+                TargetScrollViewer.UpdateLayout();
+                TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ScrollableHeight);
+
             }
         });
     }
+
 
     private void OnUnloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         _flushTimer?.Stop();
         _flushTimer?.Dispose();
+    }
+
+    private async void SaveButton_Click(object sender, RoutedEventArgs e)
+    {
+        var _dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            OverwritePrompt = true,
+            FileName = "PseudoConsoleLog.txt",
+            DefaultExt = ".txt",
+            Filter = "Text Files|*.txt"
+        };
+        var result = _dialog.ShowDialog();
+        if (result.HasValue && result.Value)
+        {
+            string filename = _dialog.FileName;
+
+            string text = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId).Output;
+            try
+            {
+                File.WriteAllText(filename, text);
+
+            }
+            catch (Exception ex)
+            {
+                ErrorContentDialog dialog = new ErrorContentDialog { };
+                await dialog.ShowErrorDialogAsync(content: $"File {_dialog.FileName} couldn't be saved.\nFILE_SAVE_ERROR",
+                    errorDetails: $"{ex}",
+                    xamlRoot: this.Content.XamlRoot);
+            }
+
+        }
+    }
+
+    private void ExitButton_Click(object sender, RoutedEventArgs e)
+    {
+        var _window = ((App)Application.Current).GetCurrentWindowFromType<ViewGoodCheckOutputWindow>();
+
+        if (_window == null)
+            return;
+
+        _flushTimer?.Stop();
+        _flushTimer?.Dispose();
+
+        OutputParagraph.Inlines.Clear();
+
+        _window.Close();
+    }
+
+    private void ProcessControl_Click(object sender, RoutedEventArgs e)
+    {
+        GoodCheckProcessHelper.Instance.RemoveFromQueueOrStopOperation(CurrentId);
+    }
+
+    private void ProcessExit_Click(object sender, RoutedEventArgs e)
+    {
+        GoodCheckProcessHelper.Instance.Stop();
+    }
+
+    private void EnableAutoScrollButton_Click(object sender, RoutedEventArgs e)
+    {
+        autoScroll = true;
+    }
+
+    private void DisableAutoScrollButton_Click(object sender, RoutedEventArgs e)
+    {
+        autoScroll = false;
+    }
+
+    private void ChangeFont_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private async void SupportButton_Click(object sender, RoutedEventArgs e)
+    {
+        _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/goodbyeDPI-UI/issues/"));
     }
 }

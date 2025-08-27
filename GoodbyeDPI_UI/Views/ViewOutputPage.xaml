@@ -7,7 +7,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
+    
+    <Page.Resources>
+        <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MaxHeight" Value="10" />
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter ContentMargin="0" Padding="0" Margin="0"  IsTabStop="False" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -27,7 +43,7 @@
                 </Grid.ColumnDefinitions>
                 <MenuBar Grid.Column="0" Margin="0" Height="32" MinHeight="32" VerticalAlignment="Top" Padding="0">
                     <MenuBarItem Title="File" Margin="5, 0">
-                        <MenuFlyoutItem x:Name="SaveButton" Text="Save output to file" >
+                        <MenuFlyoutItem x:Name="SaveButton" Text="Save output to file" Click="SaveButton_Click" >
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE74E;" />
                             </MenuFlyoutItem.Icon>
@@ -35,7 +51,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="S"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="Exit" >
+                        <MenuFlyoutItem x:Name="ExitButton" Text="Exit" Click="ExitButton_Click" >
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE711;" />
                             </MenuFlyoutItem.Icon>
@@ -47,7 +63,7 @@
                     </MenuBarItem>
 
                     <MenuBarItem Title="Process" Margin="5, 0">
-                        <MenuFlyoutItem x:Name="ProcessControl" Text="Kill Current Process" >
+                        <MenuFlyoutItem x:Name="ProcessControl" Text="Kill Current Process" Click="ProcessControl_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon x:Name="ProcessControlIcon" Glyph="&#xE71A;" />
                             </MenuFlyoutItem.Icon>
@@ -55,20 +71,20 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="F5"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="ProcessExit" Text="End all operations" >
+                        <MenuFlyoutItem x:Name="ProcessExit" Text="End all operations" Click="ProcessExit_Click" >
                         </MenuFlyoutItem>
                     </MenuBarItem>
 
                     <MenuBarItem Title="View" Margin="5, 0">
-                        <MenuFlyoutItem Text="Font" >
+                        <MenuFlyoutItem x:Name="ChangeFont" Text="Font" Click="ChangeFont_Click" >
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8D2;" />
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutSubItem Text="AutoScroll">
-                            <RadioMenuFlyoutItem x:Name="EnableAutoScrollButton" Text="Enable" GroupName="OrientationGroup"/>
-                            <RadioMenuFlyoutItem x:Name="DisableAutoScrollButton" Text="Disable" GroupName="OrientationGroup" />
+                            <RadioMenuFlyoutItem x:Name="EnableAutoScrollButton" Text="Enable" GroupName="OrientationGroup" Click="EnableAutoScrollButton_Click"/>
+                            <RadioMenuFlyoutItem x:Name="DisableAutoScrollButton" Text="Disable" GroupName="OrientationGroup" Click="DisableAutoScrollButton_Click"/>
                             <MenuFlyoutSubItem.Icon>
                                 <FontIcon Glyph="&#xECE7;" />
                             </MenuFlyoutSubItem.Icon>
@@ -76,7 +92,7 @@
                     </MenuBarItem>
 
                     <MenuBarItem Title="Help" Margin="5, 0">
-                        <MenuFlyoutItem x:Name="SupportButton" Text="Visit GitHub page">
+                        <MenuFlyoutItem x:Name="SupportButton" Text="Visit GitHub page" Click="SupportButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8A7;" />
                             </MenuFlyoutItem.Icon>
@@ -89,32 +105,52 @@
                 </MenuBar>
             </Grid>
         </Grid>
-        <ListView x:Name="LogListView"
-                  SelectionMode="None"
-                  IsItemClickEnabled="False"
-                  IsSwipeEnabled="False"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  Grid.Row="2">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsStackPanel Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+        <ScrollViewer x:Name="TargetScrollViewer"
+                      Grid.Row="2"
+                      Background="Black"
+                      Padding="20 0 20 0">
+            <ListView x:Name="LogListView"
+                      SelectionMode="None"
+                      IsItemClickEnabled="False"
+                      IsSwipeEnabled="False"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Grid.Row="2"
+                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}"
+                      IsTabStop="False">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
 
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="x:String">
-                    <TextBlock Text="{Binding}"
-                       FontFamily="Consolas"
-                       FontSize="16"
-                       TextWrapping="Wrap"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <ListViewItem
+                            Height="18"
+                            MinHeight="18">
+                            <TextBlock Text="{Binding}"
+                                   Foreground="White"
+                                   FontFamily="Consolas"
+                                   FontSize="16"
+                                   TextWrapping="NoWrap"
+                                   Margin="0"/>
+                        </ListViewItem>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+        </ScrollViewer>
         <ScrollViewer x:Name="OutputScrollViewer" Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
-                      Background="Black" >
+                      Background="Black" Visibility="Collapsed">
 
             <RichTextBlock x:Name="OutputRichTextBlock"
                             FontFamily="Consolas"
@@ -130,6 +166,22 @@
         </ScrollViewer>
         <Grid Grid.Row="3">
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="28" Width="Auto" VerticalAlignment="Top"/>
+            <Grid Padding="10, 0, 10, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <FontIcon x:Name="StatusIcon" Grid.Column="4" Glyph="&#xEC61;" FontSize="16" Visibility="Collapsed" />
+                <ProgressRing x:Name="WorkIndicator" Grid.Column="4" IsIndeterminate="True" Width="10" Height="10"/>
+                <TextBlock x:Name="StatusText" Grid.Column="5" Text="Process worked" VerticalAlignment="Center"/>
+                
+                <Rectangle Grid.Column="3" Fill="Gray" Height="15" Width="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>
