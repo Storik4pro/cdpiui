@@ -192,6 +192,49 @@ namespace GoodbyeDPI_UI.Helper.Static
 
             return transl;
         }
+
+        public static string ConvertMinutesToPrettyText(double min)
+        {
+            if (min > 60)
+            {
+                double hours = min / 60;
+                if (hours < 1.5)
+                    return "Около часа";
+                else if (hours >= 1.5 && hours <= 2.5)
+                    return $"Около двух часов";
+                else
+                    return "Более трех часов (0_0)";
+            } 
+            else
+            {
+                if (min > 1)
+                    return $"{min:F0} мин.";
+                else if (min == 1)
+                    return "Одна минута";
+                else
+                    return "Считанные секунды";
+            }
+        }
+
+        public static string GetFolderNamesUpTo(string path, string stopFolderName)
+        {
+            if (File.Exists(path))
+                path = Path.GetDirectoryName(path);
+
+            var dir = new DirectoryInfo(path ?? "");
+            var result = new List<string>();
+
+            while (dir != null)
+            {
+                if (string.Equals(dir.Name, stopFolderName, StringComparison.OrdinalIgnoreCase))
+                    break;
+
+                result.Add(dir.Name);
+                dir = dir.Parent;
+            }
+            result.Reverse();
+            return string.Join("/", result);
+        }
     }
 }
 
