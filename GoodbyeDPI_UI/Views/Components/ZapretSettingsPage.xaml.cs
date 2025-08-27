@@ -120,76 +120,82 @@ namespace GoodbyeDPI_UI.Views
             List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.file_name, sel.packId);
             List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.file_name, sel.packId);
 
-            SettingsTile variablesItem = new()
+            if (variables.Count > 0 || toggleLists.Count > 0)
             {
-                IconGlyph = "\uE713",
-                Title = "Доступные настройки",
-                Description = "Настройте пресет под себя"
-            };
 
-            _flag = false;
-            foreach (var variable in variables) 
-            {
-                SettingsTileItem settingsTileItem = new()
+                SettingsTile variablesItem = new()
                 {
-                    Title = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.packId)}",
-                    ShowTopRectangle = _flag,
+                    IconGlyph = "\uE713",
+                    Title = "Доступные настройки",
+                    Description = "Настройте пресет под себя"
                 };
 
-                settingsTileItem.Contents.Add(new SiteListContentDefinition
+                _flag = false;
+                foreach (var variable in variables)
                 {
-                    ContentType = SiteListContentType.ToggleSwitch,
-                    VariableName = variable.name,
-                    InitialToggleState = variable.value,
-                    PackId = sel.packId,
-                    FileName = sel.file_name,
-                });
+                    SettingsTileItem settingsTileItem = new()
+                    {
+                        Title = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.packId)}",
+                        ShowTopRectangle = _flag,
+                    };
 
-                variablesItem.Items.Add(settingsTileItem);
+                    settingsTileItem.Contents.Add(new SiteListContentDefinition
+                    {
+                        ContentType = SiteListContentType.ToggleSwitch,
+                        VariableName = variable.name,
+                        InitialToggleState = variable.value,
+                        PackId = sel.packId,
+                        FileName = sel.file_name,
+                    });
 
-                _flag = true;
+                    variablesItem.Items.Add(settingsTileItem);
+
+                    _flag = true;
+                }
+
+                _tiles.Add(CreateSettingTile(variablesItem));
             }
 
-            _tiles.Add(CreateSettingTile(variablesItem));
-
-            SettingsTile sitelistTile = new()
+            List<SiteListItem> list = componentHelper.GetConfigHelper().GetSiteListItems(sel.file_name, sel.packId, ignoreNull:true);
+            if (list.Count > 0)
             {
-                IconGlyph = "\uE7C3",
-                Title = "Используемые списки сайтов",
-                Description = "Списки сайтов, которые используются в пресете"
-            };
-
-            List<SiteListItem> list = componentHelper.GetConfigHelper().GetSiteListItems(sel.file_name, sel.packId);
-
-            _flag = false;
-            foreach (SiteListItem item in list)
-            {
-                if (item.Type == "NULL")
-                    continue;
-
-                string title = 
-                    (item.Type == "blacklist" ? "Список сайтов" : item.Type == "iplist"? "Список IP-адресов" : "Автоматический список сайтов") +
-                    $" {item.Name}";
-
-                SettingsTileItem settingsTileItem = new()
+                SettingsTile sitelistTile = new()
                 {
-                    Title = title,
-                    ShowTopRectangle = _flag,
+                    IconGlyph = "\uE7C3",
+                    Title = "Используемые списки сайтов",
+                    Description = "Списки сайтов, которые используются в пресете"
                 };
-                settingsTileItem.Contents.Add(new SiteListContentDefinition
+
+                _flag = false;
+                foreach (SiteListItem item in list)
                 {
-                    ContentType = item.Type == "autoblacklist" ? SiteListContentType.OnlyViewButton : SiteListContentType.EditViewButtons,
-                    EditFilePath = item.FilePath,
-                    ViewParams = item.ApplyParams,
-                    PrettyViewParams = item.PrettyApplyParams,
-                });
+                    if (item.Type == "NULL")
+                        continue;
 
-                sitelistTile.Items.Add(settingsTileItem);
+                    string title =
+                        (item.Type == "blacklist" ? "Список сайтов" : item.Type == "iplist" ? "Список IP-адресов" : "Автоматический список сайтов") +
+                        $" {item.Name}";
 
-                _flag = true;
+                    SettingsTileItem settingsTileItem = new()
+                    {
+                        Title = title,
+                        ShowTopRectangle = _flag,
+                    };
+                    settingsTileItem.Contents.Add(new SiteListContentDefinition
+                    {
+                        ContentType = item.Type == "autoblacklist" ? SiteListContentType.OnlyViewButton : SiteListContentType.EditViewButtons,
+                        EditFilePath = item.FilePath,
+                        ViewParams = item.ApplyParams,
+                        PrettyViewParams = item.PrettyApplyParams,
+                    });
+
+                    sitelistTile.Items.Add(settingsTileItem);
+
+                    _flag = true;
+                }
+
+                _tiles.Add(CreateSettingTile(sitelistTile));
             }
-
-            _tiles.Add(CreateSettingTile(sitelistTile));
 
             SettingsTile advancedTile = new()
             {
@@ -393,6 +399,19 @@ namespace GoodbyeDPI_UI.Views
         {
             base.OnNavigatedTo(e);
             LoadConfigItems();
+            ComponentHelper componentHelper =
+                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
+                    ComponentId);
+            componentHelper.ConfigListUpdated += LoadConfigItems;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            ComponentHelper componentHelper =
+                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
+                    ComponentId);
+            componentHelper.ConfigListUpdated -= LoadConfigItems;
         }
 
         private void ComboboxItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
