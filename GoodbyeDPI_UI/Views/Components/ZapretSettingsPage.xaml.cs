@@ -1,6 +1,8 @@
 using GoodbyeDPI_UI.Helper;
 using GoodbyeDPI_UI.Helper.Items;
 using GoodbyeDPI_UI.Helper.Static;
+using GoodbyeDPI_UI.Views.CreateConfigUtil;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -9,7 +11,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,6 +55,8 @@ namespace GoodbyeDPI_UI.Views
         public string EditFilePath { get; set; }
         public List<string> ViewParams { get; set; }
         public List<string> PrettyViewParams { get; set; }
+
+        public string ClickId { get; set; }
     }
 
     public class SettingsTileItem
@@ -212,6 +215,7 @@ namespace GoodbyeDPI_UI.Views
             createNewTileItem.Contents.Add(new SiteListContentDefinition
             {
                 ContentType = SiteListContentType.FullButton,
+                ClickId = "CFGCREATE"
             });
 
             advancedTile.Items.Add(createNewTileItem);
@@ -224,6 +228,7 @@ namespace GoodbyeDPI_UI.Views
             editTileItem.Contents.Add(new SiteListContentDefinition
             {
                 ContentType = SiteListContentType.FullButton,
+                ClickId = "CFGEDIT"
             });
 
             advancedTile.Items.Add(editTileItem);
@@ -236,6 +241,7 @@ namespace GoodbyeDPI_UI.Views
             autoTileItem.Contents.Add(new SiteListContentDefinition
             {
                 ContentType = SiteListContentType.FullButton,
+                ClickId = "CFGGOODCHECK"
             });
 
             advancedTile.Items.Add(autoTileItem);
@@ -257,6 +263,7 @@ namespace GoodbyeDPI_UI.Views
             helpTileItem.Contents.Add(new SiteListContentDefinition
             {
                 ContentType = SiteListContentType.FullButton,
+                ClickId = "HELPOFFLINE"
             });
 
             helpTile.Items.Add(helpTileItem);
@@ -354,7 +361,7 @@ namespace GoodbyeDPI_UI.Views
 
                             element.Click += () =>
                             {
-
+                                ButtonClick(def.ClickId);
                             };
                             break;
                     }
@@ -366,6 +373,28 @@ namespace GoodbyeDPI_UI.Views
 
             tile.InnerContent = rootStack;
             return tile;
+        }
+
+        private async void ButtonClick(string targetId)
+        {
+            switch (targetId)
+            {
+                case "CFGCREATE":
+                    CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+                    window.CreateNewConfigForComponentId(ComponentId);
+                    break;
+                case "CFGEDIT":
+                    CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+                    _window.OpenConfigEditPage();
+                    break;
+                case "CFGGOODCHECK":
+                    CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
+                    gwindow.NavigateToPage<CreateViaGoodCheck>();
+                    break;
+                case "HELPOFFLINE":
+
+                    break;
+            }
         }
 
         private void LoadConfigItems()
@@ -402,6 +431,8 @@ namespace GoodbyeDPI_UI.Views
             ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
                     ComponentId);
+            if (componentHelper is null) return;
+
             componentHelper.ConfigListUpdated += LoadConfigItems;
         }
 
@@ -411,6 +442,9 @@ namespace GoodbyeDPI_UI.Views
             ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
                     ComponentId);
+
+            if (componentHelper is null) return;
+
             componentHelper.ConfigListUpdated -= LoadConfigItems;
         }
 

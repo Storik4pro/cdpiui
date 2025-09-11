@@ -42,7 +42,8 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,48,0,0" />
+                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
+                        <Setter Target="ConfigChooseCombobox.MinWidth" Value="300" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -52,8 +53,10 @@
                         <AdaptiveTrigger MinWindowWidth="1382"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootGrid.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="RootGrid.Width" Value="1060px"/>
+                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="MainPanel.Width" Value="1060px"/>
+                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="PageHeader.Width" Value="1060px"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NarrowState">
@@ -66,11 +69,13 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+        
         <TextBlock
             x:Name="PageHeader"
-            Margin="20,24,20,0"
+            Margin="20,24,20,10"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="Параметры компонента Zapret" />
+            Text="Параметры компонента Zapret"
+            TextWrapping="NoWrap"/>
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -79,13 +84,15 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}">
+            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
                 <!--<StackPanel.ChildrenTransitions>
                     <EntranceThemeTransition FromVerticalOffset="50" />
                     <RepositionThemeTransition IsStaggeringEnabled="False" />
                 </StackPanel.ChildrenTransitions>-->
                 <controls:SettingsCard Header="Пресет запуска" 
-                                       Description="Выбор готового пресета запуска для компонента">
+                                       Description="Выбор готового пресета запуска для компонента"
+                                       CornerRadius="10"
+                                       BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
                     <ComboBox x:Name="ConfigChooseCombobox" 
                               MinWidth="400"
                               SelectionChanged="ConfigChooseCombobox_SelectionChanged">
@@ -97,7 +104,7 @@
                         <controls:StaggeredLayout
                             ColumnSpacing="5"
                             RowSpacing="5"
-                            DesiredColumnWidth="400"
+                            DesiredColumnWidth="360"
                             ItemsStretch="Fill"/>
                     </ItemsRepeater.Layout>
                 </ItemsRepeater>
