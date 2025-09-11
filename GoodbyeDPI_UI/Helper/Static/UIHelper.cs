@@ -1,7 +1,9 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -81,12 +83,40 @@ namespace GoodbyeDPI_UI.Helper.Static
 
         static public SolidColorBrush HexToSolidColorBrushConverter(string hexColor)
         {
-            Color color = HexToColorConverter(hexColor);
+            Color color;
+            if (string.IsNullOrEmpty(hexColor))
+            {
+                color = Color.FromArgb(0, 0, 0, 0);
+            }
+            else
+            {
+                color = HexToColorConverter(hexColor);
+            }
             SolidColorBrush br = new SolidColorBrush(color);
 
             return br;
         }
-        
+
+        static public void GoBackWithParameter(object paramForPreviousPage, Frame frame)
+        {
+            var backStack = frame.BackStack;
+            if (backStack == null || backStack.Count == 0)
+                return; 
+
+            var lastIndex = backStack.Count - 1;
+            var lastEntry = backStack[lastIndex];
+
+            var newEntry = new PageStackEntry(
+                lastEntry.SourcePageType,
+                paramForPreviousPage,
+                lastEntry.NavigationTransitionInfo);
+
+            backStack[lastIndex] = newEntry;
+
+            if (frame.CanGoBack)
+                frame.GoBack();
+        }
+
     }
 }
 
