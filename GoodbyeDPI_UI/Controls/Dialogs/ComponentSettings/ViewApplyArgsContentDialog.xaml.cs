@@ -26,6 +26,8 @@ namespace GoodbyeDPI_UI.Controls.Dialogs
         public List<string> Args { get; set; }
         public FontFamily ArgsFontFamily { get; set; }
         public double ArgsFontSize { get; set; }
+        public Visibility SeparationTextVisible {  get; set; } = Visibility.Visible;
+        public string SeparationText { get; set; } = "--new";
 
         public ViewApplyArgsContentDialog()
         {
@@ -36,6 +38,8 @@ namespace GoodbyeDPI_UI.Controls.Dialogs
 
             ArgsFontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
             ArgsFontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
+
+            DialogTitleTextBlock.Visibility = !string.IsNullOrEmpty(SeparationText) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

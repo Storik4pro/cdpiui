@@ -18,13 +18,15 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{x:Bind DialogTitle, Mode=OneWay}" FontWeight="Light" FontSize="16"/>
+        <TextBlock x:Name="DialogTitleTextBlock" Text="{x:Bind DialogTitle, Mode=OneWay}" FontWeight="Light" FontSize="16"/>
         <ScrollViewer Grid.Row="1" Padding="0, 0, 0, -10" MaxHeight="300">
             <ItemsControl ItemsSource="{x:Bind Args, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="x:String">
                         <StackPanel Margin="0, 0, 0, 10">
-                            <TextBlock Text="--new" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock x:Name="SeparationText" Text="{Binding SeparationText, ElementName=ContentDialog}" 
+                                       Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                                       Visibility="{Binding SeparationTextVisible, ElementName=ContentDialog}"/>
                             <Grid>
                                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" 
                                     BorderBrush="{ThemeResource ControlStrokeColorForStrongFillWhenOnImageBrush}" BorderThickness="1" CornerRadius="5"/>
