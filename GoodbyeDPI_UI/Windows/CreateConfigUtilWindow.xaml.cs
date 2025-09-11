@@ -1,4 +1,6 @@
 using GoodbyeDPI_UI.Helper;
+using GoodbyeDPI_UI.Helper.Static;
+using GoodbyeDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -48,7 +50,7 @@ namespace GoodbyeDPI_UI
 
             WindowHelper.SetWindowSize(this, 900, 550);
 
-            
+            NativeWindowHelper.ForceDisableMaximize(this);
 
             Instance = this;
 
@@ -61,7 +63,7 @@ namespace GoodbyeDPI_UI
 
             ExtendsContentIntoTitleBar = true;
 
-            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.CreateViaGoodCheck));
+            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage));
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
@@ -78,7 +80,14 @@ namespace GoodbyeDPI_UI
 
         public void NavigateToPage<T>()
         {
-            ContentFrame.Navigate(typeof(T));
+            this.Activate();
+            if (ContentFrame.CurrentSourcePageType == typeof(MainPage))
+            {
+
+                ContentFrame.Navigate(typeof(T));
+                ContentFrame.BackStack.Clear();
+            }
+            
         }
 
         private void CreateConfigUtilWindow_Closed(object sender, WindowEventArgs args)
