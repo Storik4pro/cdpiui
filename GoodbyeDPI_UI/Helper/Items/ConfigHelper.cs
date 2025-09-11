@@ -46,6 +46,7 @@ namespace GoodbyeDPI_UI.Helper.Items
 
     public class VariableItem
     {
+        public string variable_name;
         public string name;
         public bool value;
     }
@@ -206,17 +207,9 @@ namespace GoodbyeDPI_UI.Helper.Items
             string folder = GetItemFolderFromPackId(packId);
             string fileName = Path.Combine(folder, filename);
 
-            ConfigItem readyToWriteConfigItem = new()
-            {
-                meta = item.meta,
-                name = item.not_converted_name,
-                target = item.target,
-                jparams = item.jparams,
-                variables = item.variables,
-                startup_string = item.startup_string,
-            };
+            item.name = item.not_converted_name;
 
-            string jsonString = System.Text.Json.JsonSerializer.Serialize(readyToWriteConfigItem);
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(item);
             Logger.Instance.CreateDebugLog(nameof(ConfigHelper), jsonString);
             File.WriteAllText(fileName, jsonString);
 
@@ -293,10 +286,15 @@ namespace GoodbyeDPI_UI.Helper.Items
             return localizedString;
         }
 
-        private static Dictionary<string, string> GetReadyToUseVariables(string id, List<string> variables, Dictionary<string, bool> jparams)
+        public static Dictionary<string, string> GetReadyToUseVariables(string id, List<string> variables, Dictionary<string, bool> jparams)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
             string regexString = @"%(.*?)%=(.*?)$";
+
+            if (variables == null || jparams == null)
+            {
+                return null;
+            }
 
             foreach (string variable in variables)
             {
@@ -311,7 +309,7 @@ namespace GoodbyeDPI_UI.Helper.Items
             return result;
         }
 
-        private static string ReplaceVariables(string input, IDictionary<string, string> readyToUseVars)
+        public static string ReplaceVariables(string input, IDictionary<string, string> readyToUseVars)
         {
             if (string.IsNullOrEmpty(input) || readyToUseVars == null || readyToUseVars.Count == 0)
             {
@@ -395,7 +393,7 @@ namespace GoodbyeDPI_UI.Helper.Items
                 }
             }
 
-            if (jparams == null || variables == null || startupString == null)
+            if (startupString == null)
                 return string.Empty;
 
             Dictionary<string, string> readyToUseVars = GetReadyToUseVariables(packId, variables, jparams);
@@ -407,6 +405,23 @@ namespace GoodbyeDPI_UI.Helper.Items
             return startupString;
         }
 
+        public static List<VariableItem> GetVariables(ConfigItem configItem)
+        {
+            List<VariableItem> variables = [];
+
+            foreach (var variable in configItem.jparams)
+            {
+                VariableItem variableItem = new()
+                {
+                    name = variable.Key,
+                    value = variable.Value,
+                };
+                variables.Add(variableItem);
+            }
+
+            return variables;
+        }
+
         public List<VariableItem> GetVariables(string filename, string packId)
         {
             List<VariableItem> variables = [];
@@ -416,6 +431,9 @@ namespace GoodbyeDPI_UI.Helper.Items
                 );
 
             if (configItem == null)
+                return variables;
+
+            if (configItem.jparams == null)
                 return variables;
 
             foreach (var variable in configItem.jparams)
@@ -553,7 +571,7 @@ namespace GoodbyeDPI_UI.Helper.Items
 
         public static string GetItemFolderFromPackId(string packId)
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string localItemFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, packId);
             return localItemFolder;
@@ -772,7 +790,14 @@ namespace GoodbyeDPI_UI.Helper.Items
         public static List<string> GetUsedFilesFromConfigItem(ConfigItem configItem)
         {
             List<string> files = [];
-            files = GetUsedFilesFromString(configItem.startup_string, files);
+
+            string startupString;
+            
+            startupString = configItem.startup_string;
+
+            files = GetUsedFilesFromString(startupString, files);
+
+            
 
             if (configItem.commaVars == null)
                 return files;
@@ -880,7 +905,12 @@ namespace GoodbyeDPI_UI.Helper.Items
             }
 
             if (!string.IsNullOrEmpty(configItem.startup_string))
-                configItem.startup_string = ReplaceInString(configItem.startup_string, files);
+            {
+                string startupString;
+                startupString = ReplaceInString(configItem.startup_string, files);
+
+                configItem.startup_string = startupString;
+            }
 
             if (configItem.commaVars != null)
             {
