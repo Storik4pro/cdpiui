@@ -46,9 +46,9 @@ namespace GoodbyeDPI_UI
         public static CriticalErrorHandlerWindow Instance { get; private set; }
 
         public CriticalErrorHandlerWindow(
-            string where=WhereTemplate, 
-            string why=InfoNotProvided,
-            string errorCode=FlashlightError
+            string where = WhereTemplate,
+            string why = InfoNotProvided,
+            string errorCode = FlashlightError
             )
         {
             InitializeComponent();
@@ -83,8 +83,8 @@ namespace GoodbyeDPI_UI
             WhyTextBlock.Text = why;
             ErrorCodeTextBlock.Text = errorCode;
 
-            string additionalInfo = 
-                $"Application: CDPI UI\n" + 
+            string additionalInfo =
+                $"Application: CDPI UI\n" +
                 $"Version: {StateHelper.Instance.Version}\n" +
                 $"System: {Environment.OSVersion.ToString()}\n" +
                 $"Architecture: {RuntimeInformation.OSArchitecture.ToString()}";
@@ -163,12 +163,12 @@ namespace GoodbyeDPI_UI
 
         private async void CopyButton_Click(object sender, RoutedEventArgs e)
         {
-            string readyToCopyText = 
+            string readyToCopyText =
                 $"Critical Exception Info\n" +
                 $"```\n" +
                 $"Where: {WhereTextBlock.Text}\n" +
                 $"Why: {WhyTextBlock.Text}\n" +
-                $"ErrCode: {ErrorCodeTextBlock}\n"+
+                $"ErrCode: {ErrorCodeTextBlock}\n" +
                 $"EnvInfo:\n{AdditionalTextBlock.Text}\n" +
                 $"```\n" +
                 $"Endlog";
