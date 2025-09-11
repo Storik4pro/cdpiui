@@ -39,9 +39,11 @@ namespace GoodbyeDPI_UI.Views.Store
         }
 
         private bool errorHappens = false;
+        private bool loaded = false;
 
         private Action<Tuple<string, string>> _itemDownloadStageChangedHandler;
         private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
+        private Action<Tuple<string, double>> _itemDownloadSpeedChangedHandler;
         private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
         private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
@@ -50,6 +52,15 @@ namespace GoodbyeDPI_UI.Views.Store
         {
             InitializeComponent();
             _config = new MarkdownConfig();
+
+            this.Loaded += ItemViewPage_Loaded;
+        }
+
+        private void ItemViewPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!loaded) ShowErrorDialog();
+
+            this.Loaded -= ItemViewPage_Loaded;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -67,7 +78,14 @@ namespace GoodbyeDPI_UI.Views.Store
             {
                 _storeId = storeId;
 
+                ConnectHandlers();
+
                 item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
+
+                if (item == null)
+                {
+                    return;
+                }
 
                 ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, "RU");
                 ItemImage.Source = new BitmapImage(new Uri(StoreHelper.Instance.ExecuteScript(item.icon)));
@@ -98,11 +116,32 @@ namespace GoodbyeDPI_UI.Views.Store
                     CreateLinks(item.links);
                 else 
                     LinksGrid.Visibility = Visibility.Collapsed;
+
+                loaded = true;
             }
             else
             {
-                ItemName.Text = "Ошибка: StoreId не получен";
+                ItemName.Text = "Template page";
             }
+        }
+
+        private void ShowErrorDialog()
+        {
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+                var dialog = new ContentDialog()
+                {
+                    XamlRoot = this.XamlRoot,
+                    Title = "Element not exist.",
+                    Content = $"Element with id '{_storeId}' not exits. \nCheck your connection and try again later",
+                    PrimaryButtonText = "OK"
+                };
+                await dialog.ShowAsync();
+                if (Frame.CanGoBack)
+                    Frame.GoBack();
+                else
+                    Frame.Navigate(typeof(HomePage));
+            });
         }
 
         private void CreateLinks(List<StoreHelper.Link> links)
@@ -188,12 +227,13 @@ namespace GoodbyeDPI_UI.Views.Store
             _itemDownloadProgressChangedHandler = (data) =>
             {
                 string operationId = data.Item1;
-                double speed = data.Item2;
+                double progress = data.Item2;
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
 
-                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
+                StatusProgressbar.IsIndeterminate = false;
+                StatusProgressbar.Value = progress;
             };
             StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
 
@@ -213,19 +253,18 @@ namespace GoodbyeDPI_UI.Views.Store
 
             StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
 
-            _itemDownloadProgressChangedHandler = (data) =>
+            _itemDownloadSpeedChangedHandler = (data) =>
             {
                 string operationId = data.Item1;
-                double progress = data.Item2;
+                double speed = data.Item2;
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
 
-                StatusProgressbar.IsIndeterminate = false;
-                StatusProgressbar.Value = progress;
+                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
             };
 
-            StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
+            StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
 
             _itemInstallingErrorHappensHandler = (data) =>
             {
@@ -266,6 +305,9 @@ namespace GoodbyeDPI_UI.Views.Store
 
             if (_itemInstallingErrorHappensHandler != null)
                 StoreHelper.Instance.ItemInstallingErrorHappens -= _itemInstallingErrorHappensHandler;
+
+            if (_itemDownloadSpeedChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadSpeedChanged -= _itemDownloadSpeedChangedHandler;
 
             if (_itemActionsStoppedHandler != null)
                 StoreHelper.Instance.ItemActionsStopped -= _itemActionsStoppedHandler;
@@ -366,6 +408,7 @@ namespace GoodbyeDPI_UI.Views.Store
 
         private void ReinstallButton_Click(object sender, RoutedEventArgs e)
         {
+            StoreHelper.Instance.RemoveItem(_storeId);
             InstallingItemActions();
         }
     }

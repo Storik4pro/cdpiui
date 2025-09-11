@@ -42,6 +42,24 @@
                         <Setter Target="MainStackPanel.Padding" Value="100, 100, 100, 100" />
                     </VisualState.Setters>
                 </VisualState>
+                <VisualState x:Name="wSmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="wWideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1975"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
+                        <Setter Target="MainStackPanel.Width" Value="1860" />
+                    </VisualState.Setters>
+                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <ScrollViewer>
