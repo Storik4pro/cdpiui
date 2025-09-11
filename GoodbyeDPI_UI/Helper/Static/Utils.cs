@@ -57,7 +57,7 @@ namespace GoodbyeDPI_UI.Helper.Static
 
         public static string DynamicPathConverter(string data)
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName, data);
             return targetFolder;
