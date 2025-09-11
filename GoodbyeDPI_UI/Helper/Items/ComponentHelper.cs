@@ -69,7 +69,7 @@ namespace GoodbyeDPI_UI.Helper.Items
 
         private string TryGetNewPath()
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string localItemsFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
             ExecutablePath = Path.Combine(localItemsFolder, Id, DatabaseStoreItem.Executable + ".exe");
@@ -77,7 +77,7 @@ namespace GoodbyeDPI_UI.Helper.Items
         }
         private string TryGetNewDirectory()
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string localItemsFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
             Directory = Path.Combine(localItemsFolder, Id);
