@@ -99,6 +99,20 @@ public sealed partial class SitelistButton : UserControl
             nameof(PackId), typeof(string), typeof(SitelistButton), new PropertyMetadata(string.Empty)
         );
 
+    public bool IsLogoVisible
+    {
+        get { return (bool)GetValue(IsLogoVisibleProperty); }
+        set { 
+            SetValue(IsLogoVisibleProperty, value); 
+            LogoFontIcon.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+    }
+
+    public static readonly DependencyProperty IsLogoVisibleProperty =
+        DependencyProperty.Register(
+            nameof(IsLogoVisible), typeof(bool), typeof(SitelistButton), new PropertyMetadata(true)
+        );
+
     private void Button_Click(object sender, RoutedEventArgs e)
     {
         Click?.Invoke();

@@ -2,6 +2,7 @@ using GoodbyeDPI_UI.Helper;
 using GoodbyeDPI_UI.Helper.Items;
 using GoodbyeDPI_UI.Helper.Static;
 using GoodbyeDPI_UI.ViewModels;
+using GoodbyeDPI_UI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Unidecode.NET;
 using Windows.ApplicationModel.Chat;
@@ -27,6 +29,12 @@ using Windows.Foundation.Collections;
 
 namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
 {
+    public enum CreateConfigResult
+    {
+        Selected,
+        Canceled,
+        Nothing
+    }
     public class FileSelectModel
     {
         public string ConvertDirectoryPath { get; set; }
@@ -42,21 +50,41 @@ namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
         private List<string> _files;
         private string ConfigName;
         private string ConfigPath;
+        private AskAutoFillMode _askAutoFillMode;
+        private ConfigItem ConfigItem;
+
+        public CreateConfigResult Result { get; private set; } = CreateConfigResult.Nothing;
 
         private ObservableCollection<FileSelectModel> Models = [];
 
-        public SelectUsedFilesForConfigContentDialog(List<string> files, string configName, string configPath)
+        public SelectUsedFilesForConfigContentDialog(List<string> files, string configName, string configPath, ConfigItem configItem, AskAutoFillMode askAutoFillMode)
         {
             InitializeComponent();
             this.DataContext = this;
+            this.Loaded += SelectUsedFilesForConfigContentDialog_Loaded;
+
             _files = files;
+            _askAutoFillMode = askAutoFillMode;
             ConfigName = configName;
             ConfigPath = configPath;
+            ConfigItem = configItem;
 
             ChangeFilePathCommand = new RelayCommand(p => ChangeFilePath((Tuple<string, string>)p));
 
             CreateModels();
             FilesListView.ItemsSource = Models;
+
+            
+        }
+
+        private void SelectUsedFilesForConfigContentDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (_askAutoFillMode == AskAutoFillMode.Qiet)
+            {
+                Result = CreateConfigResult.Selected;
+                AutoCorrectActions();
+                this.Hide();
+            }
         }
 
         private void CreateModels()
@@ -69,10 +97,6 @@ namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
 
             foreach (var file in _files)
             {
-                if (File.Exists(file))
-                {
-                    continue;
-                }
                 string convDir;
                 
                 if (Path.GetExtension(file).Equals(".txt", StringComparison.CurrentCultureIgnoreCase))
@@ -80,14 +104,14 @@ namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
                     convDir = Path.Combine(
                         ConfigHelper.GetItemFolderFromPackId(StateHelper.LocalUserItemsId),
                         StateHelper.LocalUserItemSiteListsFolder,
-                        $"{ConfigName.Unidecode()}_converted_{secondsSinceEpoch}");
+                        $"{ConfigName.Unidecode().Replace(" ", "_")}_converted_{secondsSinceEpoch}");
                 }
                 else
                 {
                     convDir = Path.Combine(
                         ConfigHelper.GetItemFolderFromPackId(StateHelper.LocalUserItemsId),
                         StateHelper.LocalUserItemBinsFolder,
-                        $"{ConfigName.Unidecode()}_converted_{secondsSinceEpoch}");
+                        $"{ConfigName.Unidecode().Replace(" ", "_")}_converted_{secondsSinceEpoch}");
                 }
                 if (!Directory.Exists(convDir))
                 {
@@ -116,6 +140,14 @@ namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
         {
             try
             {
+                if (ConfigItem != null && ConfigItem.packId != null && ConfigItem.jparams != null)
+                {
+                    return ConfigHelper.ReplaceVariables(filePath, ConfigHelper.GetReadyToUseVariables(ConfigItem.packId, ConfigItem.variables, ConfigItem.jparams));
+                }
+                if (File.Exists(filePath))
+                {
+                    return filePath;
+                }
                 Debug.WriteLine($"{Path.Combine(ConfigPath, filePath)}");
                 if (File.Exists(Path.Combine(Path.GetDirectoryName(ConfigPath), filePath)))
                 {
@@ -148,29 +180,37 @@ namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
 
         private void RootDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            Result = CreateConfigResult.Selected;
             if (Models.Count != 0)
             {
-                foreach (var model in Models)
-                {
-                    try
-                    {
-                        File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(model.FilePath)), true);
-                        Files.Add(
-                            model.FilePath,
-                            "$GETCURRENTDIR()/" +
-                            Path.Combine(
-                                Utils.GetFolderNamesUpTo(
-                                    model.ConvertDirectoryPath, StateHelper.LocalUserItemsId), Path.GetFileName(model.FilePath)
-                                    )
-                            );
+                AutoCorrectActions();
+            }
+        }
 
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Windows.MessageBox.Show(
-                            "ERR_AUTOCORRECT_IO:\n" + ex.Message, "Autocorrect Error",
-                            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-                    }
+        private void AutoCorrectActions()
+        {
+            foreach (var model in Models)
+            {
+                try
+                {
+                    string filepath = Regex.Replace(model.FilePath, @"%(?<name>[A-Za-z0-9_]+)%", "");
+                    File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(filepath)), true);
+                    Files.Add(
+                        model.FilePath,
+                        "$GETCURRENTDIR()/" +
+                        Path.Combine(
+                            Utils.GetFolderNamesUpTo(
+                                model.ConvertDirectoryPath, StateHelper.LocalUserItemsId), Path.GetFileName(filepath)
+                                )
+                        );
+
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show(
+                        "ERR_AUTOCORRECT_IO:\n" + ex.Message, "Autocorrect Error",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    Result = CreateConfigResult.Canceled;
                 }
             }
         }

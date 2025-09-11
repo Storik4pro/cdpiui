@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Name="RootControl"
+    x:Class="GoodbyeDPI_UI.GoodCheckReportStrategyUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    >
+
+    <Grid
+        PointerEntered="UserControl_PointerEntered"
+        PointerExited="UserControl_PointerExited">
+        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="5" />
+        <Grid Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="{x:Bind Args, Mode=OneWay}" IsTextSelectionEnabled="False"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE930;" FontSize="16"/>
+                        <TextBlock Text="Success" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{x:Bind SuccessCount, Mode=OneWay}" TextAlignment="Right"/>
+                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xEA39;" FontSize="16"/>
+                        <TextBlock Text="Failure" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock  Grid.Column="4" Text="{x:Bind FailureCount, Mode=OneWay}" TextAlignment="Right"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel x:Name="ControlsStackPanel" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible" Grid.Column="1">
+                <local:IconButton x:Name="PlayIconButton" IsButtonToggle="True" IconGlyph="&#xE768;" CheckedIconGlyph="&#xF8AE;" 
+                                  ToolTipService.ToolTip="{Binding PlayIconTooltip, ElementName=RootControl}"
+                                  ClickCommand="{Binding PlayCommand, ElementName=RootControl}"/>
+                <local:IconButton x:Name="ViewIconButton" IconGlyph="&#xE890;" ToolTipService.ToolTip="View full strategy string" 
+                                  ClickCommand="{Binding ViewFullCommand, ElementName=RootControl}"/>
+                <local:IconButton x:Name="FlagIconButton" IsButtonToggle="True" IconGlyph="&#xE7C1;" CheckedIconGlyph="&#xEB4B;" 
+                                  Checked="{x:Bind Flag, Mode=TwoWay}"
+                                  ToolTipService.ToolTip="{Binding FlagIconTooltip, ElementName=RootControl}"
+                                  ClickCommand="{Binding SetFlagCommand, ElementName=RootControl}"/>
+            </StackPanel>
+        </Grid>
+        
+    </Grid>
+</UserControl>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="GoodbyeDPI_UI.Controls.Store.StoreDownloadItemButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Controls.Store"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
+    mc:Ignorable="d">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="SupeSState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CurrentVersionTextBlock.Visibility" Value="Collapsed" />
+                        <Setter Target="VersionSeparator.Visibility" Value="Collapsed" />
+                        <Setter Target="UpdateButton.Visibility" Value="Collapsed" />
+                        <Setter Target="BigUpdateButton.Visibility" Value="Visible" />
+                        
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="CurrentVersionTextBlock.Visibility" Value="Visible" />
+                        <Setter Target="VersionSeparator.Visibility" Value="Visible" />
+                        <Setter Target="UpdateButton.Visibility" Value="Visible" />
+                        <Setter Target="BigUpdateButton.Visibility" Value="Collapsed" />
+
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Button x:Name="Button" 
+            Click="Button_Click"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Padding="0">
+            <Grid CornerRadius="5">
+                <Grid x:Name="MainGrid" Padding="10 10 10 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Height="60" Width="60">
+                        <Rectangle x:Name="Rectangle"
+                           Grid.Column="0"
+                           RadiusX="5" RadiusY="5"
+                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"
+                        BorderThickness="1" CornerRadius="5" 
+                        BorderBrush="{ThemeResource ControlStrokeColorSecondaryBrush}"/>
+                        <Image x:Name="PART_Image" Grid.Column="0" Source="{x:Bind CardImageSource, Mode=OneWay}" Width="40"/>
+                    </Grid>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="{x:Bind Title, Mode=OneWay}" MaxLines="2" TextWrapping="Wrap"/>
+                        <TextBlock Text="{x:Bind Developer, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextWrapping="NoWrap"/>
+                    </StackPanel>
+                    <StackPanel x:Name="VersionStackPanel" Grid.Column="3" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center" Margin="20 0" Visibility="Collapsed">
+                        <TextBlock x:Name="CurrentVersionTextBlock" Text="{x:Bind CurrentVersion, Mode=OneWay}"/>
+                        <FontIcon x:Name="VersionSeparator" Glyph="&#xEBE7;" FontSize="16"/>
+                        <TextBlock Text="{x:Bind ServerVersion, Mode=OneWay}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                        <Button x:Name="CancelButton" Padding="6" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="{x:Bind Tooltip, Mode=OneWay}" Click="CancelButton_Click">
+                            <FontIcon Glyph="{x:Bind ActionGlyph, Mode=OneWay}" FontSize="16"/>
+                        </Button>
+                        <Grid x:Name="UpdateGrid">
+                            <Button x:Name="UpdateButton" Content="Update now" Style="{ThemeResource AccentButtonStyle}" Visibility="Collapsed" Click="UpdateButton_Click"/>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel x:Name="StatusStackPanel" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="5" Margin="0 5 0 2" Spacing="10">
+                        
+                        <TextBlock x:Name="BigStatusTextBlock"  Text="Waiting..." Visibility="Visible" />
+                        <TextBlock x:Name="SpeedTextBlock"  Text="" Visibility="Visible" Grid.Column="1"/>
+                        <TextBlock x:Name="TimeTextBlock"  Text="" Visibility="Visible" Grid.Column="1"/>
+                        <TextBlock x:Name="ErrorTextBlock" Visibility="Visible" IsTextSelectionEnabled="True"/>
+                    </StackPanel>
+                    <Grid x:Name="BigUpdateGrid" Grid.Row="2" Grid.ColumnSpan="6">
+                        <Button x:Name="BigUpdateButton" Content="Update now" Style="{ThemeResource AccentButtonStyle}" Visibility="Visible"  HorizontalAlignment="Stretch" Margin="0 5" Click="UpdateButton_Click"/>
+                    </Grid>
+                    <StackPanel x:Name="DescriptionStackPanel" Grid.Row="3" Grid.ColumnSpan="5" Margin="70 0 0 10" Spacing="5" Visibility="Collapsed">
+                        <TextBlock Text="Version notes" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 0 0 5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}" Width="4" VerticalAlignment="Stretch"/>
+                            <StackPanel Grid.Column="1" >
+                                <Grid>
+                                    <controls:MarkdownTextBlock 
+                                        Margin="20 5 0 5" x:Name="DescriptionText" 
+                                        Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                                        Text="{x:Bind Description, Mode=OneWay}"
+                                        UseAutoLinks="True"
+                                        UseEmphasisExtras="True"
+                                        UseListExtras="True"
+                                        UsePipeTables="True"
+                                        UseTaskLists="True"/>
+                                </Grid>
+                                <HyperlinkButton x:Name="ViewMoreButton" Content="View more" Padding="6 2" Margin="14 0 0 0" Visibility="Collapsed" Click="ViewMoreButton_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" Grid.Row="3" Grid.ColumnSpan="5" VerticalAlignment="Bottom" CornerRadius="0" Visibility="Collapsed"/>
+            </Grid>
+        </Button>
+    </Grid>
+</UserControl>
