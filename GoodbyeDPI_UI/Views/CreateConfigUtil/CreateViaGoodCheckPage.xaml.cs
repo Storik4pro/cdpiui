@@ -228,7 +228,7 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
 
         private void LoadGoodCheckSettings()
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, 
                 StateHelper.StoreDirName, 
@@ -245,7 +245,7 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
                 IniSettingsHelper = new(targetFolder, System.Text.Encoding.UTF8);
 
             PValue.Text = SettingsManager.Instance.GetValue<string>(["ADDONS", AddOnId], "passesValue");
-            ResolverComboBox.SelectedIndex = SettingsManager.Instance.GetValue<bool>(["ADDONS", AddOnId], "UseCurl") ? 1 : 0;
+            ResolverComboBox.SelectedIndex = SettingsManager.Instance.GetValue<bool>(["ADDONS", AddOnId], "useCurl") ? 1 : 0;
             ConnectionTimeout.Text = IniSettingsHelper.GetValue<string>("General", "ConnectionTimeout");
             
             ResolverNativeTimeout.Text = IniSettingsHelper.GetValue<string>("Advanced", "ResolverNativeTimeout");
@@ -272,7 +272,7 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
 
         private void SaveGoodCheckSettings()
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData,
                 StateHelper.StoreDirName,
@@ -373,6 +373,17 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
                     GoForwardButton.IsEnabled = true;
                     SwitchState(States.LetsBegin, slideToLeft:false);
                     break;
+                case States.LetsBegin:
+                    if (Frame.CanGoBack)
+                    {
+                        Frame.GoBack();
+                    }
+                    else
+                    {
+                        CreateConfigUtilWindow.Instance.Close();
+                    }
+
+                        break;
                 default:
                     SwitchState(_currentState - 1, slideToLeft:false);
                     break;
@@ -405,7 +416,7 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
                     break;
                 case States.AdditionalSettings:
                     SaveGoodCheckSettings();
-                    CreateConfigUtilWindow.Instance.NavigateToPage<GoodCheckWorkPage>();
+                    Frame.Navigate(typeof(GoodCheckWorkPage));
                     StartGoodCheck();
                     break;
                 default:
@@ -456,7 +467,7 @@ namespace GoodbyeDPI_UI.Views.CreateConfigUtil
                 return;
             }
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.LocalUserItemsId, StateHelper.LocalUserItemSiteListsFolder);
 
