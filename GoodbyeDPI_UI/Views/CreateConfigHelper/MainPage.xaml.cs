@@ -1,5 +1,6 @@
 using GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using GoodbyeDPI_UI.Helper.Items;
+using GoodbyeDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Forms;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -73,6 +75,31 @@ namespace GoodbyeDPI_UI.Views.CreateConfigHelper
                 XamlRoot = this.Content.XamlRoot 
             };
             await dialog.ShowAsync();
+            if (dialog.SelectedConfigResult == SelectResult.Selected)
+            {
+                ConfigItem configItem = dialog.SelectedConfigItem;
+                Frame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        private async void GoodCheckRecentReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            RecentGoodCheckSelectionsContentDialog dialog = new RecentGoodCheckSelectionsContentDialog()
+            {
+                XamlRoot = this.Content.XamlRoot
+            };
+            await dialog.ShowAsync();
+            if (dialog.SelectedResult == SelectResult.Selected)
+            {
+                string directory = dialog.SelectedReport;
+                Frame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, directory), new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        private async void GoodCheckBeginSelectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateConfigUtilWindow window = await((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
+            window.NavigateToPage<CreateViaGoodCheck>();
         }
     }
 }

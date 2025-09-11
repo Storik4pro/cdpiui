@@ -53,7 +53,7 @@
                         <StackPanel Grid.Column="0" Spacing="5" >
                             <TextBlock Text="GoodCheck config selection" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
-                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Button x:Name="GoodCheckBeginSelectionButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="GoodCheckBeginSelectionButton_Click">
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xEB9D;" />
@@ -61,11 +61,11 @@
                                         </Grid>
                                     </Button.Content>
                                 </Button>
-                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Button x:Name="GoodCheckRecentReportButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="GoodCheckRecentReportButton_Click">
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE823;" />
-                                            <TextBlock Text="Resent selections" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock Text="Recent selections" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
