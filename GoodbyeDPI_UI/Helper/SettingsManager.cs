@@ -73,7 +73,7 @@ namespace CDPI_UI.Helper
                 return (T)(object)default(T);
             }
         }
-        public T GetValue<T>(string group, string key, XElement xElement = null) // TODO: Add default values for all parameters
+        public T GetValue<T>(string group, string key, XElement xElement = null, bool raiseExceptionIfNotExits = false)
         {
             if (xElement == null) xElement = _xDocument.Root;
             var settingElement = xElement
@@ -83,6 +83,8 @@ namespace CDPI_UI.Helper
                 .FirstOrDefault(s => s.Attribute("Key")?.Value == key);
 
             if (settingElement == null) {
+                if (raiseExceptionIfNotExits) throw new Exception("Value not exist");
+
                 var defaultValue = GetDefaultValueForKey<T>(group, key);
 
                 SetValue(group, key, defaultValue);
@@ -109,7 +111,7 @@ namespace CDPI_UI.Helper
 
             throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group '{group}'.");
         }
-        public T GetValue<T>(IEnumerable<string> groupPath, string key, XElement xElement = null)
+        public T GetValue<T>(IEnumerable<string> groupPath, string key, XElement xElement = null, bool raiseExceptionIfNotExits = false)
         {
             if (xElement == null) xElement = _xDocument.Root;
             XElement current = xElement;
@@ -121,6 +123,7 @@ namespace CDPI_UI.Helper
                     .FirstOrDefault(g => (string)g.Attribute("Name") == grp);
                 if (current == null)
                 {
+                    if (raiseExceptionIfNotExits) throw new Exception("Value not exist");
                     var defaultValue = GetDefaultValueForKey<T>(groupPath, key);
                     SetValue(groupPath, key, defaultValue);
                     Debug.WriteLine($"Group path '{string.Join("/", groupPath)}' not found.");
@@ -292,7 +295,7 @@ namespace CDPI_UI.Helper
             try
             {
                 XDocument temp_xDocument = XDocument.Load(templatePath);
-                return GetValue<T>(group, key, temp_xDocument.Root);
+                return GetValue<T>(group, key, temp_xDocument.Root, raiseExceptionIfNotExits:true);
             }
             catch
             {
@@ -307,7 +310,7 @@ namespace CDPI_UI.Helper
             try
             {
                 XDocument temp_xDocument = XDocument.Load(templatePath);
-                return GetValue<T>(groupPath, key, temp_xDocument.Root);
+                return GetValue<T>(groupPath, key, temp_xDocument.Root, raiseExceptionIfNotExits: true);
             }
             catch
             {
