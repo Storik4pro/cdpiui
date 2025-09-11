@@ -27,6 +27,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
     {
         public int OperationId { get; set; }
         public string SiteListName { get; set; } 
+        public string SiteListPath { get; set; }
         public string Output { get; set; } = "";
         public GoodCheckOperationType OperationType { get; set; } = GoodCheckOperationType.Wait;
         public string ErrorCode { get; set; } = "";
@@ -43,7 +44,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
     }
     public class GoodCheckProcessHelper
     {
-        public Action AllComplete;
+        public Action<string> AllComplete;
         public Action<string> ErrorHappens;
         public Action<GoodCheckSiteListModel> ProcessCompleted;
         public Action<string> CurrentSiteListChanged;
@@ -67,10 +68,11 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
         private string ExeFileName = "";
         private string DirName = "";
         private string ComponentName = "";
+        private string ComponentId = "";
 
         private const string GetProgressRegex = @"Launching '[a-zA-Z]{1,}', strategy (\d{1,})/(\d{1,}): \[(.*?)\]";
         private const string GetStrategyCountRegex = @"worst result for this strategy: (\d{1,})/(\d{1,})\n{1,}Terminating program\.\.\.";
-        private const string AnalyzeRegex = @"Launching '[a-zA-Z]{1,}', strategy (\d{1,})/(\d{1,}): \[(.*?)\](?:.*?)worst result for this strategy: (\d{1,})/(\d{1,})\n{1,}Terminating program\.\.\.";
+        private const string AnalyzeRegex = @"Launching '[a-zA-Z]{1,}', strategy (\d{1,})/(\d{1,}): \[(.*?)\](?:.*?)worst result for this strategy: (\d{1,})/(\d{1,})(\n||This strategy has no successes){1,}Terminating program\.\.\.";
 
         private CancellationTokenSource CancellationTokenSource;
         private CancellationToken CancellationToken;
@@ -111,7 +113,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
             DatabaseStoreItem item = DatabaseHelper.Instance.GetItemById(AddonId);
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             DirName = Path.Combine(
                 localAppData,
                 StateHelper.StoreDirName,
@@ -169,9 +171,10 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             CurrentOperationId = 0;
 
             ComponentName = StateHelper.Instance.ComponentIdPairs[componentId].ToLower();
+            ComponentId = componentId;
             _mode = checkMode;
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string siteListFolder = Path.Combine(
                 localAppData,
                 StateHelper.StoreDirName,
@@ -199,6 +202,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 {
                     OperationId = 0,
                     SiteListName = Path.GetFileName(siteList),
+                    SiteListPath = siteList,
                     CancellationTokenSource = cancellationTokenSource,
                     CancellationToken = cancellationTokenSource.Token
                 });
@@ -208,6 +212,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 for (int i = 0; i < siteListsToCheck.Count; i++)
                 {
                     var model = siteListsToCheck[i];
+                    string path = model.SiteListPath;
                     File.Copy(model.SiteListPath, Path.Combine(siteListFolder, Path.GetFileName(model.SiteListPath)), true);
 
                     model.SiteListPath = Path.GetFileName(model.SiteListPath);
@@ -219,6 +224,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                     {
                         OperationId = i,
                         SiteListName = model.SiteListPath,
+                        SiteListPath = path,
                         CancellationTokenSource= cancellationTokenSource,
                         CancellationToken = cancellationTokenSource.Token
                     });
@@ -239,7 +245,8 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
         public void Stop()
         {
-            CancellationTokenSource.Dispose();
+            CancellationTokenSource.Cancel();
+            PipeClient.Instance.SendMessage("GOODCHECK:STOP");
         }
 
 
@@ -267,7 +274,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
                         CurrentSiteListIndex = Tuple.Create(i+1, _siteList.Count);
 
-                        if (cancellationToken.IsCancellationRequested) break;
+                        if (cancellationToken.IsCancellationRequested || CancellationToken.IsCancellationRequested) break;
 
                         bool ok = await StartProcessAsync(site, cancellationToken).ConfigureAwait(false);
                         if (ok)
@@ -277,10 +284,11 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                             OperationTypeChanged?.Invoke(Tuple.Create(CurrentOperationId, GoodCheckOperationType.SuccessFinish));
                         }
 
-                        if (cancellationToken.IsCancellationRequested) break;
+                        if (cancellationToken.IsCancellationRequested || CancellationToken.IsCancellationRequested) break;
                     }
 
                     CreateAndSaveReport();
+                    
                 }
             }
             catch (OperationCanceledException)
@@ -291,6 +299,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             {
                 Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"ERR_INTERNAL happens: {ex}");
                 ErrorHappens?.Invoke("ERR_INTERNAL");
+                AllComplete?.Invoke(string.Empty);
             }
         }
 
@@ -298,15 +307,13 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
         {
             IncorrectCount = 0;
             CorrectCount = 0;
-            var prevWorking = Environment.CurrentDirectory;
-            Environment.CurrentDirectory = DirName;
 
             if (string.IsNullOrEmpty(ExeFileName) || !File.Exists(ExeFileName))
             {
                 HandleProcessException("ERR_EXE_NOT_FOUND", CurrentOperationId);
                 return false;
             }
-            string resolver = SettingsManager.Instance.GetValue<bool>(["ADDONS", AddonId], "UseCurl") ? "curl" : "native";
+            string resolver = SettingsManager.Instance.GetValue<bool>(["ADDONS", AddonId], "useCurl") ? "curl" : "native";
             string args =
                 $"-q "+
                 $"-p {SettingsManager.Instance.GetValue<string>(["ADDONS", AddonId], "passesValue")} " +
@@ -315,94 +322,37 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 $"-c \"{siteList.SiteListPath}\" " +
                 $"-s \"{siteList.StrategyListPath}\" ";
 
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = ExeFileName,
-                Arguments = args,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                WorkingDirectory = DirName,
-            };
-
-            var job = CreateKillOnCloseJob();
-
-            using var proc = new Process { StartInfo = startInfo, EnableRaisingEvents = true };
-
-            try
-            {
-                if (!proc.Start())
-                {
-                    HandleProcessException("ERR_UNABLE_START_PROCESS", CurrentOperationId);
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                HandleProcessException("ERR_UNABLE_START_PROCESS", CurrentOperationId);
-                return false;
-            }
-
-            if (!AssignProcessToJobObject(job, proc.Handle))
-            {
-                HandleProcessException("ERR_WIN32_EXCEPTION", CurrentOperationId);
-                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"ERR_WIN32_EXCEPTION details => {Marshal.GetLastWin32Error()}");
-                return false;
-            }
+            PipeClient.Instance.SendMessage($"GOODCHECK:START({ExeFileName}$SEPARATOR{args}$SEPARATOR{CurrentOperationId})");
 
             string logsDirectory = Path.Combine(DirName, "Logs");
-            var monitorTask = MonitorProcessAndLogsAsync(proc, logsDirectory, cancellationToken);
+            var monitorTask = MonitorProcessAndLogsAsync(logsDirectory, cancellationToken);
 
             try
             {
-                var completedTask = await Task.WhenAny(monitorTask, Task.Run(() =>
+                await monitorTask.ConfigureAwait(false);
+
+                bool result = await monitorTask.ConfigureAwait(false);
+
+                GoodCheckOperationModel model = GetOperationById(CurrentOperationId);
+
+                if ((cancellationToken.IsCancellationRequested || model.CancellationToken.IsCancellationRequested || CancellationToken.IsCancellationRequested))
                 {
-                    proc.WaitForExit();
-                }, cancellationToken)).ConfigureAwait(false);
-
-                if (completedTask == monitorTask)
-                {
-                    bool result = await monitorTask.ConfigureAwait(false);
-
-                    GoodCheckOperationModel model = GetOperationById(CurrentOperationId);
-
-                    if ((cancellationToken.IsCancellationRequested || model.CancellationToken.IsCancellationRequested) && !proc.HasExited)
-                    {
-                        TryKillProcess(proc);
-                        return false;
-                    }
-
-                    return result;
+                    PipeClient.Instance.SendMessage("GOODCHECK:STOP");
+                    return false;
                 }
-                else
-                {
-                    bool result = await monitorTask.ConfigureAwait(false);
-                    return result;
-                }
+
+                return result;
+                
+            }
+            catch 
+            { 
+                return false;
             }
             finally
             {
-                if (!proc.HasExited)
-                {
-                    TryKillProcess(proc);
-                }
-                Environment.CurrentDirectory = prevWorking;
+
             }
 
-        }
-
-        private void TryKillProcess(Process proc)
-        {
-            try
-            {
-                if (!proc.HasExited)
-                {
-                    proc.Kill(entireProcessTree: true);
-                }
-            }
-            catch
-            {
-                // pass
-            }
         }
 
         string goodStrategyCountString;
@@ -464,7 +414,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             Operations[CurrentOperationId].Output += $"{output}\n";
         }
 
-        private async Task<bool> MonitorProcessAndLogsAsync(Process proc, string logsDirectory, CancellationToken cancellationToken)
+        private async Task<bool> MonitorProcessAndLogsAsync(string logsDirectory, CancellationToken cancellationToken)
         {
             const string logPattern = "logfile_GoodCheckGoGo_*.log";
             const string errorFlag = "Exiting with an error...";
@@ -479,18 +429,12 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
             try
             {
-                while (!cancellationToken.IsCancellationRequested && !model.CancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested && !model.CancellationToken.IsCancellationRequested && !CancellationToken.IsCancellationRequested)
                 {
                     string newest = GetNewestLogFile(logsDirectory, logPattern);
 
                     if (string.IsNullOrEmpty(newest))
                     {
-                        if (proc.HasExited)
-                        {
-                            HandleProcessException("ERR_PROCESS_DIED_UNKNOWN", CurrentOperationId);
-                            return false;
-                        }
-
                         await Task.Delay(500, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
@@ -528,32 +472,6 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                                 return true;
                             }
                         }
-                    }
-
-                    if (proc.HasExited)
-                    {
-                        string remaining = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        if (!string.IsNullOrEmpty(remaining))
-                        {
-                            string[] lines = remaining.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (var line in lines)
-                            {
-                                AddOutput(line);
-
-                                if (line.IndexOf(errorFlag, StringComparison.OrdinalIgnoreCase) >= 0)
-                                {
-                                    HandleProcessException("ERR_GOODCHECK_EXCEPTION", CurrentOperationId);
-                                    return false;
-                                }
-                                if (line.IndexOf(successFlag, StringComparison.OrdinalIgnoreCase) >= 0)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        HandleProcessException("ERR_PROCESS_DIED", CurrentOperationId);
-                        return false;
                     }
 
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
@@ -598,7 +516,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             }
         }
 
-        private void HandleProcessException(string errorCode, int operationId)
+        public void HandleProcessException(string errorCode, int operationId)
         {
             Operations[operationId].OperationType = GoodCheckOperationType.ErrorHappens;
             Operations[operationId].ErrorCode = errorCode;
@@ -606,12 +524,22 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             ErrorHappens?.Invoke(errorCode);
         }
 
+        public void OperationWithIdDied(int id)
+        {
+            GoodCheckOperationModel model = GetOperationById(id);
+            model.OperationType = GoodCheckOperationType.SuccessFinish;
+            model.CancellationTokenSource.Cancel();
+            // model.CancellationTokenSource.Dispose();
+
+            OperationTypeChanged?.Invoke(Tuple.Create(id, GoodCheckOperationType.SuccessFinish));
+        }
+
         public void RemoveFromQueueOrStopOperation(int id)
         {
             GoodCheckOperationModel model = GetOperationById(id);
             model.OperationType = GoodCheckOperationType.UserInterrupt;
             model.CancellationTokenSource.Cancel();
-            model.CancellationTokenSource.Dispose();
+            // model.CancellationTokenSource.Dispose();
 
             OperationTypeChanged?.Invoke(Tuple.Create(id, GoodCheckOperationType.UserInterrupt));
         }
@@ -621,7 +549,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             int secondsSinceEpoch = (int)t.TotalSeconds;
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string filePath = Path.Combine(
                 localAppData,
                 StateHelper.StoreDirName,
@@ -644,7 +572,10 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 opIndex++;
                 string operationName = operation.SiteListName;
 
-                var group = new XElement("Group", new XAttribute("Name", operationName));
+                var group = new XElement("Group", 
+                    new XAttribute("Name", operationName), 
+                    new XAttribute("FullPath", operation.SiteListPath),
+                    new XAttribute("ComponentId", ComponentId));
 
                 var matches = Regex.Matches(operation.Output, AnalyzeRegex, RegexOptions.Singleline);
                 foreach (Match match in matches)
@@ -654,6 +585,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                     string all = match.Groups[5].Value;
 
                     var matchElem = new XElement("StrategyResult",
+                        new XElement("Flag", false),
                         new XElement("Strategy", strategy),
                         new XElement("Success", success),
                         new XElement("All", all)
@@ -664,6 +596,7 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 root.Add(group);
             }
             doc.Save(filePath);
+            AllComplete?.Invoke(filePath);
         }
         public List<GoodCheckOperationModel> GetCurrentOperations()
         {
@@ -677,83 +610,6 @@ namespace GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck
             }
             catch { return null; }
         }
-        #region WinAPI
-
-        const int JobObjectExtendedLimitInformation = 9;
-        const uint JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000;
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct JOBOBJECT_BASIC_LIMIT_INFORMATION
-        {
-            public long PerProcessUserTimeLimit;
-            public long PerJobUserTimeLimit;
-            public uint LimitFlags;
-            public UIntPtr MinimumWorkingSetSize;
-            public UIntPtr MaximumWorkingSetSize;
-            public uint ActiveProcessLimit;
-            public UIntPtr Affinity;
-            public uint PriorityClass;
-            public uint SchedulingClass;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct IO_COUNTERS
-        {
-            public ulong ReadOperationCount;
-            public ulong WriteOperationCount;
-            public ulong OtherOperationCount;
-            public ulong ReadTransferCount;
-            public ulong WriteTransferCount;
-            public ulong OtherTransferCount;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct JOBOBJECT_EXTENDED_LIMIT_INFORMATION
-        {
-            public JOBOBJECT_BASIC_LIMIT_INFORMATION BasicLimitInformation;
-            public IO_COUNTERS IoInfo;
-            public UIntPtr ProcessMemoryLimit;
-            public UIntPtr JobMemoryLimit;
-            public UIntPtr PeakProcessMemoryUsed;
-            public UIntPtr PeakJobMemoryUsed;
-        }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern IntPtr CreateJobObject(IntPtr lpJobAttributes, string lpName);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool SetInformationJobObject(IntPtr hJob, int JobObjectInfoClass, IntPtr lpJobObjectInfo, uint cbJobObjectInfoLength);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool CloseHandle(IntPtr hObject);
-
-        static IntPtr CreateKillOnCloseJob()
-        {
-            var job = CreateJobObject(IntPtr.Zero, null);
-            if (job == IntPtr.Zero)
-                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
-
-            var info = new JOBOBJECT_EXTENDED_LIMIT_INFORMATION();
-            info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-
-            int length = Marshal.SizeOf(typeof(JOBOBJECT_EXTENDED_LIMIT_INFORMATION));
-            IntPtr p = Marshal.AllocHGlobal(length);
-            try
-            {
-                Marshal.StructureToPtr(info, p, false);
-                if (!SetInformationJobObject(job, JobObjectExtendedLimitInformation, p, (uint)length))
-                    throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(p);
-            }
-
-            return job;
-        }
-        #endregion
+        
     }
 }
