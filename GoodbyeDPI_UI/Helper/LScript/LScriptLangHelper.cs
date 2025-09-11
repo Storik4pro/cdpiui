@@ -1,4 +1,5 @@
 ﻿using GoodbyeDPI_UI.Helper.Static;
+using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +15,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
     {
 
         private const string ScriptGetArgsRegex = @"\$.*?\((.*?)\)";
+        private const string Pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION)(?:\((.*?)\))?";
 
         public LScriptLangHelper() { }
 
@@ -55,7 +57,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
                     }
                     else if (scriptString.StartsWith("$GETCURRENTDIR"))
                     {
-                        string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+                        string localAppData = StateHelper.GetDataDirectory();
                         string localItemsFolder = Path.Combine(
                             localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
 
@@ -97,7 +99,7 @@ namespace GoodbyeDPI_UI.Helper.LScript
 
             try
             {
-                string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+                string localAppData = StateHelper.GetDataDirectory();
                 string localItemsFolder = Path.Combine(
                     localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
 
@@ -106,9 +108,8 @@ namespace GoodbyeDPI_UI.Helper.LScript
                     localItemsFolder = Path.Combine(localItemsFolder, callItemId);
                 }
 
-                string pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION)(?:\((.*?)\))?";
 
-                result = Regex.Replace(result, pattern, (Match m) =>
+                result = Regex.Replace(result, Pattern, (Match m) =>
                 {
                     string command = m.Groups[1].Value.ToUpperInvariant();
                     string rawArg = m.Groups[2].Success ? m.Groups[2].Value : "";
@@ -172,7 +173,10 @@ namespace GoodbyeDPI_UI.Helper.LScript
             var qPos = condition.IndexOf('?');
             int cPos;
             if (condition.Contains("$SEPARATOR"))
+            {
                 cPos = condition.IndexOf("$SEPARATOR");
+                condition = condition.Replace("$SEPARATOR", "$");
+            }
             else
                 cPos = condition.IndexOf(':');
             if (qPos < 0 || cPos < 0 || cPos < qPos)
@@ -209,6 +213,61 @@ namespace GoodbyeDPI_UI.Helper.LScript
 
             var resultObj = exprToEval;
             return resultObj.ToString();
+        }
+
+        public static Tuple<string, string, string, string> GetNameOnOffValuesFromConditionString(string conditionString)
+        {
+            conditionString = Regex.Replace(conditionString, Pattern, (Match m) =>
+            {
+                string command = m.Groups[1].Value.ToUpperInvariant();
+                string rawArg = m.Groups[2].Success ? m.Groups[2].Value : "";
+                string scriptData = rawArg;
+
+                return scriptData;
+            });
+
+            if (string.IsNullOrWhiteSpace(conditionString))
+                return null;
+
+            var qPos = conditionString.IndexOf('?');
+            int cPos;
+            if (conditionString.Contains("$SEPARATOR"))
+            {
+                cPos = conditionString.IndexOf("$SEPARATOR");
+                conditionString = conditionString.Replace("$SEPARATOR", "$");
+            }
+            else
+                cPos = conditionString.IndexOf(':');
+
+            if (qPos < 0 || cPos < 0 || cPos < qPos)
+            {
+                Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"0x0 Not correct condition");
+                return null;
+            }
+
+            var condExpr = conditionString.Substring(0, qPos).Trim();
+            var trueExpr = conditionString.Substring(qPos + 1, cPos - qPos - 1).Trim();
+            var falseExpr = conditionString.Substring(cPos + 1).Trim();
+
+            var parts = condExpr.Split(new[] { "==" }, StringSplitOptions.None);
+            if (parts.Length != 2)
+            {
+                Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"0x1 Not correct condition");
+                return null;
+            }
+
+            string varName = parts[0].Trim();
+            string conditionVarName = "";
+
+            Match match = Regex.Match(varName, @"^%(.*?)%=");
+            if (match.Success)
+            {
+                conditionVarName = match.Groups[1].Value;
+            }
+            varName = Regex.Replace(varName, @"^%.*?%=", "");
+
+
+            return Tuple.Create(varName, conditionVarName, trueExpr, falseExpr);
         }
 
         
