@@ -1,4 +1,5 @@
 using GoodbyeDPI_UI.Helper;
+using GoodbyeDPI_UI.Views;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.UI.Xaml;
@@ -67,11 +68,42 @@ namespace GoodbyeDPI_UI
 
             NavView.SelectedItem = NavView.MenuItems[0];
             ContentFrame.Navigate(typeof(Views.MainPage));
-            SetTitleBar(AppTitleBar);
+            SetTitleBar(WindowMoveAera);
             NavView.SelectionChanged += NavView_SelectionChanged;
 
+            StoreHelper.Instance.ItemRemoved += Instance_ItemRemoved;
+            StoreHelper.Instance.ItemActionsStopped += Instance_ItemActionsStopped;
+
+            AuditNavigationItems();
         }
-        
+
+        private void AuditNavigationItems()
+        {
+            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("Zapret")))
+            {
+                ZapretNavigationViewItem.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ZapretNavigationViewItem.Visibility = Visibility.Collapsed;
+            }
+
+            if (ContentFrame.CurrentSourcePageType == typeof(ZapretSettingsPage))
+            {
+                ContentFrame.Navigate(typeof(MainPage));
+            }
+        }
+
+        private void Instance_ItemActionsStopped(string obj)
+        {
+            AuditNavigationItems();
+        }
+
+        private void Instance_ItemRemoved(string obj)
+        {
+            AuditNavigationItems();
+        }
+
         ~MainWindow()
         {
             ((App)Application.Current).OpenWindows.Remove(this);
@@ -84,6 +116,157 @@ namespace GoodbyeDPI_UI
             _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
         }
 
+        private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
+        {
+            AppTitleBar.Margin = new Thickness()
+            {
+                Left = AppTitleBar.Margin.Left,
+                Top = AppTitleBar.Margin.Top,
+                Right = AppTitleBar.Margin.Right,
+                Bottom = AppTitleBar.Margin.Bottom
+            };
+        }
+        private double NavViewCompactModeThresholdWidth { get { return NavView.CompactModeThresholdWidth; } }
+
+        private void NavView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigated += On_Navigated;
+
+            NavView.SelectedItem = NavView.MenuItems[0];
+
+            NavView_Navigate(typeof(Views.MainPage), new EntranceNavigationTransitionInfo());
+        }
+
+        private void NavView_ItemInvoked(NavigationView sender,
+                                         NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.InvokedItemContainer.Tag.ToString() == "AddNewComponent")
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (AddNavigationViewFlyout.IsOpen)
+                        AddNavigationViewFlyout.Hide();
+
+                    AddNavigationViewFlyout.ShowAt(AddNaviagationViewItem);
+                });
+                Logger.Instance.CreateDebugLog(nameof(MainWindow), "FLY OPEN");
+                return;
+            }
+            if (args.IsSettingsInvoked == true)
+            {
+                // pass
+            }
+            else if (args.InvokedItemContainer != null)
+            {
+                Type navPageType = Type.GetType(args.InvokedItemContainer.Tag.ToString());
+                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
+            }
+        }
+
+        private void NavView_SelectionChanged(NavigationView sender,
+                                              NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.IsSettingsSelected == true)
+            {
+                // pass
+            }
+            else if (args.SelectedItemContainer != null)
+            {
+                Type navPageType = Type.GetType(args.SelectedItemContainer.Tag.ToString());
+                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
+                
+            }
+        }
+
+        private void NavView_Navigate(
+            Type navPageType,
+            NavigationTransitionInfo transitionInfo)
+        {
+            Type preNavPageType = ContentFrame.CurrentSourcePageType;
+
+            if (navPageType is not null && !Type.Equals(preNavPageType, navPageType))
+            {
+                ContentFrame.Navigate(navPageType, null, transitionInfo);
+            }
+        }
+
+        private void NavView_BackRequested(NavigationView sender,
+                                           NavigationViewBackRequestedEventArgs args)
+        {
+            TryGoBack();
+        }
+
+        private bool TryGoBack()
+        {
+            if (!ContentFrame.CanGoBack)
+                return false;
+
+            ContentFrame.GoBack();
+            return true;
+        }
+
+        private void On_Navigated(object sender, NavigationEventArgs e)
+        {
+            NavView.IsBackEnabled = ContentFrame.CanGoBack;
+
+            if (ContentFrame.SourcePageType != null)
+            {
+                Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
+                try
+                {
+                    NavView.SelectedItem = NavView.MenuItems
+                                .OfType<NavigationViewItem>()
+                                .First(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
+                    BackButton.Visibility = Visibility.Collapsed;
+                }
+                catch (Exception ex) { Debug.WriteLine(ex);  }
+            }
+        }
+
+        public void NavigateSubPage(Type page, SlideNavigationTransitionEffect effect)
+        {
+            try
+            {
+                ContentFrame.Navigate(page, null, new SlideNavigationTransitionInfo() { Effect = effect });
+                BackButton.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex) 
+            { 
+            Debug.WriteLine(ex);
+            }
+
+        }
+
+        private void SetWindowSize(int width, int height)
+        {
+            var hwnd = WindowNative.GetWindowHandle(this);
+
+            Microsoft.UI.WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
+        }
+
+        private void BackButton_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
+        }
+
+        private void BackButton_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            AnimatedIcon.SetState(this.SearchAnimatedIcon, "Normal");
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.CanGoBack)
+            {
+                ContentFrame.GoBack();
+            }
+        }
+        #region WINAPI
+
         private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
@@ -94,7 +277,7 @@ namespace GoodbyeDPI_UI
                 minMaxInfo.ptMinTrackSize.x = 484;
                 minMaxInfo.ptMinTrackSize.y = 300;
                 Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            } 
+            }
             return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
         }
 
@@ -135,148 +318,6 @@ namespace GoodbyeDPI_UI
         [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern void FlushMenuThemes();
 
-        private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
-        {
-            AppTitleBar.Margin = new Thickness()
-            {
-                Left = sender.CompactPaneLength * (sender.DisplayMode == NavigationViewDisplayMode.Minimal ? 2 : 1),
-                Top = AppTitleBar.Margin.Top,
-                Right = AppTitleBar.Margin.Right,
-                Bottom = AppTitleBar.Margin.Bottom
-            };
-        }
-        private double NavViewCompactModeThresholdWidth { get { return NavView.CompactModeThresholdWidth; } }
-
-        private void ContentFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
-        {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-        }
-
-        private void NavView_Loaded(object sender, RoutedEventArgs e)
-        {
-            // You can also add items in code.
-
-            // Add handler for ContentFrame navigation.
-            ContentFrame.Navigated += On_Navigated;
-
-            // NavView doesn't load any page by default, so load home page.
-            NavView.SelectedItem = NavView.MenuItems[0];
-            // If navigation occurs on SelectionChanged, this isn't needed.
-            // Because we use ItemInvoked to navigate, we need to call Navigate
-            // here to load the home page.
-            NavView_Navigate(typeof(Views.MainPage), new EntranceNavigationTransitionInfo());
-        }
-
-        private void NavView_ItemInvoked(NavigationView sender,
-                                         NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.IsSettingsInvoked == true)
-            {
-                // pass
-            }
-            else if (args.InvokedItemContainer != null)
-            {
-                Type navPageType = Type.GetType(args.InvokedItemContainer.Tag.ToString());
-                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
-            }
-        }
-
-        // NavView_SelectionChanged is not used in this example, but is shown for completeness.
-        // You will typically handle either ItemInvoked or SelectionChanged to perform navigation,
-        // but not both.
-        private void NavView_SelectionChanged(NavigationView sender,
-                                              NavigationViewSelectionChangedEventArgs args)
-        {
-            
-
-            if (args.IsSettingsSelected == true)
-            {
-                // pass
-            }
-            else if (args.SelectedItemContainer != null)
-            {
-                Type navPageType = Type.GetType(args.SelectedItemContainer.Tag.ToString());
-                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
-            }
-        }
-
-        private void NavView_Navigate(
-            Type navPageType,
-            NavigationTransitionInfo transitionInfo)
-        {
-            // Get the page type before navigation so you can prevent duplicate
-            // entries in the backstack.
-            Type preNavPageType = ContentFrame.CurrentSourcePageType;
-
-            // Only navigate if the selected page isn't currently loaded.
-            if (navPageType is not null && !Type.Equals(preNavPageType, navPageType))
-            {
-                ContentFrame.Navigate(navPageType, null, transitionInfo);
-            }
-        }
-
-        private void NavView_BackRequested(NavigationView sender,
-                                           NavigationViewBackRequestedEventArgs args)
-        {
-            TryGoBack();
-        }
-
-        private bool TryGoBack()
-        {
-            if (!ContentFrame.CanGoBack)
-                return false;
-
-            // Don't go back if the nav pane is overlayed.
-            
-
-            ContentFrame.GoBack();
-            return true;
-        }
-
-        private void On_Navigated(object sender, NavigationEventArgs e)
-        {
-            NavView.IsBackEnabled = ContentFrame.CanGoBack;
-
-            if (ContentFrame.SourcePageType != null)
-            {
-                // Select the nav view item that corresponds to the page being navigated to.
-                Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
-                try
-                {
-                    NavView.SelectedItem = NavView.MenuItems
-                                .OfType<NavigationViewItem>()
-                                .First(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
-                }
-                catch (Exception ex) { Debug.WriteLine(ex);  }
-            }
-        }
-
-        public void NavigateSubPage(Type page, SlideNavigationTransitionEffect effect)
-        {
-            try
-            {
-                ContentFrame.Navigate(page, null, new SlideNavigationTransitionInfo() { Effect = effect });
-            }
-            catch (Exception ex) 
-            { 
-            Debug.WriteLine(ex);
-            }
-
-        }
-
-        private void SetWindowSize(int width, int height)
-        {
-            var hwnd = WindowNative.GetWindowHandle(this);
-
-            Microsoft.UI.WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
-
-            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-
-            appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
-        }
-
-        
-
-
+        #endregion
     }
 }

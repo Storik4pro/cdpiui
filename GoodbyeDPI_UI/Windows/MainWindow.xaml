@@ -1,120 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
 <winex:WindowEx
     x:Class="GoodbyeDPI_UI.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lcontrol="using:GoodbyeDPI_UI"
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
     Title="CDPI UI"
-    xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml">
+    xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
     </winex:WindowEx.SystemBackdrop>
 
     <Grid>
+        <Grid.Resources>
+            <Thickness x:Key="NavigationViewContentMargin">0,5,0,0</Thickness>
+            <Thickness x:Key="NavigationViewHeaderMargin">0,0,0,0</Thickness>
+            <Style TargetType="NavigationView">
+                <Setter Property="IsPaneToggleButtonVisible" Value="False" />
+                <Setter Property="OpenPaneLength" Value="72" />
+            </Style>
+            <Style TargetType="FlyoutPresenter">
+                <Setter Property="Padding" Value="0"/>
+            </Style>
+        </Grid.Resources>
+        
         <Grid x:Name="AppTitleBar"
-            Canvas.ZIndex="1"
-            Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
-            IsHitTestVisible="True"
-            VerticalAlignment="Top">
-                <Image Source="/Assets/StoreLogo.png"
-                HorizontalAlignment="Left"
-                Width="16" Height="16"
-                Margin="0,0"/>
-                <TextBlock x:Name="AppTitleTextBlock" Text="[BETA] CDPI UI"
-                TextWrapping="NoWrap"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                VerticalAlignment="Center"
-                Margin="30,0,0, 0" />
+              Canvas.ZIndex="1"
+              Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
+              IsHitTestVisible="True"
+              VerticalAlignment="Top"
+              Margin="8, 0, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="BackButton" 
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Width="30"
+                    Height="30"
+                    Padding="6"
+                    PointerEntered="BackButton_PointerEntered" 
+                    PointerExited="BackButton_PointerExited"
+                    Click="BackButton_Click"
+                    Visibility="Collapsed">
+                <AnimatedIcon x:Name="SearchAnimatedIcon">
+                    <AnimatedIcon.Source>
+                        <animatedvisuals:AnimatedBackVisualSource/>
+                    </AnimatedIcon.Source>
+                    <AnimatedIcon.FallbackIconSource>
+                        <SymbolIconSource Symbol="Back"/>
+                    </AnimatedIcon.FallbackIconSource>
+                </AnimatedIcon>
+            </Button>
 
+            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="8, 0, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Source="/Assets/StoreLogo.png"
+                       HorizontalAlignment="Left"
+                       Width="16" Height="16"
+                       Margin="0,0" Grid.Column="1"/>
+                <TextBlock x:Name="AppTitleTextBlock" Text="CDPI UI"
+                           TextWrapping="NoWrap"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Grid.Column="2" Margin="18, 0, 0, 0"/>
+                <TextBlock x:Name="AppTitleSubTextBlock" Text="Preview"
+                           Grid.Column="3"
+                           TextWrapping="NoWrap"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Margin="8, 0, 0, 0"/>
             </Grid>
 
-            <NavigationView x:Name="NavView" 
-            Canvas.ZIndex="0"
-            PaneDisplayMode="Auto"
-            IsSettingsVisible="False"
-            IsTitleBarAutoPaddingEnabled="False"
-            IsBackEnabled="True"
-            IsBackButtonVisible="Auto"
-            Loaded="NavView_Loaded"
-            ItemInvoked="NavView_ItemInvoked"
-            BackRequested="NavView_BackRequested"
-            DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
-            AlwaysShowHeader="False">
-                <NavigationView.HeaderTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" MaxWidth="1000">
-                            <TextBlock Text="{Binding}" MaxWidth="1000" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </NavigationView.HeaderTemplate>
-                <NavigationView.MenuItems>
+        </Grid>
 
-                    <NavigationViewItem Content="Home" Tag="GoodbyeDPI_UI.Views.MainPage" Icon="Home"/>
-                    <NavigationViewItemSeparator/>
-                    <NavigationViewItemHeader Content="Settings"/>
+        <NavigationView x:Name="NavView" 
+                Canvas.ZIndex="0"
+                PaneDisplayMode="Left"
+                IsSettingsVisible="False"
+                IsTitleBarAutoPaddingEnabled="False"
+                IsBackEnabled="True"
+                IsBackButtonVisible="Collapsed"
+                IsPaneToggleButtonVisible="False"
+                Loaded="NavView_Loaded"
+                ItemInvoked="NavView_ItemInvoked"
+                BackRequested="NavView_BackRequested"
+                DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
+                
+                AlwaysShowHeader="False"
+                Margin="0, 43, 0, 0">
+            <NavigationView.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" MaxWidth="1000">
+                        <TextBlock Text="{Binding}" MaxWidth="1000" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
+            <NavigationView.MenuItems>
 
-                    <NavigationViewItem Content="Personalize" Tag="GoodbyeDPI_UI.Views.PersonalizePage">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE771;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                <NavigationViewItem Content="Home" Tag="GoodbyeDPI_UI.Views.MainPage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+                <NavigationViewItemSeparator/>
 
-                    <NavigationViewItem Content="System" Tag="GoodbyeDPI_UI.Views.SystemPage" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE770;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                <NavigationViewItem Content="Utils" Tag="GoodbyeDPI_UI.Views.UtilsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                    <NavigationViewItem Content="Utils" Tag="GoodbyeDPI_UI.Views.UtilsPage" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE7B8;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                <NavigationViewItemSeparator/>
 
-                    <NavigationViewItem Content="Update" Tag="GoodbyeDPI_UI.Views.UpdatePage" Icon="Sync" />
+                <NavigationViewItem x:Name="ZapretNavigationViewItem" Content="Zapret" Tag="GoodbyeDPI_UI.Views.ZapretSettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Store/zapret.png" Width="23" ShowAsMonochrome="True"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                    <NavigationViewItemSeparator/>
-                    <NavigationViewItemHeader Content="Components"/>
+                <NavigationViewItem x:Name="AddNaviagationViewItem" Content="Add" Tag="AddNewComponent" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE710;" />
+                    </NavigationViewItem.Icon>
+                    <FlyoutBase.AttachedFlyout>
+                        <Flyout x:Name="AddNavigationViewFlyout" Placement="Right">
+                            <Grid Width="310">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Add new component from the Store" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <FlipView Grid.Row="1" Margin="0 10" MaxHeight="100" Background="Transparent">
+                                    <StackPanel Spacing="5" Orientation="Horizontal">
+                                        <lcontrol:StoreItemMicroButton StoreId="CSZTBN012" CardImageSource="/Assets/Store/zapret.png" CardTitle="Zapret"/>
+                                        <lcontrol:StoreItemMicroButton StoreId="CSBIHA024" CardImageSource="/Assets/Store/byedpi.png" CardTitle="ByeDPI"/>
+                                        <lcontrol:StoreItemMicroButton StoreId="CSGIVS036" CardImageSource="/Assets/Store/goodbyedpi.png" CardTitle="GoodbyeDPI"/>
+                                    </StackPanel>
+                                    <StackPanel Spacing="5" Orientation="Horizontal">
+                                        <lcontrol:StoreItemMicroButton StoreId="CSSIXC048" CardImageSource="/Assets/Store/spoofdpi.png" CardTitle="SpoofDPI"/>
+                                    </StackPanel>
+                                </FlipView>
+                                <toolkit:SettingsCard Grid.Row="2" Header="Explore new components in Store" IsClickEnabled="True" Margin="-17 0 -17 -17" CornerRadius="0">
+                                    <toolkit:SettingsCard.ActionIcon>
+                                        <FontIcon Glyph="&#xE8A7;"/>
+                                    </toolkit:SettingsCard.ActionIcon>
+                                    <toolkit:SettingsCard.HeaderIcon>
+                                        <BitmapIcon UriSource="ms-appx:///Assets/Square44x44Logo.scale-200.png" Width="23" ShowAsMonochrome="True"/>
+                                    </toolkit:SettingsCard.HeaderIcon>
+                                </toolkit:SettingsCard>
+                            </Grid>
+                        </Flyout>
+                    </FlyoutBase.AttachedFlyout>
+                </NavigationViewItem>
 
-                    <NavigationViewItem Content="GoodbyeDPI" Tag="SamplePage1" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE839;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                <NavigationViewItem Content="Zapret" Tag="GoodbyeDPI_UI.Views.ZapretSettingsPage" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE839;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Content="ByeDPI" Tag="SamplePage1" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE839;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Content="SpoofDPI" Tag="SamplePage1" >
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE839;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                </NavigationView.MenuItems>
-                <NavigationView.FooterMenuItems>
-
-                    <NavigationViewItem Content="About" Tag="SamplePage5">
-
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE946;" />
-                        </NavigationViewItem.Icon>
-
-                    </NavigationViewItem>
-
-                </NavigationView.FooterMenuItems>
+            </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Settings" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="About" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
 
 
             <Frame x:Name="ContentFrame" Margin="0,0,0,0">
@@ -126,27 +189,26 @@
             </Frame>
 
             <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup>
-                        <VisualState>
-                            <VisualState.StateTriggers>
-                                <AdaptiveTrigger
-         MinWindowWidth="{x:Bind NavViewCompactModeThresholdWidth}"/>
-                            </VisualState.StateTriggers>
-                            <VisualState.Setters>
-                                <!-- Remove the next 3 lines for left-only navigation. -->
-                                <Setter Target="NavView.PaneDisplayMode" Value="Top"/>
-                                <Setter Target="NavViewSearchBox.Width" Value="200"/>
-                                <Setter Target="NavView.HeaderVisibility" Value="False"/>
-                                <Setter Target="PagesHeader.Visibility" Value="False"/>
-                                <!-- Leave the next line for left-only navigation. -->
-                                <Setter Target="ContentFrame.Padding" Value="24,0,24,24"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-            </NavigationView>
-        
-
+                <VisualStateGroup>
+                    <VisualState>
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger
+                                    MinWindowWidth="{x:Bind NavViewCompactModeThresholdWidth}"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="NavView.HeaderVisibility" Value="False"/>
+                            <!-- Leave the next line for left-only navigation. -->
+                            <Setter Target="ContentFrame.Padding" Value="24,0,24,24"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </NavigationView>
+        <FlyoutBase.AttachedFlyout>
+            <Flyout>
+                <TextBlock Text="Dfsfsd"/>
+            </Flyout>
+        </FlyoutBase.AttachedFlyout>
     </Grid>
 
 </winex:WindowEx>
