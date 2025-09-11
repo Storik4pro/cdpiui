@@ -157,7 +157,7 @@
                                         <FontIcon Glyph="&#xE8A7;"/>
                                     </toolkit:SettingsCard.ActionIcon>
                                     <toolkit:SettingsCard.HeaderIcon>
-                                        <BitmapIcon UriSource="ms-appx:///Assets/Square44x44Logo.scale-200.png" Width="23" ShowAsMonochrome="True"/>
+                                        <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png" Width="23" ShowAsMonochrome="True"/>
                                     </toolkit:SettingsCard.HeaderIcon>
                                 </toolkit:SettingsCard>
                             </Grid>
