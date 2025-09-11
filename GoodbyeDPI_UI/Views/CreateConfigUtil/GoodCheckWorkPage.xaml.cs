@@ -18,6 +18,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using TextDecorations = Windows.UI.Text.TextDecorations;
 using static System.Net.Mime.MediaTypeNames;
+using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -40,6 +41,8 @@ public sealed partial class GoodCheckWorkPage : Page
 
     private const string AddOnId = "ASGKOI001";
 
+    private string FilePath = string.Empty;
+
     public GoodCheckWorkPage()
     {
         InitializeComponent();
@@ -57,14 +60,18 @@ public sealed partial class GoodCheckWorkPage : Page
         ConnectHandlers();
     }
 
-    private void AllCompletedActions()
+    private void AllCompletedActions(string filepath)
     {
-        ContentGrid.Visibility = Visibility.Collapsed;
-        LoadingStateGrid.Visibility = Visibility.Collapsed;
-        CancelButton.Visibility = Visibility.Collapsed;
+        FilePath = filepath;
+        _uiDispatcher.TryEnqueue(() =>
+        {
+            ContentGrid.Visibility = Visibility.Collapsed;
+            LoadingStateGrid.Visibility = Visibility.Collapsed;
+            CancelButton.Visibility = Visibility.Collapsed;
 
-        EndWork.Visibility = Visibility.Visible;
-        ForwardButton.Visibility = Visibility.Visible;
+            EndWork.Visibility = Visibility.Visible;
+            ForwardButton.Visibility = Visibility.Visible;
+        });
 
         CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
     }
@@ -263,7 +270,7 @@ public sealed partial class GoodCheckWorkPage : Page
 
     private void ViewLogHyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
     {
-        string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+        string localAppData = StateHelper.GetDataDirectory();
         string dirName = Path.Combine(
             localAppData,
             StateHelper.StoreDirName,
@@ -284,8 +291,18 @@ public sealed partial class GoodCheckWorkPage : Page
         GoodCheckProcessHelper.Instance.Stop();
     }
 
-    private void ForwardButton_Click(object sender, RoutedEventArgs e)
+    private async void ForwardButton_Click(object sender, RoutedEventArgs e)
     {
-
+        if (!string.IsNullOrEmpty(FilePath))
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+            window.OpenGoodCheckReportFromFile(FilePath);
+            CreateConfigUtilWindow.Instance.Close();
+        }
+        else
+        {
+            Logger.Instance.CreateWarningLog(nameof(GoodCheckWorkPage), $"Exception happens: FilePath not set. ERR_GOODCHECK_REPORT_OPEN");
+            CreateConfigUtilWindow.Instance.Close();
+        }
     }
 }
