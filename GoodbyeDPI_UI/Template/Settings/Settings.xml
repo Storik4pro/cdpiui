@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+	<Group Name="APPEARANCE">
+		<Setting Key="Theme" Type="string" Value="Dark" />
+	</Group>
+	<Group Name="SYSTEM">
+		<Setting Key="autorun" Type="bool" Value="false" />
+	</Group>
+	<Group Name="PSEUDOCONSOLE">
+		<Setting Key="outputMode" Type="bool" Value="true" />
+		<Setting Key="fontSize" Type="double" Value="16" />
+		<Setting Key="fontFamily" Type="string" Value="Consolas" />
+	</Group>
+	<Group Name="CONFIGS">
+		
+	</Group>
+	<Group Name="COMPONENTS">
+		<Setting Key="nowUsed" Type="string" Value=""/>
+	</Group>
+	<Group Name="ADDONS">
+		<Group Name="ASGKOI001">
+			<Setting Key="useCurl" Type="bool" Value="false"/>
+			<Setting Key="passesValue" Type="string" Value="1"/>
+		</Group>
+	</Group>
+	<Group Name="DEBUG">
+		<Setting Key="logLevel" Type="string" Value="WARN" />
+	</Group>
+</Settings>
