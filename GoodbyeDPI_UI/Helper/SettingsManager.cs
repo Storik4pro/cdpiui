@@ -287,7 +287,6 @@ namespace GoodbyeDPI_UI.Helper
         private T GetDefaultValueForKey<T>(string group, string key)
         {
             string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, StateHelper.TemplateDir, StateHelper.TemplateSettingsDir, "Settings.xml");
-            Logger.Instance.CreateDebugLog(nameof(SettingsManager), $"Template dir to search {templatePath}");
 
             if (!File.Exists(templatePath)) return GetDefaultValue<T>();
             try
@@ -297,14 +296,12 @@ namespace GoodbyeDPI_UI.Helper
             }
             catch
             {
-                Logger.Instance.CreateWarningLog(nameof(SettingsManager), $"Template not found at path {templatePath}");
                 return GetDefaultValue<T>();
             }
         }
         private T GetDefaultValueForKey<T>(IEnumerable<string> groupPath, string key)
         {
             string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, StateHelper.TemplateDir, StateHelper.TemplateSettingsDir, "Settings.xml");
-            Logger.Instance.CreateDebugLog(nameof(SettingsManager), $"Template dir to search {templatePath}");
 
             if (!File.Exists(templatePath)) return GetDefaultValue<T>();
             try
@@ -314,7 +311,6 @@ namespace GoodbyeDPI_UI.Helper
             }
             catch
             {
-                Logger.Instance.CreateWarningLog(nameof(SettingsManager), $"Template not found at path {templatePath}");
                 return GetDefaultValue<T>();
             }
         }
