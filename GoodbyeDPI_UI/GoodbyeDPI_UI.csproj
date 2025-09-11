@@ -15,16 +15,23 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<DebugType>embedded</DebugType>
     
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Assets\Icons\DragReorder.png" />
     <None Remove="Controls\ConditionUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
+    <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\RecentGoodCheckSelectionsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\FileConfigInspectUserControl.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
@@ -33,6 +40,10 @@
     <None Remove="Controls\StoreItemLargeButton.xaml" />
     <None Remove="Controls\StoreItemLinkButton.xaml" />
     <None Remove="Controls\StoreItemSmallButton.xaml" />
+    <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
+    <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
+    <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
+    <None Remove="Controls\Universal\IconButton.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
@@ -41,10 +52,17 @@
     <None Remove="UtilsPage.xaml" />
     <None Remove="Views\ComponentsPage.xaml" />
     <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml" />
     <None Remove="Views\CreateConfigHelper\MainPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
+    <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\Store\DownloadsPage.xaml" />
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
+    <None Remove="Views\Store\LibraryPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\PrepareWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,6 +87,7 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.1.240916" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
@@ -121,11 +140,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="data\" />
+    <Folder Include="Controls\ComponentSettings\" />
+    <Folder Include="Controls\Dialogs\ComponentSettings\" />
+    <Folder Include="Controls\GoodCheck\" />
     <Folder Include="Views\Components\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="data\goodbyeDPI\x86_64\*" />
+    <Folder Include="Windows\Service\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
@@ -160,9 +179,54 @@
     <Page Update="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Update="data\settings\settings.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Page Update="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\IconButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\RecentGoodCheckSelectionsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreItemMicroButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreLibraryItemButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreDownloadItemButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\DownloadsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\LibraryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigUtil\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\PrepareWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\CreateConfigHelper\CreateNewConfigPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,6 +292,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <WebView2LoaderPreference>Static</WebView2LoaderPreference>
+  </PropertyGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution

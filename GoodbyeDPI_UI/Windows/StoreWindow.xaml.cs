@@ -216,12 +216,19 @@ public sealed partial class StoreWindow : WindowEx
             Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
             try
             {
-                NavView.SelectedItem = NavView.MenuItems
+                var item = NavView.MenuItems
                             .OfType<NavigationViewItem>()
-                            .First(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
+                            .FirstOrDefault(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
+                if (item == null)
+                    item = NavView.FooterMenuItems
+                            .OfType<NavigationViewItem>()
+                            .FirstOrDefault(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
+
+                if (item == null) return;
+
                 BackButton.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex) { Debug.WriteLine(ex); }
+            catch (Exception ex) { Debug.WriteLine($"==>{ex}"); }
         }
     }
 

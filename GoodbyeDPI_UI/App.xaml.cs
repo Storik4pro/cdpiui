@@ -17,10 +17,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI;
 using WinRT.Interop;
+using WinUIEx;
 using static GoodbyeDPI_UI.Win32;
 using WASDK = Microsoft.WindowsAppSDK;
 
@@ -46,29 +48,35 @@ namespace GoodbyeDPI_UI
 
         private Dictionary<IntPtr, bool> _disabledWindows = new Dictionary<IntPtr, bool>();
         private object _modalLock = new object();
+
         public App()
         {
             this.InitializeComponent();
 
             UpdateThemeForAllWindows(GetThemeFromString(SettingsManager.Instance.GetValue<string>("APPEARANCE", "Theme")));
 
-        }
-
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
-        {
-            var mainWindow = new MainWindow();
-            OpenWindows.Add(mainWindow);
-            mainWindow.Activate();
+            PipeClient.Instance.Init();
+            PipeClient.Instance.Connected += PipeConnected;
 
             GetReadyFeatures();
+        }
+
+        private void PipeConnected()
+        {
+            _ = SafeCreateNewWindow<MainWindow>();
+            PipeClient.Instance.Connected -= PipeConnected;
+        }
+
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        {
+            _ = SafeCreateNewWindow<PrepareWindow>();
+
+            PipeClient.Instance.Start();
         }
         
         public async void GetReadyFeatures()
         {
+            // TODO: Make async and show progress
             DatabaseHelper.Instance.QuickRestore();
 
             await Task.CompletedTask;
@@ -88,7 +96,7 @@ namespace GoodbyeDPI_UI
             }
         }
 
-        public async Task SafeCreateNewWindow<TWindow>() where TWindow : Window, new()
+        public async Task<TWindow> SafeCreateNewWindow<TWindow>() where TWindow : Window, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
             int findWindowCount = findWindows.Count;
@@ -98,6 +106,8 @@ namespace GoodbyeDPI_UI
             if (activeFindWindow != null && findWindowCount == 1)
             {
                 activeFindWindow.Activate();
+                await Task.CompletedTask;
+                return activeFindWindow;
             }
             else
             {
@@ -111,8 +121,9 @@ namespace GoodbyeDPI_UI
                 newViewWindow.Activate();
 
                 RegisterWindow(newViewWindow);
+                await Task.CompletedTask;
+                return newViewWindow;
             }
-            await Task.CompletedTask;
         }
 
         private void RegisterWindow(Window window)
@@ -129,9 +140,7 @@ namespace GoodbyeDPI_UI
         private void Window_ClosedHandler(object sender, WindowEventArgs e)
         {
             if (sender is not Window window) return;
-            GC.Collect();
-            GC.Collect();
-            GC.Collect();
+            
             try
             {
                 window.Closed -= Window_ClosedHandler;
@@ -153,6 +162,8 @@ namespace GoodbyeDPI_UI
             finally
             {
                 try { OpenWindows.Remove(window); } catch { }
+                GC.SuppressFinalize(window);
+                GC.Collect();
             }
         }
 

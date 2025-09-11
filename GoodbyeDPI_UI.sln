@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeDPI_UI", "GoodbyeDPI_UI\GoodbyeDPI_UI.csproj", "{3B8F23B1-28F5-4867-9D5D-1A77524F3A79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDPIUI_TrayIcon", "CDPIUI_TrayIcon\CDPIUI_TrayIcon.csproj", "{8872755A-41D3-41D4-801F-7F0E4D2801CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -33,6 +35,18 @@ Global
 		{3B8F23B1-28F5-4867-9D5D-1A77524F3A79}.Release|x86.ActiveCfg = Release|x86
 		{3B8F23B1-28F5-4867-9D5D-1A77524F3A79}.Release|x86.Build.0 = Release|x86
 		{3B8F23B1-28F5-4867-9D5D-1A77524F3A79}.Release|x86.Deploy.0 = Release|x86
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Debug|x86.Build.0 = Debug|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|ARM64.Build.0 = Release|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x64.Build.0 = Release|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
