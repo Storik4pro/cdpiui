@@ -75,7 +75,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="O"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="Edit existing config">
+                        <MenuFlyoutItem x:Name="EditConfigButton" Text="Edit existing config" Click="EditConfigButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE70F;" />
                             </MenuFlyoutItem.Icon>
@@ -85,10 +85,10 @@
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutSubItem Text="GoodCheck config selection">
-                            <MenuFlyoutItem Text="Begin new selection"/>
+                            <MenuFlyoutItem x:Name="BeginNewGoodCheckSelectionButton" Text="Begin new selection" Click="BeginNewGoodCheckSelectionButton_Click"/>
                             <MenuFlyoutSeparator/>
-                            <MenuFlyoutItem Text="Open recent selection report..."/>
-                            <MenuFlyoutItem Text="Open .xml GoodChek report file">
+                            <MenuFlyoutItem x:Name="RecentGoodCheckSelectionButton" Text="Open recent selection report..." Click="RecentGoodCheckSelectionButton_Click"/>
+                            <MenuFlyoutItem x:Name="OpenGoodCheckReportButton" Text="Open .xml GoodCheck report file" Click="OpenGoodCheckReportButton_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE8E5;" />
                                 </MenuFlyoutItem.Icon>

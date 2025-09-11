@@ -1,6 +1,7 @@
 using GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using GoodbyeDPI_UI.Helper.Items;
 using GoodbyeDPI_UI.Views.CreateConfigHelper;
+using GoodbyeDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,8 +15,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -41,6 +44,8 @@ namespace GoodbyeDPI_UI
         public static CreateConfigHelperWindow Instanse { get; private set; }
         public bool IsOperationExitAskAvailable { get; set; } = false;
 
+        private bool IsDialogRequested = false;
+
         public CreateConfigHelperWindow()
         {
             InitializeComponent();
@@ -52,8 +57,26 @@ namespace GoodbyeDPI_UI
             Instanse = this;
 
             this.ExtendsContentIntoTitleBar = true;
-            ContentFrame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
             this.Closed += CreateConfigHelperWindow_Closed;
+
+            if (this.Content is FrameworkElement fe)
+            {
+                fe.Loaded += Fe_Loaded;
+            }
+        }
+
+        private void Fe_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (IsDialogRequested)
+            {
+                OpenConfigEditPage(true);
+            }
+
+            if (this.Content is FrameworkElement fe)
+            {
+                fe.Loaded -= Fe_Loaded;
+            }
         }
 
         private void CreateConfigHelperWindow_Closed(object sender, WindowEventArgs args)
@@ -78,11 +101,11 @@ namespace GoodbyeDPI_UI
                 ContentFrame.DispatcherQueue.TryEnqueue(() =>
                 {
                     IsOperationExitAskAvailable = false;
-                    if (e.SourcePageType == typeof(MainPage))
+                    if (e.SourcePageType == typeof(Views.CreateConfigHelper.MainPage))
                     {
                         if (ContentFrame.CanGoBack)
                         {
-                            RemoveAndGoBackTo(typeof(MainPage), ContentFrame);
+                            RemoveAndGoBackTo(typeof(Views.CreateConfigHelper.MainPage), ContentFrame);
                             return;
                         }
                     }
@@ -97,7 +120,7 @@ namespace GoodbyeDPI_UI
             HomeItem.IsEnabled = true;
             CreateNewConfigButton.IsEnabled = true;
 
-            if (pageType == typeof(MainPage))
+            if (pageType == typeof(Views.CreateConfigHelper.MainPage))
                 HomeItem.IsEnabled = false;
             else if (pageType == typeof(CreateNewConfigPage))
                 CreateNewConfigButton.IsEnabled = false;
@@ -116,7 +139,7 @@ namespace GoodbyeDPI_UI
             if (e.Cancel != true)
             {
                 AuditMenuItemsEnabled(e.SourcePageType);
-                if (e.SourcePageType == typeof(MainPage))
+                if (e.SourcePageType == typeof(Views.CreateConfigHelper.MainPage))
                 {
                     ContentFrame.DispatcherQueue.TryEnqueue(() =>
                     {
@@ -158,11 +181,37 @@ namespace GoodbyeDPI_UI
 
         private void HomeItem_Click(object sender, RoutedEventArgs e)
         {
-            bool result = RemoveAndGoBackTo(typeof(MainPage), ContentFrame);
+            bool result = RemoveAndGoBackTo(typeof(Views.CreateConfigHelper.MainPage), ContentFrame);
             if (!result)
             {
-                ContentFrame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+                ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
             }
+        }
+
+        public void OpenConfigEditPage(bool skp = false)
+        {
+            IsDialogRequested = true;
+            if (skp)
+            {
+                DispatcherQueue.TryEnqueue(async () =>
+                {
+                    SelectConfigToEditContentDialog dialog = new SelectConfigToEditContentDialog()
+                    {
+                        XamlRoot = this.Content.XamlRoot
+                    };
+                    await dialog.ShowAsync();
+                    if (dialog.SelectedConfigResult == SelectResult.Selected)
+                    {
+                        ConfigItem configItem = dialog.SelectedConfigItem;
+                        ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+                    }
+                });
+            }
+        }
+
+        public void CreateNewConfigForComponentId(string componentId)
+        {
+            ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGCREATEBYID", componentId), new DrillInNavigationTransitionInfo());
         }
 
         private void CreateNewConfigButton_Click(object sender, RoutedEventArgs e)
@@ -197,6 +246,60 @@ namespace GoodbyeDPI_UI
                     return;
                 }
             }
+        }
+
+        private void EditConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenConfigEditPage(true);
+        }
+
+        public void OpenGoodCheckReportFromFile(string filePath)
+        {
+            ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, filePath), new DrillInNavigationTransitionInfo());
+        }
+
+        private void OpenGoodCheckReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            string filePath;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Choose GoodCheck report file";
+                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                openFileDialog.Filter = "XML data files (*.xml)|*.xml";
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = openFileDialog.FileName;
+                    ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, filePath), new DrillInNavigationTransitionInfo());
+                }
+                else
+                {
+                    return;
+                }
+            }
+            
+        }
+
+        private async void RecentGoodCheckSelectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            RecentGoodCheckSelectionsContentDialog dialog = new RecentGoodCheckSelectionsContentDialog()
+            {
+                XamlRoot = this.Content.XamlRoot
+            };
+            await dialog.ShowAsync();
+            if (dialog.SelectedResult == SelectResult.Selected)
+            {
+                string directory = dialog.SelectedReport;
+                ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, directory), new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        private async void BeginNewGoodCheckSelectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateConfigUtilWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
+            window.NavigateToPage<CreateViaGoodCheck>();
         }
 
         #region WINAPI
@@ -259,6 +362,9 @@ namespace GoodbyeDPI_UI
 
             return false;
         }
+
+
+
 
 
 
