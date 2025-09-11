@@ -18,6 +18,7 @@ namespace GoodbyeDPI_UI.Helper
         public string Type { get; set; }
         public string Directory { get; set; }
         public string Executable { get; set; }
+        public string DownloadFileType { get; set; }
         public string UpdateCheckUrl { get; set; }
         public string DownloadUrl { get; set; }
         public string VersionControlType { get; set; }
@@ -27,6 +28,8 @@ namespace GoodbyeDPI_UI.Helper
         public string IconPath { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
+        public string Developer {  get; set; }
+        public string BackgroudColor { get; set; }
     }
     public class DatabaseHelper
     {
@@ -51,7 +54,7 @@ namespace GoodbyeDPI_UI.Helper
         }
         DatabaseHelper() 
         {
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string DatabaseFolderPath = Path.Combine(localAppData, 
                 StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreLocalDirName);
 
@@ -77,13 +80,16 @@ namespace GoodbyeDPI_UI.Helper
                     Executable TEXT,
                     UpdateCheckUrl TEXT,
                     DownloadUrl TEXT,
+                    DownloadFileType TEXT,
                     VersionControlType TEXT,
                     CurrentVersion TEXT,
                     RequiredItemIds TEXT,
                     DependentItemIds TEXT,
                     Icon TEXT,
                     Name TEXT,
-                    ShortName TEXT
+                    ShortName TEXT,
+                    Developer TEXT,
+                    BackgroundColor TEXT
                 );";
             lock (databaseRequestLock)
             {
@@ -98,17 +104,17 @@ namespace GoodbyeDPI_UI.Helper
             }
         }
 
-        public void AddOrUpdateItem(DatabaseStoreItem item)
+        public bool AddOrUpdateItem(DatabaseStoreItem item)
         {
             using var connection = new SqliteConnection(LocalDatabaseConnectionString);
             connection.Open();
 
             var cmd = connection.CreateCommand();
             cmd.CommandText = @"
-                INSERT OR REPLACE INTO Items (Id, Type, Directory, Executable, UpdateCheckUrl, DownloadUrl, VersionControlType, 
-                    CurrentVersion, RequiredItemIds, DependentItemIds, Icon, Name, ShortName)
-                VALUES (@Id, @Type, @Directory, @Executable, @UpdateCheckUrl, @DownloadUrl, @VersionControlType, @CurrentVersion,
-                    @RequiredItemIds, @DependentItemIds, @Icon, @Name, @ShortName)";
+                INSERT OR REPLACE INTO Items (Id, Type, Directory, Executable, UpdateCheckUrl, DownloadUrl, DownloadFileType, VersionControlType, 
+                    CurrentVersion, RequiredItemIds, DependentItemIds, Icon, Name, ShortName, Developer, BackgroundColor)
+                VALUES (@Id, @Type, @Directory, @Executable, @UpdateCheckUrl, @DownloadUrl, @DownloadFileType, @VersionControlType, @CurrentVersion,
+                    @RequiredItemIds, @DependentItemIds, @Icon, @Name, @ShortName, @Developer, @BackgroundColor)";
             cmd.CommandType = CommandType.Text;
 
             cmd.Parameters.AddWithValue("@Id", item.Id);
@@ -117,6 +123,7 @@ namespace GoodbyeDPI_UI.Helper
             cmd.Parameters.AddWithValue("@Executable", item.Executable == null? DBNull.Value : item.Executable);
             cmd.Parameters.AddWithValue("@UpdateCheckUrl", item.UpdateCheckUrl == null ? DBNull.Value : item.UpdateCheckUrl);
             cmd.Parameters.AddWithValue("@DownloadUrl", item.DownloadUrl == null ? DBNull.Value : item.DownloadUrl);
+            cmd.Parameters.AddWithValue("@DownloadFileType", item.DownloadFileType == null ? DBNull.Value : item.DownloadFileType);
             cmd.Parameters.AddWithValue("@VersionControlType", item.VersionControlType);
             cmd.Parameters.AddWithValue("@CurrentVersion", item.CurrentVersion);
             cmd.Parameters.AddWithValue("@RequiredItemIds",
@@ -126,16 +133,20 @@ namespace GoodbyeDPI_UI.Helper
             cmd.Parameters.AddWithValue("@Icon", item.IconPath);
             cmd.Parameters.AddWithValue("@Name", item.Name);
             cmd.Parameters.AddWithValue("@ShortName", item.ShortName);
+            cmd.Parameters.AddWithValue("@Developer", item.Developer);
+            cmd.Parameters.AddWithValue("@BackgroundColor", item.BackgroudColor);
 
             lock (databaseRequestLock)
             {
                 try
                 {
                     cmd.ExecuteNonQuery();
+                    return true;
                 }
                 catch (Exception ex) 
                 {
                     Logger.Instance.CreateErrorLog(nameof(DatabaseHelper), $"{ex}");
+                    return false;
                 }
             }
         }
@@ -166,6 +177,29 @@ namespace GoodbyeDPI_UI.Helper
             using var cmd = connection.CreateCommand();
             cmd.CommandText = "SELECT * FROM Items WHERE Type = @Type";
             cmd.Parameters.AddWithValue("@Type", type);
+
+            lock (databaseRequestLock)
+            {
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    DatabaseStoreItem item = CreateItemFromReader(reader);
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
+        public List<DatabaseStoreItem> GetAllInstalledItems()
+        {
+            var items = new List<DatabaseStoreItem>();
+
+            using var connection = new SqliteConnection(LocalDatabaseConnectionString);
+            connection.Open();
+
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Items";
 
             lock (databaseRequestLock)
             {
@@ -220,6 +254,8 @@ namespace GoodbyeDPI_UI.Helper
                                 ? null : reader.GetString(reader.GetOrdinal("UpdateCheckUrl")),
                 DownloadUrl = reader.IsDBNull(reader.GetOrdinal("DownloadUrl"))
                                 ? null : reader.GetString(reader.GetOrdinal("DownloadUrl")),
+                DownloadFileType = reader.IsDBNull(reader.GetOrdinal("DownloadFileType"))
+                                ? null : reader.GetString(reader.GetOrdinal("DownloadFileType")),
                 VersionControlType = reader.GetString(reader.GetOrdinal("VersionControlType")),
                 CurrentVersion = reader.GetString(reader.GetOrdinal("CurrentVersion")),
                 RequiredItemIds = reader.IsDBNull(reader.GetOrdinal("RequiredItemIds"))
@@ -230,6 +266,10 @@ namespace GoodbyeDPI_UI.Helper
                 Name = reader.GetString(reader.GetOrdinal("Name")),
                 ShortName = reader.IsDBNull(reader.GetOrdinal("ShortName"))
                                 ? null : reader.GetString(reader.GetOrdinal("ShortName")),
+                Developer = reader.IsDBNull(reader.GetOrdinal("Developer"))
+                                ? string.Empty : reader.GetString(reader.GetOrdinal("Developer")),
+                BackgroudColor = reader.IsDBNull(reader.GetOrdinal("BackgroundColor"))
+                                ? string.Empty : reader.GetString(reader.GetOrdinal("BackgroundColor")),
             };
         }
 
@@ -240,7 +280,7 @@ namespace GoodbyeDPI_UI.Helper
                 return;
             }
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.LocalUserItemsId);
 
@@ -278,23 +318,29 @@ namespace GoodbyeDPI_UI.Helper
                 Executable = null,
                 UpdateCheckUrl = null,
                 DownloadUrl = null,
+                DownloadFileType = null,
                 VersionControlType = "local",
                 CurrentVersion = StateHelper.Instance.Version,
                 RequiredItemIds = null,
                 DependentItemIds = null,
                 IconPath = "$STATICIMAGE(Store/empty.png)",
                 Name = "Storage for custom items of current user",
-                ShortName = "Local data storage"
+                ShortName = "Local data storage",
+                Developer = "Storik4",
+                BackgroudColor = ""
             };
 
-            AddOrUpdateItem(userItem);
+            if (!AddOrUpdateItem(userItem))
+            {
+                Logger.Instance.RaiseCriticalException(nameof(RegisterUserCustomItem), "ERR_USER_ITEM_REGISTER", "Unexpected exception happens.");
+            }
         }
 
         public void QuickRestore()
         {
             RegisterUserCustomItem();
 
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string baseDir = StateHelper.GetDataDirectory();
 
             using var connection = new SqliteConnection(LocalDatabaseConnectionString);
             connection.Open();
