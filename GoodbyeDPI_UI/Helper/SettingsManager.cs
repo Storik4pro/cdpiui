@@ -35,8 +35,8 @@ namespace GoodbyeDPI_UI.Helper
         }
         private SettingsManager()
         {
-            string appPath = AppDomain.CurrentDomain.BaseDirectory;
-            _filePath = Path.Combine(appPath, "data", "settings", "settings.xml");
+            string appPath = StateHelper.GetDataDirectory();
+            _filePath = Path.Combine(appPath, StateHelper.SettingsDir, "Settings.xml");
 
             Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
 
@@ -73,16 +73,17 @@ namespace GoodbyeDPI_UI.Helper
                 return (T)(object)default(T);
             }
         }
-        public T GetValue<T>(string group, string key)
+        public T GetValue<T>(string group, string key, XElement xElement = null) // TODO: Add default values for all parameters
         {
-            var settingElement = _xDocument.Root
+            if (xElement == null) xElement = _xDocument.Root;
+            var settingElement = xElement
                 .Elements("Group")
                 .FirstOrDefault(g => g.Attribute("Name")?.Value == group)?
                 .Elements("Setting")
                 .FirstOrDefault(s => s.Attribute("Key")?.Value == key);
 
             if (settingElement == null) {
-                var defaultValue = GetDefaultValue<T>();
+                var defaultValue = GetDefaultValueForKey<T>(group, key);
 
                 SetValue(group, key, defaultValue);
                 Debug.WriteLine($"Setting '{key}' in group '{group}' not found.");
@@ -103,11 +104,15 @@ namespace GoodbyeDPI_UI.Helper
             if (typeof(T) == typeof(string) && type == "string")
                 return (T)(object)value;
 
+            if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
+                return (T)(object)DateTime.Parse((string)value);
+
             throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group '{group}'.");
         }
-        public T GetValue<T>(IEnumerable<string> groupPath, string key)
+        public T GetValue<T>(IEnumerable<string> groupPath, string key, XElement xElement = null)
         {
-            XElement current = _xDocument.Root;
+            if (xElement == null) xElement = _xDocument.Root;
+            XElement current = xElement;
 
             foreach (var grp in groupPath)
             {
@@ -116,7 +121,7 @@ namespace GoodbyeDPI_UI.Helper
                     .FirstOrDefault(g => (string)g.Attribute("Name") == grp);
                 if (current == null)
                 {
-                    var defaultValue = GetDefaultValue<T>();
+                    var defaultValue = GetDefaultValueForKey<T>(groupPath, key);
                     SetValue(groupPath, key, defaultValue);
                     Debug.WriteLine($"Group path '{string.Join("/", groupPath)}' not found.");
                     return defaultValue;
@@ -142,6 +147,9 @@ namespace GoodbyeDPI_UI.Helper
             if (typeof(T) == typeof(double) && type == "double" && double.TryParse(value, out var dv)) return (T)(object)dv;
             if (typeof(T) == typeof(bool) && type == "bool" && bool.TryParse(value, out var bv)) return (T)(object)bv;
             if (typeof(T) == typeof(string) && type == "string") return (T)(object)value;
+
+            if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
+                return (T)(object)DateTime.Parse((string)value);
 
             throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group path '{string.Join("/", groupPath)}'.");
         }
@@ -171,9 +179,15 @@ namespace GoodbyeDPI_UI.Helper
                 type = "string";
                 valueString = value as string;
             }
+            else if (value is DateTime)
+            {
+                type = nameof(DateTime);
+                valueString = value.ToString();
+            }
             else
             {
-                throw new Exception($"Unsupported value type. {typeof(T)}. Value is {value}" );
+                type = nameof(T);
+                valueString = value.ToString();
             }
 
             var groupElement = _xDocument.Root
@@ -229,7 +243,9 @@ namespace GoodbyeDPI_UI.Helper
                     valueString = s;
                     break;
                 default:
-                    throw new Exception($"Unsupported value type: {typeof(T)}. Value is {value}");
+                    type = nameof(T);
+                    valueString = value.ToString();
+                    break;
             }
 
             XElement current = _xDocument.Root;
@@ -266,6 +282,41 @@ namespace GoodbyeDPI_UI.Helper
             }
 
             _xDocument.Save(_filePath);
+        }
+
+        private T GetDefaultValueForKey<T>(string group, string key)
+        {
+            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, StateHelper.TemplateDir, StateHelper.TemplateSettingsDir, "Settings.xml");
+            Logger.Instance.CreateDebugLog(nameof(SettingsManager), $"Template dir to search {templatePath}");
+
+            if (!File.Exists(templatePath)) return GetDefaultValue<T>();
+            try
+            {
+                XDocument temp_xDocument = XDocument.Load(templatePath);
+                return GetValue<T>(group, key, temp_xDocument.Root);
+            }
+            catch
+            {
+                Logger.Instance.CreateWarningLog(nameof(SettingsManager), $"Template not found at path {templatePath}");
+                return GetDefaultValue<T>();
+            }
+        }
+        private T GetDefaultValueForKey<T>(IEnumerable<string> groupPath, string key)
+        {
+            string templatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, StateHelper.TemplateDir, StateHelper.TemplateSettingsDir, "Settings.xml");
+            Logger.Instance.CreateDebugLog(nameof(SettingsManager), $"Template dir to search {templatePath}");
+
+            if (!File.Exists(templatePath)) return GetDefaultValue<T>();
+            try
+            {
+                XDocument temp_xDocument = XDocument.Load(templatePath);
+                return GetValue<T>(groupPath, key, temp_xDocument.Root);
+            }
+            catch
+            {
+                Logger.Instance.CreateWarningLog(nameof(SettingsManager), $"Template not found at path {templatePath}");
+                return GetDefaultValue<T>();
+            }
         }
 
     }
