@@ -120,7 +120,7 @@
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <FontIcon Glyph="&#xE74E;" FontSize="16" />
-                                <TextBlock Text="Save"/>
+                                <TextBlock x:Name="SaveButtonText" Text="Save"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>

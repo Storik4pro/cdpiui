@@ -1,6 +1,7 @@
 using GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using GoodbyeDPI_UI.Helper;
 using GoodbyeDPI_UI.Helper.Items;
+using GoodbyeDPI_UI.Helper.LScript;
 using GoodbyeDPI_UI.Helper.Static;
 using GoodbyeDPI_UI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -50,6 +51,11 @@ public class VariableModel
     public AvailableVarValues AvailableValues { get; set; } = null;
     
 }
+public enum AskAutoFillMode
+{
+    Ask,
+    Qiet
+}
 
 public sealed partial class CreateNewConfigPage : Page
 {
@@ -95,6 +101,27 @@ public sealed partial class CreateNewConfigPage : Page
             
             AskAutoFillFiles(tuple.Item2, tuple.Item4);
         }
+        if (navigationParameter != null && navigationParameter is Tuple<string, ConfigItem> editCfgTuple)
+        {
+            if (editCfgTuple.Item2.packId != StateHelper.LocalUserItemsId)
+            {
+                AskAutoFillFiles(
+                    editCfgTuple.Item2,
+                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Qiet);
+            }
+        }
+        if (navigationParameter != null && navigationParameter is Tuple<string, string, string> createNewFromString)
+        {
+            ConfigItem = new()
+            {
+                startup_string = createNewFromString.Item2,
+            };
+            AskAutoFillFiles(
+                    ConfigItem,
+                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: StateHelper.LocalUserItemsId), AskAutoFillMode.Qiet);
+        }
+        AuditSaveAvailable();
+        navigationParameter = null;
         this.Loaded -= CreateNewConfigPage_Loaded;
     }
 
@@ -119,18 +146,74 @@ public sealed partial class CreateNewConfigPage : Page
 
             navigationParameter = tuple;
         }
+        else if (e.Parameter is Tuple<string, ConfigItem> editCfgTuple)
+        {
+            string operationType = editCfgTuple.Item1;
+            ConfigItem = editCfgTuple.Item2;
+
+            navigationParameter = editCfgTuple;
+
+            if (operationType == "CFGEDIT")
+            {
+                PageTitleTextBlock.Text = "Edit config";
+                if (ConfigItem.target != null)
+                {
+                    ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                        .Cast<ComponentModel>()
+                        .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                }
+                ComponentChooseComboBox.IsEnabled = false;
+
+
+                if (ConfigItem.packId != StateHelper.LocalUserItemsId)
+                {
+                    DisplayNameTextBox.Text = $"{ConfigItem.name} (edited)";
+                    SaveButtonText.Text = "Save as a copy";
+                }
+                else
+                {
+                    DisplayNameTextBox.Text = $"{ConfigItem.name}";
+                }
+
+                LoadVars(ConfigItem);
+                LoadConditions(ConfigItem);
+                
+                StartupStringTextBox.Text = ConfigItem.startup_string;
+            }
+        }
+        else if (e.Parameter is Tuple<string, string, string> createNewFromString)
+        {
+            navigationParameter = createNewFromString;
+
+            ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                    .Cast<ComponentModel>()
+                    .FirstOrDefault(c => c.Id == createNewFromString.Item3);
+
+            if (createNewFromString.Item1 == "CFGSTRING")
+            {
+                StartupStringTextBox.Text = createNewFromString.Item2;
+            }
+        }
+        else if (e.Parameter is Tuple<string, string> createNewConfig)
+        {
+            navigationParameter = createNewConfig;
+
+            ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                    .Cast<ComponentModel>()
+                    .FirstOrDefault(c => c.Id == createNewConfig.Item2);
+        }
     }
 
-    private async void AskAutoFillFiles(ConfigItem configItem, string dir)
+    private async void AskAutoFillFiles(ConfigItem configItem, string dir, AskAutoFillMode askAutoFillMode = AskAutoFillMode.Ask)
     {
         List<string> usedFiles = ConfigHelper.GetUsedFilesFromConfigItem(configItem);
 
-        SelectUsedFilesForConfigContentDialog dialog = new(usedFiles, configItem.name, dir)
+        SelectUsedFilesForConfigContentDialog dialog = new(usedFiles, configItem.name, dir, configItem, askAutoFillMode)
         {
             XamlRoot = this.XamlRoot
         };
         var result = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary)
+        if (dialog.Result == CreateConfigResult.Selected)
         {
             ConfigItem = ConfigHelper.ReplaceFilesPath(ConfigItem, dialog.Files);
             StartupStringTextBox.Text = ConfigItem.startup_string;
@@ -143,6 +226,35 @@ public sealed partial class CreateNewConfigPage : Page
             Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
         }
     } 
+
+    private void LoadConditions(ConfigItem configItem)
+    {
+        Conditions.Clear();
+        if (configItem.variables == null || configItem.variables.Count == 0)
+            { return; }
+
+        List<VariableItem> variables = ConfigHelper.GetVariables(configItem);
+        ComponentHelper componentHelper = 
+            ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId((ComponentChooseComboBox.SelectedItem as ComponentModel).Id);
+
+        foreach (var variable in configItem.variables) 
+        {
+            Debug.WriteLine(variable);
+            var t = LScriptLangHelper.GetNameOnOffValuesFromConditionString(variable);
+            if (t == null)
+                continue;
+
+            var (_var, conditionVarName, onValue, offValue) = t;
+            Conditions.Add(
+                new()
+                {
+                    Name = conditionVarName,
+                    OnValue = onValue,
+                    OffValue = offValue,
+                    Description = componentHelper.GetConfigHelper().GetLocalizedConfigVarName(_var, configItem.packId)
+                });
+        }
+    }
 
     private void LoadVars(ConfigItem configItem)
     {
@@ -172,7 +284,6 @@ public sealed partial class CreateNewConfigPage : Page
             }
         }
         VariablesStackPanel.Visibility = Visibility.Visible;
-
     }
 
     private static bool IsBasicLetter(char c)
@@ -282,7 +393,7 @@ public sealed partial class CreateNewConfigPage : Page
         ConditionPreviewTextBlock.Text = "Nothing to preview";
     }
 
-    private Tuple<Dictionary<string, bool>, List<string>> CreateVariables()
+    private Tuple<Dictionary<string, bool>, List<string>> CreateVariables(int secondsSinceEpoch)
     {
         Dictionary<string, bool> jparams = new();
         List<string> vars = new();
@@ -290,7 +401,7 @@ public sealed partial class CreateNewConfigPage : Page
         try
         {
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             string locFile = Path.Combine(
                 localAppData,
                 StateHelper.StoreDirName,
@@ -312,9 +423,9 @@ public sealed partial class CreateNewConfigPage : Page
 
             foreach (var condition in Conditions)
             {
-                jparams.Add($"{condition.Name}_var", false);
-                vars.Add($"%{condition.Name}%=$LOCALCONDITION({condition.Name}_var==true ? {condition.OnValue} $SEPARATOR {condition.OffValue})");
-                localizationDict.Add($"{condition.Name}_var", condition.Description);
+                jparams.Add($"{condition.Name}_var_{secondsSinceEpoch}", false);
+                vars.Add($"%{condition.Name}%=$LOCALCONDITION({condition.Name}_var_{secondsSinceEpoch}==true ? {condition.OnValue} $SEPARATOR {condition.OffValue})");
+                localizationDict.Add($"{condition.Name}_var_{secondsSinceEpoch}", condition.Description);
             }
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(localizationDict);
@@ -329,10 +440,12 @@ public sealed partial class CreateNewConfigPage : Page
             return new(null, null);
         }
     }
-    private ConfigItem CreateConfig()
+    private ConfigItem CreateConfig(int secondsSinceEpoch)
     {
         string componentId = (ComponentChooseComboBox.SelectedItem as ComponentModel).Id;
-        var (jparams, vars) = CreateVariables();
+        var (jparams, vars) = CreateVariables(secondsSinceEpoch);
+        Debug.WriteLine(jparams);
+        Debug.WriteLine(vars);
         ConfigItem configItem = new()
         {
             meta = "UC:v1.0",
@@ -345,6 +458,10 @@ public sealed partial class CreateNewConfigPage : Page
             availableCommaVarsValues = Variables.Where(v => v.AvailableValues != null).Select(v => v.AvailableValues).ToList(),
             startup_string = StartupStringTextBox.Text
         };
+        foreach (var _v in configItem.commaVars)
+        {
+            Logger.Instance.CreateDebugLog(nameof(CreateNewConfigPage), $">>>{_v}");
+        }
         return configItem;
     }
 
@@ -375,7 +492,7 @@ public sealed partial class CreateNewConfigPage : Page
 
             await ProcessManager.Instance.StopProcess();
             ComponentModel model = ComponentChooseComboBox.SelectedItem as ComponentModel;
-            await ProcessManager.Instance.StartProcess(model.Id, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig()));
+            await ProcessManager.Instance.StartProcess(model.Id, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig(0)));
             
         }
         else
@@ -409,12 +526,17 @@ public sealed partial class CreateNewConfigPage : Page
 
     private async void SaveConfigButton_Click(object sender, RoutedEventArgs e)
     {
-        ConfigItem configItem = CreateConfig();
-
         TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
         int secondsSinceEpoch = (int)t.TotalSeconds;
 
-        string src = DisplayNameTextBox.Text + $"_{secondsSinceEpoch}.json";
+        ConfigItem configItem = CreateConfig(secondsSinceEpoch);
+
+        string src;
+        if (ConfigItem == null || ConfigItem.packId != StateHelper.LocalUserItemsId)
+            src = DisplayNameTextBox.Text + $"_{secondsSinceEpoch}.json";
+        else
+            src = ConfigItem.file_name;
+
         string transl = src.Unidecode();
         transl = Regex.Replace(transl, @"\s+", "_");
         transl = Regex.Replace(transl, @"[^A-Za-z0-9_\.-]", "");
