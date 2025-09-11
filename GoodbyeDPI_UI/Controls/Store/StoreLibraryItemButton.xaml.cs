@@ -1,4 +1,4 @@
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,7 +19,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Controls.Store
+namespace CDPI_UI.Controls.Store
 {
     public sealed partial class StoreLibraryItemButton : UserControl
     {

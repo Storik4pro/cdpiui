@@ -12,15 +12,15 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using Windows.Storage;
 using Microsoft.UI;
-using GoodbyeDPI_UI.DesktopWap.Helper;
+using CDPI_UI.DesktopWap.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Views
+namespace CDPI_UI.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

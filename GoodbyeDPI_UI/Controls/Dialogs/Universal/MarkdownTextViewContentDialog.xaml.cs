@@ -1,5 +1,5 @@
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
-using GoodbyeDPI_UI.Controls.Store;
+using CDPI_UI.Controls.Store;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -18,7 +18,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Controls.Dialogs.Universal;
+namespace CDPI_UI.Controls.Dialogs.Universal;
 
 public sealed partial class MarkdownTextViewContentDialog : ContentDialog
 {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodbyeDPI_UI.Helper.Items
+namespace CDPI_UI.Helper.Items
 {
     public class ComponentHelper
     {

@@ -1,5 +1,5 @@
-﻿using GoodbyeDPI_UI.Helper.LScript;
-using GoodbyeDPI_UI.Helper.Static;
+﻿using CDPI_UI.Helper.LScript;
+using CDPI_UI.Helper.Static;
 using Newtonsoft.Json;
 using SQLitePCL;
 using System;
@@ -15,7 +15,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using Windows.Devices.Power;
 
-namespace GoodbyeDPI_UI.Helper.Items
+namespace CDPI_UI.Helper.Items
 {
     public class AvailableVarValues
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using static GoodbyeDPI_UI.App;
+using static CDPI_UI.App;
 
-namespace GoodbyeDPI_UI
+namespace CDPI_UI
 {
     internal static class Win32
     {

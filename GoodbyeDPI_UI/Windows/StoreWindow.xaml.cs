@@ -1,4 +1,4 @@
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,7 +22,7 @@ using WinUIEx;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI;
+namespace CDPI_UI;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.

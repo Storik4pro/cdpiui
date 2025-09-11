@@ -11,9 +11,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Shell;
 using Windows.Media.Protection.PlayReady;
-using static GoodbyeDPI_UI.Helper.ErrorsHelper;
+using static CDPI_UI.Helper.ErrorsHelper;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class AsyncOperationException : System.Exception
     {

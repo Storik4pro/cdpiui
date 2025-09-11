@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32.TaskScheduler;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class AutoStartManager
     {

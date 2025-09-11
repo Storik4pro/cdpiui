@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <winex:WindowEx
-    x:Class="GoodbyeDPI_UI.StoreWindow"
+    x:Class="CDPI_UI.StoreWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GoodbyeDPI_UI"
+    xmlns:local="using:CDPI_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winex="using:WinUIEx"
@@ -107,16 +107,16 @@
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Home" Tag="GoodbyeDPI_UI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+                <NavigationViewItem Content="Home" Tag="CDPI_UI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Downloads" Tag="GoodbyeDPI_UI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem Content="Downloads" Tag="CDPI_UI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEBD3;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Library" Tag="GoodbyeDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem Content="Library" Tag="CDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE8F1;" />
                     </NavigationViewItem.Icon>

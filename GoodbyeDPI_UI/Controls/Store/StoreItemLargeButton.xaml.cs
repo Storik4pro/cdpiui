@@ -18,7 +18,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 
-namespace GoodbyeDPI_UI;
+namespace CDPI_UI;
 
 public sealed partial class StoreItemLargeButton : UserControl
 {

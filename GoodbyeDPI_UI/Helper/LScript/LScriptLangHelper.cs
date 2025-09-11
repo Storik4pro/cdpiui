@@ -1,4 +1,4 @@
-﻿using GoodbyeDPI_UI.Helper.Static;
+﻿using CDPI_UI.Helper.Static;
 using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace GoodbyeDPI_UI.Helper.LScript
+namespace CDPI_UI.Helper.LScript
 {
     public class LScriptLangHelper
     {

@@ -9,7 +9,7 @@ using System.Globalization;
 using System.Linq;
 using Windows.UI;
 
-namespace GoodbyeDPI_UI.Helper.Static
+namespace CDPI_UI.Helper.Static
 {
     public static class UIHelper
     {

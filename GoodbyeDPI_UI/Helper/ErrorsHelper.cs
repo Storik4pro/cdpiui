@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Web;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class ErrorsHelper
     {

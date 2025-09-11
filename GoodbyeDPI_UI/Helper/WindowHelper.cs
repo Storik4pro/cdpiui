@@ -10,7 +10,7 @@ using Windows.Graphics;
 using Windows.Storage;
 using WinRT.Interop;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class WindowHelper
     {

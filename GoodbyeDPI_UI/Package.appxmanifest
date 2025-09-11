@@ -15,7 +15,7 @@
   <mp:PhoneIdentity PhoneProductId="54c3951f-930a-4552-9eba-5290e2be15ef" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>GoodbyeDPI_UI</DisplayName>
+    <DisplayName>CDPI UI</DisplayName>
     <PublisherDisplayName>serst</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -34,8 +34,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="GoodbyeDPI_UI"
-        Description="GoodbyeDPI_UI"
+        DisplayName="CDPI UI"
+        Description="Modern GUI for DPI bypass utils (x64)"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

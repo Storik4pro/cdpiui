@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using GoodbyeDPI_UI.Common;
+using CDPI_UI.Common;
 
-namespace GoodbyeDPI_UI.DesktopWap.DataModel
+namespace CDPI_UI.DesktopWap.DataModel
 {
     public class IconData
     {

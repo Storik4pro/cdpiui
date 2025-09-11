@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
     x:Name="RootDialog"
-    x:Class="GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper.SelectConfigToEditContentDialog"
+    x:Class="CDPI_UI.Controls.Dialogs.CreateConfigHelper.SelectConfigToEditContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper"
+    xmlns:local="using:CDPI_UI.Controls.Dialogs.CreateConfigHelper"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:lcontrol="using:GoodbyeDPI_UI"
+    xmlns:lcontrol="using:CDPI_UI"
     mc:Ignorable="d"
     Title="Select config to edit"
     SecondaryButtonText="Cancel"

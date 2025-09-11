@@ -1,6 +1,6 @@
 using CommunityToolkit.WinUI;
-using GoodbyeDPI_UI.Helper;
-using GoodbyeDPI_UI.Helper.CreateConfigUtil;
+using CDPI_UI.Helper;
+using CDPI_UI.Helper.CreateConfigUtil;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -25,14 +25,14 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Unidecode.NET;
-using GoodbyeDPI_UI.Helper.Static;
-using GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using GoodbyeDPI_UI.Helper.Settings;
+using CDPI_UI.Helper.Static;
+using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPI_UI.Helper.Settings;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Views.CreateConfigUtil
+namespace CDPI_UI.Views.CreateConfigUtil
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

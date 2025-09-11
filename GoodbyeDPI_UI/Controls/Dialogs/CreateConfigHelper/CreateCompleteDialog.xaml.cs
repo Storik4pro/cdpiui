@@ -16,7 +16,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Controls.Dialogs.CreateConfigHelper
+namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
 {
     public sealed partial class CreateCompleteDialog : ContentDialog
     {

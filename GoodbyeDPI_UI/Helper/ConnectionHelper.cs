@@ -1,4 +1,4 @@
-﻿using GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+﻿using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class PipeClient
     {

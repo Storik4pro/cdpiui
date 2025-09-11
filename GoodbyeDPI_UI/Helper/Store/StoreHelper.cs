@@ -1,4 +1,4 @@
-﻿using GoodbyeDPI_UI.Helper.Static;
+﻿using CDPI_UI.Helper.Static;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
 using Microsoft.WindowsAppSDK.Runtime;
@@ -21,12 +21,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Services.Maps.LocalSearch;
-using WinRT.GoodbyeDPI_UIGenericHelpers;
-using static GoodbyeDPI_UI.Helper.ErrorsHelper;
+using static CDPI_UI.Helper.ErrorsHelper;
 using TimeSpan = System.TimeSpan;
 using Version = System.Version;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     public class UICategoryData
     {

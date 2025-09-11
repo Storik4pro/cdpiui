@@ -1,7 +1,7 @@
-using GoodbyeDPI_UI.Helper;
-using GoodbyeDPI_UI.Helper.Items;
-using GoodbyeDPI_UI.Helper.Static;
-using GoodbyeDPI_UI.Views.CreateConfigHelper;
+using CDPI_UI.Helper;
+using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.Static;
+using CDPI_UI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,7 +24,7 @@ using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Controls
+namespace CDPI_UI.Controls
 {
     public sealed partial class FileConfigInspectUserControl : UserControl
     {

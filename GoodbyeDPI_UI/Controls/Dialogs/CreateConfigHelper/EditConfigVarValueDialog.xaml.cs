@@ -1,4 +1,4 @@
-using GoodbyeDPI_UI.Helper.Items;
+using CDPI_UI.Helper.Items;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,7 +17,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Controls.Dialogs
+namespace CDPI_UI.Controls.Dialogs
 {
     public sealed partial class EditConfigVarValueDialog : ContentDialog
     {

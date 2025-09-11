@@ -1,4 +1,4 @@
-﻿using GoodbyeDPI_UI.ViewModels;
+﻿using CDPI_UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
     internal class StateHelper
     {

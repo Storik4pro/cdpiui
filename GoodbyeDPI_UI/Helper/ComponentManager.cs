@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GoodbyeDPI_UI.ViewModels;
+using CDPI_UI.ViewModels;
 
-namespace GoodbyeDPI_UI.Helper
+namespace CDPI_UI.Helper
 {
 
     public partial class ComponentManager : INotifyPropertyChanged

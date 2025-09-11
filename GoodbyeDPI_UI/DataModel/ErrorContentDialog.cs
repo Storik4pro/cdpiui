@@ -13,7 +13,7 @@ using System.Windows.Media;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Documents;
 
-namespace GoodbyeDPI_UI.DataModel
+namespace CDPI_UI.DataModel
 {
     internal class ErrorContentDialog
     {

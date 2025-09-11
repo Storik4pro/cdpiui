@@ -1,6 +1,6 @@
-using GoodbyeDPI_UI.Helper;
-using GoodbyeDPI_UI.Helper.LScript;
-using GoodbyeDPI_UI.Helper.Static;
+using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
+using CDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,7 +22,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI.Views.Store
+namespace CDPI_UI.Views.Store
 {
     public class LibraryItemModel
     {

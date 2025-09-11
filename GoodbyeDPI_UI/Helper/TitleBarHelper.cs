@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -15,9 +15,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 using WinRT;
 using System.Runtime.InteropServices;
-using GoodbyeDPI_UI;
+using CDPI_UI;
 
-namespace GoodbyeDPI_UI.DesktopWap.Helper
+namespace CDPI_UI.DesktopWap.Helper
 {
     internal class TitleBarHelper
     {
@@ -26,7 +26,7 @@ namespace GoodbyeDPI_UI.DesktopWap.Helper
         
         public static Windows.UI.Color ApplySystemThemeToCaptionButtons(Window window)
         {
-            var frame = (Application.Current as GoodbyeDPI_UI.App).GetRootFrame() as FrameworkElement;
+            var frame = (Application.Current as CDPI_UI.App).GetRootFrame() as FrameworkElement;
             Windows.UI.Color color;
             if (frame.ActualTheme == ElementTheme.Dark)
             {

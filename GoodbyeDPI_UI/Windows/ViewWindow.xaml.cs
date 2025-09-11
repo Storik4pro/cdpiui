@@ -17,7 +17,7 @@ using Microsoft.UI;
 using System.Text;
 using Microsoft.UI.System;
 using Windows.UI;
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using CommunityToolkit.WinUI.Behaviors;
@@ -29,16 +29,16 @@ using Windows.Storage.Provider;
 using Windows.Storage;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
-using GoodbyeDPI_UI.DataModel;
+using CDPI_UI.DataModel;
 using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using GoodbyeDPI_UI.Controls.Dialogs;
+using CDPI_UI.Controls.Dialogs;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI
+namespace CDPI_UI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

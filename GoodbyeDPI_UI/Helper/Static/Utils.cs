@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Unidecode.NET;
 using Windows.Devices.Printers;
 
-namespace GoodbyeDPI_UI.Helper.Static
+namespace CDPI_UI.Helper.Static
 {
     public static class Utils
     {

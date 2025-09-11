@@ -1,5 +1,5 @@
-using GoodbyeDPI_UI.Helper;
-using GoodbyeDPI_UI.Views;
+using CDPI_UI.Helper;
+using CDPI_UI.Views;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.UI.Xaml;
@@ -31,7 +31,7 @@ using WinRT.Interop;
 using WinUIEx;
 
 
-namespace GoodbyeDPI_UI
+namespace CDPI_UI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

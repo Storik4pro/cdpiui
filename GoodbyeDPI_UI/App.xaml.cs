@@ -1,9 +1,9 @@
-﻿using GoodbyeDPI_UI.Common;
+﻿using CDPI_UI.Common;
 //using Windows.ApplicationModel.Activation;
-using GoodbyeDPI_UI.DesktopWap.DataModel;
-using GoodbyeDPI_UI.DesktopWap.Helper;
-//using GoodbyeDPI_UI.Data;
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.DesktopWap.DataModel;
+using CDPI_UI.DesktopWap.Helper;
+//using CDPI_UI.Data;
+using CDPI_UI.Helper;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,13 +23,13 @@ using Windows.System;
 using Windows.UI;
 using WinRT.Interop;
 using WinUIEx;
-using static GoodbyeDPI_UI.Win32;
+using static CDPI_UI.Win32;
 using WASDK = Microsoft.WindowsAppSDK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI
+namespace CDPI_UI
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Markup;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace GoodbyeDPI_UI;
+namespace CDPI_UI;
 
 public sealed partial class SettingTile : UserControl
 {

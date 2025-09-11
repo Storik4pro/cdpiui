@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodbyeDPI_UI.Helper.CreateConfigUtil
+namespace CDPI_UI.Helper.CreateConfigUtil
 {
     public class SiteListElement
     {

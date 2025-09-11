@@ -1,4 +1,4 @@
-using GoodbyeDPI_UI.Helper;
+using CDPI_UI.Helper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 
-namespace GoodbyeDPI_UI.Views
+namespace CDPI_UI.Views
 {
     public sealed partial class MainPage : Page
     {

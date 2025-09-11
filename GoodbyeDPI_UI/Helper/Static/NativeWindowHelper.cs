@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinRT.Interop;
 
-namespace GoodbyeDPI_UI.Helper.Static
+namespace CDPI_UI.Helper.Static
 {
     /// <summary>
     /// This code copied from https://github.com/microsoft/microsoft-ui-xaml/issues/9427#issuecomment-2504707196.
