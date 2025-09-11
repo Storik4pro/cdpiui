@@ -48,6 +48,13 @@ namespace GoodbyeDPI_UI.Helper
         public const string LocalUserItemBinsFolder = "Bin";
         public const string LocalUserItemLocFolder = "Loc";
 
+        public const string SettingsDir = "Settings";
+
+        // Template
+
+        public const string TemplateDir = "Template";
+        public const string TemplateSettingsDir = "Settings";
+
         // Components
 
         public Dictionary<string, string> ComponentIdPairs = new();
@@ -76,6 +83,20 @@ namespace GoodbyeDPI_UI.Helper
         public string FindKeyByValue(string value)
         {
             return ComponentIdPairs.FirstOrDefault(kvp => kvp.Value == value).Key;
+        }
+
+        public static string GetDataDirectory()
+        {
+            try
+            {
+                var procPath = Environment.ProcessPath;
+                return Path.GetDirectoryName(procPath)!;
+            }
+            catch (Exception ex) 
+            {
+                Logger.Instance.RaiseCriticalException(nameof(GetDataDirectory), ex);
+                return "";
+            }
         }
     }
 }
