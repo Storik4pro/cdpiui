@@ -46,7 +46,7 @@ namespace GoodbyeDPI_UI.Helper
             OperationId = operationId;
             _client = client ?? new HttpClient();
 
-            string localAppData = AppDomain.CurrentDomain.BaseDirectory;
+            string localAppData = StateHelper.GetDataDirectory();
             TempDirectory = Path.Combine(localAppData, AppTempDirectory, DownloadManagerDirectory);
         }
 
