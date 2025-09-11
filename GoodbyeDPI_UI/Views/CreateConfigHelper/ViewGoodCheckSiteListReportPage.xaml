@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Name="RootPage"
+    x:Class="GoodbyeDPI_UI.Views.CreateConfigHelper.ViewGoodCheckSiteListReportPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoodbyeDPI_UI.Views.CreateConfigHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:modal="using:GoodbyeDPI_UI.Helper.CreateConfigUtil.GoodCheck"
+    mc:Ignorable="d"
+    xmlns:lcontrol="using:GoodbyeDPI_UI">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Spacing="10">
+                <lcontrol:GoodCheckReportHeaderButton 
+                    x:Name="HeaderButton" 
+                    IsOpened="True"
+                    ClickCommand="{Binding DataContext.HeaderClickCommand, ElementName=RootPage}"
+                    CornerRadius="0"/>
+                <StackPanel x:Name="ContentPanel" Padding="20 0">
+                    <StackPanel x:Name="SuccessStackPanel">
+                        <TextBlock Text="Success stategies" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        
+                        <ListView x:Name="SuccessStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                                  ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:StrategyUIModel">
+                                    <lcontrol:GoodCheckReportStrategyUserControl
+                                        ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
+                                        Args="{x:Bind Args, Mode=OneWay}"
+                                        FailureCount="{x:Bind FailureCount, Mode=OneWay}"
+                                        SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
+                                        Flag="{x:Bind Flag, Mode=OneWay}"
+                                        FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
+                                        Margin="0 2.5"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                    </StackPanel>
+                    <StackPanel x:Name="FailureStackPanel">
+                        <TextBlock Text="Failure stategies" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        
+                        <ListView x:Name="FailureStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                                  ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:StrategyUIModel">
+                                    <lcontrol:GoodCheckReportStrategyUserControl
+                                        ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
+                                        Args="{x:Bind Args, Mode=OneWay}"
+                                        FailureCount="{x:Bind FailureCount, Mode=OneWay}"
+                                        SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
+                                        Flag="{x:Bind Flag, Mode=OneWay}"
+                                        FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
+                                        Margin="0 2.5"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
