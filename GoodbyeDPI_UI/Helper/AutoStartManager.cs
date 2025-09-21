@@ -8,43 +8,13 @@ using Microsoft.Win32.TaskScheduler;
 
 namespace CDPI_UI.Helper
 {
-    public class AutoStartManager
+    public static class AutoStartManager
     {
-        private const string TaskName = "CDPIUI_Autostart";
-
-        public void AddToAutorun()
+        public static void AddToAutorun()
         {
             try
             {
-                string executablePath = Process.GetCurrentProcess().MainModule.FileName;
-
-                using (TaskService taskService = new TaskService())
-                {
-                    Microsoft.Win32.TaskScheduler.Task existingTask = taskService.GetTask(TaskName);
-                    if (existingTask != null)
-                    {
-                        taskService.RootFolder.DeleteTask(TaskName);
-                    }
-
-                    TaskDefinition taskDefinition = taskService.NewTask();
-                    taskDefinition.RegistrationInfo.Description = "Starting CDPI UI with highest rights when user logs in.";
-                    taskDefinition.RegistrationInfo.Author = "goodbyeDPI.exe";
-
-                    LogonTrigger trigger = new LogonTrigger
-                    {
-                        UserId = Environment.UserName 
-                    };
-                    taskDefinition.Triggers.Add(trigger);
-
-                    taskDefinition.Actions.Add(new ExecAction(executablePath, "--autorun", null));
-
-                    taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
-
-                    taskDefinition.Principal.UserId = Environment.UserName;
-                    taskDefinition.Principal.LogonType = TaskLogonType.InteractiveToken;
-
-                    taskService.RootFolder.RegisterTaskDefinition(TaskName, taskDefinition);
-                }
+                _ = PipeClient.Instance.SendMessage("SETTINGS:ADD_TO_AUTORUN");
 
                 SettingsManager.Instance.SetValue<bool>("SYSTEM", "autorun", true);
             }
@@ -54,14 +24,12 @@ namespace CDPI_UI.Helper
             }
         }
 
-        public void RemoveFromAutorun()
+        public static void RemoveFromAutorun()
         {
             try
             {
-                using (TaskService taskService = new TaskService())
-                {
-                    taskService.RootFolder.DeleteTask(TaskName, false);
-                }
+                _ = PipeClient.Instance.SendMessage("SETTINGS:REMOVE_FROM_AUTORUN");
+
 
                 SettingsManager.Instance.SetValue<bool>("SYSTEM", "autorun", false);
             }
