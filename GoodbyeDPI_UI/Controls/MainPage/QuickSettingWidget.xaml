@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.QuickSettingWidget"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid CornerRadius="10" Margin="0 0 0 0" VerticalAlignment="Top">
+        <Border CornerRadius="10" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}" BorderThickness="0">
+            <Border.Background>
+                <AcrylicBrush TintOpacity="0.4" TintColor="#FF000000" FallbackColor="#FF008000"/>
+            </Border.Background>
+        </Border>
+        <StackPanel Padding="0" Spacing="0">
+            <StackPanel Padding="10 10 10 0" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                    <TextBlock x:Name="TitleTextBlock" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                </StackPanel>
+                <TextBlock x:Name="DescriptionTextBlock" Text="{x:Bind Description}" TextWrapping="Wrap" Visibility="Collapsed"/>
+            </StackPanel>
+            <StackPanel MaxHeight="68">
+                <ContentPresenter Content="{x:Bind InnerContent, Mode=OneWay}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
