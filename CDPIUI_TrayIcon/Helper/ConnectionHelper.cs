@@ -108,8 +108,11 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 catch (Exception ex)
                 {
+                    // TODO: add logging
                     Console.WriteLine(ex);
+                    Process.GetCurrentProcess().Kill();
                     return;
+                    
                 }
 
                 try
@@ -144,6 +147,7 @@ namespace CDPIUI_TrayIcon.Helper
             Console.WriteLine($"Client connected on thread[{threadId}].");
 
             _streamString = new StreamString(_pipeServerStream);
+            await _streamString.WriteStringAsync("CONNECT:OK");
             try
             {
                 while (_pipeServerStream.IsConnected && !token.IsCancellationRequested)
@@ -191,6 +195,7 @@ namespace CDPIUI_TrayIcon.Helper
         private void RunMessageActions(string message)
         {
             Console.WriteLine(message);
+            // MessageBox.Show(message);
 
             if (message.StartsWith("CONPTY:"))
             {
@@ -246,20 +251,45 @@ namespace CDPIUI_TrayIcon.Helper
                     TrayIconHelper.Instance.ToggleStartButtonEnabled(true);
                 }
             }
+            else if (message.StartsWith("SETTINGS:"))
+            {
+                if (message.StartsWith("SETTINGS:ADD_TO_AUTORUN"))
+                {
+                    if (!AutoStartManager.AddToAutorun())
+                    {
+                        _ = SendMessage("SETTINGS:AUTORUN_FALSE");
+                        TrayIconHelper.Instance.ShowMessage("Autorun", "Cannot add this application to autorun.", "OPEN_AUTORUN_ERROR");
+                    }
+                }
+                else if (message.StartsWith("SETTINGS:REMOVE_FROM_AUTORUN"))
+                {
+                    AutoStartManager.RemoveFromAutorun();
+                }
+            }
 
         }
 
-        private object _messageLock = new object();
+        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
 
-        public void SendMessage(string message)
+        public async Task<bool> SendMessage(string message)
         {
-            lock (_messageLock)
+            if (_pipeServerStream == null || !_pipeServerStream.IsConnected || _streamString == null)
+                return false;
+
+            await _sendLock.WaitAsync();
+            try
             {
-                if (_pipeServerStream != null && _pipeServerStream.IsConnected && _streamString != null)
-                {
-                    _ = _streamString.WriteStringAsync(message);
-                    Console.WriteLine($"SEND {message}");
-                }
+                if (_pipeServerStream == null || !_pipeServerStream.IsConnected || _streamString == null)
+                    return false;
+
+                await _streamString.WriteStringAsync(message);
+                Console.WriteLine($"SEND {message}");
+                return true;
+            }
+            catch { return false; }
+            finally
+            {
+                _sendLock.Release();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPI_UI.Helper.Static;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +11,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using CDPI_UI;
 
 namespace CDPI_UI.Helper
 {
@@ -57,12 +60,37 @@ namespace CDPI_UI.Helper
             {
                 throw new NullReferenceException("Call PipeClient.Instanse.Init first");
             }
-            await _pipeClient.ConnectAsync(_cancellationToken);
+            _cancellationTokenSource.CancelAfter(2000);
+            try
+            {
+                await _pipeClient.ConnectAsync(_cancellationToken);
+            }
+            catch { }
 
-            IsConnected = true;
-            Connected?.Invoke();
+            if (!_pipeClient.IsConnected)
+            {
+                try
+                {
+                    var psi = new ProcessStartInfo(Path.Combine(StateHelper.GetDataDirectory(), "CDPIUI_TrayIcon.exe"), "--show-ui")
+                    {
+                        UseShellExecute = true,
+                        Verb = "runas"
+                    };
+                    Process.Start(psi);
+                }
+                catch { }
+                Logger.Instance.CreateErrorLog(nameof(PipeClient), "Connection timeout");
 
-            ProcessManager.Instance.GetReady();
+
+                Process.GetCurrentProcess().Kill();
+                return;
+            }
+
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = new();
+            _cancellationToken = _cancellationTokenSource.Token;
+
+            
 
             await HandleServerAsync(_cancellationToken);
             
@@ -71,8 +99,13 @@ namespace CDPI_UI.Helper
         private async Task HandleServerAsync(CancellationToken token)
         {
             _streamString = new StreamString(_pipeClient);
+
+            ProcessManager.Instance.GetReady();
+
             try
             {
+                IsConnected = true;
+                Connected?.Invoke();
                 while (_pipeClient.IsConnected && !token.IsCancellationRequested)
                 {
                     string message;
@@ -121,12 +154,25 @@ namespace CDPI_UI.Helper
             }
         }
 
-        public void SendMessage(string message)
+        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
+
+        public async Task SendMessage(string message)
         {
-            if (_pipeClient != null && _pipeClient.IsConnected && _streamString != null)
+            await _sendLock.WaitAsync();
+
+            if (_pipeClient == null && !_pipeClient.IsConnected && _streamString == null)
             {
-                _ = _streamString.WriteStringAsync(message);
+                return;
             }
+            try
+            {
+                await _streamString.WriteStringAsync(message);
+            }
+            finally
+            {
+                _sendLock.Release();
+            }
+
         }
         private void RunMessageActions(string message)
         {
@@ -143,9 +189,30 @@ namespace CDPI_UI.Helper
                         break;
                 }
             }
+            else if (message.StartsWith("WINDOW:"))
+            {
+                switch (message)
+                {
+                    case "WINDOW:SHOW_MAIN":
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<MainWindow>();
+                        break;
+                    case "WINDOW:SHOW_PSEUDOCONSOLE":
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
+                        break;
+                    case "WINDOW:SHOW_STORE":
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<StoreWindow>();
+                        break;
+                    default: 
+                        break;
+                }
+            }
             else if (message.StartsWith("CONPTY:"))
             {
-                if (message.StartsWith("CONPTY:STARTED"))
+                if (message.StartsWith("CONPTY:GET_STARTUP_STRING"))
+                {
+                    _ = ProcessManager.Instance.StartProcess();
+                }
+                else if (message.StartsWith("CONPTY:STARTED"))
                 {
                     ProcessManager.Instance.ClearOutput();
                     ProcessManager.Instance.MarkAsStarted();
@@ -190,7 +257,7 @@ namespace CDPI_UI.Helper
                     ProcessManager.Instance.ClearOutput();
                     ProcessManager.Instance.AddOutput(result[0]);
                 }
-                
+
             }
             else if (message.StartsWith("GOODCHECK:"))
             {
@@ -219,6 +286,14 @@ namespace CDPI_UI.Helper
                     }
                     if (int.TryParse(result[1], out var value))
                         GoodCheckProcessHelper.Instance.HandleProcessException(result[0], value);
+                }
+            }
+            else if (message.StartsWith("SETTINGS:"))
+            {
+                if (message.StartsWith("SETTINGS:AUTORUN_FALSE"))
+                {
+                    SettingsManager.Instance.SetValue<bool>("SYSTEM", "autorun", false);
+
                 }
             }
 
