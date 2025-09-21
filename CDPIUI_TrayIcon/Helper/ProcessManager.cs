@@ -1,12 +1,8 @@
 ﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CDPIUI_TrayIcon.Helper
 {
@@ -44,7 +40,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public Action<bool>? ProcessStateChanged;
         public bool processState = false;
-        private string ProcessName = string.Empty;
+        public string ProcessName = string.Empty;
 
         private readonly StringBuilder _outputBuffer;
         private readonly StringBuilder _outputDefaultBuffer;
@@ -78,6 +74,13 @@ namespace CDPIUI_TrayIcon.Helper
             {
                 await StartProcess(Executable, Args);
             }
+            else
+            {
+                if (!await PipeServer.Instance.SendMessage("CONPTY:GET_STARTUP_STRING"))
+                {
+                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --get-startup-params --exit-after-action");
+                }
+            }
         }
 
         public async Task StartProcess(string executable, string args)
@@ -104,7 +107,7 @@ namespace CDPIUI_TrayIcon.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                PipeServer.Instance.SendMessage("CONPTY:STARTED");
+                await PipeServer.Instance.SendMessage("CONPTY:STARTED");
                 processState = true;
                 ProcessStateChanged?.Invoke(processState);
 
@@ -120,14 +123,11 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = false;
                 ProcessStateChanged?.Invoke(processState);
             }
-
-
         }
-        
 
         public void SendNowSelectedComponentName()
         {
-            PipeServer.Instance.SendMessage($"CONPTY:PROCNAME({ProcessName})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:PROCNAME({ProcessName})");
         }
 
         private void SendStopMessage(string output = "Process will be stopped by user")
@@ -135,7 +135,7 @@ namespace CDPIUI_TrayIcon.Helper
             _outputDefaultBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
             _outputBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
 
-            PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
         }
 
         public async Task StopProcess(bool output = true)
@@ -166,7 +166,7 @@ namespace CDPIUI_TrayIcon.Helper
                     _hInputWrite = IntPtr.Zero;
                 }
                 if (output) { 
-                    PipeServer.Instance.SendMessage("CONPTY:STOPPED"); 
+                    await PipeServer.Instance.SendMessage("CONPTY:STOPPED"); 
                 }
                 processState = false;
                 ProcessStateChanged?.Invoke(processState);
@@ -266,7 +266,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public void SendDefaultProcessOutput()
         {
-            PipeServer.Instance.SendMessage($"CONPTY:FULLOUTPUT({_outputDefaultBuffer.ToString()})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:FULLOUTPUT({_outputDefaultBuffer.ToString()})");
 
         }
         public void SendState()
@@ -274,11 +274,11 @@ namespace CDPIUI_TrayIcon.Helper
             
             if (processState)
             {
-                PipeServer.Instance.SendMessage("CONPTY:STARTED");
+                _ = PipeServer.Instance.SendMessage("CONPTY:STARTED");
             }
             else
             {
-                PipeServer.Instance.SendMessage("CONPTY:STOPPED");
+                _ = PipeServer.Instance.SendMessage("CONPTY:STOPPED");
             }
         }
 
@@ -400,7 +400,7 @@ namespace CDPIUI_TrayIcon.Helper
                         string output = ReplaceSymbols(_output);
                         _outputBuffer.Append(output);
 
-                        PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
+                        _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
                     }
                 }
 
@@ -444,7 +444,7 @@ namespace CDPIUI_TrayIcon.Helper
             isErrorHappens = true;
 
 
-            PipeServer.Instance.SendMessage($"CONPTY:STOPPED({message}$SEPARATOR{_object})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:STOPPED({message}$SEPARATOR{_object})");
 
             LatestErrorMessage.Clear();
 
