@@ -1,13 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+	<TargetPlatformVersion>10.0</TargetPlatformVersion>
     <ImplicitUsings>enable</ImplicitUsings>
 	<UseWindowsForms>true</UseWindowsForms>
 	<DebugType>embedded</DebugType>
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\trayLogoNormal.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\trayLogoError.ico" />
+    <None Remove="Assets\trayLogoNormal.ico" />
+    <None Remove="Assets\trayLogoStarted.ico" />
+    <None Remove="Assets\trayLogoStopped.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Assets\**\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\trayLogoNormal.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageReference Include="TaskScheduler" Version="2.11.0" />
+  </ItemGroup>
+	<ItemGroup>
+		<None Update="Assets\**\*.*">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
