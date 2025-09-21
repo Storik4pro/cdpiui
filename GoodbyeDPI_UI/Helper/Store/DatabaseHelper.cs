@@ -275,7 +275,7 @@ namespace CDPI_UI.Helper
 
         public void RegisterUserCustomItem(bool manual=false)
         {
-            if (GetItemById(StateHelper.LocalUserItemsId) != null && !manual)
+            if (GetItemById(StateHelper.LocalUserItemsId) != null && GetItemById(StateHelper.ApplicationStoreId) != null && !manual)
             {
                 return;
             }
@@ -334,6 +334,31 @@ namespace CDPI_UI.Helper
             {
                 Logger.Instance.RaiseCriticalException(nameof(RegisterUserCustomItem), "ERR_USER_ITEM_REGISTER", "Unexpected exception happens.");
             }
+
+            DatabaseStoreItem applicationItem = new()
+            {
+                Id = StateHelper.ApplicationStoreId,
+                Type = "CDPIUIUpdateItem",
+                Directory = StateHelper.GetDataDirectory(),
+                Executable = null,
+                UpdateCheckUrl = null,
+                DownloadUrl = null,
+                DownloadFileType = null,
+                VersionControlType = "local",
+                CurrentVersion = StateHelper.Instance.Version,
+                RequiredItemIds = null,
+                DependentItemIds = null,
+                IconPath = "$STATICIMAGE(Store/empty.png)",
+                Name = "CDPI UI updates helper item",
+                ShortName = "CDPI UI updates helper item",
+                Developer = "Storik4",
+                BackgroudColor = ""
+            };
+
+            if (!AddOrUpdateItem(applicationItem))
+            {
+                Logger.Instance.RaiseCriticalException(nameof(RegisterUserCustomItem), "ERR_APPLICATION_ITEM_REGISTER", "Unexpected exception happens.");
+            }
         }
 
         public void QuickRestore()
@@ -378,7 +403,7 @@ namespace CDPI_UI.Helper
 
         private void QuickRestoreFailure(DatabaseStoreItem item)
         {
-            if (item.Id == StateHelper.LocalUserItemsId)
+            if (item.Id == StateHelper.LocalUserItemsId || item.Id == StateHelper.ApplicationStoreId)
             {
                 RegisterUserCustomItem(manual: true);
                 return;

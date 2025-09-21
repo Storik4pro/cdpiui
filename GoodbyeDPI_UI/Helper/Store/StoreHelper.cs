@@ -107,6 +107,7 @@ namespace CDPI_UI.Helper
             public string version_control_link;
             public string download_link;
             public string filetype;
+            public string preffered_to_download_file_name;
             public string archive_root_folder;
             public string target_executable_file;
             public string after_install_actions;
@@ -401,6 +402,24 @@ namespace CDPI_UI.Helper
 
         public RepoCategoryItem GetItemInfoFromStoreId(string storeId)
         {
+            if (storeId == StateHelper.LocalUserItemsId)
+            {
+                return null;
+            }
+
+            if (storeId == StateHelper.ApplicationStoreId)
+            {
+                RepoCategoryItem repoCategoryItem = new()
+                {
+                    store_id = storeId,
+                    version_control = "git",
+                    version_control_link = StateHelper.ApplicationCheckUpdatesUrl,
+                    filetype = "CDPIUIUpdateItem",
+
+                };
+                return repoCategoryItem;
+            }
+
             foreach (RepoCategoryItem repoCategoryItem in ItemsList)
             {
                 if (repoCategoryItem.store_id == storeId)
@@ -669,7 +688,7 @@ namespace CDPI_UI.Helper
             DownloadManager = null;
         }
 
-        private async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
+        public static async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
         {
             string notes;
             string tag;
@@ -693,7 +712,7 @@ namespace CDPI_UI.Helper
         }
 
         private async Task<Tuple<string, string>> GetVersionDownloadLink(
-            string repoUrl, string targetFileOrFileType, string version = null
+            string repoUrl, string targetFileOrFileType, string version = null, string prefferedFile = null
         )
         {
             string link;
@@ -718,6 +737,10 @@ namespace CDPI_UI.Helper
                     .Where(a =>
                         string.Equals(a.Name, targetFileOrFileType, StringComparison.OrdinalIgnoreCase)
                         || a.Name.EndsWith(StateHelper.Instance.FileTypes[targetFileOrFileType], StringComparison.OrdinalIgnoreCase)
+                    )
+                    .Where(a =>
+                        prefferedFile is null ||
+                        a.Name.Contains(prefferedFile, StringComparison.Ordinal)
                     )
                     .ToList();
 
@@ -777,6 +800,13 @@ namespace CDPI_UI.Helper
             NowProcessItemActions?.Invoke(id);
             RepoCategoryItem item = GetItemInfoFromStoreId(id);
 
+            if (item == null)
+            {
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Item not found exception happens.");
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, "ERR_ITEM_NOT_FOUND"));
+                return;
+            }
+
             List<Tuple<string, string>> requiredItems = [];
             if (DatabaseHelper.Instance.IsItemInstalled(id))
             {
@@ -789,7 +819,9 @@ namespace CDPI_UI.Helper
 
             try
             {
-                if (Path.Exists(itemFolder))
+                if (Path.Exists(itemFolder) && 
+                    !string.Equals(itemFolder, StateHelper.GetDataDirectory(), StringComparison.OrdinalIgnoreCase) &&
+                    id != StateHelper.LocalUserItemsId && id != StateHelper.ApplicationStoreId)
                 {
                     Directory.Delete(itemFolder, recursive: true);
                 }
@@ -810,13 +842,13 @@ namespace CDPI_UI.Helper
 
             if (item.version_control == "git_only_last")
             {
-                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version);
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile: item.preffered_to_download_file_name);
                 downloadUrl = item.download_link;
                 tag = data.Item2;
             }
             else if (item.version_control == "git")
             {
-                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version);
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile:item.preffered_to_download_file_name);
                 downloadUrl = data.Item1;
                 tag = data.Item2;
             }
@@ -825,6 +857,7 @@ namespace CDPI_UI.Helper
             {
                 if (downloadUrl == "ERR_TOO_MANY_VARIANTS")
                 {
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
                     Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens.");
                 }
                 else
@@ -852,6 +885,7 @@ namespace CDPI_UI.Helper
             if (cancellationToken.IsCancellationRequested)
                 return;
 
+            if (id == StateHelper.ApplicationStoreId) return;
 
             try
             {

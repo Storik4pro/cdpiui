@@ -100,7 +100,10 @@ namespace CDPI_UI.Helper
                 }
                 else
                 {
-                    File.Copy(tempFileName, Path.Combine(destinationPath, executableFileName + ".exe"), true);
+                    if (!string.IsNullOrEmpty(executableFileName))
+                        File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + ".exe"), true);
+                    else
+                        throw new IOException();
                 }
 
 
@@ -205,14 +208,49 @@ namespace CDPI_UI.Helper
                 else if (zipFolderToUnpack.EndsWith("/"))
                     zipFolderToUnpack = zipFolderToUnpack.TrimEnd('/');
 
+                var patternSegments = string.IsNullOrEmpty(zipFolderToUnpack)
+                                        ? Array.Empty<string>()
+                                        : zipFolderToUnpack.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
                 foreach (var entry in entries)
                 {
-                    var entryPath = entry.FullName.Replace('\\', '/');
+                    var entryPath = entry.FullName.Replace('\\', '/').TrimStart('/');
 
-                    if (!entryPath.StartsWith(zipFolderToUnpack + (zipFolderToUnpack == string.Empty ? "" : "/")))
+                    var entrySegments = entryPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    bool isMatch = true;
+                    if (patternSegments.Length > 0)
+                    {
+                        if (entrySegments.Length < patternSegments.Length)
+                        {
+                            isMatch = false;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < patternSegments.Length; i++)
+                            {
+                                var pat = patternSegments[i];
+                                var seg = entrySegments[i];
+
+                                if (pat == "$ANY")
+                                {
+                                    continue;
+                                }
+
+                                if (!string.Equals(pat, seg, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    isMatch = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!isMatch)
                         continue;
 
-                    var relativePath = entryPath.Substring(zipFolderToUnpack.Length).TrimStart('/');
+                    var relativeSegments = entrySegments.Skip(patternSegments.Length).ToArray();
+                    var relativePath = string.Join("/", relativeSegments).TrimStart('/');
 
                     if (string.IsNullOrEmpty(relativePath))
                         continue;
@@ -240,10 +278,8 @@ namespace CDPI_UI.Helper
                     {
                         entry.ExtractToFile(destinationPath, overwrite: false);
                     }
-                    
 
                     extractedFiles++;
-
                 }
             }
         }
