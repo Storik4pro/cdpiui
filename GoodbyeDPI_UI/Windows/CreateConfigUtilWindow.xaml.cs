@@ -19,6 +19,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUI3Localizer;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -38,10 +39,14 @@ namespace CDPI_UI
 
         public static CreateConfigUtilWindow Instance { get; private set; }
 
+        private ILocalizer localizer = Localizer.Get();
+
         public CreateConfigUtilWindow()
         {
             InitializeComponent();
             InitializeWindow();
+
+            this.Title = localizer.GetLocalizedString("CreateConfigUtilWindowTitle");
 
             var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
             appWindowPresenter.IsResizable = false;
@@ -78,13 +83,13 @@ namespace CDPI_UI
                 TaskbarManager.Instance.SetProgressValue(currentLoadingValue, maxLoadingValue);
         }
 
-        public void NavigateToPage<T>()
+        public void NavigateToPage<T>(object parameter = null)
         {
             this.Activate();
             if (ContentFrame.CurrentSourcePageType == typeof(MainPage))
             {
 
-                ContentFrame.Navigate(typeof(T));
+                ContentFrame.Navigate(typeof(T), parameter);
                 ContentFrame.BackStack.Clear();
             }
             

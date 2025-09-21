@@ -34,6 +34,8 @@ using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using CDPI_UI.Controls.Dialogs;
 using WinUIEx;
+using WinUI3Localizer;
+using CDPI_UI.Helper.Static;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,9 +56,13 @@ namespace CDPI_UI
         private WindowProc _newWndProc;
         private IntPtr _oldWndProc;
 
+        private ILocalizer localizer = Localizer.Get();
+
         public ViewWindow()
         {
             this.InitializeComponent();
+            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
+
             InitializeWindow();
             WindowHelper.SetWindowSize(this, 800, 600);
             this.Closed += ViewWindow_Closed;
@@ -88,7 +94,10 @@ namespace CDPI_UI
 
             ProcessManager.Instance.ErrorHappens += ErrorHappens;
 
-            
+            ProcessManager.Instance.ProcessNameChanged += ProcessManager_ProcessNameChanged;
+
+            TrySetCurentProcess();
+
             if (ProcessManager.Instance.isErrorHappens)
             {
                 if (ProcessManager.Instance.LatestErrorMessage.Count >= 2)
@@ -107,69 +116,36 @@ namespace CDPI_UI
             OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
         }
 
+        private void TrySetCurentProcess()
+        {
+            try
+            {
+                var item = DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                if (item != null)
+                {
+                    SelectedComponentTextBlock.Text = string.Format(localizer.GetLocalizedString("NowSelectedComponent"), item.ShortName);
+                }
+                else
+                {
+                    SelectedComponentTextBlock.Text = localizer.GetLocalizedString("NoComponent");
+                }
+            }
+            catch 
+            {
+                SelectedComponentTextBlock.Text = localizer.GetLocalizedString("NoComponent");
+            }
+        }
+
+        private void ProcessManager_ProcessNameChanged(string obj)
+        {
+            TrySetCurentProcess();
+        }
+
         public bool IsActive()
         {
             return this.DispatcherQueue != null;
         }
 
-        private void InitializeWindow()
-        {
-            _hwnd = WindowNative.GetWindowHandle(this);
-            _newWndProc = new WindowProc(NewWindowProc);
-            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-        }
-
-        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_GETMINMAXINFO)
-            {
-                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = 484;
-                minMaxInfo.ptMinTrackSize.y = 300;
-                Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            }
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        private const int GWLP_WNDPROC = -4;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-        bool TrySetMicaBackdrop(bool useMicaAlt)
-        {
-            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
-            {
-                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
-                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
-                this.SystemBackdrop = micaBackdrop;
-
-                return true; 
-            }
-
-            return false; 
-        }
         private void OnProcessOutputReceived(string output)
         {
             AppendToRichTextBlock(output);
@@ -222,28 +198,28 @@ namespace CDPI_UI
             {
                 StatusIcon.Glyph = "\uEC61";
                 ProcessControlIcon.Glyph = "\uE71A";
-                ProcessControl.Text = "Stop";
+                ProcessControl.Text = localizer.GetLocalizedString("Stop");
                 ProcessRestart.IsEnabled = true;
                 var successColor = (Color)Application.Current.Resources["SystemFillColorSuccess"];
                 var successBrush = new SolidColorBrush(successColor);
                 StatusIcon.Foreground = successBrush;
-                StatusText.Text = "Process started";
-                StatusMessage.Title = "Process is running now";
-                StatusMessage.Message = "goodbyedpi.exe process successfully launched and running";
+                StatusText.Text = localizer.GetLocalizedString("ProcessStarted");
+                StatusMessage.Title = localizer.GetLocalizedString("ProcessStartedMessageTitle");
+                StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStartedMessageMessage"), ProcessManager.Instance.ProcessName);
                 StatusMessage.Severity = InfoBarSeverity.Success;
             }
             else
             {
                 StatusIcon.Glyph = "\uEB90";
                 ProcessControlIcon.Glyph = "\uE768";
-                ProcessControl.Text = "Start";
+                ProcessControl.Text = localizer.GetLocalizedString("Start");
                 ProcessRestart.IsEnabled = false;
                 var criticalColor = (Color)Application.Current.Resources["SystemFillColorCritical"];
                 var criticalBrush = new SolidColorBrush(criticalColor);
                 StatusIcon.Foreground = criticalBrush;
-                StatusText.Text = "Process stopped";
-                StatusMessage.Title = "Process stopped now";
-                StatusMessage.Message = "goodbyedpi.exe process was stopped";
+                StatusText.Text = localizer.GetLocalizedString("ProcessStopped");
+                StatusMessage.Title = localizer.GetLocalizedString("ProcessStoppedMessageTitle");
+                StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStoppedMessageMessage"), ProcessManager.Instance.ProcessName);
                 StatusMessage.Severity = InfoBarSeverity.Informational;
             }
             StatusHeader.Visibility = Visibility.Visible;
@@ -256,7 +232,8 @@ namespace CDPI_UI
             ChangeIcon(false);
             StatusMessage.Severity = InfoBarSeverity.Error;
             StatusHeader.Visibility = Visibility.Visible;
-            string message = _object == "process" ? "goodbyedpi.exe process raised error" : "PseudoConsole internal error";
+            string message = _object == "process" ? 
+                string.Format(localizer.GetLocalizedString("ProceesRaisedException"), ProcessManager.Instance.ProcessName) : localizer.GetLocalizedString("PseudoconsoleInternalError");
             StatusMessage.Message = $"{message}: {error}";
         }
 
@@ -285,7 +262,7 @@ namespace CDPI_UI
                 OverwritePrompt = true,
                 FileName = "PseudoConsoleLog.txt",
                 DefaultExt = ".txt",
-                Filter = "Text Files|*.txt"
+                Filter = "TXT Files|*.txt"
             };
             var result = _dialog.ShowDialog();
             if (result.HasValue && result.Value)
@@ -301,7 +278,7 @@ namespace CDPI_UI
                 } catch (Exception ex)
                 {
                     ErrorContentDialog dialog = new ErrorContentDialog { };
-                    await dialog.ShowErrorDialogAsync(content: $"File {_dialog.FileName} couldn't be saved.\nFILE_SAVE_ERROR",
+                    await dialog.ShowErrorDialogAsync(content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), _dialog.FileName, "ERR_FILE_WRITE"),
                         errorDetails: $"{ex}",
                         xamlRoot: this.Content.XamlRoot);
                 }
@@ -389,13 +366,12 @@ namespace CDPI_UI
             {
                 XamlRoot = this.Content.XamlRoot,
                 Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = "Confirmation required",
+                Title = localizer.GetLocalizedString("ConfirmationRequired"),
 
-                PrimaryButtonText = "Yes, stop service",
-                CloseButtonText = "Cancel",
+                PrimaryButtonText = localizer.GetLocalizedString("YesStopService"),
+                CloseButtonText = localizer.GetLocalizedString("Cancel"),
                 DefaultButton = ContentDialogButton.Close,
-                Content = "Are you sure you want to forcibly stop the windrivert service? " +
-                "The driver may still be used by other applications/processes\r\n"
+                Content = localizer.GetLocalizedString("ServiceAskToStopMessage")
             };
             var result = await dialog.ShowAsync();
 
@@ -407,11 +383,72 @@ namespace CDPI_UI
                 } catch (Exception ex)
                 {
                     ErrorContentDialog _dialog = new ErrorContentDialog { };
-                    await _dialog.ShowErrorDialogAsync(content: $"Cannot stop service\nWINDIVERT_STOP_ERROR",
+                    await _dialog.ShowErrorDialogAsync(content: string.Format(localizer.GetLocalizedString("ServiceStopException"), "WINDIVERT_STOP_ERROR"),
                         errorDetails: $"{ex.Message}",
                         xamlRoot: this.Content.XamlRoot);
                 }
             }
         }
+
+        #region WINAPI
+        private void InitializeWindow()
+        {
+            _hwnd = WindowNative.GetWindowHandle(this);
+            _newWndProc = new WindowProc(NewWindowProc);
+            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
+        }
+
+        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            if (msg == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+                minMaxInfo.ptMinTrackSize.x = 484;
+                minMaxInfo.ptMinTrackSize.y = 300;
+                Marshal.StructureToPtr(minMaxInfo, lParam, true);
+            }
+            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int x;
+            public int y;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+
+        private const int GWLP_WNDPROC = -4;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        bool TrySetMicaBackdrop(bool useMicaAlt)
+        {
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
+            {
+                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+                this.SystemBackdrop = micaBackdrop;
+
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
     }
 }

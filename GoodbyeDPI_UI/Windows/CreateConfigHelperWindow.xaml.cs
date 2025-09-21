@@ -1,5 +1,6 @@
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.CreateConfigHelper;
 using CDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
@@ -23,6 +24,7 @@ using System.Windows.Forms;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUI3Localizer;
 using WinUIEx;
 using Application = Microsoft.UI.Xaml.Application;
 
@@ -46,9 +48,12 @@ namespace CDPI_UI
 
         private bool IsDialogRequested = false;
 
+        private ILocalizer localizer = Localizer.Get();
+
         public CreateConfigHelperWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("CreateConfigHelperWindowTitle"));
             InitializeWindow();
             TrySetMicaBackdrop(true);
 
@@ -299,7 +304,7 @@ namespace CDPI_UI
         private async void BeginNewGoodCheckSelectionButton_Click(object sender, RoutedEventArgs e)
         {
             CreateConfigUtilWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
-            window.NavigateToPage<CreateViaGoodCheck>();
+            // window.NavigateToPage<CreateViaGoodCheck>();
         }
 
         #region WINAPI
@@ -369,8 +374,30 @@ namespace CDPI_UI
 
 
 
+
         #endregion
 
-        
+        private async void ComponentsStore_Click(object sender, RoutedEventArgs e)
+        {
+            StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C001CS", new SuppressNavigationTransitionInfo());
+        }
+
+        private async void AddOnsStore_Click(object sender, RoutedEventArgs e)
+        {
+            StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C003AS", new SuppressNavigationTransitionInfo());
+        }
+
+        private async void ConfigsStore_Click(object sender, RoutedEventArgs e)
+        {
+            StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C002CS", new SuppressNavigationTransitionInfo());
+        }
+
+        private void Store_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+        }
     }
 }

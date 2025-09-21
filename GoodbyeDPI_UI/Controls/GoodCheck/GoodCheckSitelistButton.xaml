@@ -6,7 +6,8 @@
     xmlns:local="using:CDPI_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Border CornerRadius="5" Height="55" Background="{ThemeResource ControlFillColorDefaultBrush}"/>
@@ -26,11 +27,11 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <FontIcon Glyph="&#xE70F;" FontSize="16"/>
-                            <TextBlock Text="Изменить"/>
+                            <TextBlock l:Uids.Uid="EditTextBlock"/>
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <Button x:Name="RemoveButton" Padding="6" Height="33" Width="33" ToolTipService.ToolTip="Убрать" Click="RemoveButton_Click">
+                <Button l:Uids.Uid="RemoveButton" x:Name="RemoveButton" Padding="6" Height="33" Width="33" Click="RemoveButton_Click">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <FontIcon Glyph="&#xE894;" FontSize="16"/>

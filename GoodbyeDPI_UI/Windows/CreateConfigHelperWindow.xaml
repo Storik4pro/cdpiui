@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:winex="using:WinUIEx"
-    Title="CreateConfigHelperWindow">
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -36,11 +36,20 @@
                     Width="16" Height="16"
                     Margin="16,0"/>
                 <TextBlock Grid.Column="1"
-                    x:Name="AppTitleTextBlock" Text="Помошник создания нового пресета"
+                    l:Uids.Uid="CreateConfigHelperTitleTextBlock"
+                    x:Name="AppTitleTextBlock"
                     TextWrapping="NoWrap"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     VerticalAlignment="Center"
                     Margin="0, 0, 0, 0" />
+                <TextBlock l:Uids.Uid="PreviewTextBlock"
+                           x:Name="AppTitleSubTextBlock" 
+                           Grid.Column="3"
+                           TextWrapping="NoWrap"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Margin="8, 0, 0, 0"/>
             </Grid>
 
         </Grid>
@@ -120,13 +129,13 @@
                         
                     </MenuBarItem>
                     <MenuBarItem Title="Store">
-                        <MenuFlyoutItem Text="Explore new components"/>
-                        <MenuFlyoutItem Text="Explore new AddOns"/>
-                        <MenuFlyoutItem Text="Explore new configs"/>
+                        <MenuFlyoutItem x:Name="ComponentsStore" Text="Explore new components" Click="ComponentsStore_Click"/>
+                        <MenuFlyoutItem x:Name="AddOnsStore" Text="Explore new AddOns" Click="AddOnsStore_Click"/>
+                        <MenuFlyoutItem x:Name="ConfigsStore" Text="Explore new configs" Click="ConfigsStore_Click"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem Text="Open Store">
+                        <MenuFlyoutItem x:Name="Store" Text="Open Store" Click="Store_Click">
                             <MenuFlyoutItem.Icon>
-                                <ImageIcon Source="/Assets/Square44x44Logo.png"/>
+                                <ImageIcon Source="/Assets/Icons/Store.png"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                     </MenuBarItem>

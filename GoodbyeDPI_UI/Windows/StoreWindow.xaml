@@ -8,9 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
-    Title="Магазин компонентов"
     xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
-    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:l="using:WinUI3Localizer">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
@@ -67,21 +67,21 @@
                    HorizontalAlignment="Left"
                    Width="16" Height="16"
                    Margin="0,0" Grid.Column="1"/>
-                <TextBlock x:Name="AppTitleTextBlock" Text="Магазин компонентов"
-                   TextWrapping="NoWrap"
-                   Style="{StaticResource CaptionTextBlockStyle}"
-                   VerticalAlignment="Center"
-                   Grid.Column="2" Margin="18, 0, 0, 0"/>
-                <TextBlock x:Name="AppTitleSubTextBlock" Text="Предварительная версия"
-                   Grid.Column="3"
-                   TextWrapping="NoWrap"
-                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                   Style="{StaticResource CaptionTextBlockStyle}"
-                   VerticalAlignment="Center"
-                   Margin="8, 0, 0, 0"/>
+                <TextBlock l:Uids.Uid="StoreWindowTitleTextBlock"
+                           x:Name="AppTitleTextBlock"
+                           TextWrapping="NoWrap"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Grid.Column="2" Margin="18, 0, 0, 0"/>
+                <TextBlock l:Uids.Uid="PreviewTextBlock"
+                           x:Name="AppTitleSubTextBlock" 
+                           Grid.Column="3"
+                           TextWrapping="NoWrap"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Margin="8, 0, 0, 0"/>
             </Grid>
-
-            
 
         </Grid>
         <NavigationView x:Name="NavView" 
@@ -107,22 +107,22 @@
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Home" Tag="CDPI_UI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPI_UI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Downloads" Tag="CDPI_UI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="DownloadsButton" Tag="CDPI_UI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEBD3;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Library" Tag="CDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="LibraryButton" Tag="CDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE8F1;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem Content="Help" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="HelpButton" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
 
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE9CE;" />
@@ -149,7 +149,6 @@
                         </VisualState.StateTriggers>
                         <VisualState.Setters>
                             <Setter Target="PagesHeader.Visibility" Value="False"/>
-                            <!-- Leave the next line for left-only navigation. -->
                             <Setter Target="ContentFrame.Padding" Value="24,0,24,24"/>
                         </VisualState.Setters>
                     </VisualState>

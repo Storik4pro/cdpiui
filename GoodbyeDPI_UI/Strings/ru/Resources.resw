@@ -1,0 +1,743 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutButton.Content" xml:space="preserve">
+    <value>Сведения</value>
+    <comment>About program header</comment>
+  </data>
+  <data name="AboutPageTextBlock.Text" xml:space="preserve">
+    <value>Сведения</value>
+  </data>
+  <data name="AddButton.Content" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="AdditionalSettings.Text" xml:space="preserve">
+    <value>Дополнительные настройки</value>
+  </data>
+  <data name="AddNewComponentFromTheStoreTextBlock.Text" xml:space="preserve">
+    <value>Загрузите новые компоненты из Магазина</value>
+  </data>
+  <data name="AppRunnedInTrayToast.Content" xml:space="preserve">
+    <value>Приложение запущено в системном лотке уведомлений</value>
+  </data>
+  <data name="AppUpdatesToast.Content" xml:space="preserve">
+    <value>Доступны новые обновления для этого приложения</value>
+  </data>
+  <data name="AutorunButton.Header" xml:space="preserve">
+    <value>Открывать приложение при запуске ПК</value>
+  </data>
+  <data name="AvailableActions" xml:space="preserve">
+    <value>[Предлагаемые действия]</value>
+  </data>
+  <data name="AvailableActionsButton.Content" xml:space="preserve">
+    <value>[Предлагаемые действия]</value>
+  </data>
+  <data name="AvailableActionsTip" xml:space="preserve">
+    <value>Справка сейчас не доступна</value>
+  </data>
+  <data name="BasicTextBlock.Text" xml:space="preserve">
+    <value>Основные</value>
+  </data>
+  <data name="BeginNewSelectionTextBlock.Text" xml:space="preserve">
+    <value>Начать новый подбор</value>
+  </data>
+  <data name="Calculating" xml:space="preserve">
+    <value>Расчет...</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CancelButton.Content" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CheckForUpdates" xml:space="preserve">
+    <value>Проверить наличие обновлений</value>
+  </data>
+  <data name="CheckingForUpdates" xml:space="preserve">
+    <value>Установка обновлений</value>
+  </data>
+  <data name="ChooseExistOnLocalPCTextBlock.Text" xml:space="preserve">
+    <value>Выбрать существующий на этом ПК</value>
+  </data>
+  <data name="ChooseSiteList" xml:space="preserve">
+    <value>Выберите список сайтов...</value>
+  </data>
+  <data name="CleanModeMenuItem.Text" xml:space="preserve">
+    <value>Чистый</value>
+  </data>
+  <data name="CleanupModeMenuItem.Text" xml:space="preserve">
+    <value>Режим отчистки вывода</value>
+  </data>
+  <data name="ClickNextToBegin.Text" xml:space="preserve">
+    <value>Для продолжения нажмите кнопку "Далее"</value>
+  </data>
+  <data name="ColorSelector.Header" xml:space="preserve">
+    <value>Выберите акцент в параметрах этой системы</value>
+  </data>
+  <data name="ComponentSelector.Description" xml:space="preserve">
+    <value>Этот компонент будет запускаться при нажатии на кнопку "Вкл."</value>
+  </data>
+  <data name="ComponentSelector.Header" xml:space="preserve">
+    <value>Компонент по умолчанию</value>
+  </data>
+  <data name="ComponentSettingsPageHeader" xml:space="preserve">
+    <value>Параметры компонента {0}</value>
+  </data>
+  <data name="ConfigSettingsCard.Description" xml:space="preserve">
+    <value>Выберите готовый пресет запуска для этого компонента</value>
+  </data>
+  <data name="ConfigSettingsCard.Header" xml:space="preserve">
+    <value>Пресет запуска</value>
+  </data>
+  <data name="ConfirmationRequired" xml:space="preserve">
+    <value>Требуется подтверждение</value>
+  </data>
+  <data name="CreateConfigHelperSettingsCard.Description" xml:space="preserve">
+    <value>Создание нового пресета. Редактирование набора настроек. Импортирование пресета из .bat файла</value>
+  </data>
+  <data name="CreateConfigHelperSettingsCard.Header" xml:space="preserve">
+    <value>Универсальный помощник создания и редактирования наборов настроек</value>
+  </data>
+  <data name="CreateConfigHelperTitleTextBlock.Text" xml:space="preserve">
+    <value>Универсальный помощник создания и редактирования наборов настроек</value>
+  </data>
+  <data name="CreateConfigHelperWindowTitle" xml:space="preserve">
+    <value>Помощник создания пресетов</value>
+  </data>
+  <data name="CreateConfigTextBlock.Text" xml:space="preserve">
+    <value>Создайте свой пресет</value>
+  </data>
+  <data name="CreateConfigUtilSettingsCard.Description" xml:space="preserve">
+    <value>Подбор параметров запуска для компонентов. Упрощенный сборщик пресетов.</value>
+  </data>
+  <data name="CreateConfigUtilSettingsCard.Header" xml:space="preserve">
+    <value>Автоматическая утилита создания пресета</value>
+  </data>
+  <data name="CreateConfigUtilWindowTitle" xml:space="preserve">
+    <value>Автоматическая утилита создания пресета</value>
+  </data>
+  <data name="CreateConfigUtilWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Автоматическая утилита создания пресета</value>
+  </data>
+  <data name="CreateNewConfigViaGoodCheckTextBlock.Text" xml:space="preserve">
+    <value>Создать новый пресет с использованием GoodCheck</value>
+  </data>
+  <data name="CreateNewTextBlock.Text" xml:space="preserve">
+    <value>Создать новый</value>
+  </data>
+  <data name="CurrentVersion" xml:space="preserve">
+    <value>Текущая версия: {0}</value>
+  </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>Темная</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>Удалить с устройства</value>
+  </data>
+  <data name="DescriptionTextBlock.Text" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="DetailsTextBlock.Text" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>Скачивание</value>
+  </data>
+  <data name="DownloadsButton.Content" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+  <data name="EditSiteListButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить список сайтов</value>
+  </data>
+  <data name="EditTextBlock.Text" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="ElementNotExistMessage" xml:space="preserve">
+    <value>Элемент с уникальным идентификатором "{0}" не существует. Проверьте ваше Интернет-соединение, отчистите кэш магазина и повторите попытку позднее. {1}</value>
+  </data>
+  <data name="ElementNotExistTitle" xml:space="preserve">
+    <value>Элемент не существует</value>
+  </data>
+  <data name="EmptyPageDescription.Text" xml:space="preserve">
+    <value>Но не время отчаиваться! Как только вы загрузите новый набор настроек из Магазина или создадите свой, страница преобразится</value>
+  </data>
+  <data name="EmptyPageTitle.Text" xml:space="preserve">
+    <value>На этой странице царит одиночество</value>
+  </data>
+  <data name="en-us" xml:space="preserve">
+    <value>Английский (English)</value>
+  </data>
+  <data name="ErrorHappens" xml:space="preserve">
+    <value>Произошла ошибка</value>
+  </data>
+  <data name="ErrorInformationTextBlock.Text" xml:space="preserve">
+    <value>Нам удалось собрать следующие сведения об ошибке:</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Произошла ошибка</value>
+  </data>
+  <data name="ExceptionHappensTextBlock.Text" xml:space="preserve">
+    <value>Произошла ошибка —</value>
+  </data>
+  <data name="ExitButton.Content" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="ExitMenuItem.Text" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="ExploreComponentsInStoreButton.Header" xml:space="preserve">
+    <value>Открыть Магазин</value>
+  </data>
+  <data name="ExploreInStore.Text" xml:space="preserve">
+    <value>Откройте что-то новое для себя в Магазине</value>
+  </data>
+  <data name="ExternalLinksTextBlock.Text" xml:space="preserve">
+    <value>Ссылки на связанные Интернет-ресурсы</value>
+  </data>
+  <data name="FileMenuItem.Title" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="FileSaveErrorMessage" xml:space="preserve">
+    <value>Файл "{0}" не может быть сохранен. {1}</value>
+  </data>
+  <data name="Finishing" xml:space="preserve">
+    <value>Завершение</value>
+  </data>
+  <data name="FontContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="FontContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="FontContentDialog.Title" xml:space="preserve">
+    <value>Настройка шрифта</value>
+  </data>
+  <data name="FontMenuItem.Text" xml:space="preserve">
+    <value>Шрифт</value>
+  </data>
+  <data name="FontSizeTextBlock.Text" xml:space="preserve">
+    <value>Размер шрифта</value>
+  </data>
+  <data name="Get" xml:space="preserve">
+    <value>Получить</value>
+  </data>
+  <data name="GetHelpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Получить справку</value>
+  </data>
+  <data name="GetHelpTextBlock.Text" xml:space="preserve">
+    <value>Получить справку</value>
+  </data>
+  <data name="GettingReady" xml:space="preserve">
+    <value>Подготовка</value>
+  </data>
+  <data name="GettingReadyTextBlock.Text" xml:space="preserve">
+    <value>Нам требуется кое-что подготовить, прежде чем начать. Это не займет много времени</value>
+  </data>
+  <data name="GettingReadyTitleTextBlock.Text" xml:space="preserve">
+    <value>Подготовка</value>
+  </data>
+  <data name="GoBackButton.Content" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="GoForwardButton.Content" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="GoodCheckAdditionalSettingsTip.Text" xml:space="preserve">
+    <value>Эти настройки помогут вам настроить подбор под себя. Когда будете готовы продолжить, просто нажмите на кнопку "Далее"—все настройки будут сохранены автоматически</value>
+  </data>
+  <data name="GoodCheckAddSiteList.Text" xml:space="preserve">
+    <value>Добавить список сайтов</value>
+  </data>
+  <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
+    <value>Количество неудачных стратегий (Менее 65%): </value>
+  </data>
+  <data name="GoodCheckConfigSelectionTextBlock.Text" xml:space="preserve">
+    <value>GoodCheck</value>
+  </data>
+  <data name="GoodCheckCurrentSelection.Text" xml:space="preserve">
+    <value>Текущая проверка</value>
+  </data>
+  <data name="GoodCheckEmptySiteListsTip1.Text" xml:space="preserve">
+    <value>Для продолжения выберите хотя бы один список сайтов...</value>
+  </data>
+  <data name="GoodCheckEmptySiteListsTip2.Text" xml:space="preserve">
+    <value>...к сожалению простым перетаскиванием это сделать не получится :(</value>
+  </data>
+  <data name="GoodCheckGoodStrategy.Text" xml:space="preserve">
+    <value>Количество удачных стратегий (Более 65%): </value>
+  </data>
+  <data name="GoodCheckKillAllProcessButton.Content" xml:space="preserve">
+    <value>Завершить подбор полностью</value>
+  </data>
+  <data name="GoodCheckKillCurrentProcessButton.Content" xml:space="preserve">
+    <value>Завершить текущий процесс</value>
+  </data>
+  <data name="GoodCheckSelectionComplete.Text" xml:space="preserve">
+    <value>Подбор завершен</value>
+  </data>
+  <data name="GoodCheckSelectionCompleteTip.Text" xml:space="preserve">
+    <value>Нажмите на кнопку "Далее", чтобы перейти к просмотру результата.</value>
+  </data>
+  <data name="GoodCheckSelectionNow.Text" xml:space="preserve">
+    <value>Сейчас идет подбор для:</value>
+  </data>
+  <data name="GoodCheckSelectionPercent.Text" xml:space="preserve">
+    <value>Процент выполненной работы:</value>
+  </data>
+  <data name="GoodCheckSelectionTime.Text" xml:space="preserve">
+    <value>Оценка оставшегося времени</value>
+  </data>
+  <data name="GoodCheckSelectionTitle.Text" xml:space="preserve">
+    <value>Подбор параметров запуска</value>
+  </data>
+  <data name="GoodCheckSelectionWaitTextBlock.Text" xml:space="preserve">
+    <value>Этот процесс займет некоторое время. Стоит потрогать траву, если вы этого давно не делали</value>
+  </data>
+  <data name="GoodCheckSelectSeparatelly.Content" xml:space="preserve">
+    <value>Подбирать для каждого списка сайтов отдельно</value>
+  </data>
+  <data name="GoodCheckSelectSiteListFromTemplate.Text" xml:space="preserve">
+    <value>Выберите список сайтов из доступных шаблонов</value>
+  </data>
+  <data name="GoodCheckSelectSiteLists.Text" xml:space="preserve">
+    <value>Выберите те списки сайтов, для которых вы хотите осуществить автоматический подбор. Вы так же можете создать свой список сайтов</value>
+  </data>
+  <data name="GoodCheckSelectSiteListsTitle.Text" xml:space="preserve">
+    <value>Выбор списков сайтов</value>
+  </data>
+  <data name="GoodCheckStrategyListChooseSettingCard.Description" xml:space="preserve">
+    <value>Обратите внимание на соответствие стандарта вашего соединения и соединения указанного в названии списка стратегий. Например, IPv6 стратегии могут не работать с сетью IPv4</value>
+  </data>
+  <data name="GoodCheckStrategyListChooseSettingCard.Header" xml:space="preserve">
+    <value>Список стратегий для проверки</value>
+  </data>
+  <data name="GoodCheckStrategyListChooseTip1.Text" xml:space="preserve">
+    <value>Выберите список стратегий для подбора</value>
+  </data>
+  <data name="GoodCheckStrategyListChooseTip2.Text" xml:space="preserve">
+    <value>Вы так же можете включить режим подбора для каждого списка сайтов отдельно. Это сильно увеличит общее время подбора, но конечная стратегия может работать лучше </value>
+  </data>
+  <data name="GoodCheckStrategyListChooseTitle.Text" xml:space="preserve">
+    <value>Выбор списка стратегий</value>
+  </data>
+  <data name="GoodCheckWizardTip.Text" xml:space="preserve">
+    <value>Этот мастер поможет вам подобрать параметры запуска для выбранных сайтов.</value>
+  </data>
+  <data name="HelpButton.Content" xml:space="preserve">
+    <value>Справка</value>
+  </data>
+  <data name="HelpMenuItem.Title" xml:space="preserve">
+    <value>Справка</value>
+  </data>
+  <data name="HelpSupportTitle.Text" xml:space="preserve">
+    <value>Справка + поддержка</value>
+  </data>
+  <data name="HomeButton.Content" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="HomeTextBlock.Text" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="Install" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="Installed" xml:space="preserve">
+    <value>Установлено</value>
+  </data>
+  <data name="Installing" xml:space="preserve">
+    <value>Установка</value>
+  </data>
+  <data name="InstallUpdates" xml:space="preserve">
+    <value>Загрузить и установить обновления</value>
+  </data>
+  <data name="LanguageSelector.Description" xml:space="preserve">
+    <value>Возможно, вам придется перезапустить приложение, чтобы применить настройки локализации ко всем элементам.</value>
+  </data>
+  <data name="LanguageSelector.Header" xml:space="preserve">
+    <value>Application language</value>
+  </data>
+  <data name="LatestVersionInstalled" xml:space="preserve">
+    <value>Установлена последняя версия</value>
+  </data>
+  <data name="LibraryButton.Content" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="LocalData" xml:space="preserve">
+    <value>Личные данные текущего пользователя</value>
+  </data>
+  <data name="MessageFromDeveloper" xml:space="preserve">
+    <value>Сообщение от разработчика</value>
+  </data>
+  <data name="MessageFromDeveloperTextBlock.Text" xml:space="preserve">
+    <value>Сообщение от разработчика</value>
+  </data>
+  <data name="MessageFromDeveloperTip" xml:space="preserve">
+    <value>Разработчик посчитал нужным сообщить указанную информацию. Это может быть предостережением или просто информацией, на которую разработчик захотел обратить внимание. </value>
+  </data>
+  <data name="NewestVersionInstalled" xml:space="preserve">
+    <value>Все обновления установлены</value>
+  </data>
+  <data name="NewVersionAvailable" xml:space="preserve">
+    <value>Доступна новая версия!</value>
+  </data>
+  <data name="NoComponent" xml:space="preserve">
+    <value>Компонент не выбран</value>
+  </data>
+  <data name="NotificationSettingsExpander.Description" xml:space="preserve">
+    <value>Выберите уведомления, которые вы хотите видеть на рабочем столе</value>
+  </data>
+  <data name="NotificationSettingsExpander.Header" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NowSelectedComponent" xml:space="preserve">
+    <value>Сейчас выбран: {0}</value>
+  </data>
+  <data name="OfflineHelpSettingsCard.Header" xml:space="preserve">
+    <value>Локальная справка</value>
+  </data>
+  <data name="OpenConfigHelperTextBlock.Text" xml:space="preserve">
+    <value>Создать пресет вручную</value>
+  </data>
+  <data name="OpenLogsFolderTextBlock.Text" xml:space="preserve">
+    <value>Открыть расположение отчета</value>
+  </data>
+  <data name="OriginalModeMenuItem.Text" xml:space="preserve">
+    <value>Оригинальный</value>
+  </data>
+  <data name="ORSeparatorTextBlock.Text" xml:space="preserve">
+    <value>--ИЛИ--</value>
+    <comment>--&lt;localized string, for example "OR"&gt;--</comment>
+  </data>
+  <data name="OtherTextBlock.Text" xml:space="preserve">
+    <value>Другое</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Подготовка...</value>
+  </data>
+  <data name="PersonalizationSettingsExpander.Description" xml:space="preserve">
+    <value>Выберите тему и акцент для этого приложения </value>
+  </data>
+  <data name="PersonalizationSettingsExpander.Header" xml:space="preserve">
+    <value>Текущая тема</value>
+  </data>
+  <data name="PersonalizeTextBlock.Text" xml:space="preserve">
+    <value>Персонализация</value>
+  </data>
+  <data name="PreviewTextBlock.Text" xml:space="preserve">
+    <value>Предварительный доступ</value>
+  </data>
+  <data name="ProceesRaisedException" xml:space="preserve">
+    <value>Процесс "{0}" завершил работу с ошибкой</value>
+  </data>
+  <data name="ProcessMenuItem.Title" xml:space="preserve">
+    <value>Процесс</value>
+  </data>
+  <data name="ProcessStarted" xml:space="preserve">
+    <value>Процесс запущен</value>
+  </data>
+  <data name="ProcessStartedMessageMessage" xml:space="preserve">
+    <value>Процесс "{0}" успешно запущен и работает без ошибок</value>
+  </data>
+  <data name="ProcessStartedMessageTitle" xml:space="preserve">
+    <value>Процесс запущен</value>
+  </data>
+  <data name="ProcessStateToast.Content" xml:space="preserve">
+    <value>Изменение состояния процесса (Запущен/Остановлен)</value>
+  </data>
+  <data name="ProcessStopped" xml:space="preserve">
+    <value>Процесс остановлен</value>
+  </data>
+  <data name="ProcessStoppedMessageMessage" xml:space="preserve">
+    <value>Процесс "{0}" был остановлен</value>
+  </data>
+  <data name="ProcessStoppedMessageTitle" xml:space="preserve">
+    <value>Сейчас процесс остановлен</value>
+  </data>
+  <data name="PseidoconsoleCopyOutputButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Копировать вывод</value>
+  </data>
+  <data name="PseudoconsoleInternalError" xml:space="preserve">
+    <value>Произошла внутренняя ошибка</value>
+  </data>
+  <data name="PseudoconsoleSettingsCard.Description" xml:space="preserve">
+    <value>Просмотр лога текущего процесса. Сохранение лога в файл</value>
+  </data>
+  <data name="PseudoconsoleSettingsCard.Header" xml:space="preserve">
+    <value>Псевдоконсоль (Чтение вывода процесса)</value>
+  </data>
+  <data name="PseudoconsoleSettingsCardHeader" xml:space="preserve">
+    <value>Псевдоконсоль (Чтение вывода процесса)</value>
+  </data>
+  <data name="PseudoconsoleTextBlock.Text" xml:space="preserve">
+    <value>Псевдоконсоль</value>
+  </data>
+  <data name="PseudoconsoleWindowTitle" xml:space="preserve">
+    <value>Псевдоконсоль</value>
+  </data>
+  <data name="QueueWaiting" xml:space="preserve">
+    <value>Ожидание...</value>
+  </data>
+  <data name="ReinstallButton.Text" xml:space="preserve">
+    <value>Выполнить принудительную переустановку</value>
+  </data>
+  <data name="RemoveButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Убрать</value>
+  </data>
+  <data name="RemoveServiceTextBlock.Text" xml:space="preserve">
+    <value>Остановить службу</value>
+  </data>
+  <data name="RestartMenuItem.Text" xml:space="preserve">
+    <value>Перезапустить</value>
+  </data>
+  <data name="RetryButton.Content" xml:space="preserve">
+    <value>Повторить попытку</value>
+  </data>
+  <data name="ru" xml:space="preserve">
+    <value>Русский (Russian)</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>Сохранить как...</value>
+  </data>
+  <data name="SelectComponentToViewVarsTextBlock.Text" xml:space="preserve">
+    <value>Выберите компонент, чтобы увидеть доступные действия</value>
+  </data>
+  <data name="ServerVersion" xml:space="preserve">
+    <value>Версия для обновления: {0}</value>
+  </data>
+  <data name="ServiceAskToStopMessage" xml:space="preserve">
+    <value>Вы уверены, что хотите остановить службу WinDivert? Некоторые приложения/процессы все ещё могут использовать этот драйвер</value>
+  </data>
+  <data name="ServiceStopException" xml:space="preserve">
+    <value>Невозможно остановить службу {0}</value>
+  </data>
+  <data name="SettingsButton.Content" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="SettingsTextBlock.Text" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="Setup" xml:space="preserve">
+    <value>Настроить</value>
+  </data>
+  <data name="ShowMoreSettings.Text" xml:space="preserve">
+    <value>Показать больше настроек</value>
+  </data>
+  <data name="SiteListFileError.Message" xml:space="preserve">
+    <value>Указанный вами список сайтов не является корректным списком сайтов</value>
+  </data>
+  <data name="SiteListFileError.Title" xml:space="preserve">
+    <value>Обратите внимание</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Запустить</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="StopActionButton.ToolTipService.Tooltip" xml:space="preserve">
+    <value>Остановить загрузку</value>
+  </data>
+  <data name="StopButton.Content" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="StopTipTextBlock.Text" xml:space="preserve">
+    <value>Выберите вариант остановки</value>
+  </data>
+  <data name="StopTitleTextBlock.Text" xml:space="preserve">
+    <value>Остановка</value>
+  </data>
+  <data name="StoreDatabaseErrorTextBlock.Text" xml:space="preserve">
+    <value>Магазин не смог выполнить обновление базы данных</value>
+  </data>
+  <data name="StoreSettingsCard.Description" xml:space="preserve">
+    <value>Загрузка новых компонентов, надстроек и наборов параметров. Проверка наличия обновлений для установленных элементов</value>
+  </data>
+  <data name="StoreSettingsCard.Header" xml:space="preserve">
+    <value>Магазин</value>
+  </data>
+  <data name="StoreUnavailableTextBlock.Text" xml:space="preserve">
+    <value>К сожалению, магазин сейчас не доступен. Вы все ещё можете просматривать вашу библиотеку, но функционал может быть ограничен.</value>
+  </data>
+  <data name="StoreUpdatesToast.Content" xml:space="preserve">
+    <value>Доступны обновления для элементов из Магазина</value>
+  </data>
+  <data name="StoreUpdatingTextBlock.Text" xml:space="preserve">
+    <value>Магазину требуется кое-что обновить, прежде чем вы сможете его использовать. Это не займет много времени</value>
+  </data>
+  <data name="StoreWindowsTitle" xml:space="preserve">
+    <value>Магазин</value>
+  </data>
+  <data name="StoreWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Магазин компонентов</value>
+  </data>
+  <data name="SystemTheme" xml:space="preserve">
+    <value>Следовать параметрам системы</value>
+  </data>
+  <data name="ThemeSelector.Header" xml:space="preserve">
+    <value>Выберите тему</value>
+  </data>
+  <data name="UtilsButton.Content" xml:space="preserve">
+    <value>Утилиты</value>
+  </data>
+  <data name="UtilsTextBlock.Text" xml:space="preserve">
+    <value>Утилиты</value>
+  </data>
+  <data name="ViewLess" xml:space="preserve">
+    <value>Показать меньше</value>
+  </data>
+  <data name="ViewMenuItem.Title" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="ViewMore" xml:space="preserve">
+    <value>Показать больше</value>
+  </data>
+  <data name="ViewMoreActionsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать больше действий</value>
+  </data>
+  <data name="ViewMoreTextBlock.Text" xml:space="preserve">
+    <value>Показать больше</value>
+  </data>
+  <data name="VisitGitHubPageMenuItem.Text" xml:space="preserve">
+    <value>Посетить репозиторий</value>
+  </data>
+  <data name="WarningTextBlock.Text" xml:space="preserve">
+    <value>Обратите внимание</value>
+  </data>
+  <data name="WhatDoesItMeanTextBlock.Content" xml:space="preserve">
+    <value>Что это значит?</value>
+  </data>
+  <data name="WhatYouWantToDoTextBlock.Text" xml:space="preserve">
+    <value>Добро пожаловать! </value>
+  </data>
+  <data name="WorkingOnIt" xml:space="preserve">
+    <value>Идет работа над этим</value>
+  </data>
+  <data name="WorkingOnItTextBlock.Text" xml:space="preserve">
+    <value>Идет работа над этим...</value>
+  </data>
+  <data name="YesStopService" xml:space="preserve">
+    <value>Да, остановить сервис</value>
+  </data>
+  <data name="ZapretSettingsTextBlock.Text" xml:space="preserve">
+    <value>Параметры компонента Zapret</value>
+  </data>
+</root>

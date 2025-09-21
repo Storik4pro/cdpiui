@@ -8,9 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="Font Settings"
-    PrimaryButtonText="Apply"
-    SecondaryButtonText="Cancel"
+    xmlns:l="using:WinUI3Localizer"
+    l:Uids.Uid="FontContentDialog"
     DefaultButton="Secondary"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
@@ -23,11 +22,11 @@
         <ScrollViewer Grid.Row="1" Padding="0, 0, 0, -10" MaxHeight="300">
             <StackPanel Spacing="10" Margin="0 0 0 10">
                 <StackPanel>
-                    <TextBlock Text="Font" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="FontMenuItem" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <ComboBox x:Name="FontChooseComboBox" HorizontalAlignment="Stretch"/>
                 </StackPanel>
                 <StackPanel>
-                    <TextBlock Text="Font size" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="FontSizeTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <ComboBox x:Name="FontSizeComboBox" IsEditable="False" SelectionChanged="FontSizeComboBox_SelectionChanged" HorizontalAlignment="Stretch" />
                 </StackPanel>
                 <StackPanel x:Name="WarningText" Orientation="Horizontal">

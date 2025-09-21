@@ -1,5 +1,6 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Views;
+using CDPI_UI.Views.Components;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.UI.Xaml;
@@ -77,18 +78,40 @@ namespace CDPI_UI
             AuditNavigationItems();
         }
 
+        public double GetContentHeight()
+        {
+            return ContentFrame.ActualHeight;
+        }
+        public double GetContentWidth()
+        {
+            return ContentFrame.ActualWidth;
+        }
+
         private void AuditNavigationItems()
         {
+            ZapretNavigationViewItem.Visibility = Visibility.Collapsed;
+            ByeDPINavigationViewItem.Visibility = Visibility.Collapsed;
+            GoodbyeDPINavigationViewItem.Visibility = Visibility.Collapsed;
+            SpoofDPINavigationViewItem.Visibility = Visibility.Collapsed;
+
             if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("Zapret")))
             {
                 ZapretNavigationViewItem.Visibility = Visibility.Visible;
             }
-            else
+            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("ByeDPI")))
             {
-                ZapretNavigationViewItem.Visibility = Visibility.Collapsed;
+                ByeDPINavigationViewItem.Visibility = Visibility.Visible;
             }
-
-            if (ContentFrame.CurrentSourcePageType == typeof(ZapretSettingsPage))
+            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")))
+            {
+                GoodbyeDPINavigationViewItem.Visibility = Visibility.Visible;
+            }
+            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("SpoofDPI")))
+            {
+                SpoofDPINavigationViewItem.Visibility = Visibility.Visible;
+            }
+            
+            if (ContentFrame.CurrentSourcePageType == typeof(ViewComponentSettingsPage))
             {
                 ContentFrame.Navigate(typeof(MainPage));
             }
@@ -134,7 +157,8 @@ namespace CDPI_UI
 
             NavView.SelectedItem = NavView.MenuItems[0];
 
-            NavView_Navigate(typeof(Views.MainPage), new EntranceNavigationTransitionInfo());
+            if (ContentFrame.CurrentSourcePageType == null)
+                NavView_Navigate(typeof(Views.MainPage), null, new EntranceNavigationTransitionInfo());
         }
 
         private void NavView_ItemInvoked(NavigationView sender,
@@ -158,35 +182,37 @@ namespace CDPI_UI
             }
             else if (args.InvokedItemContainer != null)
             {
+                if (args.InvokedItemContainer.Tag.ToString().StartsWith("CDPI_UI.Views.Components."))
+                {
+                    string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPI_UI.Views.Components.", "");
+
+                    NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
+
+                    return;
+                }
+                    
+
                 Type navPageType = Type.GetType(args.InvokedItemContainer.Tag.ToString());
-                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
+                NavView_Navigate(navPageType, null, args.RecommendedNavigationTransitionInfo);
             }
         }
 
         private void NavView_SelectionChanged(NavigationView sender,
                                               NavigationViewSelectionChangedEventArgs args)
         {
-            if (args.IsSettingsSelected == true)
-            {
-                // pass
-            }
-            else if (args.SelectedItemContainer != null)
-            {
-                Type navPageType = Type.GetType(args.SelectedItemContainer.Tag.ToString());
-                NavView_Navigate(navPageType, args.RecommendedNavigationTransitionInfo);
-                
-            }
+            // pass
         }
 
-        private void NavView_Navigate(
+        public void NavView_Navigate(
             Type navPageType,
+            object parameter,
             NavigationTransitionInfo transitionInfo)
         {
             Type preNavPageType = ContentFrame.CurrentSourcePageType;
 
-            if (navPageType is not null && !Type.Equals(preNavPageType, navPageType))
+            if (navPageType is not null && (!Type.Equals(preNavPageType, navPageType) || Type.Equals(navPageType, typeof(ViewComponentSettingsPage))))
             {
-                ContentFrame.Navigate(navPageType, null, transitionInfo);
+                ContentFrame.Navigate(navPageType, parameter, transitionInfo);
             }
         }
 
@@ -265,6 +291,11 @@ namespace CDPI_UI
                 ContentFrame.GoBack();
             }
         }
+        private void StoreCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+        }
+
         #region WINAPI
 
         private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
@@ -319,5 +350,7 @@ namespace CDPI_UI
         private static extern void FlushMenuThemes();
 
         #endregion
+
+        
     }
 }

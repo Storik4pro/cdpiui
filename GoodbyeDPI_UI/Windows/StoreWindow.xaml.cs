@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUI3Localizer;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -35,9 +37,12 @@ public sealed partial class StoreWindow : WindowEx
     private IntPtr _oldWndProc;
 
     public static StoreWindow Instance { get; private set; }
+
+    private ILocalizer localizer = Localizer.Get();
     public StoreWindow()
     {
         this.InitializeComponent();
+        this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
         InitializeWindow();
 
         Instance = this;
@@ -149,7 +154,8 @@ public sealed partial class StoreWindow : WindowEx
         ContentFrame.Navigated += On_Navigated;
 
         NavView.SelectedItem = NavView.MenuItems[0];
-        NavView_Navigate(typeof(HomePage), new EntranceNavigationTransitionInfo());
+        if (ContentFrame.SourcePageType == null)
+            NavView_Navigate(typeof(HomePage), new EntranceNavigationTransitionInfo());
     }
 
     private void NavView_ItemInvoked(NavigationView sender,

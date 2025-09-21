@@ -11,7 +11,8 @@
     Title="CDPI UI"
     xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls">
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
@@ -77,7 +78,8 @@
                            Style="{StaticResource CaptionTextBlockStyle}"
                            VerticalAlignment="Center"
                            Grid.Column="2" Margin="18, 0, 0, 0"/>
-                <TextBlock x:Name="AppTitleSubTextBlock" Text="Preview"
+                <TextBlock l:Uids.Uid="PreviewTextBlock"
+                           x:Name="AppTitleSubTextBlock" 
                            Grid.Column="3"
                            TextWrapping="NoWrap"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -112,10 +114,10 @@
             </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
 
-                <NavigationViewItem Content="Home" Tag="CDPI_UI.Views.MainPage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPI_UI.Views.MainPage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
                 <NavigationViewItemSeparator/>
 
-                <NavigationViewItem Content="Utils" Tag="CDPI_UI.Views.UtilsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="UtilsButton" Tag="CDPI_UI.Views.UtilsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7B8;" />
                     </NavigationViewItem.Icon>
@@ -123,13 +125,28 @@
 
                 <NavigationViewItemSeparator/>
 
-                <NavigationViewItem x:Name="ZapretNavigationViewItem" Content="Zapret" Tag="CDPI_UI.Views.ZapretSettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
+                <NavigationViewItem x:Name="ZapretNavigationViewItem" Content="Zapret" Tag="CDPI_UI.Views.Components.Zapret" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Store/zapret.png" Width="23" ShowAsMonochrome="True"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem x:Name="ByeDPINavigationViewItem" Content="ByeDPI" Tag="CDPI_UI.Views.Components.ByeDPI" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Store/byedpi.png" Width="23" ShowAsMonochrome="True"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="GoodbyeDPINavigationViewItem" Content="GoodbyeDPI" Tag="CDPI_UI.Views.Components.GoodbyeDPI" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Store/goodbyedpi.png" Width="23" ShowAsMonochrome="True"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Name="SpoofDPINavigationViewItem" Content="SpoofDPI" Tag="CDPI_UI.Views.Components.SpoofDPI" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Visible">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Store/spoofdpi.png" Width="23" ShowAsMonochrome="True"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
-                <NavigationViewItem x:Name="AddNaviagationViewItem" Content="Add" Tag="AddNewComponent" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="AddButton" x:Name="AddNaviagationViewItem" Tag="AddNewComponent" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE710;" />
                     </NavigationViewItem.Icon>
@@ -141,7 +158,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Add new component from the Store" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock l:Uids.Uid="AddNewComponentFromTheStoreTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                 <FlipView Grid.Row="1" Margin="0 10" MaxHeight="100" Background="Transparent">
                                     <StackPanel Spacing="5" Orientation="Horizontal">
                                         <lcontrol:StoreItemMicroButton StoreId="CSZTBN012" CardImageSource="/Assets/Store/zapret.png" CardTitle="Zapret"/>
@@ -152,12 +169,12 @@
                                         <lcontrol:StoreItemMicroButton StoreId="CSSIXC048" CardImageSource="/Assets/Store/spoofdpi.png" CardTitle="SpoofDPI"/>
                                     </StackPanel>
                                 </FlipView>
-                                <toolkit:SettingsCard Grid.Row="2" Header="Explore new components in Store" IsClickEnabled="True" Margin="-17 0 -17 -17" CornerRadius="0">
+                                <toolkit:SettingsCard l:Uids.Uid="ExploreComponentsInStoreButton" Grid.Row="2" IsClickEnabled="True" Margin="-17 0 -17 -17" CornerRadius="0" Click="StoreCard_Click">
                                     <toolkit:SettingsCard.ActionIcon>
                                         <FontIcon Glyph="&#xE8A7;"/>
                                     </toolkit:SettingsCard.ActionIcon>
                                     <toolkit:SettingsCard.HeaderIcon>
-                                        <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png" Width="23" ShowAsMonochrome="True"/>
+                                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="23" ShowAsMonochrome="True"/>
                                     </toolkit:SettingsCard.HeaderIcon>
                                 </toolkit:SettingsCard>
                             </Grid>
@@ -167,12 +184,12 @@
 
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Settings" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPI_UI.Views.SettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="About" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="AboutButton" Tag="CDPI_UI.Views.AboutPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE946;" />
                     </NavigationViewItem.Icon>

@@ -13,7 +13,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
-    Title="Вывод процесса">
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -24,28 +24,39 @@
             <RowDefinition x:Name="StatusBar" Height="28"/>
         </Grid.RowDefinitions>
         <Grid x:Name="AppTitleBar"
-        Canvas.ZIndex="1"
-        Grid.Row="0"
-        Height="48"
-        IsHitTestVisible="True"
-        VerticalAlignment="Top">
+              Canvas.ZIndex="1"
+              Grid.Row="0"
+              Height="48"
+              IsHitTestVisible="True"
+              VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0"
+                <Image 
+                    Grid.Column="0"
                     Source="/Assets/StoreLogo.png"
                     HorizontalAlignment="Left"
                     Width="16" Height="16"
                     Margin="16,0"/>
-                <TextBlock Grid.Column="1"
-                    x:Name="AppTitleTextBlock" Text="[BETA] CDPI UI - View output"
+                <TextBlock 
+                    Grid.Column="1"
+                    l:Uids.Uid="PseudoconsoleTextBlock"
+                    x:Name="AppTitleTextBlock"
                     TextWrapping="NoWrap"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     VerticalAlignment="Center"
                     Margin="0, 0, 0, 0" />
+                <TextBlock l:Uids.Uid="PreviewTextBlock"
+                           x:Name="AppTitleSubTextBlock" 
+                           Grid.Column="3"
+                           TextWrapping="NoWrap"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           Margin="8, 0, 0, 0"/>
             </Grid>
 
         </Grid>
@@ -61,8 +72,8 @@
                     <ColumnDefinition x:Name="Quick" Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
-                    <MenuBarItem Title="File" Height="28">
-                        <MenuFlyoutItem x:Name="SaveButton" Text="Save output to file" Click="SaveButton_Click">
+                    <MenuBarItem l:Uids.Uid="FileMenuItem" Height="28">
+                        <MenuFlyoutItem l:Uids.Uid="SaveMenuItem" x:Name="SaveButton" Click="SaveButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE74E;" />
                             </MenuFlyoutItem.Icon>
@@ -70,7 +81,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="S"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="Exit" Click="CloseButton_Click">
+                        <MenuFlyoutItem l:Uids.Uid="ExitMenuItem" Click="CloseButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE711;" />
                             </MenuFlyoutItem.Icon>
@@ -81,8 +92,8 @@
                         </MenuFlyoutItem>
                     </MenuBarItem>
 
-                    <MenuBarItem Title="Process" Height="28">
-                        <MenuFlyoutItem x:Name="ProcessControl" Text="Stop" Click="ProcessControl_Click">
+                    <MenuBarItem l:Uids.Uid="ProcessMenuItem" Height="28">
+                        <MenuFlyoutItem x:Name="ProcessControl" Click="ProcessControl_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon x:Name="ProcessControlIcon" Glyph="&#xE71A;" />
                             </MenuFlyoutItem.Icon>
@@ -90,7 +101,7 @@
                                 <KeyboardAccelerator Key="F5"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="ProcessRestart" Text="Restart" Click="ProcessRestart_Click">
+                        <MenuFlyoutItem l:Uids.Uid="RestartMenuItem" x:Name="ProcessRestart" Click="ProcessRestart_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE777;" />
                             </MenuFlyoutItem.Icon>
@@ -101,18 +112,18 @@
                         </MenuFlyoutItem>
                     </MenuBarItem>
 
-                    <MenuBarItem Title="View" Height="28">
-                        <MenuFlyoutItem Text="Font" Click="MenuFlyoutItem_Click">
+                    <MenuBarItem l:Uids.Uid="ViewMenuItem" Height="28">
+                        <MenuFlyoutItem l:Uids.Uid="FontMenuItem" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8D2;" />
                             </MenuFlyoutItem.Icon>
 
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutSubItem Text="Output Cleanup Mode">
-                            <RadioMenuFlyoutItem x:Name="CleanOutputButton" Text="Clean Output" GroupName="OrientationGroup"
+                        <MenuFlyoutSubItem l:Uids.Uid="CleanupModeMenuItem">
+                            <RadioMenuFlyoutItem x:Name="CleanOutputButton" l:Uids.Uid="CleanModeMenuItem" GroupName="OrientationGroup"
                                                  Click="CleanOutputButton_Click"/>
-                            <RadioMenuFlyoutItem x:Name="DefaultOutputButton" Text="Original Output" GroupName="OrientationGroup" 
+                            <RadioMenuFlyoutItem x:Name="DefaultOutputButton" l:Uids.Uid="OriginalModeMenuItem" GroupName="OrientationGroup" 
                                                  Click="DefaultOutputButton_Click"/>
                             <MenuFlyoutSubItem.Icon>
                                 <FontIcon Glyph="&#xEA99;" />
@@ -121,8 +132,8 @@
 
                     </MenuBarItem>
 
-                    <MenuBarItem Title="Help" Height="28">
-                        <MenuFlyoutItem x:Name="SupportButton" Text="Visit GitHub page" Click="SupportButton_Click">
+                    <MenuBarItem l:Uids.Uid="HelpMenuItem" Height="28">
+                        <MenuFlyoutItem l:Uids.Uid="VisitGitHubPageMenuItem" x:Name="SupportButton" Click="SupportButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8A7;" />
                             </MenuFlyoutItem.Icon>
@@ -135,9 +146,10 @@
                 </MenuBar>
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
 
-                    <Button x:Name="CopyButton" Margin="0 ,3 ,5, 0" Padding="5, 0"
+                    <Button l:Uids.Uid="PseidoconsoleCopyOutputButton"
+                            x:Name="CopyButton" Margin="0 ,3 ,5, 0" Padding="5, 0"
                             Height="28" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent"
-                            ToolTipService.ToolTip="Copy output" Click="CopyButton_Click">
+                            Click="CopyButton_Click">
                         <FontIcon x:Name="CopyIcon" Glyph="&#xE8C8;" FontSize="16" />
                     </Button>
                     <Button x:Name="StopServiceButton" Margin="0 ,3 ,5, 0" Padding="5, 0"
@@ -145,7 +157,7 @@
                             Click="StopServiceButton_Click">
                         <StackPanel Orientation="Horizontal" >
                             <FontIcon Glyph="&#xE74D;" FontSize="16" Margin="0, 0, 5, 0"/>
-                            <TextBlock Text="Remove service"/>
+                            <TextBlock l:Uids.Uid="RemoveServiceTextBlock"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -167,9 +179,7 @@
                 IsIconVisible="True"
                 IsClosable="True"
                 CloseButtonClick="StatusMessage_CloseButtonClick"
-                Title="Process is running now"
                 Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-                Message='goodbyedpi.exe process successfully launched and running'
             />
         </Grid>
         <ScrollViewer x:Name="OutputScrollViewer" Grid.Row="3"
@@ -184,9 +194,7 @@
                                     TextWrapping="Wrap"
                                     IsTextSelectionEnabled="True"
                                     Padding="20"
-                                    SelectionHighlightColor="Gray"
-                                    ak:RichTextBlockExtensions.HighlightingText="Filter activated, GoodbyeDPI is now running!"
-                                    ak:RichTextBlockExtensions.TextHighlightBackground="{ThemeResource SystemFillColorSuccess}">
+                                    SelectionHighlightColor="Gray">
                 <Paragraph x:Name="OutputParagraph"/>
             </RichTextBlock>
 
@@ -202,15 +210,14 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Now selected: GoodbyeDPI" VerticalAlignment="Center"/>
+                <TextBlock x:Name="SelectedComponentTextBlock" Grid.Column="0" VerticalAlignment="Center"/>
 
                 <FontIcon x:Name="StatusIcon" Grid.Column="4" Glyph="&#xEC61;" FontSize="16" />
-                <TextBlock x:Name="StatusText" Grid.Column="5" Text="Process worked" VerticalAlignment="Center"/>
+                <TextBlock x:Name="StatusText" Grid.Column="5" VerticalAlignment="Center"/>
                 <Rectangle Grid.Column="3" Fill="Gray" Height="15" Width="1" 
-VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Grid>
-            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
-                VerticalAlignment="Bottom"/>
+            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" VerticalAlignment="Bottom"/>
         </Grid>
     </Grid>
 </winex:WindowEx>

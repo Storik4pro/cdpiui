@@ -8,9 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
-    Title="Утилита создания пресета"
     xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
-    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:l="using:WinUI3Localizer">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
@@ -59,18 +59,22 @@
                    HorizontalAlignment="Left"
                    Width="16" Height="16"
                    Margin="0,0" Grid.Column="1"/>
-                <TextBlock x:Name="AppTitleTextBlock" Text="Утилита создания пресета"
-                   TextWrapping="NoWrap"
-                   Style="{StaticResource CaptionTextBlockStyle}"
-                   VerticalAlignment="Center"
-                   Grid.Column="2" Margin="18, 0, 0, 0"/>
-                <TextBlock x:Name="AppTitleSubTextBlock" Text="Предварительная версия"
-                   Grid.Column="3"
-                   TextWrapping="NoWrap"
-                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                   Style="{StaticResource CaptionTextBlockStyle}"
-                   VerticalAlignment="Center"
-                   Margin="8, 0, 0, 0"/>
+                <TextBlock 
+                    l:Uids.Uid="CreateConfigUtilWindowTitleTextBlock"
+                    x:Name="AppTitleTextBlock"
+                    TextWrapping="NoWrap"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Grid.Column="2" Margin="18, 0, 0, 0"/>
+                <TextBlock 
+                    l:Uids.Uid="PreviewTextBlock"
+                    x:Name="AppTitleSubTextBlock" 
+                    Grid.Column="3"
+                    TextWrapping="NoWrap"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Margin="8, 0, 0, 0"/>
             </Grid>
         </Grid>
         <Frame x:Name="ContentFrame" Margin="0,48,0,0">
