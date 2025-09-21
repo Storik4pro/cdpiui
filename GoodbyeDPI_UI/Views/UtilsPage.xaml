@@ -7,22 +7,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls">
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer">
 
     <Page.Resources>
-
-        <!-- Spacing between cards -->
         <x:Double x:Key="SettingsCardSpacing">4</x:Double>
-
-        <!-- Style (inc. the correct spacing) of a section header -->
-        <Style x:Key="SettingsSectionHeaderTextBlockStyle"
-            BasedOn="{StaticResource BodyStrongTextBlockStyle}"
-            TargetType="TextBlock">  
-            <Style.Setters>
-                <Setter Property="Margin" Value="1,30,0,6" />
-            </Style.Setters>
-        </Style>
     </Page.Resources>
+    
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,7 +32,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,48,0,0" />
+                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -51,8 +42,10 @@
                         <AdaptiveTrigger MinWindowWidth="1382"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootGrid.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="RootGrid.Width" Value="1060px"/>
+                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="MainPanel.Width" Value="1060px"/>
+                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="PageHeader.Width" Value="1060px"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NarrowState">
@@ -66,10 +59,10 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <TextBlock
+            l:Uids.Uid="UtilsTextBlock"
             x:Name="PageHeader"
             Margin="20,24,20,0"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Text="Sample title" />
+            Style="{StaticResource TitleTextBlockStyle}"/>
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -78,16 +71,48 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}">
 
-                <toolkit:SettingsCard Header="View output" Description="Open tool to view the output of process" IsClickEnabled="True"
-                                      Margin="0, 36">
-                    <toolkit:SettingsCard.ActionIcon>
+            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
+                <controls:SettingsCard l:Uids.Uid="PseudoconsoleSettingsCard" x:Name="PseudoconsoleSettingsCard" IsClickEnabled="True" Click="PseudoconsoleSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
-                    </toolkit:SettingsCard.ActionIcon>
-                    
-                </toolkit:SettingsCard>
-                
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE756;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="StoreSettingsCard" x:Name="StoreSettingsCard" IsClickEnabled="True" Click="StoreSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png"  ShowAsMonochrome="True" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="CreateConfigUtilSettingsCard" x:Name="CreateConfigUtilSettingsCard" IsClickEnabled="True" Click="CreateConfigUtilSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xEB9D;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="CreateConfigHelperSettingsCard" x:Name="CreateConfigHelperSettingsCard" IsClickEnabled="True" Click="CreateConfigHelperSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png"  ShowAsMonochrome="False"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="OfflineHelpSettingsCard" x:Name="OfflineHelpSettingsCard" IsClickEnabled="True" IsEnabled="False" Click="OfflineHelpSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE897;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
             </StackPanel>
         </ScrollViewer>
     </Grid>

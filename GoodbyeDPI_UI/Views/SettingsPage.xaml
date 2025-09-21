@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
+
+    <Page.Resources>
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+    </Page.Resources>
+    
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="NarrowLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="contentSV.Padding" Value="16,0" />
+                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1382"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="MainPanel.Width" Value="1060px"/>
+                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="PageHeader.Width" Value="1060px"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <TextBlock
+            l:Uids.Uid="SettingsTextBlock"
+            x:Name="PageHeader"
+            Margin="20,24,20,10"
+            Style="{StaticResource TitleTextBlockStyle}"
+            TextWrapping="NoWrap"/>
+        <ScrollViewer
+            x:Name="contentSV"
+            Grid.Row="1"
+            Padding="20,0,20,0"
+            IsTabStop="False"
+            UseSystemFocusVisuals="False"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            
+            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
+                <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <controls:SettingsCard l:Uids.Uid="ComponentSelector">
+                    <ComboBox x:Name="ComponentComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="AutorunButton">
+                    <ToggleSwitch x:Name="AutorunToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Toggled="AutorunToggleSwitch_Toggled"   Margin="0, 0, 0, 0" />
+                </controls:SettingsCard>
+                <TextBlock l:Uids.Uid="PersonalizeTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <controls:SettingsCard l:Uids.Uid="LanguageSelector">
+                    <ComboBox x:Name="LanguageComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>
+                </controls:SettingsCard>
+                <controls:SettingsExpander l:Uids.Uid="PersonalizationSettingsExpander">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard l:Uids.Uid="ThemeSelector">
+                            <ComboBox x:Name="ThemeComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="ColorSelector" x:Name="ColorSelectorButton" HorizontalContentAlignment="Left" ContentAlignment="Vertical" IsClickEnabled="True" Click="ColorSelectorButton_Click">
+                            <controls:SettingsCard.ActionIcon>
+                                <FontIcon Glyph="&#xE8A7;"/>
+                            </controls:SettingsCard.ActionIcon>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                <controls:SettingsExpander l:Uids.Uid="NotificationSettingsExpander">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox l:Uids.Uid="ProcessStateToast" x:Name="ProcessStateToast" Click="ProcessStateToast_Click" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox l:Uids.Uid="AppRunnedInTrayToast" x:Name="AppRunnedInTrayToast" Click="AppRunnedInTrayToast_Click" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox l:Uids.Uid="AppUpdatesToast" x:Name="AppUpdatesToast" Click="AppUpdatesToast_Click" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox l:Uids.Uid="StoreUpdatesToast" x:Name="StoreUpdatesToast" Click="StoreUpdatesToast_Click" />
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

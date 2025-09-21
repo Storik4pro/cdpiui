@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="CDPI_UI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -7,24 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:BackdropMaterial.ApplyToRootOrPageBackground="True"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls">
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer">
 
     <Page.Resources>
-        <!-- These styles can be referenced to create a consistent SettingsPage layout -->
-        <!-- Reference SettingsExpander Page in Windows Community Toolkit Gallery for the full sample -->
-
-        <!-- Spacing between cards -->
         <x:Double x:Key="SettingsCardSpacing">4</x:Double>
-
-        <!-- Style (inc. the correct spacing) of a section header -->
-        <Style x:Key="SettingsSectionHeaderTextBlockStyle"
-           BasedOn="{StaticResource BodyStrongTextBlockStyle}"
-           TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="Margin" Value="1,30,0,6" />
-            </Style.Setters>
-        </Style>
     </Page.Resources>
+
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -43,7 +33,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,48,0,0" />
+                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -53,8 +43,11 @@
                         <AdaptiveTrigger MinWindowWidth="1382"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootGrid.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="RootGrid.Width" Value="1060px"/>
+                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="MainPanel.Width" Value="1060px"/>
+                        
+                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="PageHeader.Width" Value="1060px"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NarrowState">
@@ -67,11 +60,13 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+
         <TextBlock
+            l:Uids.Uid="HomeTextBlock"
             x:Name="PageHeader"
-            Margin="20,24,20,0"
+            Margin="20,24,20,10"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="Sample title" />
+            TextWrapping="NoWrap"/>
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -80,75 +75,127 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}">
-                <StackPanel.ChildrenTransitions>
-                    <EntranceThemeTransition FromVerticalOffset="50" />
-                    <RepositionThemeTransition IsStaggeringEnabled="False" />
-                </StackPanel.ChildrenTransitions>
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Appearance &amp; behavior" />
+            <Grid>
+                <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
+                    <controls:SettingsCard x:Name="ComponentControlSettingCard"
+                                           CornerRadius="10"
+                                           BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
+                        <ToggleSwitch x:Name="ProcessToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Margin="0, 0, 0, 0" />
+                    </controls:SettingsCard>
 
+                    <ItemsRepeater x:Name="StaggeredRepeater">
+                        <ItemsRepeater.Layout>
+                            <controls:StaggeredLayout
+                                ColumnSpacing="5"
+                                RowSpacing="5"
+                                DesiredColumnWidth="360"
+                                ItemsStretch="Fill"/>
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        <!--
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1328"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WidgetPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="WidgetPanel.Width" Value="1248px"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WidgetPanel.HorizontalAlignment" Value="Stretch"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
-                <toolkit:SettingsCard Header="Enabled">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <TextBlock
+            l:Uids.Uid="HomeTextBlock"
+            x:Name="PageHeader"
+            Margin="20,24,20,0"
+            Style="{StaticResource TitleTextBlockStyle}"
+            Visibility="Collapsed"/>
+        <ScrollViewer
+            x:Name="contentSV"
+            Grid.Row="1"
+            Padding="0,0,0,0"
+            IsTabStop="False"
+            UseSystemFocusVisuals="False"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <Grid x:Name="MainPanel">
+                <Grid x:Name="MainView">
+                    <Image Source="/Assets/Wallpaper/Kislovodsk/1.jpeg" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="10" Width="400">
+                        <Border>
+                            <Border.Background>
+                                <AcrylicBrush TintOpacity="0.4" TintColor="#FF000000" FallbackColor="#FF008000"/>
+                            </Border.Background>
+                        </Border>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton CornerRadius="90" Height="100" Width="100">
+                                <FontIcon Glyph="&#xE7E8;" FontSize="32"/>
+                            </ToggleButton>
+                            <Grid Grid.Column="1" Padding="15 0 0 0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <TextBlock Text="Component" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic" TextWrapping="NoWrap"/>
+                                    <TextBlock Margin="10 10 0 0" Text="Zapret" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <TextBlock Text="Config" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic" TextWrapping="NoWrap"/>
+                                    <TextBlock Margin="10 10 0 0" Text="Default config ALT 3" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                                </Grid>
+                                <Grid Grid.Row="2">
+                                    <HyperlinkButton Content="Go to settings..." Padding="0"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <StackPanel x:Name="WidgetPanel" VerticalAlignment="Bottom" Padding="20 0 20 20">
+                    <ItemsRepeater x:Name="StaggeredRepeater">
+                        <ItemsRepeater.Layout>
+                            <toolkit:StaggeredLayout
+                                x:Name="StaggeredLayout"
+                                ColumnSpacing="5"
+                                RowSpacing="5"
+                                DesiredColumnWidth="300"
+                                ItemsStretch="Fill"/>
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </StackPanel>
+
+                <toolkit:SettingsCard Header="Enabled" Visibility="Collapsed">
                     <ToggleSwitch x:Name="ProcessToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Margin="0, 0, 0, 0" />
                 </toolkit:SettingsCard>
-
-                <toolkit:SettingsExpander Header="Quick settings" IsExpanded="True">
-                    <toolkit:SettingsExpander.Items>
-                        <toolkit:SettingsCard
-                            x:Name="toCloneRepoCard"
-                            Header="Somthing are missing here"
-                            >
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsCard
-                            x:Name="openViewWindowCard"
-                            Click="OpenViewWindowButton_Click"
-                            Header="Open process output view window"
-                            IsClickEnabled="True">
-                            <toolkit:SettingsCard.ActionIcon>
-                                <FontIcon Glyph="&#xE8A7;" />
-                            </toolkit:SettingsCard.ActionIcon>
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsCard
-                            x:Name="OpenStoreButton"
-                            Click="OpenStoreButton_Click"
-                            Header="Components Store"
-                            IsClickEnabled="True">
-                            <toolkit:SettingsCard.ActionIcon>
-                                <FontIcon Glyph="&#xE8A7;" />
-                            </toolkit:SettingsCard.ActionIcon>
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsCard
-                            x:Name="OpenConfigCreateUtil"
-                            Click="OpenConfigCreateUtil_Click"
-                            IsClickEnabled="True"
-                            Header="Open create config util">
-                            <toolkit:SettingsCard.ActionIcon>
-                                <FontIcon Glyph="&#xE8A7;" />
-                            </toolkit:SettingsCard.ActionIcon>
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsCard
-                            x:Name="OpenViewGoodCheckWindow"
-                            Click="OpenViewGoodCheckWindow_Click"    
-                            IsClickEnabled="True"
-                            Header="OpenViewGoodCheckWindow">
-                            <toolkit:SettingsCard.ActionIcon>
-                                <FontIcon Glyph="&#xE8A7;" />
-                            </toolkit:SettingsCard.ActionIcon>
-                        </toolkit:SettingsCard>
-                        <toolkit:SettingsCard
-                            x:Name="OpenMessageBox"
-                            Click="OpenMessageBox_Click"    
-                            IsClickEnabled="True"
-                            Header="OpenMessageBox">
-                            <toolkit:SettingsCard.ActionIcon>
-                                <FontIcon Glyph="&#xE8A7;" />
-                            </toolkit:SettingsCard.ActionIcon>
-                        </toolkit:SettingsCard>
-                    </toolkit:SettingsExpander.Items>
-                </toolkit:SettingsExpander>
-
-            </StackPanel>
+                
+            </Grid>
         </ScrollViewer>
+        -->
     </Grid>
 
 </Page>

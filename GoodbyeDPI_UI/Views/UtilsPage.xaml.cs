@@ -26,7 +26,31 @@ namespace CDPI_UI.Views
         public UtilsPage()
         {
             this.InitializeComponent();
-            PageHeader.Text = "Utils";
+        }
+
+        private void PseudoconsoleSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ViewWindow>();
+        }
+
+        private void StoreSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+        }
+
+        private void CreateConfigUtilSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
+        }
+
+        private void CreateConfigHelperSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+        }
+
+        private void OfflineHelpSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
