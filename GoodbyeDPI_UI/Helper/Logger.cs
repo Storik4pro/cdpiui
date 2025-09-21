@@ -81,6 +81,7 @@ namespace CDPI_UI.Helper
             lock (_logLock)
             {
                 string logMessage = $"[{sender}] [{severity}] {message}";
+                Debug.WriteLine(logMessage);
                 bool write = true;
                 try
                 {
