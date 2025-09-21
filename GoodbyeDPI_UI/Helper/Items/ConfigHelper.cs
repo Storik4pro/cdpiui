@@ -107,7 +107,7 @@ namespace CDPI_UI.Helper.Items
             ConfigLocaleHelper localeHelper = new ConfigLocaleHelper();
             ConfigLocaleHelpers.Add(Tuple.Create(id, localeHelper));
 
-            InitLocaleHelper(localeHelper, configInitItem.localized_strings_directory, directory, "RU");
+            InitLocaleHelper(localeHelper, configInitItem.localized_strings_directory, directory, Utils.GetStoreLikeLocale());
 
             foreach (string jsonFile in jsonFiles)
             {
@@ -132,7 +132,7 @@ namespace CDPI_UI.Helper.Items
                             if (configInitItem.localized_strings_directory == null)
                                 return key;
 
-                            var localized = GetLocalizedConfigNameString(key, "RU", directory, configInitItem.localized_strings_directory, localeHelper);
+                            var localized = GetLocalizedConfigNameString(key, Utils.GetStoreLikeLocale(), directory, configInitItem.localized_strings_directory, localeHelper);
                             return localized;
                         }
                     );
@@ -496,27 +496,27 @@ namespace CDPI_UI.Helper.Items
                     if (param.StartsWith("--hostlist="))
                     {
                         name = param.Substring("--hostlist=".Length);
-                        type = "blacklist";
+                        type = "SiteList";
                     }
                     else if (param.StartsWith("--ipset="))
                     {
                         name = param.Substring("--ipset=".Length);
-                        type = "iplist";
+                        type = "IpList";
                     }
                     else if (param.StartsWith("--hostlist-auto="))
                     {
                         name = param.Substring("--hostlist-auto=".Length);
-                        type = "autoblacklist";
+                        type = "AutoSiteList";
                     }
                     else if ((param == "--hostlist" || param == "--ipset" || param == "--hostlist-auto")
                              && i + 1 < tokens.Count)
                     {
                         name = tokens[i + 1];
                         type = param == "--hostlist"
-                                   ? "blacklist"
+                                   ? "SiteList"
                                    : param == "--ipset"
-                                       ? "iplist"
-                                       : "autoblacklist";
+                                       ? "IpList"
+                                       : "AutoSiteList";
                         i++;
                     }
 
