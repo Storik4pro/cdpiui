@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.Store.CategoryViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views.Store"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState x:Name="NarrowLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="StoreScrollViewer.Padding" Value="20, 0, 5, 0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1984"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="StoreStackPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="StoreStackPanel.Width" Value="1860px"/>
+                        <Setter Target="StoreScrollViewer.Padding" Value="20, 0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid x:Name="LoadingProgressGrid">
+            <ProgressRing IsIndeterminate="True"/>
+        </Grid>
+        <Grid x:Name="ErrorGrid" Visibility="Collapsed">
+            <TextBlock x:Name="ErrorTextBlock" Text="Failed to load category." HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+        <ScrollViewer
+            x:Name="StoreScrollViewer"
+            Grid.Row="0"
+            Padding="20 0"
+            Margin="0, 20, 0, 0"
+            IsTabStop="False"
+            UseSystemFocusVisuals="False"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto"
+            Visibility="Collapsed">
+            <Grid SizeChanged="Grid_SizeChanged">
+                <StackPanel x:Name="StoreStackPanel" Grid.Column="1" Spacing="20">
+                    <TextBlock x:Name="CategoryTitleTextBlock" Style="{ThemeResource TitleTextBlockStyle}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                    <ItemsRepeater x:Name="StaggeredRepeater" Grid.Row="1">
+                        <ItemsRepeater.Layout>
+                            <controls:StaggeredLayout
+                                ColumnSpacing="0"
+                                RowSpacing="25"
+                                DesiredColumnWidth="175"
+                                ItemsStretch="Fill"/>
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>
