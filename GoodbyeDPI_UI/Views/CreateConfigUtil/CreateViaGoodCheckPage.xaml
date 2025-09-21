@@ -9,7 +9,8 @@
     mc:Ignorable="d"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:lcontrols="using:CDPI_UI"
-    xmlns:conv="using:CDPI_UI.Converters">
+    xmlns:conv="using:CDPI_UI.Converters"
+    xmlns:l="using:WinUI3Localizer">
 
     <Page.Resources>
         <CubicEase x:Key="CubicEaseOut" EasingMode="EaseOut"/>
@@ -34,11 +35,10 @@
                 <StackPanel.RenderTransform>
                     <TranslateTransform x:Name="Loading_TT" />
                 </StackPanel.RenderTransform>
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}" 
-                    Text="Подготовка"/>
+                <TextBlock l:Uids.Uid="GettingReadyTitleTextBlock" Style="{StaticResource TitleTextBlockStyle}"/>
                 <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
                     <Paragraph>
-                        <Run Text="Нам требуется кое-что подготовить прежде чем начать. Это не займет много времени"/>
+                        <Run l:Uids.Uid="GettingReadyTextBlock"/>
                     </Paragraph>
                 </RichTextBlock>
             </StackPanel>
@@ -46,14 +46,13 @@
                 <StackPanel.RenderTransform>
                     <TranslateTransform x:Name="LetsBegin_TT" />
                 </StackPanel.RenderTransform>
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}" 
-                    Text="Создать новый пресет с использованием GoodCheck"/>
+                <TextBlock l:Uids.Uid="CreateNewConfigViaGoodCheckTextBlock" Style="{StaticResource TitleTextBlockStyle}" />
                 <RichTextBlock Margin="15" TextWrapping="Wrap" MaxWidth="300" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
                     <Paragraph>
-                        <Run Text="Этот мастер поможет вам подобрать параметры запуска для выбранных сайтов."/>
+                        <Run l:Uids.Uid="GoodCheckWizardTip"/>
                     </Paragraph>
                     <Paragraph Margin="0 20 0 0">
-                        <Run Text="Для продолжения нажмите кнопку Далее"/>
+                        <Run l:Uids.Uid="ClickNextToBegin"/>
                     </Paragraph>
                 </RichTextBlock>
             </StackPanel>
@@ -67,11 +66,10 @@
                         <RowDefinition x:Name="GridContentRowDefinition" Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel x:Name="GoodCheckSettingsTextContent">
-                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" 
-                        Text="Выбор списков сайтов"/>
+                        <TextBlock l:Uids.Uid="GoodCheckSelectSiteListsTitle" Style="{StaticResource TitleTextBlockStyle}"/>
                         <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False" Grid.Row="1">
                             <Paragraph>
-                                <Run Text="Выберите те списки сайтов, для которых вы хотите осуществить автоматический подбор. Вы так же можете создать свой список сайтов"/>
+                                <Run l:Uids.Uid="GoodCheckSelectSiteLists"/>
                             </Paragraph>
                         </RichTextBlock>
                         <Grid x:Name="SitelistActionPanelGrid" Grid.Row="2" Margin="0 0 0 10">
@@ -85,23 +83,23 @@
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal" Spacing="10">
                                             <FontIcon Glyph="&#xE710;" FontSize="16"/>
-                                            <TextBlock Text="Добавить список сайтов"/>
+                                            <TextBlock l:Uids.Uid="GoodCheckAddSiteList"/>
                                         </StackPanel>
                                     </Button.Content>
                                     <Button.Flyout>
                                         <Flyout x:Name="SelectSiteListFlyout">
-                                            <StackPanel>
-                                                <TextBlock Text="Выберите список сайтов из уже установленных шаблонов"/>
+                                            <StackPanel Width="370">
+                                                <TextBlock l:Uids.Uid="GoodCheckSelectSiteListFromTemplate"/>
                                                 <ScrollViewer MaxHeight="300" Margin="0 10 0 0">
                                                     <StackPanel x:Name="SiteListTemplatesStackPanel" Spacing="5"/>
                                                 </ScrollViewer>
-                                                <TextBlock Text="--ИЛИ--" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
+                                                <TextBlock l:Uids.Uid="ORSeparatorTextBlock" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
                                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                                     <Button x:Name="CreateNewFileButton" Width="120" Height="120" Padding="6" IsEnabled="False">
                                                         <Button.Content>
                                                             <StackPanel>
                                                                 <FontIcon Glyph="&#xE8E5;" />
-                                                                <TextBlock Text="Создать новый" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                                <TextBlock l:Uids.Uid="CreateNewTextBlock" TextWrapping="Wrap" TextAlignment="Center"/>
                                                             </StackPanel>
                                                         </Button.Content>
                                                     </Button>
@@ -109,7 +107,7 @@
                                                         <Button.Content>
                                                             <StackPanel>
                                                                 <FontIcon Glyph="&#xE8E5;" />
-                                                                <TextBlock Text="Выбрать существующий на этом ПК" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                                <TextBlock l:Uids.Uid="ChooseExistOnLocalPCTextBlock" TextWrapping="Wrap" TextAlignment="Center"/>
                                                             </StackPanel>
                                                         </Button.Content>
                                                     </Button>
@@ -136,10 +134,8 @@
                     </ScrollViewer>
                     
                     <StackPanel x:Name="SelectedSitelistTip" VerticalAlignment="Center" Grid.Row="1">
-                        <TextBlock  HorizontalAlignment="Center" 
-                            Text="Для продолжения выберите хотя бы один список сайтов..."/>
-                        <TextBlock  HorizontalAlignment="Center" 
-                                Text="...к сожалению простым перетаскиванием это сделать не получится :("/>
+                        <TextBlock l:Uids.Uid="GoodCheckEmptySiteListsTip1" HorizontalAlignment="Center" />
+                        <TextBlock l:Uids.Uid="GoodCheckEmptySiteListsTip2" HorizontalAlignment="Center" />
                     </StackPanel>
                     
                 </Grid>
@@ -150,21 +146,20 @@
                     <TranslateTransform x:Name="ChooseStrategiesList_TT" />
                 </StackPanel.RenderTransform>
                 <StackPanel x:Name="ChooseStrategiesListTextContent">
-                    <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Выбор списка стратегий"/>
+                    <TextBlock l:Uids.Uid="GoodCheckStrategyListChooseTitle" Style="{StaticResource TitleTextBlockStyle}"/>
                     <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False" Grid.Row="1">
                         <Paragraph>
-                            <Run Text="Выберите список стратегий для подбора"/>
+                            <Run l:Uids.Uid="GoodCheckStrategyListChooseTip1"/>
                         </Paragraph>
                         <Paragraph Margin="0 10 0 0">
-                            <Run Text="Вы так же можете включить режим подбора для каждого списка сайтов отдельно. Это сильно увеличит общее время подбора, но конечная стратегия может работать лучше "/>
+                            <Run l:Uids.Uid="GoodCheckStrategyListChooseTip2"/>
                         </Paragraph>
                     </RichTextBlock>
 
-                    <CheckBox x:Name="ChangeModeComboBox" Content="Подбирать для каждого списка сайтов отдельно" Click="ChangeModeComboBox_Click"/>
+                    <CheckBox l:Uids.Uid="GoodCheckSelectSeparatelly" x:Name="ChangeModeComboBox" Click="ChangeModeComboBox_Click"/>
                 </StackPanel>
                 <StackPanel x:Name="AllListsOneStrategyPanel">
-                    <controls:SettingsCard Header="Список стратегий для проверки" 
-                                       Description="Обратите внимание на соответствие стандарта вашего соединения и соединения указанного в названии списка стратегий. Например, IPv6 стратегии могут не работать с сетью IPv4">
+                    <controls:SettingsCard l:Uids.Uid="GoodCheckStrategyListChooseSettingCard">
                         <ComboBox x:Name="StrategiesListCombobox" Width="350" DisplayMemberPath="Name" SelectionChanged="StrategiesListCombobox_SelectionChanged"/>
                     </controls:SettingsCard>
                 </StackPanel>
@@ -185,34 +180,29 @@
                     <TranslateTransform/>
                 </StackPanel.RenderTransform>
                 <StackPanel x:Name="AdditionalSettingsListTextContent">
-                    <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Дополнительные настройки"/>
+                    <TextBlock l:Uids.Uid="AdditionalSettings" Style="{StaticResource TitleTextBlockStyle}"/>
                     <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False" Grid.Row="1">
                         <Paragraph>
-                            <Run Text="Эти настройки помогут вам настроить автоподбор под себя. Когда будете готовы продолжить просто нажмите на кнопку Далее - все настройки будт сохранены автоматически"/>
+                            <Run l:Uids.Uid="GoodCheckAdditionalSettingsTip"/>
                         </Paragraph>
                     </RichTextBlock>
                 </StackPanel>
                 <ScrollViewer x:Name="AdditionalSettingsScrollViewer" LayoutUpdated="AdditionalSettingsScrollViewer_LayoutUpdated">
                     <StackPanel Spacing="5">
-                        <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Основные"/>
-                        <controls:SettingsCard Header="Тайм-аут подключения">
+                        <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/TimeOut">
                             <controls:SettingsCard.Content>
                                 <TextBox x:Name="ConnectionTimeout" MaxWidth="100"/>
                             </controls:SettingsCard.Content>
                         </controls:SettingsCard>
-                        <controls:SettingsCard Header="Количество попыток тестирования одной стратегии"
-                                               Description="Значение должно быть больше нуля. Чем больше значение - тем дольше будет проходить подбор и тем точнее будет итоговый результат">
+                        <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/TestCount">
                             <controls:SettingsCard.Content>
                                 <TextBox x:Name="PValue" MaxWidth="100"/>
                             </controls:SettingsCard.Content>
                         </controls:SettingsCard>
-                        <controls:SettingsCard Header="Режим запросов" 
-                                               Description="Curl, как правило, работает стабильнее. Нативный вариант работает быстрее">
+                        <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/Resolver">
                             <controls:SettingsCard.Content>
-                                <ComboBox x:Name="ResolverComboBox" SelectedIndex="0" SelectionChanged="ResolverComboBox_SelectionChanged">
-                                    <x:String>Нативный (рекомендуется)</x:String>
-                                    <x:String>Curl</x:String>
-                                </ComboBox>
+                                <ComboBox x:Name="ResolverComboBox" SelectedIndex="0" SelectionChanged="ResolverComboBox_SelectionChanged" DisplayMemberPath="DisplayName"/>
                             </controls:SettingsCard.Content>
                         </controls:SettingsCard>
 
@@ -220,7 +210,7 @@
                             <ToggleButton.Content>
                                 <StackPanel Orientation="Horizontal" Spacing="5">
                                     <FontIcon Glyph="&#xE70D;" FontSize="16"/>
-                                    <TextBlock Text="Показать больше настроек"/>
+                                    <TextBlock l:Uids.Uid="ShowMoreSettings"/>
                                 </StackPanel>
                             </ToggleButton.Content>
                         </ToggleButton>
@@ -228,63 +218,59 @@
                         <StackPanel x:Name="AdditionalHideableSettingsStackPanel" 
                                     Spacing="5" 
                                     Visibility="{Binding IsChecked, ElementName=AdvansedToggleButton, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Запросы"/>
+                            <TextBlock l:Uids.Uid="/GoodCheckAdditionalSettings/RequestsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" />
                             <StackPanel x:Name="NativeSettings" Spacing="5">
-                                <controls:SettingsCard Header="Тайм-аут нативного резолвера">
+                                <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/ResolverTimeout">
                                     <controls:SettingsCard.Content>
                                         <TextBox x:Name="ResolverNativeTimeout" MaxWidth="100"/>
                                     </controls:SettingsCard.Content>
                                 </controls:SettingsCard>
-                                <controls:SettingsCard Header="Повторные попытки нативного резолвера"
-                                                   Description="Максимальное количество попыток подключения к сайту">
+                                <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/ResolverRetryCount">
                                     <controls:SettingsCard.Content>
                                         <TextBox x:Name="ResolverNativeRetries" MaxWidth="100"/>
                                     </controls:SettingsCard.Content>
                                 </controls:SettingsCard>
                             </StackPanel>
-                            <controls:SettingsCard Header="Внутренний тайм-аут">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/InternalTimeout">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="InternalTimeoutMs" MaxWidth="100"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Автоматическая проверка подключения">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/AutomaticConnectivityTestTextBlock">
                                 <controls:SettingsCard.Content>
                                     <ToggleSwitch x:Name="AutomaticConnectivityTest" />
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="URL-адрес для теста подключения" Visibility="{Binding IsOn, ElementName=AutomaticConnectivityTest, Converter={StaticResource BoolToVis}}">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/ConnectivityTestURLs" Visibility="{Binding IsOn, ElementName=AutomaticConnectivityTest, Converter={StaticResource BoolToVis}}">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="ConnectivityTestURL" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Пропускать проверку соответствия сертификата">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/SkipCertVerifys">
                                 <controls:SettingsCard.Content>
                                     <ToggleSwitch x:Name="SkipCertVerify" />
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
 
-                            <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Адреса сопоставления"/>
-                            <controls:SettingsCard Header="Автоматически подбирать для ближайших серверов Google Global Cahe (GGC)">
+                            <TextBlock l:Uids.Uid="/GoodCheckAdditionalSettings/AddressTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/GGC">
                                 <controls:SettingsCard.Content>
                                     <ToggleSwitch x:Name="AutomaticGoogleCacheTest" />
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
 
-                            <controls:SettingsCard Header="URL-адреса сопоставления серверов Google Global Cahe (GGC)"
-                                               Description="Адреса сопоставления позволяют найти ближайший к вашему местоположению сервер GGC. Адреса следует указывать через точку с запятой (';')"
-                                               Visibility="{Binding IsOn, ElementName=AutomaticGoogleCacheTest, Converter={StaticResource BoolToVis}}">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/GGCAddr" Visibility="{Binding IsOn, ElementName=AutomaticGoogleCacheTest, Converter={StaticResource BoolToVis}}">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="GoogleCacheMappingURLs" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
                             <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="DoH резолверы"/>
-                            <controls:SettingsCard Header="Использовать DoH">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/UseDOH">
                                 <controls:SettingsCard.Content>
                                     <ToggleSwitch x:Name="UseDoH" />
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="DoH-резолверы" 
-                                               Description="Адреса следует указывать через точку с запятой (';')"
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/DOHResolvers"
                                                Visibility="{Binding IsOn, ElementName=UseDoH, Converter={StaticResource BoolToVis}}">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="DoHResolvers" MaxWidth="350"/>
@@ -293,39 +279,37 @@
 
                             <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="Fakes"/>
 
-                            <controls:SettingsCard Header="Поддельный SNI">
+                            <controls:SettingsCard Header="FAKE SNI">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="FakeSNI" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Поддельный Hex Stream TCP">
+                            <controls:SettingsCard Header="FAKE Hex Stream TCP">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="FakeHexStreamTCP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Поддельный Hex Stream UDP">
+                            <controls:SettingsCard Header="FAKE Hex Stream UDP">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="FakeHexStreamUDP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Поддельный Hex Bytes TCP">
+                            <controls:SettingsCard Header="FAKE Hex Bytes TCP">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="FakeHexBytesTCP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="Поддельный Hex Bytes UDP">
+                            <controls:SettingsCard Header="FAKE Hex Bytes UDP">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="FakeHexBytesUDP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="PayloadTCP"
-                                               Description="Путь к .BIN файлу. Ожидается латиница без пробелов и запрещенных файловой системой символов.">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/Bin" Header="PayloadTCP" >
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="PayloadTCP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
                             </controls:SettingsCard>
-                            <controls:SettingsCard Header="PayloadUDP"
-                                               Description="Путь к .BIN файлу. Ожидается латиница без пробелов и запрещенных файловой системой символов.">
+                            <controls:SettingsCard l:Uids.Uid="/GoodCheckAdditionalSettings/Bin" Header="PayloadUDP">
                                 <controls:SettingsCard.Content>
                                     <TextBox x:Name="PayloadUDP" MaxWidth="350"/>
                                 </controls:SettingsCard.Content>
@@ -339,7 +323,7 @@
 
         <Grid x:Name="LoadingStateGrid" Grid.Row="1" Visibility="Collapsed">
             <StackPanel>
-                <TextBlock x:Name="LoadingHeader" Text="Идет работа над этим..." Margin="20 0 0 5"/>
+                <TextBlock l:Uids.Uid="WorkingOnItTextBlock" x:Name="LoadingHeader" Margin="20 0 0 5"/>
                 <ProgressBar x:Name="LoadingProgressBar" IsIndeterminate="True" VerticalAlignment="Top" CornerRadius="0"/>
             </StackPanel>
         </Grid>
@@ -347,24 +331,23 @@
             <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
             
             <Grid Padding="20">
-                <Button x:Name="GetHelpButton" ToolTipService.ToolTip="Получить справку" Padding="6" Click="GetHelpButton_Click">
+                <Button l:Uids.Uid="GetHelpButton" x:Name="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
                     <Button.Content>
                         <FontIcon Glyph="&#xE897;" FontSize="16"/>
                     </Button.Content>
                 </Button>
                 <StackPanel Orientation="Horizontal" Spacing="10"  HorizontalAlignment="Right">
-                    <Button x:Name="CancelButton" Content="Отмена" MinWidth="150" Click="CancelButton_Click" IsEnabled="False"/>
-                    <Button x:Name="GoBackButton" Content="Назад" MinWidth="150" Click="GoBackButton_Click"/>
-                    <Button x:Name="GoForwardButton" Content="Далее" Style="{StaticResource AccentButtonStyle}" MinWidth="150" Click="GoForwardButton_Click"/>
+                    <Button l:Uids.Uid="CancelButton" x:Name="CancelButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="False"/>
+                    <Button l:Uids.Uid="GoBackButton" x:Name="GoBackButton" MinWidth="150" Click="GoBackButton_Click"/>
+                    <Button l:Uids.Uid="GoForwardButton" x:Name="GoForwardButton" Style="{StaticResource AccentButtonStyle}" MinWidth="150" Click="GoForwardButton_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
         <InfoBar
+            l:Uids.Uid="SiteListFileError"
             x:Name="FileIncorrectWarning"
             IsOpen="False"
             Severity="Warning"
-            Title="Обратите внимание"
-            Message="Указанный вами список сайтов не является корректным списком сайтов" 
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0 0 20 20"

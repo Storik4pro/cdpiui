@@ -19,6 +19,7 @@ using Windows.Foundation.Collections;
 using TextDecorations = Windows.UI.Text.TextDecorations;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.UI.Xaml.Application;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -42,6 +43,8 @@ public sealed partial class GoodCheckWorkPage : Page
     private const string AddOnId = "ASGKOI001";
 
     private string FilePath = string.Empty;
+
+    private ILocalizer localizer = Localizer.Get();
 
     public GoodCheckWorkPage()
     {
@@ -125,9 +128,9 @@ public sealed partial class GoodCheckWorkPage : Page
             return;
         }
         SiteListProgressText.Text = text;
-        SetSiteListProgressText("Подготовка...");
-        SetCorrectCountText("Подготовка...");
-        SetIncorrectCountText("Подготовка...");
+        SetSiteListProgressText(localizer.GetLocalizedString("Preparing"));
+        SetCorrectCountText(localizer.GetLocalizedString("Preparing"));
+        SetIncorrectCountText(localizer.GetLocalizedString("Preparing"));
     }
     private void SetSiteListProgressText(string text)
     {
@@ -231,8 +234,8 @@ public sealed partial class GoodCheckWorkPage : Page
         }
 
         string speedText = _speedElementsPerSec > 0 ? $"{_speedElementsPerSec:F3} e/s" : "—";
-        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? "Расчет..." : Utils.ConvertMinutesToPrettyText((etaSecondsCurrent / 60.0));
-        string allTimeText = double.IsInfinity(allSecondsRemaining) ? "Расчет..." : Utils.ConvertMinutesToPrettyText((allSecondsRemaining / 60.0));
+        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? localizer.GetLocalizedString("Calculating") : Utils.ConvertMinutesToPrettyText((etaSecondsCurrent / 60.0));
+        string allTimeText = double.IsInfinity(allSecondsRemaining) ? localizer.GetLocalizedString("Calculating") : Utils.ConvertMinutesToPrettyText((allSecondsRemaining / 60.0));
 
         TimeText.Text = etaCurrentText;
         AllTimeText.Text = allTimeText;
@@ -248,12 +251,12 @@ public sealed partial class GoodCheckWorkPage : Page
         if (AdditionalInfo.Visibility == Visibility.Visible)
         {
             AdditionalInfo.Visibility = Visibility.Collapsed;
-            ViewMoreText.Text = "Показать больше";
+            ViewMoreText.Text = localizer.GetLocalizedString("ViewMore");
         }
         else
         {
             AdditionalInfo.Visibility = Visibility.Visible;
-            ViewMoreText.Text = "Показать меньше";
+            ViewMoreText.Text = localizer.GetLocalizedString("ViewLess");
         }
         ViewMoreText.TextDecorations = TextDecorations.Underline;
     }

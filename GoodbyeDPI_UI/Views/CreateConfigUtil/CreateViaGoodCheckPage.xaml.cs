@@ -1,6 +1,9 @@
-using CommunityToolkit.WinUI;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil;
+using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPI_UI.Helper.Settings;
+using CDPI_UI.Helper.Static;
+using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -13,21 +16,22 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using Unidecode.NET;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Unidecode.NET;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using CDPI_UI.Helper.Settings;
+using WinUI3Localizer;
+using static CDPI_UI.Helper.Static.UIHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -64,19 +68,42 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
         private List<OneSiteListOneStrategyModeElement> OneSiteListOneStrategyModeElements = [];
 
+        private ObservableCollection<ComboBoxModel> resolverItems = [];
+
         private IniSettingsHelper IniSettingsHelper { get; set; }
 
         private const string AddOnId = "ASGKOI001";
 
+        private string ComponentId = string.Empty;
+
+        private ILocalizer localizer = Localizer.Get();
+
         public CreateViaGoodCheck()
         {
             InitializeComponent();
+            ResolverComboBox.ItemsSource = resolverItems;
+            InitResolverComboBox();
             _uiDispatcher = DispatcherQueue.GetForCurrentThread();
+        }
 
-            HideAll();
-            SetLoadingMode(false);
-            SwitchState(States.LetsBegin);
-        
+        private void InitResolverComboBox()
+        {
+            resolverItems.Clear();
+            resolverItems.Add(new ComboBoxModel() { DisplayName = localizer.GetLocalizedString("/GoodCheckAdditionalSettings/NativeResolver"), Id = "native" });
+            resolverItems.Add(new ComboBoxModel() { DisplayName = localizer.GetLocalizedString("/GoodCheckAdditionalSettings/Curl"), Id = "curl" });
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is string componentId)
+            {
+                ComponentId = componentId;
+
+                HideAll();
+                SetLoadingMode(false);
+                SwitchState(States.LetsBegin);
+            }
         }
 
         private void HideAll()
@@ -154,7 +181,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
         private async void InitGoodCheckSiteListsPage()
         {
 
-            SetLoadingMode(true, isIndeterminate: true, cancellationAvailable: false, headerText: "Идет работа над этим");
+            SetLoadingMode(true, isIndeterminate: true, cancellationAvailable: false, headerText: localizer.GetLocalizedString("WorkingOnIt"));
 
             List<SiteListElement> siteLists = await SiteListHelper.Instance.GetAllAvailableSiteListTemplatesAsync();
 
@@ -165,7 +192,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
             SwitchState(States.SiteListsSettings);
             GoForwardButton.IsEnabled = false;
 
-            StrategiesLists = BasicGoodCheckHelper.GetAvailableStrategiesLists("CSZTBN012");
+            StrategiesLists = BasicGoodCheckHelper.GetAvailableStrategiesLists(ComponentId);
             
             StrategiesListCombobox.ItemsSource = StrategiesLists; // TODO: rase exception if elements count zero
 
@@ -314,6 +341,12 @@ namespace CDPI_UI.Views.CreateConfigUtil
             IniSettingsHelper.SetValue<string>("Zapret", "ZapretFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("Zapret")));
             IniSettingsHelper.SetValue<string>("Zapret", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("Zapret")).Executable + ".exe");
 
+            IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("GoodbyeDPI")));
+            IniSettingsHelper.SetValue<string>("GoodbyeDPI", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")).Executable + ".exe");
+
+            IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("ByeDPI")));
+            IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("ByeDPI")).Executable + ".exe");
+
             IniSettingsHelper.Save();
         }
 
@@ -351,7 +384,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
             }
 
             GoodCheckProcessHelper.Instance.InitGoodCheck(
-                StateHelper.Instance.FindKeyByValue("Zapret"),
+                ComponentId,
                 (bool)ChangeModeComboBox.IsChecked ? GoodCheckProcessMode.AnyAsAny : GoodCheckProcessMode.AllAsOne,
                 listModels
                 );
@@ -442,7 +475,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Title = "Выберите список сайтов";
+                openFileDialog.Title = localizer.GetLocalizedString("ChooseSiteList");
                 openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 openFileDialog.Filter = "TXT files (*.txt)|*.txt";
                 openFileDialog.RestoreDirectory = true;
@@ -478,7 +511,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
                 Directory = newFilePath,
                 Name = Path.GetFileName(newFilePath),
                 PackId = StateHelper.LocalUserItemsId,
-                PackName = "Личные данные текущего пользователя",
+                PackName = localizer.GetLocalizedString("LocalData"),
             };
 
             AddSiteListElement(siteListElement);

@@ -6,7 +6,8 @@
     xmlns:local="using:CDPI_UI.Views.CreateConfigUtil"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -14,19 +15,27 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Padding="20 20 20 0">
-            <TextBlock Text="Welcome! What do you want to do?" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <StackPanel Padding="20 20 20 0" Spacing="5">
+            <TextBlock l:Uids.Uid="WhatYouWantToDoTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 0 0 10"/>
+            <TextBlock l:Uids.Uid="SelectComponentToViewVarsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+            <ComboBox x:Name="ComponentChooseComboBox" SelectionChanged="ComponentChooseComboBox_SelectionChanged"/>
         </StackPanel>
         <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="200" VerticalAlignment="Center" Grid.Row="1" Margin="20 0">
-            <StackPanel Spacing="10">
+            <StackPanel x:Name="GoodCheckSelectionPanel" Spacing="10">
                 <StackPanel Grid.Column="0" Spacing="5" >
-                    <TextBlock Text="GoodCheck config selection" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="GoodCheckConfigSelectionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
-                        <Button x:Name="BeginNewSelectionButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="BeginNewSelectionButton_Click">
+                        <Button x:Name="BeginNewSelectionButton" 
+                                Width="120" 
+                                Height="120" 
+                                Padding="6" 
+                                VerticalContentAlignment="Stretch" 
+                                HorizontalContentAlignment="Stretch" 
+                                Click="BeginNewSelectionButton_Click">
                             <Button.Content>
                                 <Grid>
                                     <FontIcon Glyph="&#xEB9D;" />
-                                    <TextBlock Text="Begin new selection" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                    <TextBlock l:Uids.Uid="BeginNewSelectionTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                 </Grid>
                             </Button.Content>
                         </Button>
@@ -35,13 +44,13 @@
             </StackPanel>
             <StackPanel Spacing="10">
                 <StackPanel Grid.Column="0" Spacing="5" >
-                    <TextBlock Text="Help+Support" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="HelpSupportTitle" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                         <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                             <Button.Content>
                                 <Grid>
                                     <FontIcon Glyph="&#xE897;" />
-                                    <TextBlock Text="Get help" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                    <TextBlock l:Uids.Uid="GetHelpTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                 </Grid>
                             </Button.Content>
                         </Button>
@@ -50,13 +59,13 @@
             </StackPanel>
             <StackPanel Spacing="10">
                 <StackPanel Grid.Column="0" Spacing="5" >
-                    <TextBlock Text="Other" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="OtherTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                         <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                             <Button.Content>
                                 <Grid>
                                     <FontIcon Glyph="&#xE8A7;" />
-                                    <TextBlock Text="Open config helper" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                    <TextBlock l:Uids.Uid="OpenConfigHelperTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                 </Grid>
                             </Button.Content>
                         </Button>
@@ -68,13 +77,13 @@
             <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
 
             <Grid Padding="20">
-                <Button x:Name="GetHelpButton" ToolTipService.ToolTip="Получить справку" Padding="6" Click="GetHelpButton_Click">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
                     <Button.Content>
                         <FontIcon Glyph="&#xE897;" FontSize="16"/>
                     </Button.Content>
                 </Button>
                 <StackPanel Orientation="Horizontal" Spacing="10"  HorizontalAlignment="Right">
-                    <Button x:Name="CancelButton" Content="Exit" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
+                    <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
                 </StackPanel>
             </Grid>
         </Grid>

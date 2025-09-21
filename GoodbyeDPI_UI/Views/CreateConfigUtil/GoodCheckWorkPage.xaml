@@ -6,7 +6,8 @@
     xmlns:local="using:CDPI_UI.Views.CreateConfigUtil"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,10 +27,10 @@
                 <StackPanel.RenderTransform>
                     <TranslateTransform/>
                 </StackPanel.RenderTransform>
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Подбор настроек запуска"/>
+                <TextBlock l:Uids.Uid="GoodCheckSelectionTitle" Style="{StaticResource TitleTextBlockStyle}"/>
                 <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
                     <Paragraph>
-                        <Run Text="Этот процесс займет некоторое время. Отличный шанс потрогать траву"/>
+                        <Run l:Uids.Uid="GoodCheckSelectionWaitTextBlock"/>
                     </Paragraph>
                 </RichTextBlock>
             </StackPanel>
@@ -40,34 +41,34 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 5" Spacing="5">
                     <FontIcon Glyph="&#xE9D9;" FontSize="16" VerticalAlignment="Center"/>
-                    <TextBlock Text="Подробности" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center"/>
+                    <TextBlock l:Uids.Uid="DetailsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center"/>
                 </StackPanel>
                 <HyperlinkButton x:Name="ViewMoreButton" HorizontalAlignment="Right" Padding="0" Margin="0 0 0 5" Click="ViewMoreButton_Click" 
                                  PointerEntered="ViewMoreButton_PointerEntered" PointerExited="ViewMoreButton_PointerExited">
                     <HyperlinkButton.Content>
-                        <TextBlock x:Name="ViewMoreText" Text="Показать больше" TextDecorations="Underline"/>
+                        <TextBlock l:Uids.Uid="ViewMoreTextBlock" x:Name="ViewMoreText" TextDecorations="Underline"/>
                     </HyperlinkButton.Content>
                 </HyperlinkButton>
 
                 <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
                 <StackPanel Grid.Row="1" Padding="10" HorizontalAlignment="Stretch">
-                    <TextBlock Text="Общее" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                    <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" />
 
-                    <TextBlock Text="Сейчас идет подбор для: "/>
+                    <TextBlock l:Uids.Uid="GoodCheckSelectionNow"/>
                     <TextBlock x:Name="SiteListProgressText" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                    <TextBlock Text="Оценка оставшегося времени: "/>
-                    <TextBlock x:Name="AllTimeText" Text="Расчет..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                    <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
+                    <TextBlock x:Name="AllTimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
                     
                     <StackPanel x:Name="AdditionalInfo" Visibility="Collapsed">
                         <Rectangle Fill="{ThemeResource SmokeFillColorDefaultBrush}" Height="2" Margin="0 5 0 5"/>
-                        <TextBlock Text="Текущая проверка" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-                        <TextBlock Text="Оценка оставшегося времени: "/>
-                        <TextBlock x:Name="TimeText" Text="Расчет..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock Text="Процент выполненной работы: "/>
+                        <TextBlock l:Uids.Uid="GoodCheckCurrentSelection" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
+                        <TextBlock x:Name="TimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                        <TextBlock l:Uids.Uid="GoodCheckSelectionPercent"/>
                         <TextBlock x:Name="SiteListProgress" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock Text="Количество неудачных стратегий (Менее 65%): "/>
+                        <TextBlock l:Uids.Uid="GoodCheckBadStrategy"/>
                         <TextBlock x:Name="BadStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock Text="Количество удачных стратегий (Более 65%): "/>
+                        <TextBlock l:Uids.Uid="GoodCheckGoodStrategy"/>
                         <TextBlock x:Name="GoodStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
                     </StackPanel>
                 </StackPanel>
@@ -85,10 +86,10 @@
                 <StackPanel.RenderTransform>
                     <TranslateTransform/>
                 </StackPanel.RenderTransform>
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Подбор завершён"/>
+                <TextBlock l:Uids.Uid="GoodCheckSelectionComplete" Style="{StaticResource TitleTextBlockStyle}"/>
                 <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
                     <Paragraph>
-                        <Run Text="Нажмите на кнопку Далее, чтобы перейти к просмотру результата."/>
+                        <Run l:Uids.Uid="GoodCheckSelectionCompleteTip"/>
                     </Paragraph>
                 </RichTextBlock>
             </StackPanel>
@@ -97,7 +98,7 @@
 
         <Grid x:Name="LoadingStateGrid" Grid.Row="1" Visibility="Visible" Margin="0 20 0 0">
             <StackPanel>
-                <TextBlock x:Name="LoadingHeader" Text="Идет работа над этим..." Margin="20 0 0 5" Visibility="Collapsed"/>
+                <TextBlock l:Uids.Uid="WorkingOnItTextBlock" x:Name="LoadingHeader" Margin="20 0 0 5" Visibility="Collapsed"/>
                 <ProgressBar x:Name="LoadingProgressBar" IsIndeterminate="True" VerticalAlignment="Top" CornerRadius="0"/>
             </StackPanel>
         </Grid>
@@ -105,7 +106,7 @@
             <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
 
             <Grid Padding="20">
-                <Button x:Name="GetHelpButton" ToolTipService.ToolTip="Получить справку" Padding="6" Click="GetHelpButton_Click">
+                <Button l:Uids.Uid="GetHelpButton" x:Name="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
                     <Button.Content>
                         <FontIcon Glyph="&#xE897;" FontSize="16"/>
                     </Button.Content>
@@ -114,23 +115,23 @@
                     <RichTextBlock Margin="0" TextWrapping="Wrap" IsTextSelectionEnabled="False" VerticalAlignment="Center">
                         <Paragraph>
                             <Hyperlink x:Name="ViewLogHyperlink" Click="ViewLogHyperlink_Click">
-                                Открыть логи процесса
+                                <Run l:Uids.Uid="OpenLogsFolderTextBlock"/>
                             </Hyperlink>
                         </Paragraph>
                     </RichTextBlock>
-                    <Button x:Name="CancelButton" Content="Остановить" MinWidth="150">
+                    <Button l:Uids.Uid="StopButton" x:Name="CancelButton" MinWidth="150">
                         <Button.Flyout>
                             <Flyout>
                                 <StackPanel Spacing="5">
-                                    <TextBlock Text="Остановка" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                    <TextBlock Text="Выберите вариант остановки."/>
-                                    <Button x:Name="KillProc" Content="Завершить текущий процесс" HorizontalAlignment="Stretch" Click="KillProc_Click"/>
-                                    <Button x:Name="EndAll" Content="Завершить подбор полностью" HorizontalAlignment="Stretch" Click="EndAll_Click"/>
+                                    <TextBlock l:Uids.Uid="StopTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock l:Uids.Uid="StopTipTextBlock"/>
+                                    <Button l:Uids.Uid="GoodCheckKillCurrentProcessButton" x:Name="KillProc"  HorizontalAlignment="Stretch" Click="KillProc_Click"/>
+                                    <Button l:Uids.Uid="GoodCheckKillAllProcessButton" x:Name="EndAll" HorizontalAlignment="Stretch" Click="EndAll_Click"/>
                                 </StackPanel>
                             </Flyout>
                         </Button.Flyout>
                     </Button>
-                    <Button x:Name="ForwardButton" Content="Далее" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Visibility="Collapsed" Click="ForwardButton_Click"/>
+                    <Button l:Uids.Uid="ForwardButton" x:Name="ForwardButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Visibility="Collapsed" Click="ForwardButton_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
