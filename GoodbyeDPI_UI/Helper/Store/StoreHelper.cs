@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Services.Maps.LocalSearch;
+using Windows.UI.WebUI;
 using static CDPI_UI.Helper.ErrorsHelper;
 using TimeSpan = System.TimeSpan;
 using Version = System.Version;
@@ -45,7 +46,7 @@ namespace CDPI_UI.Helper
     }
     public class StoreHelper
     {
-        private const string GitHubApiToken = "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";
+        private static readonly string GitHubApiToken = StateHelper.GetSecret("GitHubToken");
 
         private List<string> SupportedCategoryTypes = ["basic_category", "second_category"];
 

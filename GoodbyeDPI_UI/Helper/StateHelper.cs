@@ -1,4 +1,5 @@
 ﻿using CDPI_UI.ViewModels;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -109,6 +110,14 @@ namespace CDPI_UI.Helper
                 Logger.Instance.RaiseCriticalException(nameof(GetDataDirectory), ex);
                 return "";
             }
+        }
+
+        public static string GetSecret(string key)
+        {
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            IConfiguration configuration = configurationBuilder.AddUserSecrets<Program>().Build();
+            string token = configuration[key];
+            return token;
         }
     }
 }
