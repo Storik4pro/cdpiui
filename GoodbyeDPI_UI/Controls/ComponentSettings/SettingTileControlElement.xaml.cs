@@ -12,6 +12,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System.Windows.Forms;
+using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -100,6 +102,17 @@ public sealed partial class SettingTileControlElement : UserControl
     public static readonly DependencyProperty IsClickEnabledProperty =
         DependencyProperty.Register(
             nameof(IsClickEnabled), typeof(bool), typeof(SettingTileControlElement), new PropertyMetadata(false)
+        );
+
+    public Thickness CardPadding
+    {
+        get { return (Thickness)GetValue(CardPaddingProperty); }
+        set { SetValue(CardPaddingProperty, value); }
+    }
+
+    public static readonly DependencyProperty CardPaddingProperty =
+        DependencyProperty.Register(
+            nameof(CardPadding), typeof(Thickness), typeof(SettingTileControlElement), new PropertyMetadata(new Thickness(20, 10, 20, 10))
         );
 
     public object InnerContent

@@ -13,9 +13,9 @@
         <Border CornerRadius="10" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1"/>
         <StackPanel Padding="1" Spacing="0">
             <StackPanel Padding="20" Spacing="10">
-                <FontIcon Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left"/>
-                <TextBlock Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap"/>
-                <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                <TextBlock x:Name="TitleTextBlock" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                <TextBlock x:Name="DescriptionTextBlock" Text="{x:Bind Description}" TextWrapping="Wrap" Visibility="Collapsed"/>
             </StackPanel>
             <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{ThemeResource CardStrokeColorDefaultSolidBrush}" VerticalAlignment="Top"/>
             <ScrollViewer VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch"

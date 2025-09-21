@@ -29,7 +29,18 @@ public sealed partial class SettingTile : UserControl
     public string Title
     {
         get { return (string)GetValue(TitleProperty); }
-        set { SetValue(TitleProperty, value); }
+        set
+        {
+            SetValue(TitleProperty, value);
+            if (!string.IsNullOrEmpty(value))
+            {
+                TitleTextBlock.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TitleTextBlock.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 
     public static readonly DependencyProperty TitleProperty =
@@ -40,7 +51,17 @@ public sealed partial class SettingTile : UserControl
     public string Description
     {
         get { return (string)GetValue(DescriptionProperty); }
-        set { SetValue(DescriptionProperty, value); }
+        set { 
+            SetValue(DescriptionProperty, value); 
+            if (!string.IsNullOrEmpty(value))
+            {
+                DescriptionTextBlock.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DescriptionTextBlock.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 
     public static readonly DependencyProperty DescriptionProperty =
@@ -51,7 +72,17 @@ public sealed partial class SettingTile : UserControl
     public string IconGlyph
     {
         get { return (string)GetValue(IconGlyphProperty); }
-        set { SetValue(IconGlyphProperty, value); }
+        set { 
+            SetValue(IconGlyphProperty, value); 
+            if (!string.IsNullOrEmpty(value))
+            {
+                FontIcon.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                FontIcon.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 
     public static readonly DependencyProperty IconGlyphProperty =
