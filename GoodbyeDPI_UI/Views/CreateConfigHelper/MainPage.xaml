@@ -12,7 +12,7 @@
         <ScrollViewer>
             <StackPanel Padding="20" VerticalAlignment="Center" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Image Source="/Assets/Square44x44Logo.png" Width="60"/>
+                    <Image Source="/Assets/Store/empty.png" Width="60"/>
                     <StackPanel>
                         <TextBlock Text="Welcome" Style="{ThemeResource TitleTextBlockStyle}"/>
                         <TextBlock Text="What are you looking for?"/>
@@ -78,10 +78,10 @@
                         <StackPanel Grid.Column="0" Spacing="5" >
                             <TextBlock Text="Explore new AddOns and Components" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
-                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Button x:Name="StoreButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="StoreButton_Click">
                                     <Button.Content>
                                         <Grid>
-                                            <Image Source="/Assets/Square44x44Logo.png" Width="28"/>
+                                            <Image Source="/Assets/Icons/Store.png" Width="28"/>
                                             <TextBlock Text="Open store" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>

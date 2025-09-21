@@ -99,7 +99,12 @@ namespace CDPI_UI.Views.CreateConfigHelper
         private async void GoodCheckBeginSelectionButton_Click(object sender, RoutedEventArgs e)
         {
             CreateConfigUtilWindow window = await((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
-            window.NavigateToPage<CreateViaGoodCheck>();
+            // window.NavigateToPage<CreateViaGoodCheck>();
+        }
+
+        private void StoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
         }
     }
 }
