@@ -6,6 +6,12 @@
 	<Group Name="SYSTEM">
 		<Setting Key="autorun" Type="bool" Value="false" />
 	</Group>
+	<Group Name="NOTIFICATIONS">
+		<Setting Key="procState" Type="bool" Value="false"/>
+		<Setting Key="trayHide" Type="bool" Value="true"/>
+		<Setting Key="appUpdates" Type="bool" Value="true"/>
+		<Setting Key="storeUpdates" Type="bool" Value="true"/>
+	</Group>
 	<Group Name="PSEUDOCONSOLE">
 		<Setting Key="outputMode" Type="bool" Value="true" />
 		<Setting Key="fontSize" Type="double" Value="16" />
