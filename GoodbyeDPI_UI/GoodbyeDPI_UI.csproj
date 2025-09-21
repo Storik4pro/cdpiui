@@ -17,7 +17,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<DebugType>embedded</DebugType>
 	<AssemblyName>CDPIUI</AssemblyName>
-    
+	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
@@ -35,6 +35,7 @@
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\FileConfigInspectUserControl.xaml" />
+    <None Remove="Controls\MainPage\QuickSettingWidget.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
     <None Remove="Controls\SettingTileControlElement.xaml" />
     <None Remove="Controls\StoreCategoryButton.xaml" />
@@ -51,13 +52,16 @@
     <None Remove="SystemPage.xaml" />
     <None Remove="UpdatePage.xaml" />
     <None Remove="UtilsPage.xaml" />
-    <None Remove="Views\ComponentsPage.xaml" />
+    <None Remove="Views\AboutPage.xaml" />
+    <None Remove="Views\Components\ViewComponentSettingsPage.xaml" />
     <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
     <None Remove="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml" />
     <None Remove="Views\CreateConfigHelper\MainPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
     <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\Store\CategoryViewPage.xaml" />
     <None Remove="Views\Store\DownloadsPage.xaml" />
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
@@ -74,6 +78,36 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Strings\en-us\Flashlight.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\GoodCheckAdditionalSettings.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Resources.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\SettingTiles.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Flashlight.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\GoodCheckAdditionalSettings.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Resources.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\SettingTiles.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -100,9 +134,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PeanutButter.INI" Version="3.0.329" />
     <PackageReference Include="sch.pty.net" Version="0.3.36-pre" />
+    <PackageReference Include="System.Management" Version="9.0.9" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
     <PackageReference Include="TaskScheduler" Version="2.11.0" />
     <PackageReference Include="Unidecode.NET" Version="2.1.0" />
+    <PackageReference Include="WinUI3Localizer" Version="2.3.0" />
     <PackageReference Include="WinUIEx" Version="2.6.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
@@ -144,13 +180,17 @@
     <Folder Include="Controls\ComponentSettings\" />
     <Folder Include="Controls\Dialogs\ComponentSettings\" />
     <Folder Include="Controls\GoodCheck\" />
-    <Folder Include="Views\Components\" />
     <Folder Include="Windows\Service\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Controls\Dialogs\FontSettingsContentDialog.xaml">
@@ -288,11 +328,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\ComponentsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
@@ -306,4 +341,51 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\MainPage\QuickSettingWidget.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <None Update="Template\Settings\Settings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Page Update="Views\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\CategoryViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Components\ViewComponentSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Flashlight.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\SettingTiles.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Flashlight.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\SettingTiles.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\GoodCheckAdditionalSettings.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\GoodCheckAdditionalSettings.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\UIHelper.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\UIHelper.resw" />
+  </ItemGroup>
 </Project>

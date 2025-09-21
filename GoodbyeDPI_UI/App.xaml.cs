@@ -4,6 +4,8 @@ using CDPI_UI.DesktopWap.DataModel;
 using CDPI_UI.DesktopWap.Helper;
 //using CDPI_UI.Data;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.Static;
+using CDPI_UI.Views;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,15 +15,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.System;
 using Windows.UI;
 using WinRT.Interop;
+using WinUI3Localizer;
 using WinUIEx;
 using static CDPI_UI.Win32;
 using WASDK = Microsoft.WindowsAppSDK;
@@ -63,13 +69,31 @@ namespace CDPI_UI
 
         private void PipeConnected()
         {
-            _ = SafeCreateNewWindow<MainWindow>();
+            string[] arguments = Environment.GetCommandLineArgs();
+
+            if (!arguments.Contains("--create-no-window"))
+            {
+                if (arguments.Contains("--show-pseudoconsole"))
+                {
+                    _ = SafeCreateNewWindow<ViewWindow>();
+                }
+                else
+                {
+                    _ = SafeCreateNewWindow<MainWindow>();
+                }
+            }
+            if (arguments.Contains("--get-startup-params"))
+            {
+                _ = ProcessManager.Instance.StartProcess();
+            }
+
             PipeClient.Instance.Connected -= PipeConnected;
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            _ = SafeCreateNewWindow<PrepareWindow>();
+            string[] arguments = Environment.GetCommandLineArgs();
+            _ = SafeCreateNewWindow<PrepareWindow>(!arguments.Contains("--create-no-window"));
 
             PipeClient.Instance.Start();
         }
@@ -78,6 +102,8 @@ namespace CDPI_UI
         {
             // TODO: Make async and show progress
             DatabaseHelper.Instance.QuickRestore();
+            await InitializeLocalizer();
+
 
             await Task.CompletedTask;
         }
@@ -96,7 +122,13 @@ namespace CDPI_UI
             }
         }
 
-        public async Task<TWindow> SafeCreateNewWindow<TWindow>() where TWindow : Window, new()
+        public async void CreateEmptyWindow()
+        {
+            Window window = await SafeCreateNewWindow<ViewWindow>();
+            window.Hide();
+        }
+
+        public async Task<TWindow> SafeCreateNewWindow<TWindow>(bool activate = true) where TWindow : Window, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
             int findWindowCount = findWindows.Count;
@@ -105,7 +137,7 @@ namespace CDPI_UI
 
             if (activeFindWindow != null && findWindowCount == 1)
             {
-                activeFindWindow.Activate();
+                if (activate) activeFindWindow.Activate();
                 await Task.CompletedTask;
                 return activeFindWindow;
             }
@@ -118,7 +150,7 @@ namespace CDPI_UI
                 }
 
                 var newViewWindow = new TWindow();
-                newViewWindow.Activate();
+                if (activate) newViewWindow.Activate();
 
                 RegisterWindow(newViewWindow);
                 await Task.CompletedTask;
@@ -422,6 +454,29 @@ namespace CDPI_UI
             }
         }
 
+        private async Task InitializeLocalizer()
+        {
+            string stringsFolderPath = Path.Combine(AppContext.BaseDirectory, "Strings");
+            StorageFolder stringsFolder = await StorageFolder.GetFolderFromPathAsync(stringsFolderPath);
+
+            string lang = SettingsManager.Instance.GetValue<string>("SYSTEM", "language");
+            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            if (lang == "NaN")
+            {
+                if (installedUICulture.Name == "ru" || installedUICulture.Name == "en-US")
+                    lang = installedUICulture.Name;
+                else lang = "en-us";
+            }
+
+            ILocalizer localizer = await new LocalizerBuilder()
+                .AddStringResourcesFolderForLanguageDictionaries(stringsFolderPath)
+                .SetOptions(options =>
+                {
+                    options.DefaultLanguage = lang;
+                })
+                .Build();
+        }
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
@@ -436,7 +491,5 @@ namespace CDPI_UI
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_SHOWWINDOW = 0x0040;
-
-
     }
 }
