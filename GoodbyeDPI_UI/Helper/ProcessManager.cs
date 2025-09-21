@@ -48,7 +48,7 @@ namespace CDPI_UI.Helper
         public List<string> LatestErrorMessage = ["", ""];
 
         public bool processState = false;
-        private string ProcessName = string.Empty;
+        public string ProcessName = string.Empty;
 
         private readonly DispatcherQueue _dispatcherQueue;
 
@@ -83,8 +83,8 @@ namespace CDPI_UI.Helper
 
         public void GetReady()
         {
-            PipeClient.Instance.SendMessage("CONPTY:GETOUTPUT");
-            PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
+            _ = PipeClient.Instance.SendMessage("CONPTY:GETOUTPUT");
+            _ = PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
         }
 
         public async Task StartProcess()
@@ -114,8 +114,10 @@ namespace CDPI_UI.Helper
                 onProcessStateChanged?.Invoke("started");
                 processState = true;
 
-                PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
-                
+                await PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
+                string[] arguments = Environment.GetCommandLineArgs();
+
+                if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill();
             }
             catch (Exception ex)
             {
@@ -150,7 +152,7 @@ namespace CDPI_UI.Helper
                 onProcessStateChanged?.Invoke("started");
                 processState = true;
 
-                PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
+                _ = PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
 
             }
             catch (Exception ex)
@@ -181,7 +183,7 @@ namespace CDPI_UI.Helper
             {
                 _cancellationTokenSource?.Cancel();
 
-                PipeClient.Instance.SendMessage("CONPTY:STOP");
+                _ = PipeClient.Instance.SendMessage("CONPTY:STOP");
                 if (output) onProcessStateChanged?.Invoke("stopped");
                 processState = false;
             }
@@ -194,13 +196,13 @@ namespace CDPI_UI.Helper
 
         public async Task RestartProcess()
         {
-            PipeClient.Instance.SendMessage("CONPTY:RESTART");
+            _ = PipeClient.Instance.SendMessage("CONPTY:RESTART");
             await Task.CompletedTask;
         }
 
         public async Task StopService()
         {
-            PipeClient.Instance.SendMessage("CONPTY:STOPSERVICE");
+            _ = PipeClient.Instance.SendMessage("CONPTY:STOPSERVICE");
             await Task.CompletedTask;
         }
 
@@ -220,6 +222,9 @@ namespace CDPI_UI.Helper
             str = Regex.Replace(str, @"\u001b\]0;.*?\[\?25h", "");
             str = Regex.Replace(str, @"\[\?25l|\[1C|", "");
             str = Regex.Replace(str, @"\[\?\d{4}\w", "");
+            str = Regex.Replace(str, @"\[\d[A-Z]", "");
+            str = Regex.Replace(str, @"\[\d{1,2};\d{1,2}[A-Z]", "");
+            str = Regex.Replace(str, @"\[\?\d{1,2}[a-z]", "");
             return str;
 
         }
