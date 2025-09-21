@@ -43,12 +43,18 @@ namespace CDPI_UI.Helper
 
         // Local
 
+        public const string ApplicationStoreId = "CDPIUIAppSt";
+
         public const string LocalUserItemsId = "LocalUserStorage";
         public const string LocalUserItemSiteListsFolder = "List";
         public const string LocalUserItemBinsFolder = "Bin";
         public const string LocalUserItemLocFolder = "Loc";
 
         public const string SettingsDir = "Settings";
+
+        // Repository
+
+        public const string ApplicationCheckUpdatesUrl = "https://github.com/Storik4pro/cdpiui";
 
         // Template
 
@@ -58,6 +64,7 @@ namespace CDPI_UI.Helper
         // Components
 
         public Dictionary<string, string> ComponentIdPairs = new();
+        public static List<string> GoodCheckSupportedComponents = ["CSZTBN012", "CSGIVS036", "CSBIHA024"];
 
         public bool isCheckedComponentsUpdateComplete = false;
         public string lastComponentsUpdateError = "";
@@ -67,6 +74,8 @@ namespace CDPI_UI.Helper
         private StateHelper()
         {
             FileTypes.Add("archive", ".zip");
+            FileTypes.Add("WIN32application", ".exe");
+            FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
 
             string exePath = Assembly.GetEntryAssembly()?.Location
                  ?? Assembly.GetExecutingAssembly()?.Location
@@ -78,6 +87,9 @@ namespace CDPI_UI.Helper
 
             ComponentIdPairs.Add("ASGKOI001", "GoodCheck");
             ComponentIdPairs.Add("CSZTBN012", "Zapret");
+            ComponentIdPairs.Add("CSGIVS036", "GoodbyeDPI");
+            ComponentIdPairs.Add("CSBIHA024", "ByeDPI");
+            ComponentIdPairs.Add("CSSIXC048", "SpoofDPI");
         }
 
         public string FindKeyByValue(string value)
