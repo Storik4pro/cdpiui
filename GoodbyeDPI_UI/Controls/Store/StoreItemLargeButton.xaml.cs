@@ -132,6 +132,16 @@ public sealed partial class StoreItemLargeButton : UserControl
         DependencyProperty.Register(
             "Price", typeof(string), typeof(StoreItemLargeButton), new PropertyMetadata(string.Empty)
         );
+    public string CardDeveloper
+    {
+        get { return (string)GetValue(CardDeveloperProperty); }
+        set { SetValue(CardDeveloperProperty, value); }
+    }
+
+    public static readonly DependencyProperty CardDeveloperProperty =
+        DependencyProperty.Register(
+            "CardDeveloper", typeof(string), typeof(StoreItemLargeButton), new PropertyMetadata(string.Empty)
+        );
 
     public Color CardBackgroundColor
     {

@@ -79,13 +79,14 @@
 
     <Grid HorizontalAlignment="Left" PointerEntered="Button_PointerEntered" PointerExited="Button_PointerExited" Margin="0, 0, 0, 10">
         <Rectangle x:Name="PART_BackgroundRect" Fill="{ThemeResource ControlStrokeColorOnAccentDefaultBrush}" HorizontalAlignment="Stretch" RadiusX="10" RadiusY="10"/>
-        <Button x:Name="PART_Button" Style="{StaticResource StoreCategoryButtonStyle}" Padding="11,4,11,5">
+        <Button x:Name="PART_Button" Style="{StaticResource StoreCategoryButtonStyle}" Padding="11,4,11,5" Click="PART_Button_Click">
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
                     <StackPanel.RenderTransform>
                         <TranslateTransform x:Name="ContentTranslateTransform"/>
                     </StackPanel.RenderTransform>
                     <TextBlock 
+                        x:Name="MainTextBlock"
                         Text="{x:Bind Text}" 
                         FontWeight="SemiBold"
                         Style="{ThemeResource SubtitleTextBlockStyle}">

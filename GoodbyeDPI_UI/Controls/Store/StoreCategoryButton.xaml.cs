@@ -21,6 +21,9 @@ namespace CDPI_UI;
 
 public sealed partial class StoreCategoryButton : UserControl
 {
+    public Action<StoreCategoryButton> Click;
+    public UIElement textElement;
+
     public StoreCategoryButton()
     {
         InitializeComponent();
@@ -29,6 +32,8 @@ public sealed partial class StoreCategoryButton : UserControl
 
         PART_BackgroundRect.Visibility = Visibility.Collapsed;
         AnimToPrimary.Begin();
+
+        textElement = MainTextBlock;
     }
     public string Text
     {
@@ -38,7 +43,18 @@ public sealed partial class StoreCategoryButton : UserControl
 
     public static readonly DependencyProperty TextProperty =
         DependencyProperty.Register(
-            nameof(Text), typeof(string), typeof(StoreItemLargeButton), new PropertyMetadata(string.Empty)
+            nameof(Text), typeof(string), typeof(StoreCategoryButton), new PropertyMetadata(string.Empty)
+        );
+
+    public string Id
+    {
+        get { return (string)GetValue(IdProperty); }
+        set { SetValue(IdProperty, value); }
+    }
+
+    public static readonly DependencyProperty IdProperty =
+        DependencyProperty.Register(
+            nameof(Id), typeof(string), typeof(StoreCategoryButton), new PropertyMetadata(string.Empty)
         );
 
     private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -55,5 +71,10 @@ public sealed partial class StoreCategoryButton : UserControl
         AnimToSecondary.Stop();
         AnimToPrimary.Begin();
 
+    }
+
+    private void PART_Button_Click(object sender, RoutedEventArgs e)
+    {
+        Click?.Invoke(this);
     }
 }
