@@ -7,7 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock">
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
+    xmlns:l="using:WinUI3Localizer">
 
     <Page.Resources>
         <ItemsPanelTemplate x:Key="DefaultItemsPanel">
@@ -70,7 +71,7 @@
                         <ColumnDefinition Width="*" MaxWidth="300"/>
                     </Grid.ColumnDefinitions>
                     <Image x:Name="ItemImage" 
-                           Source="/Assets/Square44x44Logo.png" 
+                           Source="/Assets/Store/empty.png" 
                            Width="90" Height="90"/>
                     <Grid Grid.Column="1" Margin="25, 0, 0, 0">
                         <Grid.RowDefinitions>
@@ -129,17 +130,16 @@
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Spacing="0" VerticalAlignment="Center">
-                                    <TextBlock x:Name="CurrentStatusTextBlock" Text="Установка" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock x:Name="CurrentStatusTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock x:Name="CurrentStatusSpeedTextBlock" Text="" Margin="0, 0, 5, 0"
                                                    Visibility="Collapsed"/>
-                                        <TextBlock x:Name="CurrentStatusTipTextBlock" Text="Идет работа над этим"/>
+                                        <TextBlock l:Uids.Uid="WorkingOnItTextBlock" x:Name="CurrentStatusTipTextBlock"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10, 0, 0, 0">
-                                    <Button x:Name="StopActionButton" Background="Transparent" BorderBrush="Transparent" 
-                                            Padding="6" VerticalAlignment="Center" Click="StopActionButton_Click"
-                                            ToolTipService.ToolTip="Остановить загрузку">
+                                    <Button l:Uids.Uid="StopActionButton" x:Name="StopActionButton" Background="Transparent" BorderBrush="Transparent" 
+                                            Padding="6" VerticalAlignment="Center" Click="StopActionButton_Click">
                                         <Button.Content>
                                             <FontIcon Glyph="&#xE978;" FontSize="16" />
                                         </Button.Content>
@@ -169,34 +169,35 @@
                                 <StackPanel Grid.Column="1" Spacing="0" VerticalAlignment="Center"
                                             Margin="0, 0, 0, 5">
                                     <StackPanel Orientation="Horizontal" Spacing="3">
-                                        <TextBlock x:Name="ErrorTitleTextBlock" Text="Произошла ошибка —" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                        <TextBlock x:Name="ErrorNameTextBlock" Text="ERR_NET_IO" Margin="0, 0, 5, 0"
+                                        <TextBlock l:Uids.Uid="ExceptionHappensTextBlock" x:Name="ErrorTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                        <TextBlock x:Name="ErrorNameTextBlock" Text="ERR_FLASHLIGHT_BISY" Margin="0, 0, 5, 0"
                                                    IsTextSelectionEnabled="True"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Spacing="3">
-                                        <HyperlinkButton x:Name="RetryButton" Content="Повторить попытку" Padding="0, 0" Click="ItemActionButton_Click"/>
-                                        <HyperlinkButton x:Name="ErrorHelpButton" Content="[Предлагаемые действия]" Padding="0, 0" Click="ErrorHelpButton_Click"/>
+                                        <HyperlinkButton l:Uids.Uid="RetryButton" x:Name="RetryButton" Padding="0, 0" Click="ItemActionButton_Click"/>
+                                        <HyperlinkButton l:Uids.Uid="AvailableActionsButton" x:Name="ErrorHelpButton" Padding="0, 0" Click="ErrorHelpButton_Click"/>
                                     </StackPanel>
                                 </StackPanel>
 
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Button x:Name="ItemMoreButton" Background="Transparent" 
+                    <Button l:Uids.Uid="ViewMoreActionsButton"
+                            x:Name="ItemMoreButton" Background="Transparent" 
                             BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
-                            ToolTipService.ToolTip="Показать больше действий"
                             Visibility="Collapsed">
                         <Button.Content>
                             <FontIcon Glyph="&#xE712;" FontSize="16" />
                         </Button.Content>
                         <Button.Flyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem x:Name="DeleteButton" Text="Удалить с устройства" Click="DeleteButton_Click">
+                                <MenuFlyoutItem l:Uids.Uid="DeleteButton" x:Name="DeleteButton"  Click="DeleteButton_Click">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon Glyph="&#xE74D;" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
-                                <MenuFlyoutItem x:Name="ReinstallButton" Text="Выполнить принудительную переустановку"
+                                <MenuFlyoutItem l:Uids.Uid="ReinstallButton"
+                                                x:Name="ReinstallButton" 
                                                 Click="ReinstallButton_Click">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon Glyph="&#xE895;" />
@@ -223,7 +224,10 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Rectangle Fill="{ThemeResource SystemFillColorCautionBrush}"/>
-                        <TextBlock x:Name="WarningTextTitle" Text="Обратите внимание" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <TextBlock l:Uids.Uid="WarningTextBlock" x:Name="WarningTextTitle" 
+                                   Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" 
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}"  
+                                   VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
                         <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
                         <Rectangle Fill="{ThemeResource SystemFillColorCautionBackgroundBrush}" Grid.Row="2"/>
                         <StackPanel Margin="20" Grid.Row="2" Spacing="5">
@@ -236,8 +240,8 @@
                                                         UseTaskLists="True"/>
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <FontIcon Glyph="&#xE8BD;" FontSize="15" VerticalAlignment="Center"/>
-                                <TextBlock Text="Сообщение от разработчика" VerticalAlignment="Center"/>
-                                <HyperlinkButton x:Name="ItemWarningButton" Content="Что это значит?" Padding="0, 0" Click="ItemWarningButton_Click" VerticalAlignment="Center"/>
+                                <TextBlock l:Uids.Uid="MessageFromDeveloperTextBlock" VerticalAlignment="Center"/>
+                                <HyperlinkButton l:Uids.Uid="WhatDoesItMeanTextBlock" x:Name="ItemWarningButton" Padding="0, 0" Click="ItemWarningButton_Click" VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -250,7 +254,7 @@
                             <RowDefinition Height="2"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="DescriptionTextTitle" Text="Описание" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <TextBlock x:Name="DescriptionTextTitle" l:Uids.Uid="DescriptionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
                         <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
                         <controls:MarkdownTextBlock 
                             Grid.Row="2" Margin="20" x:Name="ItemFullDescriptionText" 
@@ -271,7 +275,7 @@
                             <RowDefinition Height="2"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="LinksTitle" Text="Ссылки на связанные Интернет-ресурсы" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <TextBlock x:Name="LinksTitle" l:Uids.Uid="ExternalLinksTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
                         <StackPanel Grid.Row="2" x:Name="LinksStackPanel" HorizontalAlignment="Stretch">
                         </StackPanel>
                     </Grid>
@@ -284,7 +288,7 @@
                             <RowDefinition Height="2"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="RequirementsTitle" Text="Дополнительные сведения" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <TextBlock x:Name="RequirementsTitle" Text="Requirements Title" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
                         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch">
                             
                         </StackPanel>

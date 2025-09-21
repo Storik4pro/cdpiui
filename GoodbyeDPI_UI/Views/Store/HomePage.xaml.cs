@@ -27,6 +27,7 @@ using System.Windows;
 
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
 using DependencyObject = Microsoft.UI.Xaml.DependencyObject;
 using GridLength = Microsoft.UI.Xaml.GridLength;
@@ -106,6 +107,8 @@ public sealed partial class HomePage : Page
     private const double MaxTotalWidth = 1860;
 
     private IEnumerable<UICategoryData> _lastCategories;
+
+    private ILocalizer localizer = Localizer.Get();
 
     public HomePage()
     {
@@ -194,25 +197,27 @@ public sealed partial class HomePage : Page
                 if (category.type == "basic_category")
                 {
                     categoryItems.Add(
-                        CreateLargeButton(
+                        UIHelper.CreateLargeButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource:Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
-                            price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
-                            title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, "RU"),
-                            backgroundColor:repoCategoryItem.background
+                            price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
+                            title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
+                            backgroundColor:repoCategoryItem.background,
+                            action: StoreItemButton_Click
                         )
                     );
                 }
                 else if (category.type == "second_category")
                 {
                     categoryItems.Add(
-                        CreateSmallButton(
+                        UIHelper.CreateSmallButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource: Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
-                            price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? "Установлено" : "Получить",
-                            title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, "RU"),
+                            price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
+                            title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
                             developer: repoCategoryItem.developer,
-                            backgroundColor:repoCategoryItem.background
+                            backgroundColor:repoCategoryItem.background,
+                            action: StoreItemButton_Click
                         )
                     );
                 }
@@ -222,7 +227,7 @@ public sealed partial class HomePage : Page
             {
                 StoreId = category.store_id,
                 Type = category.type,
-                Name = Helper.StoreHelper.Instance.GetLocalizedStoreItemName(category.name, "RU"),
+                Name = Helper.StoreHelper.Instance.GetLocalizedStoreItemName(category.name, Utils.GetStoreLikeLocale()),
                 Items = categoryItems,
             };
 
@@ -231,54 +236,7 @@ public sealed partial class HomePage : Page
 
         return categoryDatas;
     }
-
-    private StoreItemLargeButton CreateLargeButton(string storeId, string imageSource, string price, string title, string backgroundColor)
-    {
-        StoreItemLargeButton storeItemLargeButton;
-
-        string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
-        BitmapImage image = new BitmapImage(new Uri(eImageSource));
-
-        Windows.UI.Color color = UIHelper.HexToColorConverter(backgroundColor);
-
-        storeItemLargeButton = new StoreItemLargeButton
-        {
-            StoreId = storeId,
-            CardTitle = title,
-            CardImageSource = image,
-            CardPrice = price,
-            CardBackgroundColor = color,
-        };
-
-        storeItemLargeButton.Click += StoreItemButton_Click;
-
-        return storeItemLargeButton;
-    }
-
-    private StoreItemSmallButton CreateSmallButton(string storeId, string imageSource, string price, string title, string developer, string backgroundColor)
-    {
-        StoreItemSmallButton storeItemSmallButton;
-
-        string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
-        BitmapImage image = new BitmapImage(new Uri(eImageSource));
-
-        SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(backgroundColor);
-
-        storeItemSmallButton = new StoreItemSmallButton
-        {
-            StoreId = storeId,
-            CardTitle = title,
-            CardImageSource = image,
-            CardPrice = price,
-            CardDeveloper = developer,
-            CardBackgroundBrush = solidColorBrush,
-        };
-
-        storeItemSmallButton.Click += StoreItemButton_Click;
-
-        return storeItemSmallButton;
-    }
-
+  
     private void StoreItemButton_Click(UIElement sender)
     {
         if (sender is StoreItemLargeButton btn && btn.StoreId is string sid)
@@ -295,6 +253,15 @@ public sealed partial class HomePage : Page
 
             StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), smallSid, new SuppressNavigationTransitionInfo());
         }
+    }
+
+    private void CategoryHeaderClick(StoreCategoryButton sender)
+    {
+        var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", sender.textElement);
+        anim.Configuration = new DirectConnectedAnimationConfiguration();
+
+        StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), sender.Id, new SuppressNavigationTransitionInfo());
+
     }
 
     public void InitializeAndShow(IEnumerable<UICategoryData> categories)
@@ -322,8 +289,11 @@ public sealed partial class HomePage : Page
             var header = new StoreCategoryButton
             {
                 Text = cat.Name,
-                Margin = new Thickness(0, 0, 0, 10)
+                Margin = new Thickness(0, 0, 0, 10),
+                Id = cat.StoreId,
             };
+            header.Click += CategoryHeaderClick;
+            
             StoreStackPanel.Children.Add(header);
 
             var itemsControl = new ItemsControl
@@ -451,7 +421,7 @@ public sealed partial class HomePage : Page
 
         foreach (var (control, cat) in _panels)
         {
-            bool isLarge = cat.Type == "largeButtonCategory";
+            bool isLarge = cat.Type == "basic_category";
             int elementCount = cat.Items.Count;
 
             var panel = FindDescendant<ItemsWrapGrid>(control);

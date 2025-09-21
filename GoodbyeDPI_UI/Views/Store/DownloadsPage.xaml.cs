@@ -122,9 +122,9 @@ namespace CDPI_UI.Views.Store
 
             downloadItemModel.StoreId = item.store_id;
             downloadItemModel.OperationId = StoreHelper.Instance.GetCurrentQueueOperationId();
-            downloadItemModel.Title = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, "RU");
+            downloadItemModel.Title = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
             downloadItemModel.Developer = item.developer;
-            downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, "RU");
+            downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, Utils.GetStoreLikeLocale());
             downloadItemModel.ImageSource = image;
             downloadItemModel.CardBackgroundBrush = solidColorBrush;
 
@@ -157,9 +157,9 @@ namespace CDPI_UI.Views.Store
                 {
                     StoreId = storeItem.store_id,
                     OperationId = item.OperationId,
-                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, "RU"),
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
                     Developer = storeItem.developer,
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, "RU"),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
                 };
@@ -183,9 +183,9 @@ namespace CDPI_UI.Views.Store
                 DownloadItemModel downloadItem = new()
                 {
                     StoreId = item.StoreId,
-                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, "RU"),
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
                     Developer = storeItem.developer,
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, "RU"),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
                     CurrentVersion = item.CurrentVersion,

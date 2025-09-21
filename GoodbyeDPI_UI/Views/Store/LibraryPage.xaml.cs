@@ -69,7 +69,7 @@ namespace CDPI_UI.Views.Store
 
             foreach (DatabaseStoreItem item in databaseStoreItems)
             {
-                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, "RU");
+                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, Utils.GetStoreLikeLocale());
                 title = title.StartsWith("slocale:")? item.ShortName : title;
 
                 string category = item.Type; // TODO: add res locale link

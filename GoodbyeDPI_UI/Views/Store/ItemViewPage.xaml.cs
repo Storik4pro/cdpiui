@@ -1,6 +1,7 @@
-using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Views.Components;
+using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -19,6 +20,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,6 +49,8 @@ namespace CDPI_UI.Views.Store
         private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
         private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
+
+        private ILocalizer localizer = Localizer.Get();
 
         public ItemViewPage()
         {
@@ -87,29 +91,31 @@ namespace CDPI_UI.Views.Store
                     return;
                 }
 
-                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, "RU");
+                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
                 ItemImage.Source = new BitmapImage(new Uri(StoreHelper.Instance.ExecuteScript(item.icon)));
                 ItemDeveloper.Text = item.developer;
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
                 StarCount.Text = item.stars ?? "NaN";
                 ItemCategoryButton.Content = StoreHelper.Instance.GetLocalizedStoreItemName(
                     StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
-                    "RU"
+                    Utils.GetStoreLikeLocale()
                 );
-                SmallDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.small_description, "RU");
-                ItemFullDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.description, "RU");
+                SmallDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
+                ItemFullDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.description, Utils.GetStoreLikeLocale());
                 ItemWarningAera.Visibility = item.display_warning ? Visibility.Visible : Visibility.Collapsed;
-                ItemWarningText.Text = StoreHelper.Instance.ExecuteScript(item.warning_text, "RU");
+                ItemWarningText.Text = StoreHelper.Instance.ExecuteScript(item.warning_text, Utils.GetStoreLikeLocale());
 
                 if (DatabaseHelper.Instance.IsItemInstalled(storeId))
                 {
-                    ItemActionButtonText.Text = "Настроить";
+                    ItemActionButton.IsEnabled = item.type == "component";
+                    ItemActionButtonText.Text = localizer.GetLocalizedString("Setup");
                     ItemMoreButton.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    ItemActionButtonText.Text = "Установить";
+                    ItemActionButtonText.Text = localizer.GetLocalizedString("Install");
                     ItemMoreButton.Visibility = Visibility.Collapsed;
+                    ItemActionButton.IsEnabled = IsItemSupported();
                 }
 
                 if (item.links.Count > 0)
@@ -125,6 +131,21 @@ namespace CDPI_UI.Views.Store
             }
         }
 
+        private bool IsItemSupported()
+        {
+            Version curVer = new Version(StateHelper.Instance.Version);
+            Version minV = new Version(item.target_minversion);
+
+            if (curVer < minV) return false;
+
+            if (item.target_maxversion != "NaN")
+            {
+                Version maxV = new Version(item.target_maxversion);
+                if (curVer > maxV) return false;
+            }
+            return true;
+        }
+
         private void ShowErrorDialog()
         {
             DispatcherQueue.TryEnqueue(async () =>
@@ -132,8 +153,8 @@ namespace CDPI_UI.Views.Store
                 var dialog = new ContentDialog()
                 {
                     XamlRoot = this.XamlRoot,
-                    Title = "Element not exist.",
-                    Content = $"Element with id '{_storeId}' not exits. \nCheck your connection and try again later",
+                    Title = localizer.GetLocalizedString("ElementNotExistTitle"),
+                    Content = string.Format(localizer.GetLocalizedString("ElementNotExistMessage"), _storeId, "ERR_STORE_ITEM_NOT_FOUND"),
                     PrimaryButtonText = "OK"
                 };
                 await dialog.ShowAsync();
@@ -154,7 +175,7 @@ namespace CDPI_UI.Views.Store
             {
                 linkButtons.Add(new StoreItemLinkButton
                 {
-                    Text = StoreHelper.Instance.GetLocalizedStoreItemName(link.name, "RU"),
+                    Text = StoreHelper.Instance.GetLocalizedStoreItemName(link.name, Utils.GetStoreLikeLocale()),
                     Url = link.url,
                 });
             }
@@ -188,31 +209,31 @@ namespace CDPI_UI.Views.Store
                 switch (stage)
                 {
                     case "GETR":
-                        stageHeaderText = "Подготовка";
+                        stageHeaderText = localizer.GetLocalizedString("GettingReady");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
                     case "END":
-                        stageHeaderText = "Завершение";
+                        stageHeaderText = localizer.GetLocalizedString("Finishing");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
                     case "Downloading":
-                        stageHeaderText = "Скачивание";
+                        stageHeaderText = localizer.GetLocalizedString("Downloading");
                         StatusProgressbar.IsIndeterminate = false;
                         CurrentStatusSpeedTextBlock.Visibility = Visibility.Visible;
                         break;
                     case "Extracting":
-                        stageHeaderText = "Установка";
+                        stageHeaderText = localizer.GetLocalizedString("Installing");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
                     case "ErrorHappens":
-                        stageHeaderText = "Произошла ошибка";
+                        stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
                         break;
                     case "Completed":
-                        stageHeaderText = "Завершение";
+                        stageHeaderText = localizer.GetLocalizedString("Finishing");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
                     case "CANC":
-                        stageHeaderText = "Отмена";
+                        stageHeaderText = localizer.GetLocalizedString("Cancel");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
                     default:
@@ -246,9 +267,9 @@ namespace CDPI_UI.Views.Store
                     return;
 
                 if (time.Minutes > 0)
-                    CurrentStatusTipTextBlock.Text = $"Осталось {time.Minutes} мин.";
+                    CurrentStatusTipTextBlock.Text = string.Format(localizer.GetLocalizedString("/UIHelper/LeftMinutes"), time.Minutes);
                 else
-                    CurrentStatusTipTextBlock.Text = "Осталось менее минуты";
+                    CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("/UIHelper/LeftSmall");
             };
 
             StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
@@ -323,18 +344,18 @@ namespace CDPI_UI.Views.Store
 
             CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
             CurrentStatusSpeedTextBlock.Text = "";
-            CurrentStatusTipTextBlock.Text = "Идет работа над этим";
+            CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("WorkingOnIt");
 
             if (id == _storeId && !errorHappens)
             {
-                ItemActionButtonText.Text = "Установить";
+                ItemActionButtonText.Text = localizer.GetLocalizedString("Install");
                 ItemMoreButton.Visibility = Visibility.Collapsed;
                 ItemActionButton.Visibility = Visibility.Visible;
                 DownloadStatusGrid.Visibility = Visibility.Collapsed;
 
                 if (DatabaseHelper.Instance.IsItemInstalled(id))
                 {
-                    ItemActionButtonText.Text = "Настроить";
+                    ItemActionButtonText.Text = localizer.GetLocalizedString("Setup");
                     ItemMoreButton.Visibility = Visibility.Visible;
                 }
             }
@@ -351,21 +372,28 @@ namespace CDPI_UI.Views.Store
             ItemActionButton.Visibility = Visibility.Collapsed;
             DownloadStatusGrid.Visibility = Visibility.Visible;
 
-            CurrentStatusTextBlock.Text = "Ожидание";
+            CurrentStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
             StoreHelper.Instance.AddItemToQueue(_storeId, string.Empty);
         }
 
         private void ItemCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), item.category_id, new SuppressNavigationTransitionInfo());
         }
 
-        private void ItemWarningButton_Click(object sender, RoutedEventArgs e)
+        private async void ItemWarningButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ContentDialog dialog = new ContentDialog()
+            {
+                Title = localizer.GetLocalizedString("MessageFromDeveloper"),
+                Content = localizer.GetLocalizedString("MessageFromDeveloperTip"),
+                PrimaryButtonText = "OK",
+                XamlRoot = this.XamlRoot,
+            };
+            await dialog.ShowAsync();
         }
 
-        private void ItemActionButton_Click(object sender, RoutedEventArgs e)
+        private async void ItemActionButton_Click(object sender, RoutedEventArgs e)
         {
             if (!Helper.DatabaseHelper.Instance.IsItemInstalled(_storeId))
             {
@@ -373,7 +401,9 @@ namespace CDPI_UI.Views.Store
             }
             else
             {
-                //TODO: open settings in main window
+                MainWindow window = await ((App)Application.Current).SafeCreateNewWindow<MainWindow>();
+
+                window.NavView_Navigate(typeof(ViewComponentSettingsPage), _storeId, new DrillInNavigationTransitionInfo());
             }
         }
 
@@ -382,9 +412,16 @@ namespace CDPI_UI.Views.Store
             StoreHelper.Instance.RemoveItemFromQueue(_storeId);
         }
 
-        private void ErrorHelpButton_Click(object sender, RoutedEventArgs e)
+        private async void ErrorHelpButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ContentDialog dialog = new ContentDialog()
+            {
+                Title = localizer.GetLocalizedString("AvailableActions"),
+                Content = localizer.GetLocalizedString("AvailableActionsTip"),
+                PrimaryButtonText = "OK",
+                XamlRoot = this.XamlRoot,
+            };
+            await dialog.ShowAsync();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -397,7 +434,7 @@ namespace CDPI_UI.Views.Store
             };
 
             StopActionButton.IsEnabled = false;
-            CurrentStatusTextBlock.Text = "Ожидание...";
+            CurrentStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
             StatusProgressbar.IsIndeterminate = true;
             ErrorStatusGrid.Visibility = Visibility.Collapsed;
             ItemActionButton.Visibility = Visibility.Collapsed;
@@ -408,6 +445,7 @@ namespace CDPI_UI.Views.Store
 
         private void ReinstallButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: downloading from saved URL
             StoreHelper.Instance.RemoveItem(_storeId);
             InstallingItemActions();
         }
