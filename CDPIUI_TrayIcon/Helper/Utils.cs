@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CDPIUI_TrayIcon.Helper
+{
+    public class Utils
+    {
+        public static Assembly Assembly = Assembly.GetExecutingAssembly();
+
+        public static string GetDataDirectory()
+        {
+            try
+            {
+                var procPath = Environment.ProcessPath;
+                return Path.GetDirectoryName(procPath)!;
+            }
+            catch (Exception ex)
+            {
+                // TODO: Add logging
+                return "";
+            }
+        }
+    }
+}
