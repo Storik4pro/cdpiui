@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -65,10 +66,18 @@ namespace CDPI_UI
             this.Closed += CriticalErrorHandlerWindow_Closed;
 
             PipeClient.Instance.Connected += PipeConnected;
+
+            string[] arguments = Environment.GetCommandLineArgs();
+
+            if (!arguments.Contains("--create-no-window"))
+                this.Hide();
         }
         private void PipeConnected()
         {
-            this.Close();
+            string[] arguments = Environment.GetCommandLineArgs();
+
+            if (!arguments.Contains("--create-no-window")) this.Close();
+            else this.Hide();
         }
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
         {
