@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unidecode.NET;
 using Windows.Devices.Printers;
+using WinUI3Localizer;
 
 namespace CDPI_UI.Helper.Static
 {
@@ -22,10 +24,18 @@ namespace CDPI_UI.Helper.Static
 
         public static string FormatSpeed(double speedInBytes)
         {
-            string[] suffixes = { "байт/с", "КБ/с", "МБ/с", "ГБ/с", "ТБ/с" };
+            List<string> suffixes = [];
+
+            ILocalizer localizer = Localizer.Get();
+
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/BytesPs"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/KiloBytesPs"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/MegaBytesPs"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/GBPs"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/TBPs"));
 
             int order = speedInBytes > 0
-                ? Math.Min((int)Math.Floor(Math.Log(speedInBytes, 1024)), suffixes.Length - 1)
+                ? Math.Min((int)Math.Floor(Math.Log(speedInBytes, 1024)), suffixes.Count - 1)
                 : 0;
 
             double adjustedSpeed = speedInBytes / Math.Pow(1024, order);
@@ -195,24 +205,25 @@ namespace CDPI_UI.Helper.Static
 
         public static string ConvertMinutesToPrettyText(double min)
         {
+            ILocalizer localizer = Localizer.Get();
             if (min > 60)
             {
                 double hours = min / 60;
                 if (hours < 1.5)
-                    return "Около часа";
+                    return localizer.GetLocalizedString("/UIHelper/Hour");
                 else if (hours >= 1.5 && hours <= 2.5)
-                    return $"Около двух часов";
+                    return localizer.GetLocalizedString("/UIHelper/TwoHour");
                 else
-                    return "Более трех часов (0_0)";
+                    return localizer.GetLocalizedString("/UIHelper/MoreThanThreeHours");
             } 
             else
             {
                 if (min > 1)
-                    return $"{min:F0} мин.";
+                    return $"{min:F0} {localizer.GetLocalizedString("/UIHelper/Min")}";
                 else if (min == 1)
-                    return "Одна минута";
+                    return localizer.GetLocalizedString("/UIHelper/OneMinute");
                 else
-                    return "Считанные секунды";
+                    return localizer.GetLocalizedString("/UIHelper/Sec");
             }
         }
 
@@ -234,6 +245,19 @@ namespace CDPI_UI.Helper.Static
             }
             result.Reverse();
             return string.Join("/", result);
+        }
+
+        public static string GetStoreLikeLocale()
+        {
+            var localizer = WinUI3Localizer.Localizer.Get();
+            switch (localizer.GetCurrentLanguage())
+            {
+                case "ru":
+                    return "RU";
+                case "en-US":
+                    return "EN";
+            }
+            return "EN";
         }
     }
 }
