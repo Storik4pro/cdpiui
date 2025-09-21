@@ -18,6 +18,9 @@ namespace CDPI_UI.Helper
         private readonly string _filePath;
         private XDocument _xDocument;
 
+        public Action<string> PropertyChanged;
+        public Action<IEnumerable<string>> EnumPropertyChanged;
+
         private static SettingsManager _instance;
         private static readonly object _lock = new object();
 
@@ -221,6 +224,7 @@ namespace CDPI_UI.Helper
             }
 
             _xDocument.Save(_filePath);
+            PropertyChanged?.Invoke(group);
         }
         public void SetValue<T>(IEnumerable<string> groupPath, string key, T value)
         {
@@ -285,6 +289,7 @@ namespace CDPI_UI.Helper
             }
 
             _xDocument.Save(_filePath);
+            EnumPropertyChanged?.Invoke(groupPath);
         }
 
         private T GetDefaultValueForKey<T>(string group, string key)
