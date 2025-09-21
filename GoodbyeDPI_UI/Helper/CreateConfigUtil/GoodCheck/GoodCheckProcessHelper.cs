@@ -246,7 +246,7 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
         public void Stop()
         {
             CancellationTokenSource.Cancel();
-            PipeClient.Instance.SendMessage("GOODCHECK:STOP");
+            _ = PipeClient.Instance.SendMessage("GOODCHECK:STOP");
         }
 
 
@@ -322,7 +322,7 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 $"-c \"{siteList.SiteListPath}\" " +
                 $"-s \"{siteList.StrategyListPath}\" ";
 
-            PipeClient.Instance.SendMessage($"GOODCHECK:START({ExeFileName}$SEPARATOR{args}$SEPARATOR{CurrentOperationId})");
+            _ = PipeClient.Instance.SendMessage($"GOODCHECK:START({ExeFileName}$SEPARATOR{args}$SEPARATOR{CurrentOperationId})");
 
             string logsDirectory = Path.Combine(DirName, "Logs");
             var monitorTask = MonitorProcessAndLogsAsync(logsDirectory, cancellationToken);
@@ -337,7 +337,7 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
 
                 if ((cancellationToken.IsCancellationRequested || model.CancellationToken.IsCancellationRequested || CancellationToken.IsCancellationRequested))
                 {
-                    PipeClient.Instance.SendMessage("GOODCHECK:STOP");
+                    _ = PipeClient.Instance.SendMessage("GOODCHECK:STOP");
                     return false;
                 }
 
