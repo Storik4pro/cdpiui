@@ -10,7 +10,7 @@
   <Identity
     Name="54c3951f-930a-4552-9eba-5290e2be15ef"
     Publisher="CN=serst"
-    Version="1.0.0.0" />
+    Version="0.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="54c3951f-930a-4552-9eba-5290e2be15ef" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
