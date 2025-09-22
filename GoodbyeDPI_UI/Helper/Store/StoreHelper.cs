@@ -46,7 +46,7 @@ namespace CDPI_UI.Helper
     }
     public class StoreHelper
     {
-        private static readonly string GitHubApiToken = StateHelper.GetSecret("GitHubToken");
+        private static readonly string GitHubApiToken = Secret.GitHubToken;
 
         private List<string> SupportedCategoryTypes = ["basic_category", "second_category"];
 
@@ -410,12 +410,19 @@ namespace CDPI_UI.Helper
 
             if (storeId == StateHelper.ApplicationStoreId)
             {
+                DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(StateHelper.ApplicationStoreId);
                 RepoCategoryItem repoCategoryItem = new()
                 {
                     store_id = storeId,
                     version_control = "git",
                     version_control_link = StateHelper.ApplicationCheckUpdatesUrl,
                     filetype = "CDPIUIUpdateItem",
+                    target_executable_file = "patch",
+                    developer = databaseStoreItem.Developer,
+                    name = databaseStoreItem.Name,
+                    short_name = databaseStoreItem.ShortName,
+                    icon = databaseStoreItem.IconPath,
+
 
                 };
                 return repoCategoryItem;
@@ -768,6 +775,7 @@ namespace CDPI_UI.Helper
 
         private static async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
         {
+            Debug.WriteLine(repoUrl);
             var uri = new Uri(repoUrl);
             var parts = uri.AbsolutePath.Trim('/').Split('/');
             if (parts.Length < 2)
@@ -785,6 +793,8 @@ namespace CDPI_UI.Helper
             string apiUrl = string.IsNullOrEmpty(version)
                 ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
                 : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
+
+            
 
             var response = await client.GetAsync(apiUrl);
             Logger.Instance.CreateDebugLog(nameof(StoreHelper), version);
@@ -880,7 +890,8 @@ namespace CDPI_UI.Helper
                 extractArchive: item.filetype == "archive",
                 extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
                 extractRootFolder: item.archive_root_folder,
-                executableFileName: item.target_executable_file
+                executableFileName: item.target_executable_file,
+                filetype: item.filetype
             );
 
             if (cancellationToken.IsCancellationRequested)

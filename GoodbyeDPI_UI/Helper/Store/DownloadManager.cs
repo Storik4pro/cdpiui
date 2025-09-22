@@ -62,7 +62,8 @@ namespace CDPI_UI.Helper
             bool extractArchive = false,
             IEnumerable<string> extractSkipFiletypes = null,
             string extractRootFolder = null,
-            string executableFileName = "executableFile"
+            string executableFileName = "executableFile",
+            string filetype = ""
         )
         {
             bool success = false;
@@ -101,7 +102,7 @@ namespace CDPI_UI.Helper
                 else
                 {
                     if (!string.IsNullOrEmpty(executableFileName))
-                        File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + ".exe"), true);
+                        File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
                     else
                         throw new IOException();
                 }

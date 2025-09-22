@@ -54,7 +54,7 @@ namespace CDPI_UI.Helper
             {
                 if (!ErrorHappened)
                 {
-                    string filePath = Path.Combine(StateHelper.GetDataDirectory(), "patch.cdpipatch");
+                    string filePath = Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.ApplicationStoreId, "patch.cdpipatch");
 
                     if (File.Exists(filePath))
                     {
@@ -88,7 +88,7 @@ namespace CDPI_UI.Helper
             ErrorHappened = false;
             ErrorInfo = string.Empty;
 
-            Tuple<string, string> _data = await StoreHelper.GetLastVersionAndVersionNotes(StateHelper.ApplicationStoreId);
+            Tuple<string, string> _data = await StoreHelper.GetLastVersionAndVersionNotes(StateHelper.ApplicationCheckUpdatesUrl);
 
             if (_data.Item1.StartsWith("ERR_"))
             {
