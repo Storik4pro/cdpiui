@@ -124,7 +124,10 @@ namespace CDPI_UI.Views.Store
             downloadItemModel.OperationId = StoreHelper.Instance.GetCurrentQueueOperationId();
             downloadItemModel.Title = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
             downloadItemModel.Developer = item.developer;
-            downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, Utils.GetStoreLikeLocale());
+
+            if (item.category_id != null) 
+                downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, Utils.GetStoreLikeLocale());
+
             downloadItemModel.ImageSource = image;
             downloadItemModel.CardBackgroundBrush = solidColorBrush;
 
