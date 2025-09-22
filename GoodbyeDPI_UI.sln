@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeDPI_UI", "GoodbyeDPI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CDPIUI_TrayIcon", "CDPIUI_TrayIcon\CDPIUI_TrayIcon.csproj", "{8872755A-41D3-41D4-801F-7F0E4D2801CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Update", "Update\Update.csproj", "{67BF18A2-09C8-46AD-AC72-A45C3F276166}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -47,6 +49,18 @@ Global
 		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x64.Build.0 = Release|Any CPU
 		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{8872755A-41D3-41D4-801F-7F0E4D2801CE}.Release|x86.Build.0 = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|x64.Build.0 = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Debug|x86.Build.0 = Debug|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|ARM64.Build.0 = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|x64.ActiveCfg = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|x64.Build.0 = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|x86.ActiveCfg = Release|Any CPU
+		{67BF18A2-09C8-46AD-AC72-A45C3F276166}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
