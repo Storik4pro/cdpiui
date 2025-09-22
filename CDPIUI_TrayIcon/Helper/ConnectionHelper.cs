@@ -266,6 +266,19 @@ namespace CDPIUI_TrayIcon.Helper
                     AutoStartManager.RemoveFromAutorun();
                 }
             }
+            else if (message.StartsWith("UPDATE:"))
+            {
+                if (message.StartsWith("UPDATE:BEGIN"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    Utils.StartUpdate(result[0]);
+                }
+            }
 
         }
 

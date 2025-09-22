@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
+using System.Diagnostics;
 
 namespace CDPIUI_TrayIcon.Helper
 {
@@ -188,6 +189,26 @@ namespace CDPIUI_TrayIcon.Helper
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
                     }
                     break;
+                case "UPDATE:OPEN_LOG":
+                    OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "update.log"));
+                    break;
+            }
+        }
+
+        public static void OpenFileInDefaultApp(string filePath)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = Path.GetFullPath(filePath),
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Add logging
             }
         }
 

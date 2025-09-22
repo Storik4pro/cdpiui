@@ -30,6 +30,20 @@ namespace CDPIUI_TrayIcon.Helper
             return false;
         }
 
+        public static void Run(string applicationPath, string arguments)
+        {
+            if (string.IsNullOrWhiteSpace(applicationPath))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(applicationPath));
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = applicationPath,
+                Arguments = arguments,
+                UseShellExecute = false,
+            };
+            Process.Start(startInfo);
+        }
+
         public static void RunAsDesktopUser(string fileName, string commandLine)
         {
             if (string.IsNullOrWhiteSpace(fileName))

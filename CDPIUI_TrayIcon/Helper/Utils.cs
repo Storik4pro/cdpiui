@@ -24,5 +24,10 @@ namespace CDPIUI_TrayIcon.Helper
                 return "";
             }
         }
+
+        public static void StartUpdate(string targetFile)
+        {
+            RunHelper.Run(Path.Combine(GetDataDirectory(), "Update.exe"), $"--directory-to-zip \"{targetFile}\" --destination-directory \"{GetDataDirectory()}\"");
+        }
     }
 }

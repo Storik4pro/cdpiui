@@ -26,9 +26,14 @@ class Programm
             return;
         }
 
-        if (args.Contains("--show-ui"))
+        if (args.Contains("--show-ui") || args.Contains("--after-patching") || args.Contains("--after-failed-update"))
         {
             RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
+        }
+
+        if (args.Contains("--after-failed-update"))
+        {
+            TrayIconHelper.Instance.ShowMessage("CDPI UI", "Application update failed.\nClick or tap here to open log", "UPDATE:OPEN_LOG");
         }
 
         if (args.Contains("--autorun"))
