@@ -133,6 +133,10 @@
   <data name="AddNewComponentFromTheStoreTextBlock.Text" xml:space="preserve">
     <value>Add new component from the Store</value>
   </data>
+  <data name="AddOnNotInstalled" xml:space="preserve">
+    <value>AddOn "{0}" with Id "{1}" not installed. Continuation is impossible.
+Please, install lates version of "{0}" in Store</value>
+  </data>
   <data name="AppRunnedInTrayToast.Content" xml:space="preserve">
     <value>Application is runed in system tray</value>
   </data>
@@ -207,6 +211,9 @@
   </data>
   <data name="ConfirmationRequired" xml:space="preserve">
     <value>Confirmation required</value>
+  </data>
+  <data name="ContinuationImpossible" xml:space="preserve">
+    <value>Continuation impossible</value>
   </data>
   <data name="CreateConfigHelperSettingsCard.Description" xml:space="preserve">
     <value>Create new config. Edit exiting config. Import config from .bat/.json file</value>
@@ -364,6 +371,9 @@
   <data name="GoodCheckAddSiteList.Text" xml:space="preserve">
     <value>Add site list</value>
   </data>
+  <data name="GoodCheckAskStopSelection" xml:space="preserve">
+    <value>Are you sure you want to exit this wizard? Selection will be stopped, but you still can view results in Config Edit+Create Manager</value>
+  </data>
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Number of unsuccessful strategies (Less than 65%):</value>
   </data>
@@ -498,6 +508,9 @@
   </data>
   <data name="NewVersionAvailable" xml:space="preserve">
     <value>New version available</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
   </data>
   <data name="NoComponent" xml:space="preserve">
     <value>Component not selected</value>
@@ -733,6 +746,9 @@
   </data>
   <data name="WorkingOnItTextBlock.Text" xml:space="preserve">
     <value>Work is underway...</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
   <data name="YesStopService" xml:space="preserve">
     <value>Yes</value>

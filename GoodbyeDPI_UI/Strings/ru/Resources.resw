@@ -133,6 +133,10 @@
   <data name="AddNewComponentFromTheStoreTextBlock.Text" xml:space="preserve">
     <value>Загрузите новые компоненты из Магазина</value>
   </data>
+  <data name="AddOnNotInstalled" xml:space="preserve">
+    <value>Надстройка "{0}" с уникальным идентификатором "{1}" не установлена. Продолжение невозможно.
+Перейдите в Магазин, чтобы установить последнюю версию "{0}"</value>
+  </data>
   <data name="AppRunnedInTrayToast.Content" xml:space="preserve">
     <value>Приложение запущено в системном лотке уведомлений</value>
   </data>
@@ -207,6 +211,9 @@
   </data>
   <data name="ConfirmationRequired" xml:space="preserve">
     <value>Требуется подтверждение</value>
+  </data>
+  <data name="ContinuationImpossible" xml:space="preserve">
+    <value>Продолжение невозможно</value>
   </data>
   <data name="CreateConfigHelperSettingsCard.Description" xml:space="preserve">
     <value>Создание нового пресета. Редактирование набора настроек. Импортирование пресета из .bat файла</value>
@@ -364,6 +371,9 @@
   <data name="GoodCheckAddSiteList.Text" xml:space="preserve">
     <value>Добавить список сайтов</value>
   </data>
+  <data name="GoodCheckAskStopSelection" xml:space="preserve">
+    <value>Вы уверены, что хотите закрыть этот мастер? Подбор будет остановлен, однако его результаты все ещё будут доступны в помощнике создания пресетов</value>
+  </data>
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Количество неудачных стратегий (Менее 65%): </value>
   </data>
@@ -498,6 +508,9 @@
   </data>
   <data name="NewVersionAvailable" xml:space="preserve">
     <value>Доступна новая версия!</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
   </data>
   <data name="NoComponent" xml:space="preserve">
     <value>Компонент не выбран</value>
@@ -733,6 +746,9 @@
   </data>
   <data name="WorkingOnItTextBlock.Text" xml:space="preserve">
     <value>Идет работа над этим...</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
   </data>
   <data name="YesStopService" xml:space="preserve">
     <value>Да, остановить сервис</value>
