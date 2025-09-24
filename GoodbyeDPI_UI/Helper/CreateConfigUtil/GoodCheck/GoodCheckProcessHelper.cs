@@ -171,6 +171,9 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
             CurrentOperationId = 0;
 
             ComponentName = StateHelper.Instance.ComponentIdPairs[componentId].ToLower();
+
+            if (ComponentName == "byedpi") ComponentName = "ciadpi";
+
             ComponentId = componentId;
             _mode = checkMode;
 
@@ -609,6 +612,11 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
                 return Operations[id];
             }
             catch { return null; }
+        }
+
+        public bool IsRunned()
+        {
+            return CancellationTokenSource != null && !CancellationTokenSource.IsCancellationRequested;
         }
         
     }
