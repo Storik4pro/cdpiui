@@ -202,7 +202,10 @@ namespace CDPI_UI.Helper
                     case "WINDOW:SHOW_STORE":
                         _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<StoreWindow>();
                         break;
-                    default: 
+                    case "WINDOW:SHOW_MAIN:UPDATE_PAGE":
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).NavigateToUpdatesPage();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -296,7 +299,13 @@ namespace CDPI_UI.Helper
 
                 }
             }
-
+            else if (message.StartsWith("UPDATE:"))
+            {
+                if (message.StartsWith("UPDATE:CHECK"))
+                {
+                    _ = ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
+                }
+            }
         }
     }
 
