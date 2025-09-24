@@ -9,6 +9,7 @@ using CDPI_UI.Views;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
 using System;
@@ -69,6 +70,13 @@ namespace CDPI_UI
 
         private void PipeConnected()
         {
+            SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
+            SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
+            SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
+            SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
+
+            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+
             string[] arguments = Environment.GetCommandLineArgs();
 
             if (!arguments.Contains("--create-no-window"))
@@ -81,13 +89,28 @@ namespace CDPI_UI
                 {
                     _ = SafeCreateNewWindow<MainWindow>();
                 }
+
+                if (arguments.Contains("--show-update-page"))
+                {
+                    _ = NavigateToUpdatesPage();
+                }
             }
             if (arguments.Contains("--get-startup-params"))
             {
                 _ = ProcessManager.Instance.StartProcess();
             }
+            if (arguments.Contains("--check-program-updates"))
+            {
+                _ = ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
+            }
 
             PipeClient.Instance.Connected -= PipeConnected;
+        }
+
+        public async Task NavigateToUpdatesPage()
+        {
+            MainWindow mainWindow = await SafeCreateNewWindow<MainWindow>();
+            mainWindow.NavView_Navigate(typeof(AboutPage), "START_CHECK", new DrillInNavigationTransitionInfo());
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
