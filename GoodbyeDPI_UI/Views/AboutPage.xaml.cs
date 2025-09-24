@@ -62,6 +62,20 @@ namespace CDPI_UI.Views
             }
 
             ApplicationUpdateHelper.Instance.ErrorHappens += ApplicationUpdateHelper_ErrorHappens;
+            ApplicationUpdateHelper.Instance.CheckForUpdatesCompleted += ApplicationUpdateHelper_CheckForUpdatesCompleted;
+            ApplicationUpdateHelper.Instance.CheckForUpdatesStarted += ApplicationUpdateHelper_CheckForUpdatesStarted;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is string param)
+            {
+                if (param == "START_CHECK")
+                {
+                    UpdateButton_Click(null, null);
+                }
+            }
         }
 
         private void ApplicationUpdateHelper_ErrorHappens()
@@ -71,6 +85,24 @@ namespace CDPI_UI.Views
                 SetUpdateButtonStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
                 SetBadgeStatus(BadgeStatus.Error);
                 SetServerVersion(ApplicationUpdateHelper.Instance.ErrorInfo);
+            });
+        }
+
+        private void ApplicationUpdateHelper_CheckForUpdatesStarted()
+        {
+            _ = DispatcherQueue.TryEnqueue(() =>
+            {
+                SetUpdateButtonStatus(UpdateButtonStatus.Work);
+                SetBadgeStatus(BadgeStatus.Work);
+            });
+        }
+        private void ApplicationUpdateHelper_CheckForUpdatesCompleted()
+        {
+            _ = DispatcherQueue.TryEnqueue(() =>
+            {
+                SetUpdateButtonStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
+                SetBadgeStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
+                SetServerVersion(ApplicationUpdateHelper.Instance.ServerVersion);
             });
         }
 
@@ -159,10 +191,6 @@ namespace CDPI_UI.Views
                 SetUpdateButtonStatus(UpdateButtonStatus.Work);
                 SetBadgeStatus(BadgeStatus.Work);
                 bool result = await ApplicationUpdateHelper.Instance.CheckForUpdates();
-
-                SetUpdateButtonStatus(result ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
-                SetBadgeStatus(result ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
-                SetServerVersion(ApplicationUpdateHelper.Instance.ServerVersion);
             }
         }
     }
