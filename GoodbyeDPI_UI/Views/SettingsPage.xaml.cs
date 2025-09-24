@@ -162,23 +162,26 @@ namespace CDPI_UI.Views
         private void ProcessStateToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "procState", ProcessStateToast.IsChecked);
+            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
         }
 
         private void AppRunnedInTrayToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "trayHide", AppRunnedInTrayToast.IsChecked);
+            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
 
         }
 
         private void AppUpdatesToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "appUpdates", AppUpdatesToast.IsChecked);
-
+            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
         }
 
         private void StoreUpdatesToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "storeUpdates", StoreUpdatesToast.IsChecked);
+            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
         }
 
         private void ComponentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
