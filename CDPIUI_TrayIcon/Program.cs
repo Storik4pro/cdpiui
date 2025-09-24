@@ -1,10 +1,13 @@
 ﻿using CDPIUI_TrayIcon.Helper;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Globalization;
+using System.Resources;
 using Windows.Foundation.Collections;
 using Application = System.Windows.Forms.Application;
 
 class Programm
 {
+
     [STAThread]
     static void Main(string[] args)
     {
@@ -33,14 +36,17 @@ class Programm
 
         if (args.Contains("--after-failed-update"))
         {
-            TrayIconHelper.Instance.ShowMessage("CDPI UI", "Application update failed.\nClick or tap here to open log", "UPDATE:OPEN_LOG");
+            TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
         }
 
         if (args.Contains("--autorun"))
         {
             _ = ProcessManager.Instance.StartProcess();
-            TrayIconHelper.Instance.ShowMessage("CDPI UI", "Application is runned and minimized to tray now.\nClick or tap here to open main window", "SHOW_MAIN_WINDOW");
+            if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide")) 
+                TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("TrayHide"), "SHOW_MAIN_WINDOW");
         }
+
+        CheckProgramUpdates();
 
         Application.Run();
         ToastNotificationManagerCompat.History.Clear();
@@ -61,5 +67,17 @@ class Programm
             ValueSet userInput = toastArgs.UserInput;
         }
         catch { }
+    }
+
+    private static async void CheckProgramUpdates()
+    {
+        await Task.Delay(TimeSpan.FromMinutes(30));
+        if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates"))
+        {
+            if (! await PipeServer.Instance.SendMessage("UPDATE:CHECK"))
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --check-program-updates --exit-after-action");
+            }
+        }
     }
 }

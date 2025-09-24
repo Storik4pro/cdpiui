@@ -51,13 +51,13 @@ namespace CDPIUI_TrayIcon.Helper
             contextMenu.Renderer = new ToolStripProfessionalRenderer(new LeftMenuColorTable());
 
 
-            ProcessControlItem = contextMenu.Items.Add("Start", null);
+            ProcessControlItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("Start"), null);
             ProcessControlItem.Click += ProcessControlItem_Click;
 
             contextMenu.Items.Add("-");
 
-            UtilsItem = new ToolStripMenuItem("Utils");
-            PseudoconsoleItem = UtilsItem.DropDownItems.Add("Open pseudoconsole (View process output)");
+            UtilsItem = new ToolStripMenuItem(LocaleHelper.GetLocaleString("Utils"));
+            PseudoconsoleItem = UtilsItem.DropDownItems.Add(LocaleHelper.GetLocaleString("Pseudoconsole"));
             PseudoconsoleItem.ForeColor = Color.White;
             PseudoconsoleItem.Click += PseudoconsoleItem_Click;
 
@@ -65,11 +65,11 @@ namespace CDPIUI_TrayIcon.Helper
 
             contextMenu.Items.Add("-");
 
-            ShowAppItem = contextMenu.Items.Add("Maximize app", NormalIcon.ToBitmap());
+            ShowAppItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("ShowMainWindow"), NormalIcon.ToBitmap());
             ShowAppItem.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             ShowAppItem.Click += ShowAppItem_Click;
 
-            ExitItem = contextMenu.Items.Add("Exit", null);
+            ExitItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("Exit"), null);
             ExitItem.Click += ExitItem_Click;
             notifyIcon.ContextMenuStrip = contextMenu;
 
@@ -106,17 +106,21 @@ namespace CDPIUI_TrayIcon.Helper
         private void ProcessManager_StateChanged(bool state)
         {
             if (ProcessControlItem != null) 
-                ProcessControlItem.Text = state ? "Stop" : "Start";
+                ProcessControlItem.Text = state ? LocaleHelper.GetLocaleString("Stop") : LocaleHelper.GetLocaleString("Start");
+
+            // FIX: Notification spam on stop/exception/run
 
             if (state)
             {
-                ShowMessage(ProcessManager.Instance.ProcessName, "Process is runned now.\nClick or tap here to open open pseudoconsole and view process output", "OPEN_PSEUDOCONSOLE");
                 notifyIcon.Icon = RunnedIcon;
+                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
+                ShowMessage(ProcessManager.Instance.ProcessName, LocaleHelper.GetLocaleString("ProcRun"), "OPEN_PSEUDOCONSOLE");
             }
             else
             {
-                ShowMessage(ProcessManager.Instance.ProcessName, "Process is stopped now.\nClick or tap here to open open pseudoconsole and view process output", "OPEN_PSEUDOCONSOLE");
                 notifyIcon.Icon = StoppedIcon;
+                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
+                ShowMessage(ProcessManager.Instance.ProcessName, LocaleHelper.GetLocaleString("ProcStop"), "OPEN_PSEUDOCONSOLE");
             }
         }
 
@@ -143,7 +147,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
-        public void ShowMessage(string title, string message, string action)
+        public void ShowMessage(string title, string? message, string action)
         {
             new ToastContentBuilder()
                 .AddArgument("action", action)
@@ -191,6 +195,12 @@ namespace CDPIUI_TrayIcon.Helper
                     break;
                 case "UPDATE:OPEN_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "update.log"));
+                    break;
+                case "UPDATE:OPEN_DOWNLOAD_PAGE":
+                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN:UPDATE_PAGE"))
+                    {
+                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-update-page");
+                    }
                     break;
             }
         }

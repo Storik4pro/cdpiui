@@ -258,12 +258,16 @@ namespace CDPIUI_TrayIcon.Helper
                     if (!AutoStartManager.AddToAutorun())
                     {
                         _ = SendMessage("SETTINGS:AUTORUN_FALSE");
-                        TrayIconHelper.Instance.ShowMessage("Autorun", "Cannot add this application to autorun.", "OPEN_AUTORUN_ERROR");
+                        TrayIconHelper.Instance.ShowMessage(LocaleHelper.GetLocaleString("Autorun"), LocaleHelper.GetLocaleString("AutorunERR"), "OPEN_AUTORUN_ERROR");
                     }
                 }
                 else if (message.StartsWith("SETTINGS:REMOVE_FROM_AUTORUN"))
                 {
                     AutoStartManager.RemoveFromAutorun();
+                }
+                else if (message.StartsWith("SETTINGS:RELOAD"))
+                {
+                    SettingsManager.Instance.Reload();
                 }
             }
             else if (message.StartsWith("UPDATE:"))
@@ -277,6 +281,10 @@ namespace CDPIUI_TrayIcon.Helper
                         return;
                     }
                     Utils.StartUpdate(result[0]);
+                }
+                else if (message.StartsWith("UPDATE:AVAILABLE"))
+                {
+                    TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateAvailable"), "UPDATE:OPEN_DOWNLOAD_PAGE");
                 }
             }
 
