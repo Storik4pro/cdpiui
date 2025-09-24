@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Windowing;
@@ -95,16 +96,40 @@ namespace CDPI_UI
             
         }
 
+        private async void AskForExit() // FIX
+        {
+            ContentDialog dialog = new()
+            {
+                Title = localizer.GetLocalizedString("ConfirmationRequired"),
+                Content = localizer.GetLocalizedString("GoodCheckAskStopSelection"),
+                PrimaryButtonText = localizer.GetLocalizedString("Yes"),
+                CloseButtonText = localizer.GetLocalizedString("No"),
+                XamlRoot = this.Content.XamlRoot
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                GoodCheckProcessHelper.Instance.Stop();
+                this.Close();
+            }
+        }
+
         private void CreateConfigUtilWindow_Closed(object sender, WindowEventArgs args)
         {
+            if (GoodCheckProcessHelper.Instance.IsRunned())
+            {
+                AskForExit();
+                args.Handled = true;
+                return;
+            }
             Instance = null;
-            ((App)Application.Current).OpenWindows.Remove(this);
         }
 
         ~CreateConfigUtilWindow()
         {
-            Instance = null;
-            ((App)Application.Current).OpenWindows.Remove(this);
+            if (!GoodCheckProcessHelper.Instance.IsRunned())
+            {
+                Instance = null;
+            }
         }
 
         private void BackButton_PointerEntered(object sender, PointerRoutedEventArgs e)
