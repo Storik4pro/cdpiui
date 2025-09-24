@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,8 @@ namespace CDPI_UI.Helper
             }
         }
         public Action ErrorHappens;
+        public Action CheckForUpdatesStarted;
+        public Action CheckForUpdatesCompleted;
 
         public bool IsUpdateAvailable { get; private set; } = false;
         public bool ErrorHappened { get; private set; } = false;
@@ -82,8 +85,9 @@ namespace CDPI_UI.Helper
             }
         }
 
-        public async Task<bool> CheckForUpdates()
+        public async Task<bool> CheckForUpdates(bool notify = false)
         {
+            CheckForUpdatesStarted?.Invoke();
             IsUpdateAvailable = false;
             ErrorHappened = false;
             ErrorInfo = string.Empty;
@@ -106,6 +110,13 @@ namespace CDPI_UI.Helper
                 ServerVersion = _data.Item1;
                 IsUpdateAvailable = true;
             }
+
+            await PipeClient.Instance.SendMessage("UPDATE:AVAILABLE");
+
+            string[] arguments = Environment.GetCommandLineArgs();
+            if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when parameter setted and window exist 
+
+            CheckForUpdatesCompleted?.Invoke();
 
             return IsUpdateAvailable;
         }
