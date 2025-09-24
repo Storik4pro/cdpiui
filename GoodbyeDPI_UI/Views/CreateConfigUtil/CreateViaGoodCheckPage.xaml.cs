@@ -32,6 +32,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
 using static CDPI_UI.Helper.Static.UIHelper;
+using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -185,7 +186,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
             List<SiteListElement> siteLists = await SiteListHelper.Instance.GetAllAvailableSiteListTemplatesAsync();
 
-            await Task.Delay(2000); //For testing only
+            await Task.Delay(1000); //For testing only
 
             LoadSiteList(siteLists);
 
@@ -210,8 +211,14 @@ namespace CDPI_UI.Views.CreateConfigUtil
             {
                 SitelistButtons.Add(button);
             }
-
             OneListOneStrategyStackPanel.Children.Clear();
+
+            if (StrategiesLists.Count == 0)
+            {
+                ShowErrorDialod();
+                return;
+            }
+
             foreach (GoodCheckSitelistButton button in SitelistButtons)
             {
                 GoodCheckSitelistStrategyChooserControl checkListChooseControl = new() 
@@ -265,14 +272,20 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
             if (!File.Exists(targetFolder))
             {
-                // TODO: Raise NeedRestore error
+                ShowErrorDialod();
+                return;
             }
 
             if (IniSettingsHelper is null)
                 IniSettingsHelper = new(targetFolder, System.Text.Encoding.UTF8);
 
+            if (ComponentId == StateHelper.Instance.FindKeyByValue("ByeDPI") && resolverItems.FirstOrDefault(x => x.Id != "curl") != null)
+                resolverItems.Remove(resolverItems.FirstOrDefault(x => x.Id != "curl"));
+
             PValue.Text = SettingsManager.Instance.GetValue<string>(["ADDONS", AddOnId], "passesValue");
-            ResolverComboBox.SelectedIndex = SettingsManager.Instance.GetValue<bool>(["ADDONS", AddOnId], "useCurl") ? 1 : 0;
+            ResolverComboBox.SelectedIndex = ComponentId == StateHelper.Instance.FindKeyByValue("ByeDPI") ? 0 :
+                SettingsManager.Instance.GetValue<bool>(["ADDONS", AddOnId], "useCurl") ? 1 : 0;
+
             ConnectionTimeout.Text = IniSettingsHelper.GetValue<string>("General", "ConnectionTimeout");
             
             ResolverNativeTimeout.Text = IniSettingsHelper.GetValue<string>("Advanced", "ResolverNativeTimeout");
@@ -311,7 +324,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
                 IniSettingsHelper = new(targetFolder, System.Text.Encoding.UTF8);
 
             SettingsManager.Instance.SetValue<string>(["ADDONS", AddOnId], "passesValue", PValue.Text);
-            SettingsManager.Instance.SetValue<bool>(["ADDONS", AddOnId], "UseCurl", ResolverComboBox.SelectedIndex == 1 ? true : false);
+            SettingsManager.Instance.SetValue<bool>(["ADDONS", AddOnId], "useCurl", ((ComboBoxModel)ResolverComboBox.SelectedItem).Id == "curl" ? true : false);
 
             IniSettingsHelper.SetValue<string>("General", "ConnectionTimeout", ConnectionTimeout.Text);
 
@@ -814,6 +827,20 @@ namespace CDPI_UI.Views.CreateConfigUtil
         private void ResolverComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private async void ShowErrorDialod()
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = localizer.GetLocalizedString("ContinuationImpossible"),
+                Content = string.Format(localizer.GetLocalizedString("AddOnNotInstalled"), StateHelper.Instance.ComponentIdPairs.GetValueOrDefault(AddOnId), AddOnId),
+                PrimaryButtonText = "OK",
+                XamlRoot = this.XamlRoot,
+            };
+            await dialog.ShowAsync();
+            CreateConfigUtilWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
+            window.Close();
         }
     }
 }
