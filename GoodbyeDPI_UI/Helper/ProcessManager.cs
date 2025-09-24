@@ -117,7 +117,7 @@ namespace CDPI_UI.Helper
                 await PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
                 string[] arguments = Environment.GetCommandLineArgs();
 
-                if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill();
+                if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when component not setted (Pseudoconsole internal error)
             }
             catch (Exception ex)
             {
