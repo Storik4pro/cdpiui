@@ -30,7 +30,7 @@ namespace CDPI_UI
         private List<GoodCheckStrategiesList> _strategiesLists = new List<GoodCheckStrategiesList>();
         public List<GoodCheckStrategiesList> StrategiesLists
         {
-            get => _strategiesLists;
+            get => _strategiesLists?? [];
             set
             {
                 if (ReferenceEquals(_strategiesLists, value)) return;
@@ -59,6 +59,13 @@ namespace CDPI_UI
             DispatcherQueue.TryEnqueue(() =>
             {
                 _observable.Clear();
+
+                if (_strategiesLists is null || _strategiesLists.Count == 0)
+                {
+                    StrategyChooseCombobox.SelectedIndex = -1;
+                    return;
+                }
+
                 foreach (var item in _strategiesLists)
                     _observable.Add(item);
 
