@@ -51,6 +51,10 @@ namespace CDPI_UI.Views.CreateConfigUtil
             {
                 ComponentChooseComboBox.SelectedIndex = 0;
             }
+            else
+            {
+                GoodCheckSelectionPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
