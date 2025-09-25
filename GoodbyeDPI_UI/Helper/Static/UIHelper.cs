@@ -384,6 +384,37 @@ namespace CDPI_UI.Helper.Static
             return $"{windowName} — CDPI UI";
         }
 
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/934#issuecomment-2304875883
+
+        public static class CleanUp
+        {
+            public static void FrameworkElement(FrameworkElement element)
+            {
+                var count = VisualTreeHelper.GetChildrenCount(element);
+                for (var index = 0; index < count; index++)
+                {
+                    var child = VisualTreeHelper.GetChild(element, index);
+                    if (child is FrameworkElement childElement)
+                    {
+                        FrameworkElement(childElement);
+                    }
+                }
+
+                switch (element)
+                {
+                    case ItemsControl itemsControl:
+                        itemsControl.ItemsSource = null;
+                        break;
+                    case ItemsRepeater itemsRepeater:
+                        itemsRepeater.ItemsSource = null;
+                        break;
+                    case TabView tabView:
+                        tabView.TabItemsSource = null;
+                        break;
+                }
+            }
+        }
+
     }
 }
 
