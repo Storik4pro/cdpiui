@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -74,9 +75,16 @@ namespace CDPI_UI
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
+            this.Activated += CreateConfigUtilWindow_Activated;
+            this.AppWindow.Destroying += AppWindow_Destroying;
         }
 
+        private void AppWindow_Destroying(AppWindow sender, object args)
+        {
+            this.Activated -= CreateConfigUtilWindow_Activated;
+        }
 
+        private void CreateConfigUtilWindow_Activated(object sender, WindowActivatedEventArgs args) { }
 
         public void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
         {
@@ -137,6 +145,8 @@ namespace CDPI_UI
                 return;
             }
             Instance = null;
+            this.Closed -= CreateConfigUtilWindow_Closed;
+            
         }
 
         ~CreateConfigUtilWindow()
@@ -145,6 +155,7 @@ namespace CDPI_UI
             {
                 Instance = null;
             }
+            Debug.WriteLine("CreateConfigUtilWindow finalized");
         }
 
         private void BackButton_PointerEntered(object sender, PointerRoutedEventArgs e)

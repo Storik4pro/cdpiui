@@ -71,6 +71,10 @@ namespace CDPI_UI
             }
         }
 
+        ~CreateConfigHelperWindow(){
+            Debug.WriteLine("CreateConfigHelperWindow finalized");
+        }
+
         private void Fe_Loaded(object sender, RoutedEventArgs e)
         {
             if (IsDialogRequested)
