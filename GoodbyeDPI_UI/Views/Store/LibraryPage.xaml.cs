@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,6 +38,8 @@ namespace CDPI_UI.Views.Store
     public sealed partial class LibraryPage : Page
     {
         private ObservableCollection<LibraryItemModel> _libraryItems = [];
+
+        private ILocalizer localizer = Localizer.Get();
         public LibraryPage()
         {
             InitializeComponent();
@@ -72,7 +75,8 @@ namespace CDPI_UI.Views.Store
                 string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, Utils.GetStoreLikeLocale());
                 title = title.StartsWith("slocale:")? item.ShortName : title;
 
-                string category = item.Type; // TODO: add res locale link
+                string category = localizer.GetLocalizedString(item.Type);
+                category = string.IsNullOrEmpty(category) ? item.Type : category;
 
                 string eImageSource = StoreHelper.Instance.ExecuteScript(item.IconPath);
                 BitmapImage image = new BitmapImage(new Uri(eImageSource));

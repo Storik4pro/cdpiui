@@ -119,7 +119,7 @@ namespace CDPI_UI.Controls.Store
                 ActionButton.IsEnabled = false;
             }
 
-            if (databaseStoreItem.Id == StateHelper.LocalUserItemsId)
+            if (databaseStoreItem.Id == StateHelper.LocalUserItemsId || databaseStoreItem.Id == StateHelper.ApplicationStoreId)
             {
                 DeleteButton.IsEnabled = false;
                 ReinstallButton.IsEnabled = false;

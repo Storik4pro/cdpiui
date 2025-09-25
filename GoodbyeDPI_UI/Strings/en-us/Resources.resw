@@ -377,9 +377,6 @@ Please, install lates version of "{0}" in Store</value>
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Number of unsuccessful strategies (Less than 65%):</value>
   </data>
-  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
-    <value>We can't save some settings, because unexpected exception happens. Please, reinstall Components and AddOns you use in the Store and try again later.</value>
-  </data>
   <data name="GoodCheckConfigSelectionTextBlock.Text" xml:space="preserve">
     <value>GoodCheck config selection</value>
   </data>
@@ -758,5 +755,41 @@ Please, install lates version of "{0}" in Store</value>
   </data>
   <data name="ZapretSettingsTextBlock.Text" xml:space="preserve">
     <value>Zapret component settings</value>
+  </data>
+  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
+    <value>We can't save some settings, because unexpected exception happens. Please, reinstall Components and AddOns you use in the Store and try again later.</value>
+  </data>
+  <data name="LibraryTextBlock.Text" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="SetupButton.Content" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="component" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="configlist" xml:space="preserve">
+    <value>Config Kit</value>
+  </data>
+  <data name="addon" xml:space="preserve">
+    <value>AddOn</value>
+  </data>
+  <data name="CDPIUIUpdateItem" xml:space="preserve">
+    <value>Service item</value>
+  </data>
+  <data name="DownloadsTextBlock.Text" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="CheckForUpdatesTextBlock.Text" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="AvailableUpdatesTextBlock.Text" xml:space="preserve">
+    <value>Available updates</value>
+  </data>
+  <data name="NowDownloadingTextBlock.Text" xml:space="preserve">
+    <value>Now downloading</value>
+  </data>
+  <data name="EmptyViewTextBlock" xml:space="preserve">
+    <value>It's loneliness right here...</value>
   </data>
 </root>

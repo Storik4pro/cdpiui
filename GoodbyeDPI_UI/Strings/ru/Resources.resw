@@ -377,11 +377,6 @@
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Количество неудачных стратегий (Менее 65%): </value>
   </data>
-  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
-    <value>Мы не можем сохранить некоторые параметры, которые необходимы для продолжения работы. 
-Попробуйте переустановить задействованные компоненты и дополнения в Магазине, после чего повторите попытку. 
-Если ошибка будет повторяться, сообщите о ней в службу поддержки этого приложения</value>
-  </data>
   <data name="GoodCheckConfigSelectionTextBlock.Text" xml:space="preserve">
     <value>GoodCheck</value>
   </data>
@@ -760,5 +755,43 @@
   </data>
   <data name="ZapretSettingsTextBlock.Text" xml:space="preserve">
     <value>Параметры компонента Zapret</value>
+  </data>
+  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
+    <value>Мы не можем сохранить некоторые параметры, которые необходимы для продолжения работы. 
+Попробуйте переустановить задействованные компоненты и дополнения в Магазине, после чего повторите попытку. 
+Если ошибка будет повторяться, сообщите о ней в службу поддержки этого приложения</value>
+  </data>
+  <data name="LibraryTextBlock.Text" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="SetupButton.Content" xml:space="preserve">
+    <value>Настроить</value>
+  </data>
+  <data name="component" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="configlist" xml:space="preserve">
+    <value>Набор пресетов</value>
+  </data>
+  <data name="addon" xml:space="preserve">
+    <value>Надстройка</value>
+  </data>
+  <data name="CDPIUIUpdateItem" xml:space="preserve">
+    <value>Служебный элемент</value>
+  </data>
+  <data name="DownloadsTextBlock.Text" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+  <data name="CheckForUpdatesTextBlock.Text" xml:space="preserve">
+    <value>Проверить наличие обновлений</value>
+  </data>
+  <data name="AvailableUpdatesTextBlock.Text" xml:space="preserve">
+    <value>Доступные обновления</value>
+  </data>
+  <data name="NowDownloadingTextBlock.Text" xml:space="preserve">
+    <value>Сейчас загружается</value>
+  </data>
+  <data name="EmptyViewTextBlock" xml:space="preserve">
+    <value>Похоже на то, что тут ничего нет</value>
   </data>
 </root>

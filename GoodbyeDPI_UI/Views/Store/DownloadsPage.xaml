@@ -8,7 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:lcontrols="using:CDPI_UI.Controls.Store"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -36,15 +37,15 @@
         <ScrollViewer Padding="20">
             <StackPanel x:Name="MainStackPanel">
                 <Grid>
-                    <TextBlock Text="Downloads" Style="{ThemeResource TitleTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="DownloadsTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
                     <Button x:Name="CheckForUpdatesButton" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Right" Click="CheckForUpdatesButton_Click">
                         <Grid>
-                            <TextBlock x:Name="CheckText" Text="Check for updates" Opacity="0"/>
+                            <TextBlock l:Uids.Uid="CheckForUpdatesTextBlock" x:Name="CheckText" Opacity="0"/>
                             <ProgressRing x:Name="UpdateCheckProgressRing" IsIndeterminate="True" Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" Height="15" Width="15"/>
                         </Grid>
                     </Button>
                 </Grid>
-                <TextBlock x:Name="NowDownloadingTextBlock" Text="Now downloading" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <TextBlock l:Uids.Uid="NowDownloadingTextBlock" x:Name="NowDownloadingTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                 <ListView x:Name="DownloadsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                       ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                     <ListView.ItemTemplate>
@@ -64,9 +65,9 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <TextBlock Text="Available updates" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <TextBlock l:Uids.Uid="AvailableUpdatesTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                 <Grid x:Name="EmptyGrid" Height="60">
-                    <TextBlock Text="It's loneliness right here..." HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
+                    <TextBlock l:Uids.Uid="EmptyPageTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
                     
                 </Grid>
                 <ListView x:Name="UpdatesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"

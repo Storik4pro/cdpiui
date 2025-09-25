@@ -7,7 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:lcontrols="using:CDPI_UI.Controls.Store">
+    xmlns:lcontrols="using:CDPI_UI.Controls.Store"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -34,7 +35,7 @@
         </VisualStateManager.VisualStateGroups>
         <ScrollViewer Padding="20">
             <StackPanel x:Name="MainStackPanel">
-                <TextBlock Text="Library" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <TextBlock l:Uids.Uid="LibraryTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
                 <ListView x:Name="ItemsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                           ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                     <ListView.ItemTemplate>
