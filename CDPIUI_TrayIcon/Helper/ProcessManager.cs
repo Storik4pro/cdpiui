@@ -68,6 +68,20 @@ namespace CDPIUI_TrayIcon.Helper
             _outputDefaultBuffer = new StringBuilder();
         }
 
+        private bool CurrentState = false;
+        private object _setStateLock = new();
+        private void ChangeProcessState(bool isRunned)
+        {
+            lock (_setStateLock)
+            {
+                if (CurrentState != isRunned)
+                {
+                    ProcessStateChanged?.Invoke(isRunned);
+                    CurrentState = isRunned;
+                }
+            }
+        }
+
         public async Task StartProcess()
         {
             if (Executable != null && Args != null)
@@ -109,7 +123,7 @@ namespace CDPIUI_TrayIcon.Helper
 
                 await PipeServer.Instance.SendMessage("CONPTY:STARTED");
                 processState = true;
-                ProcessStateChanged?.Invoke(processState);
+                ChangeProcessState(processState);
 
                 SendNowSelectedComponentName();
 
@@ -121,7 +135,7 @@ namespace CDPIUI_TrayIcon.Helper
                 ShowErrorMessage($"Unexpected error while trying to start process: {ex.Message}", _object: "console");
                 SendStopMessage("Unexpected error happens while trying to stop process");
                 processState = false;
-                ProcessStateChanged?.Invoke(processState);
+                ChangeProcessState(processState);
             }
         }
 
@@ -169,7 +183,7 @@ namespace CDPIUI_TrayIcon.Helper
                     await PipeServer.Instance.SendMessage("CONPTY:STOPPED"); 
                 }
                 processState = false;
-                ProcessStateChanged?.Invoke(processState);
+                ChangeProcessState(processState);
 
                 //SendStopMessage();
             }
@@ -177,7 +191,7 @@ namespace CDPIUI_TrayIcon.Helper
             {
                 //await ShowErrorMessage($"Unable to stop process: {ex.Message}", _object: "console");
                 processState = false;
-                ProcessStateChanged?.Invoke(processState);
+                ChangeProcessState(processState);
             }
             await Task.CompletedTask;
         }
@@ -433,7 +447,7 @@ namespace CDPIUI_TrayIcon.Helper
 
 
                 processState = false;
-                ProcessStateChanged?.Invoke(processState);
+                ChangeProcessState(processState);
                 _processInfo = default;
             }
         }
