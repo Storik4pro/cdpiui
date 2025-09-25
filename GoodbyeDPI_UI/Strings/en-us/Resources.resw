@@ -377,6 +377,9 @@ Please, install lates version of "{0}" in Store</value>
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Number of unsuccessful strategies (Less than 65%):</value>
   </data>
+  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
+    <value>We can't save some settings, because unexpected exception happens. Please, reinstall Components and AddOns you use in the Store and try again later.</value>
+  </data>
   <data name="GoodCheckConfigSelectionTextBlock.Text" xml:space="preserve">
     <value>GoodCheck config selection</value>
   </data>

@@ -377,6 +377,11 @@
   <data name="GoodCheckBadStrategy.Text" xml:space="preserve">
     <value>Количество неудачных стратегий (Менее 65%): </value>
   </data>
+  <data name="GoodCheckComponentDirsSetException" xml:space="preserve">
+    <value>Мы не можем сохранить некоторые параметры, которые необходимы для продолжения работы. 
+Попробуйте переустановить задействованные компоненты и дополнения в Магазине, после чего повторите попытку. 
+Если ошибка будет повторяться, сообщите о ней в службу поддержки этого приложения</value>
+  </data>
   <data name="GoodCheckConfigSelectionTextBlock.Text" xml:space="preserve">
     <value>GoodCheck</value>
   </data>
