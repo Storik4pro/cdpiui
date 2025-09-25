@@ -127,6 +127,8 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
 
         var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("BackwardConnectedAnimation", HeaderButton);
         anim.Configuration = new DirectConnectedAnimationConfiguration();
+
+        UIHelper.CleanUp.FrameworkElement(this);
     }
 
     public void ToggleFlag(object parameter)
