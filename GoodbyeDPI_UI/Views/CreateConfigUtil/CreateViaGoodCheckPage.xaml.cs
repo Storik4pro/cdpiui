@@ -351,15 +351,29 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
             string itemsFolder = Path.Combine(localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
 
-            IniSettingsHelper.SetValue<string>("Zapret", "ZapretFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("Zapret")));
-            IniSettingsHelper.SetValue<string>("Zapret", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("Zapret")).Executable + ".exe");
-
-            IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("GoodbyeDPI")));
-            IniSettingsHelper.SetValue<string>("GoodbyeDPI", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")).Executable + ".exe");
-
-            IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("ByeDPI")));
-            IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("ByeDPI")).Executable + ".exe");
-
+            try
+            {
+                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("Zapret")))
+                {
+                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("Zapret")));
+                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("Zapret")).Executable + ".exe");
+                }
+                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")))
+                {
+                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("GoodbyeDPI")));
+                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")).Executable + ".exe");
+                }
+                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("ByeDPI")))
+                {
+                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("ByeDPI")));
+                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("ByeDPI")).Executable + ".exe");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"Cannot set settings. Exception is {ex}");
+                ShowErrorDialod(localizer.GetLocalizedString("GoodCheckComponentDirsSetException"));
+            }
             IniSettingsHelper.Save();
         }
 
@@ -829,12 +843,14 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
         }
 
-        private async void ShowErrorDialod()
+        private async void ShowErrorDialod(string message = null)
         {
             ContentDialog dialog = new ContentDialog
             {
                 Title = localizer.GetLocalizedString("ContinuationImpossible"),
-                Content = string.Format(localizer.GetLocalizedString("AddOnNotInstalled"), StateHelper.Instance.ComponentIdPairs.GetValueOrDefault(AddOnId), AddOnId),
+                Content = string.IsNullOrEmpty(message) ?
+                    string.Format(localizer.GetLocalizedString("AddOnNotInstalled"), 
+                    StateHelper.Instance.ComponentIdPairs.GetValueOrDefault(AddOnId), AddOnId) : message,
                 PrimaryButtonText = "OK",
                 XamlRoot = this.XamlRoot,
             };

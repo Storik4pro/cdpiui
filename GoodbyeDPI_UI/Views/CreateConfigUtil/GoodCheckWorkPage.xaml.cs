@@ -76,7 +76,8 @@ public sealed partial class GoodCheckWorkPage : Page
             ForwardButton.Visibility = Visibility.Visible;
         });
 
-        CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
+        if (CreateConfigUtilWindow.Instance != null)
+            CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
     }
 
     private void ConnectHandlers()

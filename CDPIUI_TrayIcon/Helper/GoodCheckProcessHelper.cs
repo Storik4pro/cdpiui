@@ -96,8 +96,15 @@ namespace CDPIUI_TrayIcon.Helper
         public void Stop()
         {
             if (Process != null) TryKillProcess(Process);
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();  
+            try
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
+            } 
+            catch
+            {
+                // pass
+            }
         }
         
 

@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
@@ -96,20 +97,34 @@ namespace CDPI_UI
             
         }
 
-        private async void AskForExit() // FIX
+        private readonly SemaphoreSlim _dialogLock = new SemaphoreSlim(1, 1);
+
+        private async void AskForExit() // TODO: close if close button double clicked
         {
-            ContentDialog dialog = new()
+            await _dialogLock.WaitAsync();
+            try
             {
-                Title = localizer.GetLocalizedString("ConfirmationRequired"),
-                Content = localizer.GetLocalizedString("GoodCheckAskStopSelection"),
-                PrimaryButtonText = localizer.GetLocalizedString("Yes"),
-                CloseButtonText = localizer.GetLocalizedString("No"),
-                XamlRoot = this.Content.XamlRoot
-            };
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                ContentDialog dialog = new()
+                {
+                    Title = localizer.GetLocalizedString("ConfirmationRequired"),
+                    Content = localizer.GetLocalizedString("GoodCheckAskStopSelection"),
+                    PrimaryButtonText = localizer.GetLocalizedString("Yes"),
+                    CloseButtonText = localizer.GetLocalizedString("No"),
+                    XamlRoot = this.Content.XamlRoot
+                };
+                if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                {
+                    GoodCheckProcessHelper.Instance.Stop();
+                    this.Close();
+                }
+            }
+            catch
             {
-                GoodCheckProcessHelper.Instance.Stop();
-                this.Close();
+
+            }
+            finally
+            {
+                _dialogLock.Release();
             }
         }
 

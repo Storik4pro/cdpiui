@@ -195,7 +195,8 @@ namespace CDPI_UI
         private void Window_ClosedHandler(object sender, WindowEventArgs e)
         {
             if (sender is not Window window) return;
-            
+            if (e.Handled) return;
+
             try
             {
                 window.Closed -= Window_ClosedHandler;
