@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /GoodbyeDPI_UI/Helper/Secret.cs
 /GoodbyeDPI_UI/Helper/Secrets.cs
+/CDPIUI_TrayIcon/Helper/Secret.cs

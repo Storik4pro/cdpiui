@@ -47,9 +47,9 @@ namespace CDPI_UI.Helper
             
         }
 
-        public void Init(string pipeName = "testpipe")
+        public void Init(string pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}")
         {
-            _pipeClient = new NamedPipeClientStream(".", "testpipe",
+            _pipeClient = new NamedPipeClientStream(".", pipeName,
                             PipeDirection.InOut, PipeOptions.Asynchronous,
                             TokenImpersonationLevel.Impersonation);
         }
@@ -106,6 +106,7 @@ namespace CDPI_UI.Helper
             {
                 IsConnected = true;
                 Connected?.Invoke();
+                _ = SendMessage($"PIPE:CONNECTED({Secret.AuthGuid})");
                 while (_pipeClient.IsConnected && !token.IsCancellationRequested)
                 {
                     string message;

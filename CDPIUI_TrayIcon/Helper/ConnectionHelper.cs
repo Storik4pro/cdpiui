@@ -22,6 +22,8 @@ namespace CDPIUI_TrayIcon.Helper
         private NamedPipeServerStream? _pipeServerStream;
         private StreamString? _streamString;
 
+        private bool IsAuthorized = false;
+
         private static PipeServer? _instance;
         private static readonly object _lock = new object();
 
@@ -39,11 +41,11 @@ namespace CDPIUI_TrayIcon.Helper
 
         public PipeServer()
         {
-            _pipeName = "testpipe";
+            _pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}";
             _maxServerInstances = 1;
         }
 
-        public void Init(string pipeName = "testpipe", int maxServerInstances = 1)
+        public void Init(string pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}", int maxServerInstances = 1)
         {
             _pipeName = pipeName;
             _maxServerInstances = Math.Max(1, maxServerInstances);
@@ -82,6 +84,7 @@ namespace CDPIUI_TrayIcon.Helper
         {
             while (!token.IsCancellationRequested)
             {
+                IsAuthorized = false;
                 try
                 {
                     var ps = new PipeSecurity();
@@ -128,7 +131,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 catch (IOException ex)
                 {
-                    Console.WriteLine($"Pipe accept or communication error: {ex.Message}");
+                    Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe accept or communication error: {ex.Message}");
                 }
                 finally
                 {
@@ -144,7 +147,7 @@ namespace CDPIUI_TrayIcon.Helper
             if (_pipeServerStream == null) return;
 
             int threadId = Thread.CurrentThread.ManagedThreadId;
-            Console.WriteLine($"Client connected on thread[{threadId}].");
+            Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client connected on thread[{threadId}].");
 
             _streamString = new StreamString(_pipeServerStream);
             await _streamString.WriteStringAsync("CONNECT:OK");
@@ -160,7 +163,7 @@ namespace CDPIUI_TrayIcon.Helper
                     }
                     catch (EndOfStreamException)
                     {
-                        Console.WriteLine($"Client disconnected on thread[{threadId}].");
+                        Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client disconnected on thread[{threadId}].");
                         break;
                     }
 
@@ -168,13 +171,11 @@ namespace CDPIUI_TrayIcon.Helper
                     {
                         continue;
                     }
-
-                    Console.WriteLine($"Received on thread[{threadId}]: {message}");
                 }
             }
             catch (IOException e)
             {
-                Console.WriteLine($"ERROR (thread[{threadId}]): {e.Message}");
+                Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe communication error (thread[{threadId}]): {e.Message}");
             }
             finally
             {
@@ -188,16 +189,42 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 catch { }
 
-                Console.WriteLine($"Client handler on thread[{threadId}] finished.");
+                Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client handler on thread[{threadId}] finished.");
             }
         }
 
         private void RunMessageActions(string message)
         {
-            Console.WriteLine(message);
             // MessageBox.Show(message);
 
-            if (message.StartsWith("CONPTY:"))
+            if (message.StartsWith("PIPE:"))
+            {
+                if (message.StartsWith("PIPE:CONNECT"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    if (result[0] == Secret.AuthGuid)
+                    {
+                        IsAuthorized = true;
+                        _ = SendMessage("PIPE:AUTH_OK");
+                    }
+                    else
+                    {
+                        IsAuthorized = false;
+                        _ = SendMessage("PIPE:AUTH_ERR");
+                    }
+                }
+            }
+            else if (!IsAuthorized)
+            {
+                Console.WriteLine("ERR, not authorized");
+                return;
+            }
+            else if (message.StartsWith("CONPTY:"))
             {
                 if (message.StartsWith("CONPTY:START"))
                 {
@@ -304,7 +331,7 @@ namespace CDPIUI_TrayIcon.Helper
                     return false;
 
                 await _streamString.WriteStringAsync(message);
-                Console.WriteLine($"SEND {message}");
+
                 return true;
             }
             catch { return false; }
