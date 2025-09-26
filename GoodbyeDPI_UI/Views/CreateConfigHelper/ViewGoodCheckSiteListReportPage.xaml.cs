@@ -1,3 +1,4 @@
+using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.ViewModels;
@@ -62,6 +63,8 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
         SuccessStrategiesListView.ItemsSource = SuccessStrategiesList;
         FailureStrategiesListView.ItemsSource = FailureStrategiesList;
         this.Loaded += ViewGoodCheckSiteListReportPage_Loaded;
+
+        FailureNotSetTextBlock.Visibility = SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies") ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private async void ViewGoodCheckSiteListReportPage_Loaded(object sender, RoutedEventArgs e)
@@ -83,7 +86,8 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
                 }
                 else
                 {
-                    FailureStrategiesList.Add(strategyUIModel);
+                    if (SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies"))
+                        FailureStrategiesList.Add(strategyUIModel);
                 }
             }
         }

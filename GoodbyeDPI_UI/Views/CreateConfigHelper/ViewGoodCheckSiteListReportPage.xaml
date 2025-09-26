@@ -42,7 +42,7 @@
                     </StackPanel>
                     <StackPanel x:Name="FailureStackPanel">
                         <TextBlock Text="Failure stategies" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                        
+                        <TextBlock x:Name="FailureNotSetTextBlock" Text='Failure strategies are not displayed because your performance settings are set to "Prefer fewer elements per page"'/>
                         <ListView x:Name="FailureStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                                   ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                             <ListView.ItemTemplate>
