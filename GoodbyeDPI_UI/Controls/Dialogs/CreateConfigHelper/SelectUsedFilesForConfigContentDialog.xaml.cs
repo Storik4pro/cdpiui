@@ -153,8 +153,41 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 {
                     return Path.Combine(Path.GetDirectoryName(ConfigPath), filePath);
                 }
-                // var items = DatabaseHelper.Instance.GetItemsByType("configlist");
-                // TODO: search in store
+
+                var items = DatabaseHelper.Instance.GetItemsByType("configlist");
+                foreach (var item in items)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
+                var components = DatabaseHelper.Instance.GetItemsByType("component");
+                foreach (var item in components)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
+                var addOns = DatabaseHelper.Instance.GetItemsByType("addon");
+                foreach (var item in addOns)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+                        
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
             }
             catch
             {
@@ -211,6 +244,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                         "ERR_AUTOCORRECT_IO:\n" + ex.Message, "Autocorrect Error",
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                     Result = CreateConfigResult.Canceled;
+                    return;
                 }
             }
         }
