@@ -78,6 +78,8 @@ public sealed partial class GoodCheckWorkPage : Page
 
         if (CreateConfigUtilWindow.Instance != null)
             CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
+
+        GoodCheckProcessHelper.Instance.Kill();
     }
 
     private void ConnectHandlers()
@@ -287,11 +289,13 @@ public sealed partial class GoodCheckWorkPage : Page
 
     private void KillProc_Click(object sender, RoutedEventArgs e)
     {
+        GoodCheckProcessKillFlyout.Hide();
         GoodCheckProcessHelper.Instance.RemoveFromQueueOrStopOperation(GoodCheckProcessHelper.Instance.CurrentOperationId);
     }
 
     private void EndAll_Click(object sender, RoutedEventArgs e)
     {
+        GoodCheckProcessKillFlyout.Hide();
         GoodCheckProcessHelper.Instance.Stop();
     }
 

@@ -1,4 +1,5 @@
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.CreateConfigHelper;
@@ -402,6 +403,27 @@ namespace CDPI_UI
         private void Store_Click(object sender, RoutedEventArgs e)
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+        }
+
+        private async void ExtiMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+            window.Close();
+        }
+
+        private void ReportIssueButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchReportUrl();
+        }
+
+        private void OfflineHelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add offline help 
+        }
+
+        private void OnlineHelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchWikiUrl();
         }
     }
 }

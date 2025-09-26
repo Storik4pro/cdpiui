@@ -15,67 +15,67 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-
-        <Grid x:Name="ContentGrid" Padding="20, 0, 20, 0" Visibility="Visible">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            
-            <StackPanel x:Name="LoadingStackPanel" Grid.Row="1">
-                <StackPanel.RenderTransform>
-                    <TranslateTransform/>
-                </StackPanel.RenderTransform>
-                <TextBlock l:Uids.Uid="GoodCheckSelectionTitle" Style="{StaticResource TitleTextBlockStyle}"/>
-                <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
-                    <Paragraph>
-                        <Run l:Uids.Uid="GoodCheckSelectionWaitTextBlock"/>
-                    </Paragraph>
-                </RichTextBlock>
-            </StackPanel>
-            <Grid Grid.Row="2" CornerRadius="5">
+        <ScrollViewer>
+            <Grid x:Name="ContentGrid" Padding="20, 0, 20, 0" Visibility="Visible">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 5" Spacing="5">
-                    <FontIcon Glyph="&#xE9D9;" FontSize="16" VerticalAlignment="Center"/>
-                    <TextBlock l:Uids.Uid="DetailsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center"/>
+
+                <StackPanel x:Name="LoadingStackPanel" Grid.Row="1">
+                    <StackPanel.RenderTransform>
+                        <TranslateTransform/>
+                    </StackPanel.RenderTransform>
+                    <TextBlock l:Uids.Uid="GoodCheckSelectionTitle" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <RichTextBlock Margin="0 15" TextWrapping="Wrap" HorizontalAlignment="Left" IsTextSelectionEnabled="False">
+                        <Paragraph>
+                            <Run l:Uids.Uid="GoodCheckSelectionWaitTextBlock"/>
+                        </Paragraph>
+                    </RichTextBlock>
                 </StackPanel>
-                <HyperlinkButton x:Name="ViewMoreButton" HorizontalAlignment="Right" Padding="0" Margin="0 0 0 5" Click="ViewMoreButton_Click" 
-                                 PointerEntered="ViewMoreButton_PointerEntered" PointerExited="ViewMoreButton_PointerExited">
-                    <HyperlinkButton.Content>
-                        <TextBlock l:Uids.Uid="ViewMoreTextBlock" x:Name="ViewMoreText" TextDecorations="Underline"/>
-                    </HyperlinkButton.Content>
-                </HyperlinkButton>
 
-                <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
-                <StackPanel Grid.Row="1" Padding="10" HorizontalAlignment="Stretch">
-                    <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-
-                    <TextBlock l:Uids.Uid="GoodCheckSelectionNow"/>
-                    <TextBlock x:Name="SiteListProgressText" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                    <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
-                    <TextBlock x:Name="AllTimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                    
-                    <StackPanel x:Name="AdditionalInfo" Visibility="Collapsed">
-                        <Rectangle Fill="{ThemeResource SmokeFillColorDefaultBrush}" Height="2" Margin="0 5 0 5"/>
-                        <TextBlock l:Uids.Uid="GoodCheckCurrentSelection" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-                        <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
-                        <TextBlock x:Name="TimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock l:Uids.Uid="GoodCheckSelectionPercent"/>
-                        <TextBlock x:Name="SiteListProgress" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock l:Uids.Uid="GoodCheckBadStrategy"/>
-                        <TextBlock x:Name="BadStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
-                        <TextBlock l:Uids.Uid="GoodCheckGoodStrategy"/>
-                        <TextBlock x:Name="GoodStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                <Grid Grid.Row="2" CornerRadius="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 5" Spacing="5">
+                        <FontIcon Glyph="&#xE9D9;" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock l:Uids.Uid="DetailsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center"/>
                     </StackPanel>
-                </StackPanel>
-            </Grid>
-            
-        </Grid>
+                    <HyperlinkButton x:Name="ViewMoreButton" HorizontalAlignment="Right" Padding="0" Margin="0 0 0 5" Click="ViewMoreButton_Click" 
+                                 PointerEntered="ViewMoreButton_PointerEntered" PointerExited="ViewMoreButton_PointerExited">
+                        <HyperlinkButton.Content>
+                            <TextBlock l:Uids.Uid="ViewMoreTextBlock" x:Name="ViewMoreText" TextDecorations="Underline"/>
+                        </HyperlinkButton.Content>
+                    </HyperlinkButton>
 
+                    <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+                    <StackPanel Grid.Row="1" Padding="10" HorizontalAlignment="Stretch">
+                        <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+
+                        <TextBlock l:Uids.Uid="GoodCheckSelectionNow"/>
+                        <TextBlock x:Name="SiteListProgressText" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                        <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
+                        <TextBlock x:Name="AllTimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+
+                        <StackPanel x:Name="AdditionalInfo" Visibility="Collapsed">
+                            <Rectangle Fill="{ThemeResource SmokeFillColorDefaultBrush}" Height="2" Margin="0 5 0 5"/>
+                            <TextBlock l:Uids.Uid="GoodCheckCurrentSelection" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                            <TextBlock l:Uids.Uid="GoodCheckSelectionTime"/>
+                            <TextBlock x:Name="TimeText" Text="Pending..." Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                            <TextBlock l:Uids.Uid="GoodCheckSelectionPercent"/>
+                            <TextBlock x:Name="SiteListProgress" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                            <TextBlock l:Uids.Uid="GoodCheckBadStrategy"/>
+                            <TextBlock x:Name="BadStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                            <TextBlock l:Uids.Uid="GoodCheckGoodStrategy"/>
+                            <TextBlock x:Name="GoodStrategyCount" Style="{ThemeResource CaptionTextBlockStyle}" Margin="50 0 0 0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
         <Grid x:Name="EndWork" Padding="20, 0, 20, 0" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -121,7 +121,7 @@
                     </RichTextBlock>
                     <Button l:Uids.Uid="StopButton" x:Name="CancelButton" MinWidth="150">
                         <Button.Flyout>
-                            <Flyout>
+                            <Flyout x:Name="GoodCheckProcessKillFlyout">
                                 <StackPanel Spacing="5">
                                     <TextBlock l:Uids.Uid="StopTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                     <TextBlock l:Uids.Uid="StopTipTextBlock"/>
@@ -131,7 +131,7 @@
                             </Flyout>
                         </Button.Flyout>
                     </Button>
-                    <Button l:Uids.Uid="ForwardButton" x:Name="ForwardButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Visibility="Collapsed" Click="ForwardButton_Click"/>
+                    <Button l:Uids.Uid="GoForwardButton" x:Name="ForwardButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Visibility="Collapsed" Click="ForwardButton_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>

@@ -794,4 +794,52 @@
   <data name="EmptyViewTextBlock" xml:space="preserve">
     <value>Похоже на то, что тут ничего нет</value>
   </data>
+  <data name="HomeMenuItem.Text" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="ImportConfigFromFileMenuItem.Text" xml:space="preserve">
+    <value>Импортировать пресет из файла...</value>
+  </data>
+  <data name="EditConfigMenuItem.Text" xml:space="preserve">
+    <value>Изменить установленный пресет</value>
+  </data>
+  <data name="GoodCheckConfigSelectionMenuItem.Text" xml:space="preserve">
+    <value>GoodCheck</value>
+  </data>
+  <data name="BeginNewSelectionMenuItem.Text" xml:space="preserve">
+    <value>Начать новый подбор</value>
+  </data>
+  <data name="RecentSelectionsMenuItem.Text" xml:space="preserve">
+    <value>Открыть и просмотреть отчет предыдущего подбора</value>
+  </data>
+  <data name="XmlReportMenuItem.Text" xml:space="preserve">
+    <value>Открыть .XML файл отчета...</value>
+  </data>
+  <data name="StoreMenuBarItem.Title" xml:space="preserve">
+    <value>Магазин</value>
+  </data>
+  <data name="StoreOpenComponentsMenuItem.Text" xml:space="preserve">
+    <value>Изучите новые компоненты</value>
+  </data>
+  <data name="StoreOpenAddOnsMenuItem.Text" xml:space="preserve">
+    <value>Изучите новые надстройки</value>
+  </data>
+  <data name="StoreOpenConfigsMenuItem.Text" xml:space="preserve">
+    <value>Изучите новые наборы настроек запуска</value>
+  </data>
+  <data name="StoreOpenMenuItem.Text" xml:space="preserve">
+    <value>Открыть Магазин</value>
+  </data>
+  <data name="HelpOfflineMenuItem.Text" xml:space="preserve">
+    <value>Открыть локальную справку</value>
+  </data>
+  <data name="HelpOnlineMenuItem.Text" xml:space="preserve">
+    <value>Открыть справку в Интернете </value>
+  </data>
+  <data name="ReportIssueMenuItem.Text" xml:space="preserve">
+    <value>Сообщить о проблеме</value>
+  </data>
+  <data name="ReadyTextBlock.Text" xml:space="preserve">
+    <value>Готово</value>
+  </data>
 </root>

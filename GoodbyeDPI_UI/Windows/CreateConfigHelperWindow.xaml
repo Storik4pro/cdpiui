@@ -65,8 +65,8 @@
                     <ColumnDefinition x:Name="Quick" Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
-                    <MenuBarItem Title="File">
-                        <MenuFlyoutItem x:Name="HomeItem" Text="Home" Icon="Home" Click="HomeItem_Click"/>
+                    <MenuBarItem l:Uids.Uid="FileMenuItem">
+                        <MenuFlyoutItem x:Name="HomeItem" l:Uids.Uid="HomeMenuItem" Icon="Home" Click="HomeItem_Click"/>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem x:Name="CreateNewConfigButton" Text="Create new config" Click="CreateNewConfigButton_Click">
                             <MenuFlyoutItem.Icon>
@@ -76,7 +76,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="N"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="ImportConfigFromFileButton" Text="Import config from file" Click="ImportConfigFromFileButton_Click">
+                        <MenuFlyoutItem x:Name="ImportConfigFromFileButton" l:Uids.Uid="ImportConfigFromFileMenuItem" Click="ImportConfigFromFileButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8E5;" />
                             </MenuFlyoutItem.Icon>
@@ -84,7 +84,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="O"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="EditConfigButton" Text="Edit existing config" Click="EditConfigButton_Click">
+                        <MenuFlyoutItem x:Name="EditConfigButton" l:Uids.Uid="EditConfigMenuItem" Click="EditConfigButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE70F;" />
                             </MenuFlyoutItem.Icon>
@@ -93,11 +93,11 @@
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutSubItem Text="GoodCheck config selection">
-                            <MenuFlyoutItem x:Name="BeginNewGoodCheckSelectionButton" Text="Begin new selection" Click="BeginNewGoodCheckSelectionButton_Click"/>
+                        <MenuFlyoutSubItem l:Uids.Uid="GoodCheckConfigSelectionMenuItem">
+                            <MenuFlyoutItem x:Name="BeginNewGoodCheckSelectionButton" l:Uids.Uid="BeginNewSelectionMenuItem" Click="BeginNewGoodCheckSelectionButton_Click"/>
                             <MenuFlyoutSeparator/>
-                            <MenuFlyoutItem x:Name="RecentGoodCheckSelectionButton" Text="Open recent selection report..." Click="RecentGoodCheckSelectionButton_Click"/>
-                            <MenuFlyoutItem x:Name="OpenGoodCheckReportButton" Text="Open .xml GoodCheck report file" Click="OpenGoodCheckReportButton_Click">
+                            <MenuFlyoutItem x:Name="RecentGoodCheckSelectionButton" l:Uids.Uid="RecentSelectionsMenuItem" Click="RecentGoodCheckSelectionButton_Click"/>
+                            <MenuFlyoutItem x:Name="OpenGoodCheckReportButton" l:Uids.Uid="XmlReportMenuItem" Click="OpenGoodCheckReportButton_Click">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xE8E5;" />
                                 </MenuFlyoutItem.Icon>
@@ -105,7 +105,7 @@
                         </MenuFlyoutSubItem>
                         
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem Text="Exit">
+                        <MenuFlyoutItem l:Uids.Uid="ExitMenuItem" x:Name="ExtiMenuButton" Click="ExtiMenuButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE711;" />
                             </MenuFlyoutItem.Icon>
@@ -128,20 +128,20 @@
                         </MenuFlyoutSubItem>
                         
                     </MenuBarItem>
-                    <MenuBarItem Title="Store">
-                        <MenuFlyoutItem x:Name="ComponentsStore" Text="Explore new components" Click="ComponentsStore_Click"/>
-                        <MenuFlyoutItem x:Name="AddOnsStore" Text="Explore new AddOns" Click="AddOnsStore_Click"/>
-                        <MenuFlyoutItem x:Name="ConfigsStore" Text="Explore new configs" Click="ConfigsStore_Click"/>
+                    <MenuBarItem l:Uids.Uid="StoreMenuBarItem">
+                        <MenuFlyoutItem x:Name="ComponentsStore" l:Uids.Uid="StoreOpenComponentsMenuItem" Click="ComponentsStore_Click"/>
+                        <MenuFlyoutItem x:Name="AddOnsStore" l:Uids.Uid="StoreOpenAddOnsMenuItem" Click="AddOnsStore_Click"/>
+                        <MenuFlyoutItem x:Name="ConfigsStore" l:Uids.Uid="StoreOpenConfigsMenuItem" Click="ConfigsStore_Click"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem x:Name="Store" Text="Open Store" Click="Store_Click">
+                        <MenuFlyoutItem x:Name="Store" l:Uids.Uid="StoreOpenMenuItem" Click="Store_Click">
                             <MenuFlyoutItem.Icon>
                                 <ImageIcon Source="/Assets/Icons/Store.png"/>
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                     </MenuBarItem>
-                    <MenuBarItem Title="Help">
-                        <MenuFlyoutItem Text="Open offline help"/>
-                        <MenuFlyoutItem Text="Open online help">
+                    <MenuBarItem l:Uids.Uid="HelpMenuItem">
+                        <MenuFlyoutItem l:Uids.Uid="HelpOfflineMenuItem" x:Name="OfflineHelpButton" Click="OfflineHelpButton_Click"/>
+                        <MenuFlyoutItem l:Uids.Uid="HelpOnlineMenuItem"  x:Name="OnlineHelpButton" Click="OnlineHelpButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE774;"/>
                             </MenuFlyoutItem.Icon>
@@ -150,7 +150,7 @@
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem Text="Report a bug"/>
+                        <MenuFlyoutItem x:Name="ReportIssueButton" l:Uids.Uid="ReportIssueMenuItem" Click="ReportIssueButton_Click"/>
                     </MenuBarItem>
                 </MenuBar>
                 <Grid Grid.Column="2" >
@@ -177,7 +177,7 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="StatusTextBlock" Grid.Column="0" Text="Ready" VerticalAlignment="Center"/>
+                <TextBlock x:Name="StatusTextBlock" l:Uids.Uid="ReadyTextBlock" Grid.Column="0" VerticalAlignment="Center"/>
             </Grid>
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
                 VerticalAlignment="Bottom"/>

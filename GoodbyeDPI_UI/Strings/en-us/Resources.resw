@@ -792,4 +792,52 @@ Please, install lates version of "{0}" in Store</value>
   <data name="EmptyViewTextBlock" xml:space="preserve">
     <value>It's loneliness right here...</value>
   </data>
+  <data name="HomeMenuItem.Text" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ImportConfigFromFileMenuItem.Text" xml:space="preserve">
+    <value>Import config from file...</value>
+  </data>
+  <data name="EditConfigMenuItem.Text" xml:space="preserve">
+    <value>Edit installed config...</value>
+  </data>
+  <data name="GoodCheckConfigSelectionMenuItem.Text" xml:space="preserve">
+    <value>GoodCheck config selection</value>
+  </data>
+  <data name="BeginNewSelectionMenuItem.Text" xml:space="preserve">
+    <value>Begin new selection</value>
+  </data>
+  <data name="RecentSelectionsMenuItem.Text" xml:space="preserve">
+    <value>Open recent GoodCheck selection report</value>
+  </data>
+  <data name="XmlReportMenuItem.Text" xml:space="preserve">
+    <value>Open .XML report file...</value>
+  </data>
+  <data name="StoreMenuBarItem.Title" xml:space="preserve">
+    <value>Store</value>
+  </data>
+  <data name="StoreOpenComponentsMenuItem.Text" xml:space="preserve">
+    <value>Explore new Components</value>
+  </data>
+  <data name="StoreOpenAddOnsMenuItem.Text" xml:space="preserve">
+    <value>Explore new AddOns</value>
+  </data>
+  <data name="StoreOpenConfigsMenuItem.Text" xml:space="preserve">
+    <value>Explore new Config Kits</value>
+  </data>
+  <data name="StoreOpenMenuItem.Text" xml:space="preserve">
+    <value>Open Store</value>
+  </data>
+  <data name="HelpOfflineMenuItem.Text" xml:space="preserve">
+    <value>Open local help</value>
+  </data>
+  <data name="HelpOnlineMenuItem.Text" xml:space="preserve">
+    <value>Open help in Internet</value>
+  </data>
+  <data name="ReportIssueMenuItem.Text" xml:space="preserve">
+    <value>Report a problem</value>
+  </data>
+  <data name="ReadyTextBlock.Text" xml:space="preserve">
+    <value>Ready</value>
+  </data>
 </root>

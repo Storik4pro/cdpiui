@@ -345,9 +345,9 @@ namespace CDPI_UI
             ShowFontSettingsDialog();
         }
 
-        private async void SupportButton_Click(object sender, RoutedEventArgs e)
+        private void SupportButton_Click(object sender, RoutedEventArgs e)
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/goodbyeDPI-UI/issues/"));
+            UrlOpenHelper.LaunchReportUrl();
         }
 
         private async void CopyButton_Click(object sender, RoutedEventArgs e)

@@ -618,6 +618,19 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
         {
             return CancellationTokenSource != null && !CancellationTokenSource.IsCancellationRequested;
         }
+
+        public void Kill()
+        {
+            try
+            {
+                CancellationTokenSource?.Cancel();
+                CancellationTokenSource?.Dispose();
+            }
+            catch
+            {
+
+            }
+        }
         
     }
 }
