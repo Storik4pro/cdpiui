@@ -52,7 +52,6 @@ namespace CDPI_UI.Helper
                 if (!Directory.Exists(logFileDir)) Directory.CreateDirectory(logFileDir);
                 if (!File.Exists(logFilePath))
                 {
-                    File.Create(logFilePath);
                     File.WriteAllText(logFilePath, "Logger is ready-to-work" + Environment.NewLine);
                 }
 
