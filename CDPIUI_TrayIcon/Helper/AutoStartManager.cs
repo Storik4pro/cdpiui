@@ -51,7 +51,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Autorun error: {ex.Message}");
+                Logger.Instance.CreateErrorLog(nameof(AutoStartManager), $"Autorun error: {ex.Message}");
             }
             return false;
         }
@@ -68,7 +68,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Autorun error: {ex.Message}");
+                Logger.Instance.CreateErrorLog(nameof(AutoStartManager), $"Autorun error: {ex.Message}");
             }
             return false;
         }

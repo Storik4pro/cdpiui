@@ -33,16 +33,16 @@ namespace CDPIUI_TrayIcon.Helper
 
         
 
-        private static Icon NormalIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico"));
-        private static Icon ErrorIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoError.ico"));
-        private static Icon StoppedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStopped.ico"));
-        private static Icon RunnedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStarted.ico"));
+        private static Icon NormalIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico")!);
+        private static Icon ErrorIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoError.ico")!);
+        private static Icon StoppedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStopped.ico")!);
+        private static Icon RunnedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStarted.ico")!);
         public TrayIconHelper() 
         {
             notifyIcon.MouseClick += NotifyIcon_Click;
             notifyIcon.Icon = NormalIcon;
             notifyIcon.Visible = true;
-            notifyIcon.Text = "CDPIUI";
+            notifyIcon.Text = "CDPI UI";
 
             var contextMenu = new ContextMenuStrip();
             contextMenu.ShowImageMargin = true;
@@ -107,8 +107,6 @@ namespace CDPIUI_TrayIcon.Helper
         {
             if (ProcessControlItem != null) 
                 ProcessControlItem.Text = state ? LocaleHelper.GetLocaleString("Stop") : LocaleHelper.GetLocaleString("Start");
-
-            // FIX: Notification spam on stop/exception/run
 
             if (state)
             {
@@ -218,7 +216,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                // TODO: Add logging
+                Logger.Instance.CreateErrorLog(nameof(TrayIconHelper), $"ERR_UNABLE_OPEN_FILE details => {ex.Message}");
             }
         }
 

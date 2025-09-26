@@ -119,10 +119,10 @@ namespace CDPIUI_TrayIcon.Helper
                 return (T)(object)boolValue;
 
             if (typeof(T) == typeof(string) && type == "string")
-                return (T)(object)value;
+                return (T)(object)value!;
 
             if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
-                return (T)(object)DateTime.Parse(value);
+                return (T)(object)DateTime.Parse(value!);
 
             throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group '{group}'.");
         }
@@ -155,7 +155,7 @@ namespace CDPIUI_TrayIcon.Helper
                 var defaultValue = GetDefaultValue<T>();
                 SetValue(groupPath, key, defaultValue);
                 Debug.WriteLine($"Setting '{key}' in group path '{string.Join("/", groupPath)}' not found.");
-                return defaultValue;
+                return defaultValue!;
             }
 
             string value = (string)settingElement.Attribute("Value");
@@ -164,10 +164,10 @@ namespace CDPIUI_TrayIcon.Helper
             if (typeof(T) == typeof(int) && type == "int" && int.TryParse(value, out var iv)) return (T)(object)iv;
             if (typeof(T) == typeof(double) && type == "double" && double.TryParse(value, out var dv)) return (T)(object)dv;
             if (typeof(T) == typeof(bool) && type == "bool" && bool.TryParse(value, out var bv)) return (T)(object)bv;
-            if (typeof(T) == typeof(string) && type == "string") return (T)(object)value;
+            if (typeof(T) == typeof(string) && type == "string") return (T)(object)value!;
 
             if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
-                return (T)(object)DateTime.Parse((string)value);
+                return (T)(object)DateTime.Parse((string)value!);
 
             throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group path '{string.Join("/", groupPath)}'.");
         }
@@ -232,7 +232,7 @@ namespace CDPIUI_TrayIcon.Helper
                 groupElement.Add(new XElement("Setting",
                     new XAttribute("Key", key),
                     new XAttribute("Type", type),
-                    new XAttribute("Value", valueString)));
+                    new XAttribute("Value", valueString!)));
             }
 
             _xDocument.Save(_filePath);
@@ -297,7 +297,7 @@ namespace CDPIUI_TrayIcon.Helper
                 current.Add(new XElement("Setting",
                     new XAttribute("Key", key),
                     new XAttribute("Type", type),
-                    new XAttribute("Value", valueString)));
+                    new XAttribute("Value", valueString!)));
             }
 
             _xDocument.Save(_filePath);
@@ -306,11 +306,11 @@ namespace CDPIUI_TrayIcon.Helper
 
         private T GetDefaultValueForKey<T>(string group, string key)
         {
-            return GetDefaultValue<T>();
+            return GetDefaultValue<T>()!;
         }
         private T GetDefaultValueForKey<T>(IEnumerable<string> groupPath, string key)
         {
-            return GetDefaultValue<T>();
+            return GetDefaultValue<T>()!;
         }
 
     }

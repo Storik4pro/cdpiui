@@ -70,7 +70,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                // TODO: add logging
+                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"ERR_UNABLE_START_PROCESS details => {ex.Message}");
                 HandleProcessException("ERR_UNABLE_START_PROCESS", operationId);
                 return false;
             }
@@ -78,7 +78,7 @@ namespace CDPIUI_TrayIcon.Helper
             if (!AssignProcessToJobObject(Job, Process.Handle))
             {
                 HandleProcessException("ERR_WIN32_EXCEPTION", operationId);
-                // Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"ERR_WIN32_EXCEPTION details => {Marshal.GetLastWin32Error()}");
+                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"ERR_WIN32_EXCEPTION details => {Marshal.GetLastWin32Error()}");
                 return false;
             }
 

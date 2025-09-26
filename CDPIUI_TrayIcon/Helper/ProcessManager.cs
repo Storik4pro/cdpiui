@@ -454,7 +454,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         private void ShowErrorMessage(string message, string _object = "process")
         {
-            Debug.WriteLine(message);
+            Logger.Instance.CreateWarningLog(nameof(ProcessManager), $"CONPTY error: {message} object: {_object}");
             isErrorHappens = true;
 
 

@@ -20,7 +20,6 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                // TODO: Add logging
                 return "";
             }
         }
