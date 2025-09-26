@@ -842,4 +842,7 @@
   <data name="ReadyTextBlock.Text" xml:space="preserve">
     <value>Готово</value>
   </data>
+  <data name="CreateNewConfigMenuItem.Text" xml:space="preserve">
+    <value>Создать новый пресет</value>
+  </data>
 </root>

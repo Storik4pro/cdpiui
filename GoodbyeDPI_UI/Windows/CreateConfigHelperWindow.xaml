@@ -68,7 +68,7 @@
                     <MenuBarItem l:Uids.Uid="FileMenuItem">
                         <MenuFlyoutItem x:Name="HomeItem" l:Uids.Uid="HomeMenuItem" Icon="Home" Click="HomeItem_Click"/>
                         <MenuFlyoutSeparator/>
-                        <MenuFlyoutItem x:Name="CreateNewConfigButton" Text="Create new config" Click="CreateNewConfigButton_Click">
+                        <MenuFlyoutItem x:Name="CreateNewConfigButton" l:Uids.Uid="CreateNewConfigMenuItem" Click="CreateNewConfigButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE710;" />
                             </MenuFlyoutItem.Icon>

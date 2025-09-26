@@ -840,4 +840,7 @@ Please, install lates version of "{0}" in Store</value>
   <data name="ReadyTextBlock.Text" xml:space="preserve">
     <value>Ready</value>
   </data>
+  <data name="CreateNewConfigMenuItem.Text" xml:space="preserve">
+    <value>Create new config</value>
+  </data>
 </root>
