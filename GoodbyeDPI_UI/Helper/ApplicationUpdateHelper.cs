@@ -109,9 +109,8 @@ namespace CDPI_UI.Helper
             {
                 ServerVersion = _data.Item1;
                 IsUpdateAvailable = true;
+                if (notify) await PipeClient.Instance.SendMessage("UPDATE:AVAILABLE");
             }
-
-            await PipeClient.Instance.SendMessage("UPDATE:AVAILABLE");
 
             string[] arguments = Environment.GetCommandLineArgs();
             if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when parameter setted and window exist 
