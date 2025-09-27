@@ -1,9 +1,6 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Views;
 using CDPI_UI.Views.Components;
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Brushes;
-using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Input;
@@ -44,8 +41,6 @@ namespace CDPI_UI
         private IntPtr _hwnd;
         private WindowProc _newWndProc;
         private IntPtr _oldWndProc;
-
-        private CanvasSwapChain _swapChain;
 
         public static MainWindow Instance { get; private set; }
 
