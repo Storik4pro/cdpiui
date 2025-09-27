@@ -57,8 +57,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "invalid value", "INVALID_VALUE_ERROR" },
             { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
             { "already running", "ALREADY_RUNNING_WARN" },
-            { "could not read", "FILE_READ_ERROR" }
-
+            { "could not read", "FILE_READ_ERROR" },
+            { "flag provided but not defined:", "PARAMETER_ERROR" }
         };
 
         private ProcessManager()
@@ -82,9 +82,11 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
+        public bool IsProcessInfoChanged = false;
+
         public async Task StartProcess()
         {
-            if (Executable != null && Args != null)
+            if (Executable != null && Args != null && !IsProcessInfoChanged)
             {
                 await StartProcess(Executable, Args);
             }
@@ -99,6 +101,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async Task StartProcess(string executable, string args)
         {
+            IsProcessInfoChanged = false;
             Executable = executable;
             Args = args;
             isErrorHappens = false;
@@ -224,13 +227,11 @@ namespace CDPIUI_TrayIcon.Helper
             catch (Exception ex)
             {
 
-                if (error != "NaN") Console.WriteLine($"Two or more errors occurred\n" +
+                if (error != "NaN") Logger.Instance.CreateErrorLog(nameof(ProcessManager), $"Two or more errors occurred\n" +
                     $"[1/2]\n" +
                     $"{error}" +
                     $"[2/2]\n" +
                     $"{ex.Message}");
-
-                //TODO: show notification
             }
 
         }
