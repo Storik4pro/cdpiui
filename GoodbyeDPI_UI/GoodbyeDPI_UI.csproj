@@ -68,6 +68,7 @@
     <None Remove="Views\Store\ItemViewPage.xaml" />
     <None Remove="Views\Store\LibraryPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\OfflineHelpWindow.xaml" />
     <None Remove="Windows\PrepareWindow.xaml" />
   </ItemGroup>
 
@@ -358,6 +359,9 @@
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Windows\OfflineHelpWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\AboutPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
