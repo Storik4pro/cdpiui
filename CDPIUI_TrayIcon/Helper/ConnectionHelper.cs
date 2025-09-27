@@ -24,6 +24,8 @@ namespace CDPIUI_TrayIcon.Helper
 
         private bool IsAuthorized = false;
 
+        public Action? Disconnected;
+
         private static PipeServer? _instance;
         private static readonly object _lock = new object();
 
@@ -111,8 +113,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 catch (Exception ex)
                 {
-                    // TODO: add logging
-                    Console.WriteLine(ex);
+                    Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe create error: {ex.Message}");
                     Process.GetCurrentProcess().Kill();
                     return;
                     
@@ -135,6 +136,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 finally
                 {
+                    Disconnected?.Invoke();
                     _pipeServerStream?.Dispose();
                     _pipeServerStream = null;
                     _streamString = null;
@@ -256,6 +258,10 @@ namespace CDPIUI_TrayIcon.Helper
                 {
                     ProcessManager.Instance.SendState();
                     ProcessManager.Instance.SendNowSelectedComponentName();
+                }
+                else if (message.StartsWith("CONPTY:PROCESSCHANGED"))
+                {
+                    ProcessManager.Instance.IsProcessInfoChanged = true;
                 }
             }
             else if (message.StartsWith("GOODCHECK:"))
