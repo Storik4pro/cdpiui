@@ -843,4 +843,10 @@ Please, install lates version of "{0}" in Store</value>
   <data name="CreateNewConfigMenuItem.Text" xml:space="preserve">
     <value>Create new config</value>
   </data>
+  <data name="OfflineHelpWindowTitle" xml:space="preserve">
+    <value>Local help</value>
+  </data>
+  <data name="OfflineHelpWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Offline help</value>
+  </data>
 </root>

@@ -416,9 +416,10 @@ namespace CDPI_UI
             UrlOpenHelper.LaunchReportUrl();
         }
 
-        private void OfflineHelpButton_Click(object sender, RoutedEventArgs e)
+        private async void OfflineHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Add offline help 
+            OfflineHelpWindow window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            window.NavigateToPage($"/Utils/{nameof(CreateConfigHelperWindow)}");
         }
 
         private void OnlineHelpButton_Click(object sender, RoutedEventArgs e)

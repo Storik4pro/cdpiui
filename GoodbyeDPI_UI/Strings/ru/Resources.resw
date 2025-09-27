@@ -845,4 +845,10 @@
   <data name="CreateNewConfigMenuItem.Text" xml:space="preserve">
     <value>Создать новый пресет</value>
   </data>
+  <data name="OfflineHelpWindowTitle" xml:space="preserve">
+    <value>Локальная справка</value>
+  </data>
+  <data name="OfflineHelpWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Локальная справка</value>
+  </data>
 </root>
