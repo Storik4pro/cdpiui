@@ -20,5 +20,9 @@ namespace CDPI_UI.Helper
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://storik4pro.github.io/cdpiui/"));
         }
+        public static async void LaunchLicenseUrl()
+        {
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/blob/main/LICENSE.txt"));
+        }
     }
 }
