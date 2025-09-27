@@ -67,7 +67,8 @@ namespace CDPI_UI.Helper
             { "invalid value", "INVALID_VALUE_ERROR" },
             { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
             { "already running", "ALREADY_RUNNING_WARN" },
-            { "could not read", "FILE_READ_ERROR" }
+            { "could not read", "FILE_READ_ERROR" },
+            { "flag provided but not defined:", "PARAMETER_ERROR" }
             
         };
 
@@ -77,8 +78,6 @@ namespace CDPI_UI.Helper
 
             _outputBuffer = new StringBuilder();
             _outputDefaultBuffer = new StringBuilder();
-
-            
         }
 
         public void GetReady()
@@ -219,12 +218,16 @@ namespace CDPI_UI.Helper
         {
             str = str.Replace("[?25l\u001b[2J\u001b[m\u001b[H", "");
             str = str.Replace("[4;1H", "\n");
+            str = str.Replace("[12;1H", "\n");
+            str = str.Replace("[32m", "\n");
+            str = str.Replace("[90m", "\n");
             str = Regex.Replace(str, @"\u001b\]0;.*?\[\?25h", "");
             str = Regex.Replace(str, @"\[\?25l|\[1C|", "");
             str = Regex.Replace(str, @"\[\?\d{4}\w", "");
             str = Regex.Replace(str, @"\[\d[A-Z]", "");
             str = Regex.Replace(str, @"\[\d{1,2};\d{1,2}[A-Z]", "");
             str = Regex.Replace(str, @"\[\?\d{1,2}[a-z]", "");
+            str = Regex.Replace(str, @"(\[\d{0,2}m)?(\[H)?", "");
             return str;
 
         }
