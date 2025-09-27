@@ -44,7 +44,26 @@ namespace CDPI_UI.Helper
 
         public PipeClient()
         {
-            
+            SettingsManager.Instance.PropertyChanged += SettingsManager_PropertyChanged;
+            SettingsManager.Instance.EnumPropertyChanged += SettingsManager_EnumPropertyChanged;
+        }
+
+        private void SettingsManager_PropertyChanged(string key)
+        {
+            if (key == "COMPONENTS")
+                _ = SendMessage("CONPTY:PROCESSCHANGED");
+        }
+
+        private void SettingsManager_EnumPropertyChanged(IEnumerable<string> _enum)
+        {
+            foreach (var group in _enum)
+            {
+                if (group == "CONFIGS")
+                {
+                    _ = SendMessage("CONPTY:PROCESSCHANGED");
+                    return;
+                }
+            }
         }
 
         public void Init(string pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}")
@@ -100,12 +119,8 @@ namespace CDPI_UI.Helper
         {
             _streamString = new StreamString(_pipeClient);
 
-            ProcessManager.Instance.GetReady();
-
             try
             {
-                IsConnected = true;
-                Connected?.Invoke();
                 _ = SendMessage($"PIPE:CONNECTED({Secret.AuthGuid})");
                 while (_pipeClient.IsConnected && !token.IsCancellationRequested)
                 {
@@ -179,7 +194,15 @@ namespace CDPI_UI.Helper
         {
             Logger.Instance.CreateDebugLog(nameof(PipeClient), message);
 
-            if (message.StartsWith("MAIN:"))
+            if (message.StartsWith("PIPE:"))
+            {
+                if (message.StartsWith("PIPE:AUTH_OK"))
+                {
+                    IsConnected = true;
+                    Connected?.Invoke();
+                }
+            }
+            else if (message.StartsWith("MAIN:"))
             {
                 switch (message)
                 {
