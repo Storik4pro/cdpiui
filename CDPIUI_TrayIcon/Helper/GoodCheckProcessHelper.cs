@@ -34,7 +34,13 @@ namespace CDPIUI_TrayIcon.Helper
         private Process? Process;
         private nint Job;
 
-        public GoodCheckProcessHelper() { }
+        public GoodCheckProcessHelper() 
+        { 
+            PipeServer.Instance.Disconnected += () =>
+            {
+                Stop();
+            };
+        }
 
         public async Task<bool> StartAsync(string executable, string args, string operationId)
         {
