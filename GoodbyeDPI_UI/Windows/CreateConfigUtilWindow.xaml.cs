@@ -106,10 +106,12 @@ namespace CDPI_UI
         }
 
         private readonly SemaphoreSlim _dialogLock = new SemaphoreSlim(1, 1);
+        private bool isDialogOpened = false;
 
-        private async void AskForExit() // TODO: close if close button double clicked
+        private async void AskForExit()
         {
             await _dialogLock.WaitAsync();
+            isDialogOpened = true;
             try
             {
                 ContentDialog dialog = new()
@@ -132,13 +134,19 @@ namespace CDPI_UI
             }
             finally
             {
+                isDialogOpened = false;
                 _dialogLock.Release();
+
             }
         }
 
         private void CreateConfigUtilWindow_Closed(object sender, WindowEventArgs args)
         {
-            if (GoodCheckProcessHelper.Instance.IsRunned())
+            if (isDialogOpened)
+            {
+                GoodCheckProcessHelper.Instance.Stop();
+            }
+            else if (GoodCheckProcessHelper.Instance.IsRunned())
             {
                 AskForExit();
                 args.Handled = true;
