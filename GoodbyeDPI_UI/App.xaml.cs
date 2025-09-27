@@ -76,6 +76,7 @@ namespace CDPI_UI
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
 
             _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            ProcessManager.Instance.GetReady();
 
             string[] arguments = Environment.GetCommandLineArgs();
 
@@ -123,7 +124,6 @@ namespace CDPI_UI
         
         public async void GetReadyFeatures()
         {
-            // TODO: Make async and show progress
             DatabaseHelper.Instance.QuickRestore();
             await InitializeLocalizer();
 
