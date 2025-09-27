@@ -90,7 +90,7 @@ namespace CDPI_UI.Helper
             {
                 try
                 {
-                    var psi = new ProcessStartInfo(Path.Combine(StateHelper.GetDataDirectory(), "CDPIUI_TrayIcon.exe"), "--show-ui")
+                    var psi = new ProcessStartInfo(Path.Combine(StateHelper.GetDataDirectory(getCurrent:true), "CDPIUI_TrayIcon.exe"), "--show-ui")
                     {
                         UseShellExecute = true,
                         Verb = "runas"

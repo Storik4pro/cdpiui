@@ -14,7 +14,7 @@ namespace CDPIUI_TrayIcon.Helper
 {
     public class SettingsManager
     {
-        private readonly string _filePath;
+        private string _filePath;
         private XDocument? _xDocument;
 
         public Action<string>? PropertyChanged;
@@ -50,7 +50,7 @@ namespace CDPIUI_TrayIcon.Helper
         {
             lock (_reloadLock)
             {
-
+                _filePath = Utils.GetSettingsFile();
                 if (File.Exists(_filePath))
                 {
                     _xDocument = XDocument.Load(_filePath);

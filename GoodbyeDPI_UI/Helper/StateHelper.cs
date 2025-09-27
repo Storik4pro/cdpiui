@@ -1,5 +1,5 @@
 ﻿using CDPI_UI.ViewModels;
-using Microsoft.Extensions.Configuration;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,12 +98,21 @@ namespace CDPI_UI.Helper
             return ComponentIdPairs.FirstOrDefault(kvp => kvp.Value == value).Key;
         }
 
-        public static string GetDataDirectory()
+        public static string GetDataDirectory(bool getCurrent = false)
         {
             try
             {
                 var procPath = Environment.ProcessPath;
-                return Path.GetDirectoryName(procPath)!;
+                if (HasWritePermission(Path.GetDirectoryName(procPath))|| getCurrent)
+                    return Path.GetDirectoryName(procPath)!;
+                else
+                {
+                    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    var targetFolder = Path.Combine(localAppData, "CDPIUI");
+                    if (!Directory.Exists(targetFolder))
+                        Directory.CreateDirectory(targetFolder);
+                    return targetFolder;
+                }
             }
             catch (Exception ex) 
             {
@@ -112,12 +121,46 @@ namespace CDPI_UI.Helper
             }
         }
 
-        public static string GetSecret(string key)
+        private static bool HasWritePermission(string directory)
         {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            IConfiguration configuration = configurationBuilder.AddUserSecrets<Program>().Build();
-            string token = configuration[key];
-            return token;
+            var testFile = Path.Combine(directory, $".write_test_{Guid.NewGuid():N}.tmp");
+            try
+            {
+                using (var fs = new FileStream(testFile, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                {
+                    fs.WriteByte(0x0);
+                    fs.Flush();
+                }
+
+                File.Delete(testFile);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return false;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.RaiseCriticalException(nameof(HasWritePermission), ex);
+                return false;
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(testFile))
+                        File.Delete(testFile);
+                }
+                catch { }
+            }
         }
     }
 }

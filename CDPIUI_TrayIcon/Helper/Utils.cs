@@ -34,7 +34,16 @@ namespace CDPIUI_TrayIcon.Helper
             }
             else
             {
-                return filePath; // TODO: find settings file in AppData
+                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var targetFolder = Path.Combine(localAppData, "CDPIUI");
+                string localAppDataFile = Path.Combine(targetFolder, "Settings", "Settings.xml");
+
+                if (File.Exists(localAppDataFile))
+                {
+                    return localAppDataFile;
+                }
+
+                return filePath; 
             }
         }
 
