@@ -77,6 +77,7 @@ namespace CDPI_UI.Helper
             FileTypes.Add("archive", ".zip");
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
+            FileTypes.Add("msi", ".msi");
 
             string exePath = Assembly.GetEntryAssembly()?.Location
                  ?? Assembly.GetExecutingAssembly()?.Location

@@ -19,6 +19,7 @@
 	<AssemblyName>CDPIUI</AssemblyName>
 	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <UserSecretsId>393d1168-0d99-4c7a-99eb-7a1fb31f2f24</UserSecretsId>
+    <Configurations>Debug;Release;SingleFileRelease;MsiRelease</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
@@ -342,6 +343,18 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x86'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x64'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x86'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x64'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\en-us\Resources.resw" />
   </ItemGroup>
@@ -391,5 +404,5 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\en-us\UIHelper.resw" />
-  </ItemGroup>
+  </ItemGroup>  
 </Project>

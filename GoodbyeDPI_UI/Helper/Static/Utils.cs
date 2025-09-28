@@ -259,6 +259,16 @@ namespace CDPI_UI.Helper.Static
             }
             return "EN";
         }
+#if SINGLEFILE
+        public static bool IsApplicationBuildAsSingleFile = true;
+        public static bool IsApplicationBuildAsMsi = false;
+#elif MSIFILE
+        public static bool IsApplicationBuildAsSingleFile = false;
+        public static bool IsApplicationBuildAsMsi = true;
+#else 
+        public static bool IsApplicationBuildAsSingleFile = false;
+        public static bool IsApplicationBuildAsMsi = false;
+#endif
     }
 }
 

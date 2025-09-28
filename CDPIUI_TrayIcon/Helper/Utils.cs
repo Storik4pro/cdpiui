@@ -49,7 +49,16 @@ namespace CDPIUI_TrayIcon.Helper
 
         public static void StartUpdate(string targetFile)
         {
-            RunHelper.Run(Path.Combine(GetDataDirectory(), "Update.exe"), $"--directory-to-zip \"{targetFile}\" --destination-directory \"{GetDataDirectory()}\"");
+            if (Path.GetExtension(targetFile).ToLower() == ".msi")
+            {
+                RunHelper.Run("msiexec.exe", $"/install \"{targetFile}\" /passive");
+                _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
+                Application.Exit();
+            }
+            else
+            {
+                RunHelper.Run(Path.Combine(GetDataDirectory(), "Update.exe"), $"--directory-to-zip \"{targetFile}\" --destination-directory \"{GetDataDirectory()}\"");
+            }
         }
     }
 }
