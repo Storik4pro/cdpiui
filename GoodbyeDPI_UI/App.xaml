@@ -36,6 +36,20 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style x:Key="ListViewSmallItemStretchStyle" TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="MinHeight" Value="0" />
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <ListViewItemPresenter ContentMargin="0" Padding="0" Margin="0"  IsTabStop="False" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <Style x:Key="StoreNavigationViewItemStyle" TargetType="NavigationViewItem">
                 <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
