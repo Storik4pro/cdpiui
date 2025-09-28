@@ -65,7 +65,33 @@ namespace CDPI_UI
             PipeClient.Instance.Init();
             PipeClient.Instance.Connected += PipeConnected;
 
+            ApplicationTaskMonitor.Instance.StoreStateChanged += StoreStateChanged;
+
             GetReadyFeatures();
+        }
+
+        private void StoreStateChanged(bool isWorking)
+        {
+            try
+            {
+                if (isWorking && OpenWindows.Count == 0)
+                {
+                    _ = SafeCreateNewWindow<PrepareWindow>(activate: false);
+                }
+                if (!isWorking)
+                {
+                    GetCurrentWindowFromType<PrepareWindow>()?.Close();   
+                }
+                if (!isWorking && OpenWindows.Count == 1 && OpenWindows[0] is PrepareWindow)
+                {
+                    OpenWindows[0].Close();
+                    Process.GetCurrentProcess().Kill();
+                }
+            }
+            catch
+            {
+                Process.GetCurrentProcess().Kill();
+            }
         }
 
         private void PipeConnected()
@@ -221,6 +247,12 @@ namespace CDPI_UI
                 GC.SuppressFinalize(window);
                 GC.Collect();
             }
+            
+            if (OpenWindows.Count == 0 && ApplicationTaskMonitor.IsStoreWorking())
+            {
+                _ = SafeCreateNewWindow<PrepareWindow>(activate:false);
+            }
+            
         }
 
         private void TryDisposeFrameworkElement(FrameworkElement fe)
