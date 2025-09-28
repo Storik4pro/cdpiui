@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPI_UI.Helper.Static;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -57,7 +58,8 @@ namespace CDPI_UI.Helper
             {
                 if (!ErrorHappened)
                 {
-                    string filePath = Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.ApplicationStoreId, "patch.cdpipatch");
+                    string filePath = Path.Combine(
+                        StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.ApplicationStoreId, Utils.IsApplicationBuildAsSingleFile ? "patch.cdpipatch" : "patch.msi");
 
                     if (File.Exists(filePath))
                     {
