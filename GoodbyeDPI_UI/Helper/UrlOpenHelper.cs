@@ -8,13 +8,15 @@ namespace CDPI_UI.Helper
 {
     public static class UrlOpenHelper
     {
+        public static string MainRepoUrl = "https://github.com/Storik4pro/cdpiui";
+        public static string LicenseUrl = "https://github.com/Storik4pro/cdpiui/blob/main/LICENSE.txt";
         public static async void LaunchReportUrl()
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/issues"));
         }
         public static async void LaunchMainRepoUrl()
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui"));
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(MainRepoUrl));
         }
         public static async void LaunchWikiUrl()
         {
@@ -22,7 +24,15 @@ namespace CDPI_UI.Helper
         }
         public static async void LaunchLicenseUrl()
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/blob/main/LICENSE.txt"));
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(LicenseUrl));
+        }
+        public static async void LaunchDonateUrl()
+        {
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://pay.cloudtips.ru/p/5bb7ff74"));
+        }
+        public static async void LaunchTelegramUrl()
+        {
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://t.me/storik4dev"));
         }
     }
 }
