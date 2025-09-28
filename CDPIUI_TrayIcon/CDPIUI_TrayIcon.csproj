@@ -10,6 +10,7 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\trayLogoNormal.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
