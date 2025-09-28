@@ -73,7 +73,7 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel x:Name="MainPanel">
+            <StackPanel x:Name="MainPanel" Margin="0 0 0 20">
                 <controls:SettingsCard>
                     <controls:SettingsCard.Resources>
                         <x:Double x:Key="SettingsCardWrapThreshold">700</x:Double>
@@ -108,6 +108,77 @@
                         </Grid>
                     </Button>
                 </controls:SettingsCard>
+                
+                
+                <TextBlock l:Uids.Uid="UsefulLinksTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                <StackPanel>
+                    <HyperlinkButton x:Name="DonateButton" Click="DonateButton_Click" Padding="0 5 5 5">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xEB51;" FontSize="16" />
+                            <TextBlock l:Uids.Uid="DonateTextBlock"/>
+                        </StackPanel>
+                    </HyperlinkButton>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <HyperlinkButton x:Name="DeveloperChannelButton" Click="DeveloperChannelButton_Click" Padding="0 5 5 5">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <FontIcon Glyph="&#xF003;" FontSize="16" />
+                                <TextBlock l:Uids.Uid="DeveloperChannelTextBlock"/>
+                            </StackPanel>
+                        </HyperlinkButton>
+                        <FontIcon Glyph="&#xE7EA;" FontSize="14" />
+                        <TextBlock l:Uids.Uid="DeveloperChannelTipTextBlock" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <HyperlinkButton x:Name="ReportABugButton" Click="ReportABugButton_Click" Padding="0 5 5 5">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xEBE8;" FontSize="16" />
+                            <TextBlock l:Uids.Uid="ReportABugTextBlock"/>
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
+                
+                
+                <TextBlock l:Uids.Uid="AboutAppTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 5"/>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="© 2025 Storik4. License: Apache License, Version 2.0." IsTextSelectionEnabled="True" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <HyperlinkButton x:Name="LicenseButton" Grid.Column="1" Content="More..." Padding="0" Click="LicenseButton_Click"/>
+                    </Grid>
+                    <TextBlock l:Uids.Uid="DeveloperTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    <TextBlock Margin="20 0 0 0" Text="Storik4" IsTextSelectionEnabled="True"/>
+                    <TextBlock l:Uids.Uid="SourceTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    <RichTextBlock Margin="20 0 0 0">
+                        <Paragraph>
+                            <Hyperlink x:Name="RepoHyperlink" Click="RepoHyperlink_Click">
+                                <Run x:Name="RepoRun"/>
+                            </Hyperlink>
+                        </Paragraph>
+                    </RichTextBlock>
+                    <TextBlock l:Uids.Uid="AcknowledgmentsTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    <ListView Margin="20 0 0 0" x:Name="AcknowledgmentsListView" ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:AcknowledgmentsModel">
+                                <StackPanel Orientation="Horizontal" Spacing="10" Height="20">
+                                    <FontIcon Glyph="&#xE77B;" FontSize="14"/>
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <TextBlock l:Uids.Uid="RequirementsTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    <ListView Margin="20 0 0 0" x:Name="RequirementsListView" ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:AcknowledgmentsModel">
+                                <StackPanel Orientation="Horizontal" Spacing="10" Height="20">
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Center" IsTextSelectionEnabled="True"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

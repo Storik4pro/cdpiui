@@ -1,4 +1,4 @@
-using CDPI_UI.Helper;
+﻿using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,11 @@ namespace CDPI_UI.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    
+    public class AcknowledgmentsModel
+    {
+        public string Name { get; set; }
+    }
     public sealed partial class AboutPage : Page
     {
         private enum UpdateButtonStatus
@@ -43,6 +49,27 @@ namespace CDPI_UI.Views
         }
 
         private ILocalizer localizer = Localizer.Get();
+
+        private ObservableCollection<AcknowledgmentsModel> AcknowledgmentsList = new ObservableCollection<AcknowledgmentsModel>()
+        {
+            new () { Name = "Lux Fero" },
+            new () { Name = "Lumenpearson" },
+            new () { Name = "Leaftail1880" },
+            new () { Name = "Nek0t" },
+            new () { Name = "🔭" },
+        };
+
+        private ObservableCollection<AcknowledgmentsModel> RequrementsList = new ObservableCollection<AcknowledgmentsModel>()
+        {
+            new () { Name = "WinUI3Localizer by Andrew KeepCoding" },
+            new () { Name = "WinUIEx by Morten Nielsen" },
+            new () { Name = "TaskScheduler by David Hall" },
+            new () { Name = "Newtonsoft.Json by James Newton-King" },
+            new () { Name = "CommunityToolkit.Labs" },
+            new () { Name = "CommunityToolkit.WinUI" },
+            new () { Name = "ini-parser by Ricardo Amores Hernández" },
+            new () { Name = "Microsoft.Data.Sqlite" },
+        };
         public AboutPage()
         {
             InitializeComponent();
@@ -64,6 +91,11 @@ namespace CDPI_UI.Views
             ApplicationUpdateHelper.Instance.ErrorHappens += ApplicationUpdateHelper_ErrorHappens;
             ApplicationUpdateHelper.Instance.CheckForUpdatesCompleted += ApplicationUpdateHelper_CheckForUpdatesCompleted;
             ApplicationUpdateHelper.Instance.CheckForUpdatesStarted += ApplicationUpdateHelper_CheckForUpdatesStarted;
+
+            RepoRun.Text = UrlOpenHelper.MainRepoUrl;
+
+            AcknowledgmentsListView.ItemsSource = AcknowledgmentsList;
+            RequirementsListView.ItemsSource = RequrementsList;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -192,6 +224,31 @@ namespace CDPI_UI.Views
                 SetBadgeStatus(BadgeStatus.Work);
                 bool result = await ApplicationUpdateHelper.Instance.CheckForUpdates();
             }
+        }
+
+        private void LicenseButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchLicenseUrl();
+        }
+
+        private void RepoHyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            UrlOpenHelper.LaunchMainRepoUrl();
+        }
+
+        private void ReportABugButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchReportUrl();
+        }
+
+        private void DonateButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchDonateUrl();
+        }
+
+        private void DeveloperChannelButton_Click(object sender, RoutedEventArgs e)
+        {
+            UrlOpenHelper.LaunchTelegramUrl();
         }
     }
 }

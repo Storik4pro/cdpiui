@@ -849,4 +849,34 @@ Please, install lates version of "{0}" in Store</value>
   <data name="OfflineHelpWindowTitleTextBlock.Text" xml:space="preserve">
     <value>Offline help</value>
   </data>
+  <data name="SourceTextBlock.Text" xml:space="preserve">
+    <value>Source code</value>
+  </data>
+  <data name="DeveloperTextBlock.Text" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+    <value>About this app</value>
+  </data>
+  <data name="AcknowledgmentsTextBlock.Text" xml:space="preserve">
+    <value>Acknowledgments</value>
+  </data>
+  <data name="RequirementsTextBlock.Text" xml:space="preserve">
+    <value>Requirements</value>
+  </data>
+  <data name="UsefulLinksTextBlock.Text" xml:space="preserve">
+    <value>Useful links</value>
+  </data>
+  <data name="ReportABugTextBlock.Text" xml:space="preserve">
+    <value>Report a problem</value>
+  </data>
+  <data name="DonateTextBlock.Text" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="DeveloperChannelTextBlock.Text" xml:space="preserve">
+    <value>Join developer telegram channel</value>
+  </data>
+  <data name="DeveloperChannelTipTextBlock.Text" xml:space="preserve">
+    <value>News, announcements</value>
+  </data>
 </root>

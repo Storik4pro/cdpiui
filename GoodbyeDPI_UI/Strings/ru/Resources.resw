@@ -851,4 +851,34 @@
   <data name="OfflineHelpWindowTitleTextBlock.Text" xml:space="preserve">
     <value>Локальная справка</value>
   </data>
+  <data name="SourceTextBlock.Text" xml:space="preserve">
+    <value>Исходный код</value>
+  </data>
+  <data name="DeveloperTextBlock.Text" xml:space="preserve">
+    <value>Разработчик</value>
+  </data>
+  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+    <value>Сведения об этом приложении</value>
+  </data>
+  <data name="AcknowledgmentsTextBlock.Text" xml:space="preserve">
+    <value>Благодарности</value>
+  </data>
+  <data name="RequirementsTextBlock.Text" xml:space="preserve">
+    <value>Зависимости</value>
+  </data>
+  <data name="UsefulLinksTextBlock.Text" xml:space="preserve">
+    <value>Полезные ссылки</value>
+  </data>
+  <data name="ReportABugTextBlock.Text" xml:space="preserve">
+    <value>Сообщить о проблеме</value>
+  </data>
+  <data name="DonateTextBlock.Text" xml:space="preserve">
+    <value>Поддержать разработчика монетой</value>
+  </data>
+  <data name="DeveloperChannelTextBlock.Text" xml:space="preserve">
+    <value>Телеграм-канал разработчика</value>
+  </data>
+  <data name="DeveloperChannelTipTextBlock.Text" xml:space="preserve">
+    <value>Будьте в курсе всех последних обновлений!</value>
+  </data>
 </root>
