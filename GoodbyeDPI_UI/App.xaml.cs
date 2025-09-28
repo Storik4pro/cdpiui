@@ -149,7 +149,7 @@ namespace CDPI_UI
             PipeClient.Instance.Start();
         }
         
-        public async void GetReadyFeatures() // TODO: Remove .NET/temp/CDPIUI folders
+        public async void GetReadyFeatures()
         {
             DatabaseHelper.Instance.QuickRestore();
             await InitializeLocalizer();
@@ -549,7 +549,7 @@ namespace CDPI_UI
                     return deleted;
                 }
 
-                var currentWorkDir = StateHelper.Instance.workDirectory;
+                var currentWorkDir = AppDomain.CurrentDomain.BaseDirectory;
                 if (string.IsNullOrWhiteSpace(currentWorkDir))
                 {
                     return deleted;
