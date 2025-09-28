@@ -4,9 +4,9 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:Setup"
-"LanguageId" = "3:1033"
+"LanguageId" = "3:0"
 "CodePage" = "3:1252"
-"UILanguageId" = "3:1033"
+"UILanguageId" = "3:0"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
@@ -236,6 +236,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -971,19 +979,19 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:1033"
+        "LangId" = "3:0"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDPI UI"
-        "ProductCode" = "8:{D809F835-790A-42BA-94BA-FB9E78C938A6}"
-        "PackageCode" = "8:{D7C70267-3B4B-4E7D-A588-26F27FFB2E96}"
+        "ProductCode" = "8:{FB5C0E09-0FDA-48E9-9293-34972682B78A}"
+        "PackageCode" = "8:{8BE57818-548B-41AC-950F-26A0F32951C5}"
         "UpgradeCode" = "8:{AB14590E-0D10-416F-9A0E-07E63074B603}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:0.0.2"
@@ -994,7 +1002,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:Storik4"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "ARPCOMMENTS" = "8:Modern GUI Application for DPI byepass utilits Installer"
         "ARPURLINFOABOUT" = "8:https://storik4pro.github.io/"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
