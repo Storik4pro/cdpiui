@@ -15,7 +15,31 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_031569EED7EC438689D5AB0C328B9B69"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0C95E532417847FAA0E14642F97DC98D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0FDD3C6AC50F4DE095E3819BAE0A8154"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_293D2CAAC21145B999F3DCF01182BD4E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3399A50A02B94BF8BA3D7695E165D5AC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,13 +51,31 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4065B8EE2CBB4425B78A93C6FE375673"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_43210FE8060FF882EC44C1D66C110B10"
         "OwnerKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_592B4E966BB64A8BBBE0839D99477F73"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5DC36C33EDAE4160AACB50038B404F42"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6A180804C0734041AC878F0469DD0873"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,8 +87,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_7F03ABA54FFB47078ADC5C539BC880B2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_AC10388BC4F8602A87F74A413BC0F21B"
         "OwnerKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AF6F2DA83574403EBEBE6DF6A10399B2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -63,14 +123,56 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C9DE44AD06F54EA78B8E5B884FE1F3DE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DE19DBD909EE403AAF8883C01792D827"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E18A5A739E434BBCABF287A9AD7AA236"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E243FD3629FF4FB89D536AABC02167D3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_789548D562D29E54FABDE172730CA22C"
+        "MsmKey" = "8:_EBF06D3D9DD44EA2BAA2F2B2C01CE960"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EC142A4BE56A4B6693E1D344C5BC2671"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F85E33BAE71B438DB2D67634EAE1B071"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FFBD443AF82648C68370EB3EA00493DD"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -103,6 +205,12 @@
         "OwnerKey" = "8:_C1D55763614E38F505115C3042F86608"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_789548D562D29E54FABDE172730CA22C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -121,6 +229,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -137,6 +253,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -176,6 +308,86 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_031569EED7EC438689D5AB0C328B9B69"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Square44x44Logo.targetsize-24_altform-unplated.png"
+            "TargetName" = "8:Square44x44Logo.targetsize-24_altform-unplated.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C95E532417847FAA0E14642F97DC98D"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\SplashScreen.scale-200.png"
+            "TargetName" = "8:SplashScreen.scale-200.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FDD3C6AC50F4DE095E3819BAE0A8154"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Square44x44Logo.scale-200.png"
+            "TargetName" = "8:Square44x44Logo.scale-200.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3399A50A02B94BF8BA3D7695E165D5AC"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\favicon.ico"
+            "TargetName" = "8:favicon.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3B6987073C519E9F6664E756AAEAF90E"
             {
             "AssemblyRegister" = "3:1"
@@ -205,6 +417,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4065B8EE2CBB4425B78A93C6FE375673"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Ad\\EasyConvertFromBatAd.png"
+            "TargetName" = "8:EasyConvertFromBatAd.png"
+            "Tag" = "8:"
+            "Folder" = "8:_923353C91A924A12942A640264196D7C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_43210FE8060FF882EC44C1D66C110B10"
@@ -238,6 +470,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_592B4E966BB64A8BBBE0839D99477F73"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\StoreLogo.png"
+            "TargetName" = "8:StoreLogo.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5DC36C33EDAE4160AACB50038B404F42"
             {
             "SourcePath" = "8:..\\CDPIUI_TrayIcon\\Assets\\trayLogoNormal.ico"
@@ -255,6 +507,26 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A180804C0734041AC878F0469DD0873"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Wide310x150Logo.scale-200.png"
+            "TargetName" = "8:Wide310x150Logo.scale-200.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
@@ -289,6 +561,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F03ABA54FFB47078ADC5C539BC880B2"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Icons\\Store.png"
+            "TargetName" = "8:Store.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AC10388BC4F8602A87F74A413BC0F21B"
             {
             "AssemblyRegister" = "3:1"
@@ -318,6 +610,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF6F2DA83574403EBEBE6DF6A10399B2"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Icons\\DragReorder.png"
+            "TargetName" = "8:DragReorder.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C1D55763614E38F505115C3042F86608"
@@ -351,6 +663,166 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9DE44AD06F54EA78B8E5B884FE1F3DE"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\LockScreenLogo.scale-200.png"
+            "TargetName" = "8:LockScreenLogo.scale-200.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DE19DBD909EE403AAF8883C01792D827"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Square150x150Logo.scale-200.png"
+            "TargetName" = "8:Square150x150Logo.scale-200.png"
+            "Tag" = "8:"
+            "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E18A5A739E434BBCABF287A9AD7AA236"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\spoofdpi.png"
+            "TargetName" = "8:spoofdpi.png"
+            "Tag" = "8:"
+            "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E243FD3629FF4FB89D536AABC02167D3"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\byedpi.png"
+            "TargetName" = "8:byedpi.png"
+            "Tag" = "8:"
+            "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EBF06D3D9DD44EA2BAA2F2B2C01CE960"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\zapret.png"
+            "TargetName" = "8:zapret.png"
+            "Tag" = "8:"
+            "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EC142A4BE56A4B6693E1D344C5BC2671"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\goodbyedpi.png"
+            "TargetName" = "8:goodbyedpi.png"
+            "Tag" = "8:"
+            "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F85E33BAE71B438DB2D67634EAE1B071"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\empty.png"
+            "TargetName" = "8:empty.png"
+            "Tag" = "8:"
+            "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FFBD443AF82648C68370EB3EA00493DD"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Wallpaper\\Kislovodsk\\1.jpeg"
+            "TargetName" = "8:1.jpeg"
+            "Tag" = "8:"
+            "Folder" = "8:_A00A83906CB14DAD9F1042C2DFAE17E9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -367,6 +839,72 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_F3CBC072127B4A25AB87F2BE17DC351F"
+                    {
+                    "Name" = "8:Assets"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_A96B636517D6466590C0C6614C5BD988"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_4935F1D6F4EA491699ED60DB545EBD22"
+                            {
+                            "Name" = "8:Wallpaper"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_2CB4959DA82343AAA741F9E134C67804"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_A00A83906CB14DAD9F1042C2DFAE17E9"
+                                    {
+                                    "Name" = "8:Kislovodsk"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_7CDBC2FEE561419D841E2756FAF3AA9E"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_5CC704D913EE4C7EBE34B88709CF4ED7"
+                            {
+                            "Name" = "8:Icons"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_B4BD5A1DDEE44D1187C7FD8BACF8FF6B"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_923353C91A924A12942A640264196D7C"
+                            {
+                            "Name" = "8:Ad"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_D7E727951DAC4D57AC7DEE17E7AFB5D3"
+                                "Folders"
+                                {
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_998E6C3C9F174D3CAD6788CC678D0617"
+                            {
+                            "Name" = "8:Store"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_7459FB44D7244F9E893F5EEB0B8619FD"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_F6F80380628E43E4A8ABB0AC25C0CC33"
                     {
                     "Name" = "8:ApplicationData"
@@ -441,7 +979,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDPI UI"
         "ProductCode" = "8:{D38CC1FA-A5DD-42F5-BB17-FF52FF66E38F}"
-        "PackageCode" = "8:{992F0EA5-16BA-44DD-823D-72F0BF4C33CD}"
+        "PackageCode" = "8:{05A3125D-0E6B-4B08-AF76-5EA6D4EA2749}"
         "UpgradeCode" = "8:{AB14590E-0D10-416F-9A0E-07E63074B603}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -569,7 +1107,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_993CFB1C1D5643D6821360C35F7E27C6"
+            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
             "Folder" = "8:_89E396BABF19485790686B93CA86F25E"
             "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
             "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
@@ -583,7 +1121,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_993CFB1C1D5643D6821360C35F7E27C6"
+            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
             "Folder" = "8:_81DE9CAD24F74FBD84240289D54A5CFA"
             "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
             "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
@@ -597,7 +1135,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_993CFB1C1D5643D6821360C35F7E27C6"
+            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
             "Folder" = "8:_87B92960C21F4968B827F5DFDB6748AA"
             "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
             "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
@@ -1031,9 +1569,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_993CFB1C1D5643D6821360C35F7E27C6"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B8FD454751554FF38406A5FE8BEC80D3"
             {
-            "SourcePath" = "8:..\\GoodbyeDPI_UI\\bin\\ARM64\\Release\\net8.0-windows10.0.22621.0\\publish\\CDPIUI.exe"
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\obj\\x64\\MsiRelease\\net8.0-windows10.0.22621.0\\win-x64\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
@@ -1051,11 +1589,11 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|x64"
+            "OutputConfiguration" = "8:MsiRelease|x64"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{3B8F23B1-28F5-4867-9D5D-1A77524F3A79}"
             "ShowKeyOutput" = "11:TRUE"
-            "PublishProfilePath" = "8:Properties\\PublishProfiles\\FolderProfile.pubxml"
+            "PublishProfilePath" = "8:Properties\\PublishProfiles\\MsiProfile.pubxml"
                 "ExcludeFilters"
                 {
                 }
