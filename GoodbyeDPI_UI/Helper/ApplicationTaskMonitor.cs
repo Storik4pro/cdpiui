@@ -9,6 +9,8 @@ namespace CDPI_UI.Helper
 {
     public class ApplicationTaskMonitor
     {
+        public Action<bool> StoreStateChanged;
+
         private static ApplicationTaskMonitor _instance;
         private static readonly object _lock = new object();
 
@@ -27,7 +29,32 @@ namespace CDPI_UI.Helper
 
         private ApplicationTaskMonitor()
         {
+            StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
+            StoreHelper.Instance.NowProcessItemActions += StoreHelper_NowProcessItemActions;
+        }
 
+        private void StoreHelper_NowProcessItemActions(string obj)
+        {
+            if (!IsStoreWorking())
+            {
+                StoreStateChanged?.Invoke(false);
+            }
+            else
+            {
+                StoreStateChanged?.Invoke(true);
+            }
+        }
+
+        private void StoreHelper_ItemActionsStopped(string obj)
+        {
+            if (!IsStoreWorking() || StoreHelper.Instance.GetQueue().Count == 0)
+            {
+                StoreStateChanged?.Invoke(false);
+            }
+            else
+            {
+                StoreStateChanged?.Invoke(true);
+            }
         }
 
         public static bool IsComponentProcessRunned()
