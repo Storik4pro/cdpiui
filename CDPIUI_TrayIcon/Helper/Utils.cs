@@ -51,7 +51,7 @@ namespace CDPIUI_TrayIcon.Helper
         {
             if (Path.GetExtension(targetFile).ToLower() == ".msi")
             {
-                RunHelper.Run("msiexec.exe", $"/install \"{targetFile}\" /passive");
+                RunHelper.Run("msiexec.exe", $"/i \"{targetFile}\" /qn+");
                 _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
                 Application.Exit();
             }
