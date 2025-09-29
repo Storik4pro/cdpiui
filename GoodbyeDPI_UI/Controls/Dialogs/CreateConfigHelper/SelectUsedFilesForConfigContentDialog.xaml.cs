@@ -146,7 +146,13 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 }
                 if (ConfigItem != null && ConfigItem.packId != null && ConfigItem.jparams != null)
                 {
-                    return ConfigHelper.ReplaceVariables(filePath, ConfigHelper.GetReadyToUseVariables(ConfigItem.packId, ConfigItem.variables, ConfigItem.jparams));
+                    string _filePath = Helper.LScript.LScriptLangHelper.ExecuteScriptUnsafe(
+                        ConfigHelper.ReplaceVariables(
+                            filePath, ConfigHelper.GetReadyToUseVariables(ConfigItem.packId, ConfigItem.variables, ConfigItem.jparams)),
+                        callItemId: ConfigItem.packId);
+
+                    if (Path.Exists(_filePath))
+                        return _filePath;
                 }
                 if (File.Exists(filePath))
                 {
