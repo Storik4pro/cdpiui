@@ -644,12 +644,16 @@ namespace CDPI_UI.Helper.Items
                 }
                 if (line.StartsWith("rem") && line.Contains("set"))
                 {
-                    string[] remLine = line.Substring(3).Replace("set", "").Split("=");
+                    string _l = line[3..];
+                    var rx = new Regex(@"\s+set\b", RegexOptions.None);
+                    _l = rx.Replace(_l, "", 1);
+
+                    string[] remLine = _l.Split("=");
                     if (remLine.Length >= 2)
                     {
                         remLine[0] = remLine[0].Trim();
                         remLine[1] = remLine[1].Trim();
-                        string value = line[3..].Replace("set", "").Replace($"{remLine[0]}=", "").Trim();
+                        string value = rx.Replace(line[3..], "", 1).Replace($"{remLine[0]}=", "").Trim();
 
                         bool found = false;
                         foreach (var availableVar in availableVarValues)
@@ -854,6 +858,11 @@ namespace CDPI_UI.Helper.Items
                 value = value.Replace("\"", "");
                 value = value.Replace("\'", "");
 
+                if (flag.StartsWith("--debug", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 if (flag.StartsWith("--hostlist", StringComparison.OrdinalIgnoreCase) || flag.StartsWith("--ipset", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!value.EndsWith(".bin") && !value.EndsWith(".txt"))
@@ -861,11 +870,6 @@ namespace CDPI_UI.Helper.Items
 
                     if (!files.Contains(value))
                         files.Add(value);
-                    continue;
-                }
-
-                if (flag.StartsWith("--hostlist-auto", StringComparison.OrdinalIgnoreCase) || flag.StartsWith("--debug", StringComparison.OrdinalIgnoreCase))
-                {
                     continue;
                 }
 

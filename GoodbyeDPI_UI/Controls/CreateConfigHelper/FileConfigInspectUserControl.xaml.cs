@@ -141,9 +141,7 @@ namespace CDPI_UI.Controls
                 {
                     try
                     {
-                        string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
-
-                        File.Copy(openFileDialog.FileName, $"$GETCURRENTDIR()/{lastSegment}/{Path.GetFileName(FilePath)}", true);
+                        File.Copy(openFileDialog.FileName, Path.Combine(ConvertFolderPath, Path.GetFileName(FilePath)), true);
                     }
                     catch (Exception ex)
                     {
@@ -152,7 +150,9 @@ namespace CDPI_UI.Controls
                             System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
                         return;
                     }
-                    ChangeFilePathCommandParameter = Tuple.Create(FilePath, openFileDialog.FileName);
+                    string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
+
+                    ChangeFilePathCommandParameter = Tuple.Create(FilePath, $"$GETCURRENTDIR()/{lastSegment}/{Path.GetFileName(openFileDialog.FileName)}");
                     if (ChangeFilePathCommand != null && ChangeFilePathCommand.CanExecute(ChangeFilePathCommandParameter))
                     {
                         ChangeFilePathCommand.Execute(ChangeFilePathCommandParameter);

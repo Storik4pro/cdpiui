@@ -140,6 +140,10 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
         {
             try
             {
+                if (string.Equals(Path.GetFileNameWithoutExtension(filePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
+                {
+                    return filePath;
+                }
                 if (ConfigItem != null && ConfigItem.packId != null && ConfigItem.jparams != null)
                 {
                     return ConfigHelper.ReplaceVariables(filePath, ConfigHelper.GetReadyToUseVariables(ConfigItem.packId, ConfigItem.variables, ConfigItem.jparams));
@@ -227,7 +231,8 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 try
                 {
                     string filepath = Regex.Replace(model.FilePath, @"%(?<name>[A-Za-z0-9_]+)%", "");
-                    File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(filepath)), true);
+                    if (!string.Equals(Path.GetFileNameWithoutExtension(model.AutoCorrectFilePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
+                        File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(filepath)), true);
                     Files.Add(
                         model.FilePath,
                         "$GETCURRENTDIR()/" +
