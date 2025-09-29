@@ -58,7 +58,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
             { "already running", "ALREADY_RUNNING_WARN" },
             { "could not read", "FILE_READ_ERROR" },
-            { "flag provided but not defined:", "PARAMETER_ERROR" }
+            { "flag provided but not defined:", "PARAMETER_ERROR" }, 
+            { "cannot create", "ACCESS_DENIED" }, 
         };
 
         private ProcessManager()
