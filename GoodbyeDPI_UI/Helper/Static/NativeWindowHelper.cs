@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -20,87 +21,95 @@ namespace CDPI_UI.Helper.Static
         private const int SC_MAXIMIZE = 0xF030; // Maximize command
         private const int WM_SIZE = 0x0005; // Resize message
         private const int SIZE_MAXIMIZED = 2; // Maximized size
+        private const int WM_NCDESTROY = 0x0082;
         private const int GWLP_WNDPROC = -4;
+
+        private delegate IntPtr WndProcDelegate(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         // Static field to hold the delegate, preventing it from being garbage-collected
         private static WndProcDelegate _currentWndProcDelegate;
 
+
         // Delegate for the new window procedure
-        private delegate IntPtr WndProcDelegate(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
+        private static readonly ConcurrentDictionary<IntPtr, IntPtr> _originalProcs = new();
+        private static readonly ConcurrentDictionary<IntPtr, WndProcDelegate> _wndProcDelegates = new();
 
         public static void ForceDisableMaximize(Window window)
         {
             var hwnd = WindowNative.GetWindowHandle(window);
+            if (hwnd == IntPtr.Zero) return;
 
-            if (hwnd == IntPtr.Zero)
+            if (_originalProcs.ContainsKey(hwnd)) return;
+
+            IntPtr original = GetWindowLongPtr(hwnd, GWLP_WNDPROC);
+            if (original == IntPtr.Zero)
             {
-                System.Diagnostics.Debug.WriteLine("Invalid window handle. Cannot hook window procedure.");
+                System.Diagnostics.Debug.WriteLine("Failed to get original WndProc.");
                 return;
             }
 
-            // Store the original WndProc and assign the new one
-            IntPtr originalWndProc = GetWindowLongPtr(hwnd, GWLP_WNDPROC);
-            if (originalWndProc == IntPtr.Zero)
+            WndProcDelegate del = null!;
+            del = (wndHwnd, msg, wParam, lParam) =>
             {
-                System.Diagnostics.Debug.WriteLine("Failed to retrieve the original WndProc.");
-                return;
-            }
+                if (msg == WM_NCDESTROY)
+                {
+                    RemoveHook(wndHwnd, original);
+                    return CallWindowProc(original, wndHwnd, msg, wParam, lParam);
+                }
 
-            _currentWndProcDelegate = (wndHwnd, msg, wParam, lParam) =>
-            {
-                // Suppress double-click maximize
                 if (msg == WM_NCLBUTTONDBLCLK)
                 {
                     System.Diagnostics.Debug.WriteLine("Double-click maximize suppressed.");
                     return IntPtr.Zero;
                 }
 
-                // Suppress system maximize command (e.g., via keyboard shortcuts or title bar menu)
                 if (msg == WM_SYSCOMMAND && wParam.ToInt32() == SC_MAXIMIZE)
                 {
                     System.Diagnostics.Debug.WriteLine("Maximize via system command suppressed.");
                     return IntPtr.Zero;
                 }
 
-
-                try
-                {
-                    // Ensure parameters are valid before calling originalWndProc
-                    if (wndHwnd != IntPtr.Zero && originalWndProc != IntPtr.Zero)
-                    {
-                        return CallWindowProc(originalWndProc, wndHwnd, msg, wParam, lParam);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("Invalid parameters in WndProc call.");
-                        return IntPtr.Zero;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions to avoid crashing
-                    System.Diagnostics.Debug.WriteLine($"Error in WndProc: {ex.Message}");
-                    return IntPtr.Zero;
-                }
+                return CallWindowProc(original, wndHwnd, msg, wParam, lParam);
             };
 
+            _originalProcs[hwnd] = original;
+            _wndProcDelegates[hwnd] = del;
+
+            IntPtr newPtr = Marshal.GetFunctionPointerForDelegate(del);
+            IntPtr prev = SetWindowLongPtr(hwnd, GWLP_WNDPROC, newPtr);
+            if (prev == IntPtr.Zero)
+            {
+                int err = Marshal.GetLastWin32Error();
+                System.Diagnostics.Debug.WriteLine($"SetWindowLongPtr failed: {err}");
+                _originalProcs.TryRemove(hwnd, out _);
+                _wndProcDelegates.TryRemove(hwnd, out _);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("WndProc hooked successfully.");
+            }
+        }
+
+        private static void RemoveHook(IntPtr hwnd, IntPtr originalProc)
+        {
             try
             {
-                // Hook the new WndProc
-                IntPtr result = SetWindowLongPtr(hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_currentWndProcDelegate));
-                if (result == IntPtr.Zero)
+                IntPtr prev = SetWindowLongPtr(hwnd, GWLP_WNDPROC, originalProc);
+                if (prev == IntPtr.Zero)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Failed to set new WndProc. Error: {Marshal.GetLastWin32Error()}");
+                    int err = Marshal.GetLastWin32Error();
+                    System.Diagnostics.Debug.WriteLine($"Restore SetWindowLongPtr failed: {err}");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error hooking window procedure: {ex.Message}");
-                return;
+                System.Diagnostics.Debug.WriteLine($"Error restoring WndProc: {ex.Message}");
             }
-
-            // Prevent garbage collection of the delegate (redundant but safe)
-            GC.KeepAlive(_currentWndProcDelegate);
+            finally
+            {
+                _originalProcs.TryRemove(hwnd, out _);
+                _wndProcDelegates.TryRemove(hwnd, out _);
+            }
         }
 
         // Win32 API declarations
