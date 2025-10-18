@@ -191,6 +191,9 @@ namespace CDPIUI_TrayIcon.Helper
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
                     }
                     break;
+                case "LOGGER:OPEN_MSI_LOG":
+                    OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "MsiInstallerHelper.log"));
+                    break;
                 case "UPDATE:OPEN_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "update.log"));
                     break;
