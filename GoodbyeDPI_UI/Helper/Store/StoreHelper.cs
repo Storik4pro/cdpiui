@@ -44,6 +44,13 @@ namespace CDPI_UI.Helper
         public string ServerVersion { get; set; }
         public string VersionInfo { get; set; }
     }
+
+    public class License
+    {
+        public string name { get; set; }
+        public string url { get; set; }
+    }
+
     public class StoreHelper
     {
         private static readonly string GitHubApiToken = Secret.GitHubToken;
@@ -88,6 +95,20 @@ namespace CDPI_UI.Helper
             public string url;
         }
 
+        
+
+        public class FileToDownload
+        {
+            public string type;
+            public string archive_root_folder;
+            public string actions;
+            public string version_control;
+            public string version_control_link;
+            public string download_link;
+            public string preffered_version;
+            public string preffered_to_download_file_name;
+        }
+
         public class RepoCategoryItem
         {
             public string store_id;
@@ -105,6 +126,8 @@ namespace CDPI_UI.Helper
             public string warning_text;
             public List<Link> links;
             public string version_control;
+            public List<FileToDownload> files_to_download;
+            public List<License> license;
             public string version_control_link;
             public string download_link;
             public string filetype;
@@ -719,6 +742,18 @@ namespace CDPI_UI.Helper
             }
         }
 
+
+        private class DownloadLink
+        {
+            public string link;
+            public string version;
+            public string type;
+            public string archive_root_folder;
+            public bool errorHappens = false;
+            public string errorCode;
+            public string actions;
+            public string target_executable_file;
+        }
         private async Task<Tuple<string, string>> GetVersionDownloadLink(
             string repoUrl, string targetFileOrFileType, string version = null, string prefferedFile = null
         )
@@ -773,6 +808,49 @@ namespace CDPI_UI.Helper
 
         }
 
+        private async Task<List<DownloadLink>> GetDownloadLinksAsync(List<FileToDownload> filesToDownload) 
+        {
+            List<DownloadLink> links = [];
+            bool errorHappens = false;
+            string errorCode = string.Empty;
+
+            foreach (var file in filesToDownload)
+            {
+                string downloadUrl, downloadVersion;
+                if (file.version_control == "external_site_only_last")
+                {
+                    downloadUrl = file.download_link;
+                    downloadVersion = null;
+                }
+                else
+                {
+                    Tuple<string, string> result = await GetVersionDownloadLink(file.version_control_link, file.type, file.preffered_version, file.preffered_to_download_file_name);
+                    downloadUrl = result.Item1;
+                    downloadVersion = result.Item2;
+                    if (downloadUrl.StartsWith("ERR_"))
+                    {
+                        errorHappens = true;
+                        errorCode = downloadUrl;
+                    }
+                }
+
+                links.Add(new()
+                {
+                    link = downloadUrl,
+                    version = downloadVersion,
+                    type = file.type,
+                    archive_root_folder = file.archive_root_folder,
+                    errorCode = errorCode,
+                    errorHappens = errorHappens,
+                    actions = file.actions,
+                    target_executable_file = null
+                });
+                if (errorHappens) break;
+            }
+
+            return links;
+        }
+
         private static async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
         {
             Debug.WriteLine(repoUrl);
@@ -786,7 +864,7 @@ namespace CDPI_UI.Helper
 
             using var client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.Add(
-                new ProductInfoHeaderValue("CDPIStore", "0.0.0.0"));
+                new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("token", GitHubApiToken);
 
@@ -850,6 +928,7 @@ namespace CDPI_UI.Helper
             string downloadUrl = "";
             string tag = "";
             string filetype = item.filetype;
+            List<DownloadLink> downloadLinks = [];
 
             if (item.version_control == "git_only_last")
             {
@@ -862,6 +941,17 @@ namespace CDPI_UI.Helper
                 var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile:item.preffered_to_download_file_name);
                 downloadUrl = data.Item1;
                 tag = data.Item2;
+            }
+            else if (item.version_control == "several_repos")
+            {
+                downloadLinks = await GetDownloadLinksAsync(item.files_to_download);
+            }
+            var errorLink = downloadLinks.FirstOrDefault(i => i.errorHappens);
+            if (errorLink != null)
+            {
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, errorLink.errorCode));
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{errorLink.errorCode} exception happens.");
+                return;
             }
 
             if (downloadUrl.StartsWith("ERR"))
@@ -884,15 +974,47 @@ namespace CDPI_UI.Helper
             if (DownloadManager == null)
                 return;
 
-            await DownloadManager.DownloadAndExtractAsync(
-                downloadUrl,
-                itemFolder,
-                extractArchive: item.filetype == "archive",
-                extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
-                extractRootFolder: item.archive_root_folder,
-                executableFileName: item.target_executable_file,
-                filetype: item.filetype
-            );
+            if (item.version_control == "several_repos")
+            {
+                bool restartFlag = false;
+                foreach (var link in downloadLinks)
+                {
+                    bool result = await DownloadManager.DownloadAndExtractAsync(
+                        link.link,
+                        itemFolder,
+                        extractArchive: link.type == "archive",
+                        extractSkipFiletypes: [],
+                        extractRootFolder: link.archive_root_folder,
+                        executableFileName: link.target_executable_file,
+                        filetype: link.type,
+                        removeAfterAction: link.actions == "remove"
+                    );
+
+                    if (DownloadManager.IsRestartNeeded)
+                    {
+                        restartFlag = true;
+                    }
+                    if (!result)
+                    {
+                        return;
+                    }
+                }
+
+                if (restartFlag) 
+                    Logger.Instance.CreateDebugLog(nameof(StoreHelper), "Restart requested");
+            }
+            else
+            {
+                await DownloadManager.DownloadAndExtractAsync(
+                    downloadUrl,
+                    itemFolder,
+                    extractArchive: item.filetype == "archive",
+                    extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
+                    extractRootFolder: item.archive_root_folder,
+                    executableFileName: item.target_executable_file,
+                    filetype: item.filetype
+                );
+            }
 
             if (cancellationToken.IsCancellationRequested)
                 return;
