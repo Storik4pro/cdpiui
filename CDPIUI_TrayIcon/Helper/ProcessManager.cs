@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,69 +25,89 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
-        private CancellationTokenSource? _cancellationTokenSource;
-        private PROCESS_INFORMATION _processInfo;
-        private IntPtr _pseudoConsoleHandle = IntPtr.Zero;
-        private IntPtr _hInputRead = IntPtr.Zero;
-        private IntPtr _hInputWrite = IntPtr.Zero;
-        private IntPtr _hOutputRead = IntPtr.Zero;
-        private IntPtr _hOutputWrite = IntPtr.Zero;
+        private bool useProxy = false;
+        private string proxyType = string.Empty;
+        private string proxiFyreDir = string.Empty;
+        private string _ip = string.Empty;
+        private string _port = string.Empty;
 
         private string? Executable;
         private string? Args;
-
-        public bool isErrorHappens = false;
-        public List<string> LatestErrorMessage = ["", ""];
 
         public Action<bool>? ProcessStateChanged;
         public bool processState = false;
         public string ProcessName = string.Empty;
 
-        private readonly StringBuilder _outputBuffer;
-        private readonly StringBuilder _outputDefaultBuffer;
+        
+        private ConPTYHelper conPTYHelper;
+        private ConPTYHelper proxiFyreHelper;
+        
 
-        readonly Dictionary<string, string> errorMappings = new()
+        public ProcessManager()
         {
-            { "Error opening filter", "FILTER_OPEN_ERROR" },
-            { "unknown option", "PARAMETER_ERROR" },
-            { "hostlists load failed", "HOSTLIST_LOAD_ERROR" },
-            { "must specify port filter", "PORT_FILTER_ERROR" },
-            { "ERROR:", "UNKNOWN_ERROR" },
-            { "Component not installed correctly", "COMPONENT_INSTALL_ERROR" },
-            { "error", "UNKNOWN_ERROR" },
-            { "invalid value", "INVALID_VALUE_ERROR" },
-            { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
-            { "already running", "ALREADY_RUNNING_WARN" },
-            { "could not read", "FILE_READ_ERROR" },
-            { "flag provided but not defined:", "PARAMETER_ERROR" }, 
-            { "cannot create", "ACCESS_DENIED" }, 
-        };
+            conPTYHelper = new ConPTYHelper();
+            conPTYHelper.ProcessExited += SendStopMessage;
+            conPTYHelper.OutputAdded += SendOutput;
+            conPTYHelper.ErrorHappens += ShowErrorMessage;
+            conPTYHelper.ProcessStateChanged += ChangeProcessState;
 
-        private ProcessManager()
-        {
-
-            _outputBuffer = new StringBuilder();
-            _outputDefaultBuffer = new StringBuilder();
-        }
-
-        private bool CurrentState = false;
-        private object _setStateLock = new();
-        private void ChangeProcessState(bool isRunned)
-        {
-            lock (_setStateLock)
-            {
-                if (CurrentState != isRunned)
-                {
-                    ProcessStateChanged?.Invoke(isRunned);
-                    CurrentState = isRunned;
-                }
-            }
-        }
+            proxiFyreHelper = new ConPTYHelper("PROXIFYRE");
+            proxiFyreHelper.ProcessExited += PFSendStopMessage;
+            proxiFyreHelper.OutputAdded += PFSendOutput;
+            proxiFyreHelper.ErrorHappens += PFShowErrorMessage;
+            proxiFyreHelper.ProcessStateChanged += PFChangeProcessState;
+        }       
 
         public bool IsProcessInfoChanged = false;
 
+
+
+        public void InitProxy(string path)
+        {
+            proxiFyreDir = path;
+        }
+
+        public void CleanProxy()
+        {
+            proxyType = string.Empty;
+            proxiFyreDir = string.Empty;
+            useProxy = false;   
+        }
+
+        public async void StartProxy(string _proxyType, string ip, string port)
+        {
+            _ip = ip;
+            _port = port;
+            proxyType = _proxyType;
+            Debug.WriteLine($"Proxy setup for {proxyType}, {ip}, {port}");
+            if (!string.IsNullOrEmpty(proxyType))
+            {
+                if (proxyType == "AllSystem")
+                {
+                    StartSystemProxy(ip, port);
+                }
+                else if (proxyType == "ProxiFyre")
+                {
+                    proxiFyreHelper.RunProcess(proxiFyreDir, string.Empty, Path.GetDirectoryName(proxiFyreDir)!);
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        public void StopProxy()
+        {
+            if (proxyType == "AllSystem")
+                StopSystemProxy();
+
+            if (proxiFyreHelper.processState)
+                _ = proxiFyreHelper.StopProcess();
+        }
+
         public async Task StartProcess()
         {
+            if (useProxy)
+                StartProxy(proxyType, _ip, _port);
+
             if (Executable != null && Args != null && !IsProcessInfoChanged)
             {
                 await StartProcess(Executable, Args);
@@ -105,42 +126,17 @@ namespace CDPIUI_TrayIcon.Helper
             IsProcessInfoChanged = false;
             Executable = executable;
             Args = args;
-            isErrorHappens = false;
-            LatestErrorMessage.Clear();
-            try
-            {
-                if (_processInfo.hProcess != IntPtr.Zero)
-                {
-                    return;
-                }
+            
+            var exePath = executable;
+            var workingDirectory = Path.GetDirectoryName(exePath);
 
-                _outputBuffer.Clear();
-                _outputDefaultBuffer.Clear();
+            ProcessName = Path.GetFileName(exePath);
 
-                var exePath = executable;
-                var workingDirectory = Path.GetDirectoryName(exePath);
+            await PipeServer.Instance.SendMessage("CONPTY:STARTED");
 
-                ProcessName = Path.GetFileName(exePath);
+            SendNowSelectedComponentName();
 
-                _cancellationTokenSource = new CancellationTokenSource();
-                var token = _cancellationTokenSource.Token;
-
-                await PipeServer.Instance.SendMessage("CONPTY:STARTED");
-                processState = true;
-                ChangeProcessState(processState);
-
-                SendNowSelectedComponentName();
-
-                await Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory?? "", token));
-
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage($"Unexpected error while trying to start process: {ex.Message}", _object: "console");
-                SendStopMessage("Unexpected error happens while trying to stop process");
-                processState = false;
-                ChangeProcessState(processState);
-            }
+            conPTYHelper.RunProcess(exePath, args, workingDirectory?? "");
         }
 
         public void SendNowSelectedComponentName()
@@ -148,55 +144,13 @@ namespace CDPIUI_TrayIcon.Helper
             _ = PipeServer.Instance.SendMessage($"CONPTY:PROCNAME({ProcessName})");
         }
 
-        private void SendStopMessage(string output = "Process will be stopped by user")
-        {
-            _outputDefaultBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
-            _outputBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
-
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
-        }
+       
 
         public async Task StopProcess(bool output = true)
         {
-            try
-            {
-                _cancellationTokenSource?.Cancel();
+            StopProxy();
+            await conPTYHelper.StopProcess(output);
 
-                if (_processInfo.hProcess != IntPtr.Zero)
-                {
-                    TerminateProcess(_processInfo.hProcess, 0);
-
-                    WaitForSingleObject(_processInfo.hProcess, INFINITE);
-
-                    CloseHandle(_processInfo.hProcess);
-
-                    _processInfo = default;
-                }
-
-                if (_pseudoConsoleHandle != IntPtr.Zero)
-                {
-                    ClosePseudoConsole(_pseudoConsoleHandle);
-                    _pseudoConsoleHandle = IntPtr.Zero;
-                }
-                if (_hInputWrite != IntPtr.Zero)
-                {
-                    CloseHandle(_hInputWrite);
-                    _hInputWrite = IntPtr.Zero;
-                }
-                if (output) { 
-                    await PipeServer.Instance.SendMessage("CONPTY:STOPPED"); 
-                }
-                processState = false;
-                ChangeProcessState(processState);
-
-                //SendStopMessage();
-            }
-            catch (Exception ex)
-            {
-                //await ShowErrorMessage($"Unable to stop process: {ex.Message}", _object: "console");
-                processState = false;
-                ChangeProcessState(processState);
-            }
             await Task.CompletedTask;
         }
 
@@ -237,12 +191,6 @@ namespace CDPIUI_TrayIcon.Helper
 
         }
 
-        private async void StopProcessAfterDelay()
-        {
-            await Task.Delay(1000);
-            await StopProcess(false);
-        }
-
         private async Task ExecuteCommand(string fileName, string arguments)
         {
             using (Process process = new Process())
@@ -277,18 +225,14 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
-        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-        public static extern int GetSystemDefaultLCID();
-
         public void SendDefaultProcessOutput()
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:FULLOUTPUT({_outputDefaultBuffer.ToString()})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:FULLOUTPUT({conPTYHelper.GetDefaultOutput()})");
 
         }
         public void SendState()
         {
-            
-            if (processState)
+            if (conPTYHelper.processState)
             {
                 _ = PipeServer.Instance.SendMessage("CONPTY:STARTED");
             }
@@ -298,295 +242,101 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
-        private string ReplaceSymbols(string str)
+        private void StartSystemProxy(string ip, string port)
         {
-            str = str.Replace("[?25l\u001b[2J\u001b[m\u001b[H", "");
-            str = str.Replace("[4;1H", "\n");
-            str = Regex.Replace(str, @"\u001b\]0;.*?\[\?25h", "");
-            str = Regex.Replace(str, @"\[\?25l|\[1C|", "");
-            str = Regex.Replace(str, @"\[\?\d{4}\w", "");
-            return str;
+            string proxyServer = string.Empty;
+            IPAddress address;
+            if (IPAddress.TryParse(ip, out address))
+            {
+                proxyServer = address.AddressFamily switch
+                {
+                    System.Net.Sockets.AddressFamily.InterNetwork => $"socks={ip}:{port}",
+                    System.Net.Sockets.AddressFamily.InterNetworkV6 => $"socks=[{ip}]:{port}",
+                    _ => "",
+                };
+            }
 
-        }
-
-        private void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token)
-        {
-            IntPtr pseudoConsoleHandle = IntPtr.Zero;
-            IntPtr hInputRead = IntPtr.Zero;
-            IntPtr hInputWrite = IntPtr.Zero;
-            IntPtr hOutputRead = IntPtr.Zero;
-            IntPtr hOutputWrite = IntPtr.Zero;
-
+            if (string.IsNullOrEmpty(proxyServer))
+            {
+                ShowErrorMessage(Tuple.Create($"Internal error -> IP_INCORRECT", nameof(StartSystemProxy)));
+                return;
+            }
             try
             {
-                CreatePipe(out hInputRead, out hInputWrite, false);
-                CreatePipe(out hOutputRead, out hOutputWrite, false);
-
-                _hInputWrite = hInputWrite;
-                _hOutputRead = hOutputRead;
-
-                uint consoleSizeX = 80;
-                uint consoleSizeY = 25;
-                var size = new COORD { X = (short)consoleSizeX, Y = (short)consoleSizeY };
-                var hr = CreatePseudoConsole(size, hInputRead, hOutputWrite, 0, out pseudoConsoleHandle);
-
-                if (hr != 0)
-                {
-                    throw new Exception($"Unable to create PseudoConsole, error: {hr}");
-                }
-
-                _pseudoConsoleHandle = pseudoConsoleHandle;
-
-                CloseHandle(hInputRead);
-                hInputRead = IntPtr.Zero;
-                CloseHandle(hOutputWrite);
-                hOutputWrite = IntPtr.Zero;
-
-                var si = new STARTUPINFOEX
-                {
-                    StartupInfo = new STARTUPINFO
-                    {
-                        cb = Marshal.SizeOf(typeof(STARTUPINFOEX)),
-                        dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW,
-                        wShowWindow = SW_HIDE
-                    }
-                };
-
-                IntPtr lpAttrList = IntPtr.Zero;
-                var lpSize = IntPtr.Zero;
-
-                InitializeProcThreadAttributeList(IntPtr.Zero, 1, 0, ref lpSize);
-                lpAttrList = Marshal.AllocHGlobal(lpSize);
-                InitializeProcThreadAttributeList(lpAttrList, 1, 0, ref lpSize);
-
-                UpdateProcThreadAttribute(lpAttrList, 0, (IntPtr)PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE, _pseudoConsoleHandle, (IntPtr)IntPtr.Size, IntPtr.Zero, IntPtr.Zero);
-
-                si.lpAttributeList = lpAttrList;
-
-                var pi = new PROCESS_INFORMATION();
-
-                var success = CreateProcess(
-                    null,
-                    $"\"{exePath}\" {args}",
-                    IntPtr.Zero,
-                    IntPtr.Zero,
-                    false,
-                    EXTENDED_STARTUPINFO_PRESENT,
-                    IntPtr.Zero,
-                    workingDirectory,
-                    ref si,
-                    out pi);
-
-                if (!success)
-                {
-                    var error = Marshal.GetLastWin32Error();
-                    throw new Exception($"Cannot start process, error: {error}");
-                }
-
-                _processInfo = pi;
-
-                CloseHandle(pi.hThread);
-
-                var safeOutputReadHandle = new SafeFileHandle(_hOutputRead, ownsHandle: true);
-                _hOutputRead = IntPtr.Zero;
-
-                using (var reader = new FileStream(safeOutputReadHandle, FileAccess.Read))
-                {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-
-                    while (!token.IsCancellationRequested && (bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        string _output = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-                        foreach (var errorMapping in errorMappings)
-                        {
-                            if (_output.IndexOf(errorMapping.Key, StringComparison.OrdinalIgnoreCase) >= 0)
-                            {
-                                ShowErrorMessage(errorMapping.Value);
-                                StopProcessAfterDelay();
-                                break;
-
-                            }
-                        }
-
-
-                        _outputDefaultBuffer.Append(_output);
-
-                        string output = ReplaceSymbols(_output);
-                        _outputBuffer.Append(output);
-
-                        _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
-                    }
-                }
-
-                WaitForSingleObject(pi.hProcess, INFINITE);
-
-                CloseHandle(pi.hProcess);
-
-                SendStopMessage();
+                RegeditHelper.SaveProxySettings(proxyServer, string.Empty, 1);
             }
             catch (Exception ex)
             {
-                if (ex.Message != "External component has thrown an exception.")
-                    ShowErrorMessage($"{ex.Message}", _object: "console");
-
-            }
-            finally
-            {
-                if (_pseudoConsoleHandle != IntPtr.Zero)
-                {
-                    ClosePseudoConsole(_pseudoConsoleHandle);
-                    _pseudoConsoleHandle = IntPtr.Zero;
-                }
-                if (_hInputWrite != IntPtr.Zero)
-                {
-                    CloseHandle(_hInputWrite);
-                    _hInputWrite = IntPtr.Zero;
-                }
-
-                SendStopMessage("Process will be stopped");
-
-
-                processState = false;
-                ChangeProcessState(processState);
-                _processInfo = default;
+                ShowErrorMessage(Tuple.Create($"Internal error -> {ex.Message}", nameof(RegeditHelper)));
+                Logger.Instance.CreateErrorLog(nameof(ProcessManager), $"{ex.Message}");
             }
         }
 
-        private void ShowErrorMessage(string message, string _object = "process")
+        private void StopSystemProxy()
         {
-            Logger.Instance.CreateWarningLog(nameof(ProcessManager), $"CONPTY error: {message} object: {_object}");
-            isErrorHappens = true;
+            try
+            {
+                RegeditHelper.SaveProxySettings(string.Empty, string.Empty, 0);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(Tuple.Create($"Internal error -> {ex.Message}", nameof(RegeditHelper)));
+                Logger.Instance.CreateErrorLog(nameof(ProcessManager), $"{ex.Message}");
+            }
+        }
 
-
+        #region MessageHandler
+        private void SendStopMessage(string output = "Process will be stopped by user")
+        {
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
+            StopProxy();
+        }
+        private void SendOutput(string output)
+        {
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
+        }
+        private void ChangeProcessState(bool isRunned)
+        {
+            ProcessStateChanged?.Invoke(isRunned);
+            Debug.WriteLine($"Process state is {isRunned}");
+            if (isRunned == false) StopProxy();
+        }
+        private void ShowErrorMessage(Tuple<string, string> tuple)
+        {
+            string message = tuple.Item1;
+            string _object = tuple.Item2;
             _ = PipeServer.Instance.SendMessage($"CONPTY:STOPPED({message}$SEPARATOR{_object})");
-
-            LatestErrorMessage.Clear();
-
-            LatestErrorMessage.Add(message);
-            LatestErrorMessage.Add(_object);
-
+            StopProxy();
         }
 
-        #region WinAPI Definitions
-
-
-        private const uint PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE = 0x00020016;
-        private const int STARTF_USESTDHANDLES = 0x00000100;
-        private const int STARTF_USESHOWWINDOW = 0x00000001;
-        private const uint EXTENDED_STARTUPINFO_PRESENT = 0x00080000;
-        private const ushort SW_HIDE = 0;
-        private const uint INFINITE = 0xFFFFFFFF;
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern uint CreatePseudoConsole(COORD size, IntPtr hInput, IntPtr hOutput, uint dwFlags, out IntPtr phPC);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern void ClosePseudoConsole(IntPtr hPC);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool InitializeProcThreadAttributeList(IntPtr lpAttributeList, int dwAttributeCount, int dwFlags, ref IntPtr lpSize);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool UpdateProcThreadAttribute(IntPtr lpAttributeList, uint dwFlags, IntPtr Attribute, IntPtr lpValue, IntPtr cbSize, IntPtr lpPreviousValue, IntPtr lpReturnSize);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern void DeleteProcThreadAttributeList(IntPtr lpAttributeList);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool CreateProcess(
-            string? lpApplicationName,
-            string lpCommandLine,
-            IntPtr lpProcessAttributes,
-            IntPtr lpThreadAttributes,
-            bool bInheritHandles,
-            uint dwCreationFlags,
-            IntPtr lpEnvironment,
-            string lpCurrentDirectory,
-            [In] ref STARTUPINFOEX lpStartupInfo,
-            out PROCESS_INFORMATION lpProcessInformation);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool CreatePipe(out IntPtr hReadPipe, out IntPtr hWritePipe, ref SECURITY_ATTRIBUTES lpPipeAttributes, int nSize);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool CloseHandle(IntPtr hObject);
-
-        [DllImport("kernel32.dll")]
-        static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct COORD
+        private void PFSendStopMessage(string output = "Process will be stopped by user")
         {
-            public short X;
-            public short Y;
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
+            _ = conPTYHelper.StopProcess();
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct STARTUPINFO
+        private void PFSendOutput(string output)
         {
-            public int cb;
-            public IntPtr lpReserved;
-            public IntPtr lpDesktop;
-            public IntPtr lpTitle;
-            public int dwX;
-            public int dwY;
-            public int dwXSize;
-            public int dwYSize;
-            public int dwXCountChars;
-            public int dwYCountChars;
-            public int dwFillAttribute;
-            public int dwFlags;
-            public ushort wShowWindow;
-            public ushort cbReserved2;
-            public IntPtr lpReserved2;
-            public IntPtr hStdInput;
-            public IntPtr hStdOutput;
-            public IntPtr hStdError;
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MESSAGE({output})");
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct STARTUPINFOEX
+        private void PFChangeProcessState(bool isRunned)
         {
-            public STARTUPINFO StartupInfo;
-            public IntPtr lpAttributeList;
+            ProcessStateChanged?.Invoke(isRunned);
+            if (isRunned == false) _ = conPTYHelper.StopProcess();
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct PROCESS_INFORMATION
+        private void PFShowErrorMessage(Tuple<string, string> tuple)
         {
-            public IntPtr hProcess;
-            public IntPtr hThread;
-            public int dwProcessId;
-            public int dwThreadId;
+            string message = tuple.Item1;
+            string _object = tuple.Item2;
+            _ = PipeServer.Instance.SendMessage($"CONPTY:STOPPED({message}$SEPARATOR{_object})");
+            _ = conPTYHelper.StopProcess();
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        struct SECURITY_ATTRIBUTES
-        {
-            public int nLength;
-            public IntPtr lpSecurityDescriptor;
-            public bool bInheritHandle;
-        }
+        #endregion
 
-        private void CreatePipe(out IntPtr hReadPipe, out IntPtr hWritePipe, bool bInheritHandle)
-        {
-            SECURITY_ATTRIBUTES saAttr = new SECURITY_ATTRIBUTES
-            {
-                nLength = Marshal.SizeOf(typeof(SECURITY_ATTRIBUTES)),
-                bInheritHandle = bInheritHandle,
-                lpSecurityDescriptor = IntPtr.Zero
-            };
+        #region WINAPI
 
-            if (!CreatePipe(out hReadPipe, out hWritePipe, ref saAttr, 0))
-            {
-                throw new Exception("Cannot create PseudoTerminal.");
-            }
-        }
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        public static extern int GetSystemDefaultLCID();
 
         #endregion
     }
