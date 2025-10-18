@@ -55,5 +55,10 @@ namespace CDPI_UI.Views
         {
 
         }
+
+        private void ProxySettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ProxySetupUtilWindow>();
+        }
     }
 }
