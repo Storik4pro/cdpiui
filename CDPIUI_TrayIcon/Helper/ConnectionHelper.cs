@@ -161,6 +161,7 @@ namespace CDPIUI_TrayIcon.Helper
                     try
                     {
                         message = await _streamString.ReadStringAsync(token);
+                        Debug.WriteLine(message);
                         RunMessageActions(message);
                     }
                     catch (EndOfStreamException)
@@ -320,6 +321,58 @@ namespace CDPIUI_TrayIcon.Helper
                     TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateAvailable"), "UPDATE:OPEN_DOWNLOAD_PAGE");
                 }
             }
+            else if (message.StartsWith("MSI:"))
+            {
+                if (message.StartsWith("MSI:BEGIN"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 2)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    MsiInstallerHelper.Instance.AddToQueue(result[0], result[1]);
+                }
+                else if (message.StartsWith("MSI:KILL"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    MsiInstallerHelper.Instance.RemoveFromQueue(result[0]);
+                }
+            }
+            else if (message.StartsWith("PROXY:"))
+            {
+                if (message.StartsWith("PROXY:INIT"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    ProcessManager.Instance.InitProxy(result[0]);
+                }
+                else if (message.StartsWith("PROXY:SETUP"))
+                {
+                    
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 3)
+                    {
+                        Debug.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    ProcessManager.Instance.StartProxy(result[0], result[1], result[2]);
+                }
+                else if (message.StartsWith("PROXY:CLEAN"))
+                {
+                    ProcessManager.Instance.CleanProxy();
+                }
+            }
+            Debug.WriteLine("RELEASE");
 
         }
 
@@ -327,6 +380,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async Task<bool> SendMessage(string message)
         {
+            Debug.WriteLine($"{message}");
             if (_pipeServerStream == null || !_pipeServerStream.IsConnected || _streamString == null)
                 return false;
 
