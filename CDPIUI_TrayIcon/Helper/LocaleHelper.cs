@@ -24,6 +24,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "Stop", "Stop" },
             { "Utils", "Utils" },
             { "Pseudoconsole", "Open pseudoconsole (View process output)" },
+            { "MsiInstallerHelper", "MSI installer helper" },
+            { "MsiInstallerHelperErr", "Cannot install application package {0}. Error code is: {1}" },
         };
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
@@ -42,6 +44,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "Stop", "Остановить" },
             { "Utils", "Утилиты" },
             { "Pseudoconsole", "Открыть псевдоконсоль (Просмотр вывода процесса)" },
+            { "MsiInstallerHelper", "Помощник настройки MSI" },
+            { "MsiInstallerHelperErr", "Не удалось установить пакет приложения {0}. Код ошибки: {1}" },
         };
 
         public static string GetLocaleString(string key)
