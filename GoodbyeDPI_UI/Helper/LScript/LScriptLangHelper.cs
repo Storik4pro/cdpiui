@@ -15,10 +15,22 @@ namespace CDPI_UI.Helper.LScript
     {
 
         private const string ScriptGetArgsRegex = @"\$.*?\((.*?)\)";
-        private const string Pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION)(?:\((.*?)\))?";
+        private const string Pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION|GETSRDIR)(?:\((.*?)\))?";
 
         public LScriptLangHelper() { }
 
+        public static string GetArgumentsFromScript(string scriptString)
+        {
+            Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
+            string scriptData = "";
+
+            if (match.Success)
+            {
+                scriptData = match.Groups[1].Value;
+            }
+
+            return scriptData;
+        }
 
         public static string ExecuteScript(
             string scriptString, 
@@ -144,6 +156,10 @@ namespace CDPI_UI.Helper.LScript
 
                             case "LOCALCONDITION":
                                 replacement = LocalCondition(scriptData, jparams);
+                                break;
+
+                            case "GETSRDIR":
+                                replacement = Path.Combine(localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
                                 break;
                         }
                     }
