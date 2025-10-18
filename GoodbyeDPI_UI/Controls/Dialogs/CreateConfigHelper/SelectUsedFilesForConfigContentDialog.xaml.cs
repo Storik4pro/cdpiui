@@ -23,6 +23,9 @@ using Unidecode.NET;
 using Windows.ApplicationModel.Chat;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
+using WinRT.Interop;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -229,6 +232,13 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 AutoCorrectActions();
             }
         }
+        private ILocalizer localizer = Localizer.Get();
+        private async void ShowDialog(string message)
+        {
+            var dlg = new MessageDialog(message, localizer.GetLocalizedString("AutoCorrectError"));
+            InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>()));
+            await dlg.ShowAsync();
+        }
 
         private void AutoCorrectActions()
         {
@@ -251,9 +261,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show(
-                        "ERR_AUTOCORRECT_IO:\n" + ex.Message, "Autocorrect Error",
-                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
                     Result = CreateConfigResult.Canceled;
                     return;
                 }

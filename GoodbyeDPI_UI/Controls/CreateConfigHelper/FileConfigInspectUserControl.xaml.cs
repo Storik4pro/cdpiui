@@ -19,6 +19,10 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
+using WinRT.Interop;
+using WinUI3Localizer;
+using Application = Microsoft.UI.Xaml.Application;
 using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -102,6 +106,14 @@ namespace CDPI_UI.Controls
             Utils.OpenFileInDefaultApp(AutoCorrectFilePath);
         }
 
+        private ILocalizer localizer = Localizer.Get();
+        private async void ShowDialog(string message)
+        {
+            var dlg = new MessageDialog(message,localizer.GetLocalizedString("AutoCorrectError"));
+            InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>()));
+            await dlg.ShowAsync();
+        }
+
         private void ApplyAutoCorrectButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -110,9 +122,7 @@ namespace CDPI_UI.Controls
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(
-                    "ERR_AUTOCORRECT_IO:\n" + ex.Message, "Autocorrect Error", 
-                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
                 return;
             }
             string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
@@ -145,9 +155,7 @@ namespace CDPI_UI.Controls
                     }
                     catch (Exception ex)
                     {
-                        System.Windows.MessageBox.Show(
-                            "ERR_FILESELECT_IO:\n" + ex.Message, "Autocorrect Error",
-                            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                        ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
                         return;
                     }
                     string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
