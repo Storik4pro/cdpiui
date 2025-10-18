@@ -20,6 +20,11 @@
 	<Group Name="CONFIGS">
 		
 	</Group>
+  <Group Name="PROXY">
+    <Setting Key="IPAddress" Type="string" Value="127.0.0.1"/>
+    <Setting Key="port" Type="string" Value="1080"/>
+    <Setting Key="proxyType" Type="string" Value="None"/>
+  </Group>
 	<Group Name="COMPONENTS">
 		<Setting Key="nowUsed" Type="string" Value=""/>
 	</Group>
