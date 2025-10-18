@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Shell;
 using Windows.Media.Protection.PlayReady;
 using static CDPI_UI.Helper.ErrorsHelper;
+using static CDPI_UI.Helper.MsiInstallerHelper;
 
 namespace CDPI_UI.Helper
 {
@@ -25,6 +26,17 @@ namespace CDPI_UI.Helper
             System.Runtime.Serialization.StreamingContext context)
         { }
     }
+    public class Msiexception : System.Exception
+    {
+        public Msiexception() : base() { }
+        public Msiexception(string message) : base(message) { }
+        public Msiexception(string message, System.Exception inner) : base(message, inner) { }
+
+        protected Msiexception(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
+
     public class DownloadManager : IDisposable
     {
         private readonly HttpClient _client;
@@ -37,6 +49,7 @@ namespace CDPI_UI.Helper
         private CancellationToken cancellationToken;
 
         public readonly string OperationId;
+        private string msiGUID;
 
         public DownloadManager(string operationId, CancellationTokenSource cancellationTokenSource, HttpClient client = null)
         {
@@ -56,16 +69,20 @@ namespace CDPI_UI.Helper
         public event Action<string> StageChanged; // Downloading, Extracting, Completed, ErrorHappens
         public event Action<Tuple<string, string>> ErrorHappens;
 
-        public async Task DownloadAndExtractAsync(
+        public bool IsRestartNeeded = false;
+
+        public async Task<bool> DownloadAndExtractAsync(
             string url,
             string destinationPath,
             bool extractArchive = false,
             IEnumerable<string> extractSkipFiletypes = null,
             string extractRootFolder = null,
             string executableFileName = "executableFile",
-            string filetype = ""
+            string filetype = "",
+            bool removeAfterAction = false
         )
         {
+            IsRestartNeeded = false;
             bool success = false;
             List<string> _extractedFiles = new List<string>();
 
@@ -84,7 +101,7 @@ namespace CDPI_UI.Helper
                 {
                     StageChanged?.Invoke("ErrorHappens");
                     ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{response.StatusCode}", "Server Error"));
-                    return;
+                    return false;
                 }
                 response.EnsureSuccessStatusCode();
                 bool _result = await DownloadFile(tempDestination, response, cancellationToken);
@@ -93,6 +110,8 @@ namespace CDPI_UI.Helper
                 {
                     throw new AsyncOperationException();
                 }
+
+                
 
                 if (extractArchive)
                 {
@@ -104,9 +123,46 @@ namespace CDPI_UI.Helper
                     if (!string.IsNullOrEmpty(executableFileName))
                         File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
                     else
-                        throw new IOException();
+                    {
+                        string exeName = GetFileNameFromUri(url);
+                        if (string.IsNullOrEmpty(exeName))
+                            throw new IOException();
+
+                        File.Copy(tempDestination, Path.Combine(destinationPath, exeName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
+                    }
                 }
 
+                if (filetype == "msi" || filetype == "elmsi")
+                {
+                    StageChanged?.Invoke("ConnectingToService");
+                    string installerExeName = GetFileNameFromUri(url);
+                    installerExeName = string.IsNullOrEmpty(installerExeName) ? "installer" : installerExeName;
+
+                    string msiPath = Path.Combine(destinationPath, installerExeName + StateHelper.Instance.FileTypes[filetype]);
+                    msiGUID = Guid.NewGuid().ToString();
+                    MsiInstallerHelper msiInstallerHelper = new(msiGUID, msiPath);
+                    msiInstallerHelper.callbackAction += HandleMsiInstallerMessage;
+                    MsiCallback callback = await msiInstallerHelper.Run(cancellationToken);
+                    msiInstallerHelper.callbackAction -= HandleMsiInstallerMessage;
+
+                    Logger.Instance.CreateDebugLog(nameof(DownloadManager), "TRY");
+
+                    if (callback.State == MsiState.ExceptionHappens)
+                    {
+                        success = false;
+                        throw new Msiexception("MSI_UNKNOWN");
+                    }
+                    else if (callback.State == MsiState.CompleteRestartRequest)
+                    {
+                        IsRestartNeeded = true;
+                    }
+
+                    if (removeAfterAction)
+                    {
+                        File.Delete(msiPath);
+                    }
+                }
+           
 
                 StageChanged?.Invoke("Completed");
                 success = true;
@@ -123,7 +179,7 @@ namespace CDPI_UI.Helper
             {
                 try { if (File.Exists(tempDestination)) File.Delete(tempDestination); } catch { }
 
-                if (!success)
+                if (!success || removeAfterAction)
                 {
                     try { if (File.Exists(destinationPath)) File.Delete(destinationPath); } catch { }
 
@@ -133,6 +189,7 @@ namespace CDPI_UI.Helper
                     }
                 }
             }
+            return success;
         }
 
         private async Task<bool> DownloadFile(string tempDestination, HttpResponseMessage response, CancellationToken cancellationToken)
@@ -283,6 +340,23 @@ namespace CDPI_UI.Helper
                     extractedFiles++;
                 }
             }
+        }
+
+        public void HandleMsiInstallerMessage(MsiCallback callback)
+        {
+            if (msiGUID == callback.operationId)
+            {
+                StageChanged?.Invoke(callback.State.ToString());
+            }
+        }
+
+        private string GetFileNameFromUri(string _uri)
+        {
+            var uri = new Uri(_uri);
+
+            string path = uri.AbsolutePath.TrimEnd('/');
+            string fileName = Path.GetFileNameWithoutExtension(path); 
+            return fileName;
         }
 
         private void HandleError(Exception ex)
