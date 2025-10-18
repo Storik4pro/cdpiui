@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.Dialogs.Store;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.Components;
@@ -18,6 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
@@ -236,8 +238,14 @@ namespace CDPI_UI.Views.Store
                         stageHeaderText = localizer.GetLocalizedString("Cancel");
                         StatusProgressbar.IsIndeterminate = true;
                         break;
+                    case "ConnectingToService":
+                        stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
+                        CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("ConnectingToServiceTip");
+                        StatusProgressbar.IsIndeterminate = true;
+                        break;
                     default:
-                        stageHeaderText = "";
+                        stageHeaderText = localizer.GetLocalizedString(stage);
+                        StatusProgressbar.IsIndeterminate = true;
                         break;
                 }
 
@@ -361,8 +369,9 @@ namespace CDPI_UI.Views.Store
             }
         }
 
-        private void InstallingItemActions()
+        private async void InstallingItemActions()
         {
+            if (!await AskLicense()) return;
             ConnectHandlers();
             errorHappens = false;
 
@@ -448,6 +457,26 @@ namespace CDPI_UI.Views.Store
             // TODO: downloading from saved URL
             StoreHelper.Instance.RemoveItem(_storeId);
             InstallingItemActions();
+        }
+
+        private async Task<bool> AskLicense()
+        {
+            if (item.license.Count == 0)
+                return true;
+
+            AcceptLicenseContentDialog dialog = new()
+            {
+                Licenses = item.license,
+                XamlRoot = this.XamlRoot
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
