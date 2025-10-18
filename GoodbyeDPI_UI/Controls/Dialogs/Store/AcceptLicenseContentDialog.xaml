@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    l:Uids.Uid="AcceptLicenseContentDialog"
+    x:Class="CDPI_UI.Controls.Dialogs.Store.AcceptLicenseContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Dialogs.Store"
+    xmlns:store="using:CDPI_UI.Helper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    IsPrimaryButtonEnabled="{Binding IsChecked, ElementName=AcceptCheckBox}"
+    DefaultButton="Primary"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel>
+                <TextBlock l:Uids.Uid="AcceptLicenseTipTextBlock" TextWrapping="Wrap" Margin="0 0 0 10"/>
+                <ItemsControl ItemsSource="{x:Bind Licenses, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="store:License">
+                            <StackPanel Margin="0, 0, 0, 10">
+                                <HyperlinkButton Content="{x:Bind name, Mode=OneWay}" Tag="{x:Bind url, Mode=OneWay}" Click="HyperlinkButton_Click"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <CheckBox x:Name="AcceptCheckBox" l:Uids.Uid="AcceptLicenseCheckBox"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</ContentDialog>
