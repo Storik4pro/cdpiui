@@ -881,4 +881,174 @@
   <data name="DeveloperChannelTipTextBlock.Text" xml:space="preserve">
     <value>Будьте в курсе всех последних обновлений!</value>
   </data>
+  <data name="ProxySettingsCard.Header" xml:space="preserve">
+    <value>Настроить прокси</value>
+  </data>
+  <data name="ProxyWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Настройка прокси</value>
+  </data>
+  <data name="ProxyWindowTitle" xml:space="preserve">
+    <value>Настройка прокси</value>
+  </data>
+  <data name="ExceptionSystemProxySet" xml:space="preserve">
+    <value>Программа не может сохранить настройки прокси из-за неожиданного исключения.
+Пожалуйста, убедитесь в правильности введенных данных, наличии у программы прав на чтение/запись раздела "{0}" реестра и проверьте вашу систему на наличие ошибок утилитой `sfc`
+Дополнительная информация об ошибке:
+{1}</value>
+  </data>
+  <data name="ProxySetupCompleteTextBlock.Text" xml:space="preserve">
+    <value>Настройка прокси завершена</value>
+  </data>
+  <data name="ProxySetupCompleteTipTextBlock.Text" xml:space="preserve">
+    <value>Этот способ запуска компонента-прокси был зарегистрирован. Чтобы его изменить откройте этот мастер ещё раз.
+
+Нажмите на кнопку "Выход", чтобы выйти из мастера.</value>
+  </data>
+  <data name="ExceptionProxySet" xml:space="preserve">
+    <value>Программа не может сохранить настройки прокси из-за неожиданного исключения.
+Пожалуйста, убедитесь в правильности введенных данных.
+Дополнительная информация об ошибке:
+{0}</value>
+  </data>
+  <data name="ChooseExeFile" xml:space="preserve">
+    <value>Выберите исполняемый файл...</value>
+  </data>
+  <data name="ProxiFyreModeWhiteList" xml:space="preserve">
+    <value>Проксировать трафик только для выбранных приложений</value>
+  </data>
+  <data name="ProxiFyreModeBlackList" xml:space="preserve">
+    <value>Проксировать трафик для всей системы, кроме выбранных приложений</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>Завершение...</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.Title" xml:space="preserve">
+    <value>Лицензионное соглашение</value>
+  </data>
+  <data name="AcceptLicenseCheckBox.Content" xml:space="preserve">
+    <value>Принять все вышеуказанные лицензионные соглашения</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="AcceptLicenseTipTextBlock.Text" xml:space="preserve">
+    <value>Чтобы установить этот элемент необходимо принять следующие лицензионные соглашения от сторонних разработчиков:</value>
+  </data>
+  <data name="ConnectingToService" xml:space="preserve">
+    <value>Подключение к службе...</value>
+  </data>
+  <data name="ConnectingToServiceTip" xml:space="preserve">
+    <value>Если это действие займет много времени, убедитесь, что приложение установлено корректно</value>
+  </data>
+  <data name="EditApplicationListDialogTitle" xml:space="preserve">
+    <value>Изменить: {0}</value>
+  </data>
+  <data name="ApplicationWhiteList" xml:space="preserve">
+    <value>Список приложений для проксирования</value>
+  </data>
+  <data name="ApplicationBlackList" xml:space="preserve">
+    <value>Список приложений-исключений</value>
+  </data>
+  <data name="SelectedAppsSettingsCardDescription" xml:space="preserve">
+    <value>Выбранные приложения: {0}</value>
+  </data>
+  <data name="AndMore" xml:space="preserve">
+    <value>и ещё {0}.</value>
+  </data>
+  <data name="ApplicationListIsEmpty" xml:space="preserve">
+    <value>Вы ещё не добавили ни одного приложения в этот список.</value>
+  </data>
+  <data name="SetupProxyLikeComponentsTextBlock.Text" xml:space="preserve">
+    <value>Настроить запуск компонентов-прокси</value>
+  </data>
+  <data name="SetupProxyLikeComponentsTipTextBlock.Text" xml:space="preserve">
+    <value>Эти настройки будут применены ко всем компонентам-прокси, которые вы установили</value>
+  </data>
+  <data name="SetupForEntireSystemCard.Header" xml:space="preserve">
+    <value>Настроить для всей системы</value>
+  </data>
+  <data name="SetupForEntireSystemCard.Description" xml:space="preserve">
+    <value>Поддерживает только TCP-трафик, принудительно применяется ко всей системе</value>
+  </data>
+  <data name="SetupViaProxifyreCard.Header" xml:space="preserve">
+    <value>Настроить через ProxiFyre</value>
+  </data>
+  <data name="SetupViaProxifyreCard.Description" xml:space="preserve">
+    <value>Поддерживает TCP и UDP подключения, применяется только к выбранным приложениям </value>
+  </data>
+  <data name="SetupProxyManuallyCard.Header" xml:space="preserve">
+    <value>Не осуществлять никаких действий</value>
+  </data>
+  <data name="SetupForEntireSystemTextBlock.Text" xml:space="preserve">
+    <value>Настроить для всей системы</value>
+  </data>
+  <data name="ProxyIpAddressTextBlock.Text" xml:space="preserve">
+    <value>IP-адрес для прокси</value>
+  </data>
+  <data name="PortTextBlock.Text" xml:space="preserve">
+    <value>Порт</value>
+  </data>
+  <data name="ResetByDefaultButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Сбросить до значений по умолчанию </value>
+  </data>
+  <data name="RegProxyWhiteListTextBlock.Text" xml:space="preserve">
+    <value>Не использовать прокси для адресов, которые начинаются с указанных ниже записей. Для разделения записей используйте точку с запятой (;).</value>
+  </data>
+  <data name="BypassLocalCheckBox.Content" xml:space="preserve">
+    <value>Не использовать прокси-сервер для локальных (внутрисетевых) адресов</value>
+  </data>
+  <data name="SetupViaProxiFyreTextBlock.Text" xml:space="preserve">
+    <value>Настроить через ProxiFyre</value>
+  </data>
+  <data name="ProxiFyreModeCard.Header" xml:space="preserve">
+    <value>Режим запуска ProxiFyre</value>
+  </data>
+  <data name="ApplicationWhiteListCard.Header" xml:space="preserve">
+    <value>Список приложений для проксирования</value>
+  </data>
+  <data name="ApplicationBlackListCard.Header" xml:space="preserve">
+    <value>Список приложений-исключений</value>
+  </data>
+  <data name="ProxyAddrSettingsTextBlock.Text" xml:space="preserve">
+    <value>Настройки адреса для прокси</value>
+  </data>
+  <data name="AddClassicApplicationTextBlock.Text" xml:space="preserve">
+    <value>Добавить классическое (Win32) приложение</value>
+  </data>
+  <data name="AddClassicApplicationTipTextBlock.Text" xml:space="preserve">
+    <value>Введите название исполняемого файла или укажите путь к .EXE-файлу</value>
+  </data>
+  <data name="FileChooseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Выбрать исполняемый файл...</value>
+  </data>
+  <data name="AddUniversalApplicationTextBlock.Text" xml:space="preserve">
+    <value>Добавить приложение из Магазина Майкрософт</value>
+  </data>
+  <data name="AddUniversalApplicationTipTextBlock.Text" xml:space="preserve">
+    <value>Выберите папку универсального приложения или введите путь самостоятельно</value>
+  </data>
+  <data name="FolderChooseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Выбрать папку универсального приложения</value>
+  </data>
+  <data name="AddApplicationButton.Content" xml:space="preserve">
+    <value>Добавить приложение</value>
+  </data>
+  <data name="CloseButton.Content" xml:space="preserve">
+    <value>Закрыть </value>
+  </data>
+  <data name="ApplicationListTextBlock.Text" xml:space="preserve">
+    <value>Список приложений</value>
+  </data>
+  <data name="SetupProxyManuallyCardTextBlock.Text" xml:space="preserve">
+    <value>Настроить вручную</value>
+  </data>
+  <data name="UseConfigSettingsCheckBox.Content" xml:space="preserve">
+    <value>Предпочитать настройки, указанные в пресете </value>
+  </data>
+  <data name="AutoCorrectError" xml:space="preserve">
+    <value>Неожиданная ошибка автокоррекции файлов</value>
+  </data>
 </root>

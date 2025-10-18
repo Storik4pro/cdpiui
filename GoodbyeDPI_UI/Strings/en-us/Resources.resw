@@ -879,4 +879,173 @@ Please, install lates version of "{0}" in Store</value>
   <data name="DeveloperChannelTipTextBlock.Text" xml:space="preserve">
     <value>News, announcements</value>
   </data>
+  <data name="ProxySettingsCard.Header" xml:space="preserve">
+    <value>Setup proxy</value>
+  </data>
+  <data name="ProxyWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Setup proxy</value>
+  </data>
+  <data name="ProxyWindowTitle" xml:space="preserve">
+    <value>Setup proxy</value>
+  </data>
+  <data name="ExceptionSystemProxySet" xml:space="preserve">
+    <value>Program cannot save your proxy settings, because exception happens. 
+Make sure program has read/write permissions for key group "{0}" and check your system files via `sfc` utility
+Additional info: 
+{1}</value>
+  </data>
+  <data name="ProxySetupCompleteTextBlock.Text" xml:space="preserve">
+    <value>Proxy setup complete</value>
+  </data>
+  <data name="ProxySetupCompleteTipTextBlock.Text" xml:space="preserve">
+    <value>This way to run proxy-like components will be register by default. To change it open this wizard again.
+
+Click "Exit" to close this wizard.</value>
+  </data>
+  <data name="ExceptionProxySet" xml:space="preserve">
+    <value>Program cannot save your proxy settings, because exception happens. 
+Additional info: 
+{0}</value>
+  </data>
+  <data name="ChooseExeFile" xml:space="preserve">
+    <value>Choose executable file</value>
+  </data>
+  <data name="ProxiFyreModeWhiteList" xml:space="preserve">
+    <value>Proxy traffic only for selected applications</value>
+  </data>
+  <data name="ProxiFyreModeBlackList" xml:space="preserve">
+    <value>Proxy traffic for the entire system except selected applications</value>
+  </data>
+  <data name="Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.Title" xml:space="preserve">
+    <value>License Agreement</value>
+  </data>
+  <data name="AcceptLicenseCheckBox.Content" xml:space="preserve">
+    <value>Accept all</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="AcceptLicenseContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AcceptLicenseTipTextBlock.Text" xml:space="preserve">
+    <value>To install this item, you must accept the following third-party License Agreements:</value>
+  </data>
+  <data name="ConnectingToService" xml:space="preserve">
+    <value>Connecting to service...</value>
+  </data>
+  <data name="ConnectingToServiceTip" xml:space="preserve">
+    <value>If this action takes long, make sure application installed correctly</value>
+  </data>
+  <data name="EditApplicationListDialogTitle" xml:space="preserve">
+    <value>Edit: {0}</value>
+  </data>
+  <data name="ApplicationWhiteList" xml:space="preserve">
+    <value>List of applications for which the proxy will be used</value>
+  </data>
+  <data name="ApplicationBlackList" xml:space="preserve">
+    <value>List of applications for which the proxy will be never used</value>
+  </data>
+  <data name="SelectedAppsSettingsCardDescription" xml:space="preserve">
+    <value>Selected apps: {0}</value>
+  </data>
+  <data name="AndMore" xml:space="preserve">
+    <value>and {0} more.</value>
+  </data>
+  <data name="ApplicationListIsEmpty" xml:space="preserve">
+    <value>You don't add any application in this list yet.</value>
+  </data>
+  <data name="SetupProxyLikeComponentsTextBlock.Text" xml:space="preserve">
+    <value>Setup proxy-like components</value>
+  </data>
+  <data name="SetupProxyLikeComponentsTipTextBlock.Text" xml:space="preserve">
+    <value>This setting will be appears to all proxy-like components you installed</value>
+  </data>
+  <data name="SetupForEntireSystemCard.Header" xml:space="preserve">
+    <value>Setup for entire system</value>
+  </data>
+  <data name="SetupForEntireSystemCard.Description" xml:space="preserve">
+    <value>Supports only TCP connections, appears to entire system</value>
+  </data>
+  <data name="SetupViaProxifyreCard.Header" xml:space="preserve">
+    <value>Setup via ProxiFyre</value>
+  </data>
+  <data name="SetupViaProxifyreCard.Description" xml:space="preserve">
+    <value>Supports TCP and UDP connections, appears only for selected applications</value>
+  </data>
+  <data name="SetupProxyManuallyCard.Header" xml:space="preserve">
+    <value>Do not prefer any actions</value>
+  </data>
+  <data name="SetupForEntireSystemTextBlock.Text" xml:space="preserve">
+    <value>Setup for entire system</value>
+  </data>
+  <data name="ProxyIpAddressTextBlock.Text" xml:space="preserve">
+    <value>Proxy IP address</value>
+  </data>
+  <data name="PortTextBlock.Text" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="ResetByDefaultButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Reset by default</value>
+  </data>
+  <data name="RegProxyWhiteListTextBlock.Text" xml:space="preserve">
+    <value>Do not use proxies for addresses that begin with the following entries. Use semicolons (;) to separate addresses.</value>
+  </data>
+  <data name="BypassLocalCheckBox.Content" xml:space="preserve">
+    <value>Do not use proxy for local (intranet) addresses</value>
+  </data>
+  <data name="SetupViaProxiFyreTextBlock.Text" xml:space="preserve">
+    <value>Setup via ProxiFyre</value>
+  </data>
+  <data name="ProxiFyreModeCard.Header" xml:space="preserve">
+    <value>ProxiFyre mode</value>
+  </data>
+  <data name="ApplicationWhiteListCard.Header" xml:space="preserve">
+    <value>List of applications for which the proxy will be used</value>
+  </data>
+  <data name="ApplicationBlackListCard.Header" xml:space="preserve">
+    <value>List of applications for which the proxy will be never used</value>
+  </data>
+  <data name="ProxyAddrSettingsTextBlock.Text" xml:space="preserve">
+    <value>Proxy address settings</value>
+  </data>
+  <data name="AddClassicApplicationTextBlock.Text" xml:space="preserve">
+    <value>Add a classic Win32 application</value>
+  </data>
+  <data name="AddClassicApplicationTipTextBlock.Text" xml:space="preserve">
+    <value>Type executable name or select .EXE file path</value>
+  </data>
+  <data name="FileChooseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Select executable file</value>
+  </data>
+  <data name="AddUniversalApplicationTextBlock.Text" xml:space="preserve">
+    <value>Add universal application</value>
+  </data>
+  <data name="AddUniversalApplicationTipTextBlock.Text" xml:space="preserve">
+    <value>Select universal application folder or type path manually</value>
+  </data>
+  <data name="FolderChooseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Select universal application folder...</value>
+  </data>
+  <data name="AddApplicationButton.Content" xml:space="preserve">
+    <value>Add application</value>
+  </data>
+  <data name="CloseButton.Content" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ApplicationListTextBlock.Text" xml:space="preserve">
+    <value>Application list</value>
+  </data>
+  <data name="SetupProxyManuallyCardTextBlock.Text" xml:space="preserve">
+    <value>Setup manually</value>
+  </data>
+  <data name="UseConfigSettingsCheckBox.Content" xml:space="preserve">
+    <value>Prefer config setting to start proxy</value>
+  </data>
+  <data name="AutoCorrectError" xml:space="preserve">
+    <value>AutoCorrect exception happens</value>
+  </data>
 </root>
