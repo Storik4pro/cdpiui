@@ -461,7 +461,7 @@ namespace CDPI_UI.Views.Store
 
         private async Task<bool> AskLicense()
         {
-            if (item.license.Count == 0)
+            if (item.license == null || item.license.Count == 0)
                 return true;
 
             AcceptLicenseContentDialog dialog = new()
