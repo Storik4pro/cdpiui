@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.SetupProxy.ProxySetupCompletePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views.SetupProxy"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <ScrollViewer Padding="20 0">
+                <StackPanel Spacing="20">
+                    <TextBlock l:Uids.Uid="ProxySetupCompleteTextBlock" Style="{StaticResource TitleTextBlockStyle}"/>
+                    <TextBlock l:Uids.Uid="ProxySetupCompleteTipTextBlock" TextWrapping="Wrap"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid x:Name="ActionButtonsGrid" Grid.Row="2">
+            <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+
+            <Grid Padding="20">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE897;" FontSize="16"/>
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="10"  HorizontalAlignment="Right">
+                    <Button l:Uids.Uid="ExitButton" x:Name="ExitButton" Style="{StaticResource AccentButtonStyle}" MinWidth="150" Click="ExitButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
