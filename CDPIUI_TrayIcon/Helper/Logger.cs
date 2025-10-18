@@ -78,7 +78,11 @@ namespace CDPIUI_TrayIcon.Helper
                 bool write = true;
                 try
                 {
+#if DEBUG
+                    string _sev = "DEBG";
+#else
                     string _sev = SettingsManager.Instance.GetValue<string>("DEBUG", "logLevel");
+#endif
                     if (_sev == "DEBG") write = true;
                     else if (_sev == "INFO" && severity != "DEBG") write = true;
                     else if (_sev == "WARN" && severity != "DEBG" && severity != "INFO") write = true;
