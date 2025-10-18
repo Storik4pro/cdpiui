@@ -1,4 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="RemoveLanguageFolders.targets" />
+  
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
@@ -15,6 +17,8 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <ExcludedLanguages>en-US;ru-RU</ExcludedLanguages>
 	<DebugType>embedded</DebugType>
 	<AssemblyName>CDPIUI</AssemblyName>
 	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
@@ -34,10 +38,12 @@
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\FileConfigInspectUserControl.xaml" />
     <None Remove="Controls\MainPage\QuickSettingWidget.xaml" />
+    <None Remove="Controls\ProxySetup\ApplicationUserControl.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
     <None Remove="Controls\SettingTileControlElement.xaml" />
     <None Remove="Controls\StoreCategoryButton.xaml" />
@@ -63,6 +69,11 @@
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
     <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\SetupProxy\MainPage.xaml" />
+    <None Remove="Views\SetupProxy\ManualSetupPage.xaml" />
+    <None Remove="Views\SetupProxy\ProxiFyreSetupPage.xaml" />
+    <None Remove="Views\SetupProxy\ProxySetupCompletePage.xaml" />
+    <None Remove="Views\SetupProxy\SetupProxyForSystem.xaml" />
     <None Remove="Views\Store\CategoryViewPage.xaml" />
     <None Remove="Views\Store\DownloadsPage.xaml" />
     <None Remove="Views\Store\HomePage.xaml" />
@@ -71,6 +82,7 @@
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
     <None Remove="Windows\PrepareWindow.xaml" />
+    <None Remove="Windows\ProxySetupUtilWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -330,8 +342,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.0.2.0</FileVersion>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <FileVersion>0.0.3.0</FileVersion>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
   </PropertyGroup>
 
@@ -365,9 +377,33 @@
     <Page Update="Controls\MainPage\QuickSettingWidget.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\ProxySetup\ApplicationUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\SetupProxy\ProxiFyreSetupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\ManualSetupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\ProxySetupCompletePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\SetupProxyForSystem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ProxySetupUtilWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Windows\OfflineHelpWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
