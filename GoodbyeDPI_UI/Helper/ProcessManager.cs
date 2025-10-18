@@ -95,15 +95,17 @@ namespace CDPI_UI.Helper
                 _outputBuffer.Clear();
                 _outputDefaultBuffer.Clear();
 
+                string componentId = SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed");
+
                 Items.ComponentItemsLoaderHelper.Instance.Init();
                 Items.ComponentHelper componentHelper = 
-                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId);
 
-                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed")).Name);
+                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(componentId).Executable);
 
                 var exePath = componentHelper.GetExecutablePath();
                 var workingDirectory = componentHelper.GetDirectory();
-                string args = componentHelper.GetStartupParams();
+                string args = SetupProxy(componentHelper.GetStartupParams(), componentId);
 
                 Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
@@ -156,10 +158,90 @@ namespace CDPI_UI.Helper
             }
             catch (Exception ex)
             {
-                await ShowErrorMessage($"Unexpected error while trying to start process: {ex.Message}", _object: "console");
+                var errorCode = ErrorsHelper.ErrorHelper.MapExceptionToCode(ex, out var rawHResult);
+                await ShowErrorMessage($"Unexpected error while trying to start process: ({errorCode}) {ex.Message}", _object: "console");
                 SendStopMessage("Unexpected error happens while trying to stop process");
                 processState = false;
             }
+        }
+
+        private List<string> Tokens = new() { "-p", "--port", "-i", "--ip", "-addr" };
+
+        private string ReplaceArgsForProxy(string args, string ip, string port, string componentId)
+        {
+            string[] splittedArgs = args.Split(' ');
+            string finalArgs = string.Empty;
+            for (int i = 0; i < splittedArgs.Length; i++)
+            {
+                string token = splittedArgs[i].Split("=")[0];
+                if (Tokens.Contains(token))
+                {
+                    if (splittedArgs[i].Contains('='))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        i++;
+                        continue;
+                    }
+                }
+                finalArgs += $"{token} ";
+            }
+            if (componentId == "CSSIXC048")
+                finalArgs = $"-addr={ip} -port={port} " + finalArgs;
+            else
+                finalArgs = $"--ip={ip} --port={port} " + finalArgs;
+            return finalArgs;
+
+        }
+        private string SetupProxy(string args, string componentId)
+        {
+            if (!StateHelper.ProxyLikeComponents.Contains(componentId))
+            {
+                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                return args;
+            }
+
+            string ip = SettingsManager.Instance.GetValue<string>("PROXY", "IPAddress");
+            string port = SettingsManager.Instance.GetValue<string>("PROXY", "port");
+
+            string proxyType = SettingsManager.Instance.GetValue<string>("PROXY", "proxyType");
+
+            if (proxyType == StateHelper.ProxySetupTypes.ProxiFyre.ToString())
+            {
+                if (!DatabaseHelper.Instance.IsItemInstalled("ASPEWK002"))
+                {
+                    throw new AddonNotInstalledException();
+                }
+
+                _ = PipeClient.Instance.SendMessage($"PROXY:INIT({GetProxiFyrePath()})");
+                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({StateHelper.ProxySetupTypes.ProxiFyre.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
+                return ReplaceArgsForProxy(args, ip, port, componentId);
+            }
+            else if (proxyType == StateHelper.ProxySetupTypes.AllSystem.ToString())
+            {
+                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({StateHelper.ProxySetupTypes.AllSystem.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
+                return ReplaceArgsForProxy(args, ip, port, componentId);
+            }
+            else if (proxyType == StateHelper.ProxySetupTypes.NoActions.ToString())
+            {
+                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                return ReplaceArgsForProxy(args, ip, port, SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+            }
+            else
+            {
+                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                return args;
+            }
+        }
+
+        private string GetProxiFyrePath()
+        {
+            var item = DatabaseHelper.Instance.GetItemById("ASPEWK002");
+            if (item == null) return string.Empty;
+
+            return Path.Combine(item.Directory, item.Executable + ".exe");
         }
 
         public string GetNowSelectedComponentName()
@@ -228,6 +310,7 @@ namespace CDPI_UI.Helper
             str = Regex.Replace(str, @"\[\d{1,2};\d{1,2}[A-Z]", "");
             str = Regex.Replace(str, @"\[\?\d{1,2}[a-z]", "");
             str = Regex.Replace(str, @"(\[\d{0,2}m)?(\[H)?", "");
+            str = str.Replace("]0;", "");
             return str;
 
         }
