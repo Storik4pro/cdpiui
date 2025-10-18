@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CDPI_UI;
+using static CDPI_UI.Helper.MsiInstallerHelper;
 
 namespace CDPI_UI.Helper
 {
@@ -174,7 +175,9 @@ namespace CDPI_UI.Helper
 
         public async Task SendMessage(string message)
         {
+            Debug.WriteLine(message);
             await _sendLock.WaitAsync();
+            Debug.WriteLine($"RELEASE LOCK");
 
             if (_pipeClient == null && !_pipeClient.IsConnected && _streamString == null)
             {
@@ -329,6 +332,66 @@ namespace CDPI_UI.Helper
                 {
                     _ = ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
                 }
+            }
+            else if (message.StartsWith("MSI:"))
+            {
+                if (message.StartsWith("MSI:SETSTATUS"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 2)
+                    {
+                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
+                        return;
+                    }
+                    if (int.TryParse(result[1], out var value))
+                        GetMsiInstallerMessage(result[0], (MsiState)value);
+                }
+                else if (message.StartsWith("MSI:REMOVED"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
+                        return;
+                    }
+                    RemoveMsiInstallerModel(result[0], notify:false);
+                }
+            }
+        }
+        private class MsiInstallerModel
+        {
+            public string OperationId { get; set; }
+            public MsiInstallerHelper MsiInstallerHelper { get; set; }
+        }
+
+        private List<MsiInstallerModel> installerModels = [];
+
+        public void SendMsiInstallMessage(string operationId, string filename, MsiInstallerHelper installerHelper)
+        {
+            installerModels.Add(new MsiInstallerModel
+            {
+                OperationId = operationId,
+                MsiInstallerHelper = installerHelper
+            });
+            _ = SendMessage($"MSI:BEGIN({operationId}$SEPARATOR{filename})");
+        }
+
+        public void RemoveMsiInstallerModel(string operationId, bool notify=true)
+        {
+            MsiInstallerModel msiInstallerModel = installerModels.FirstOrDefault(i => i.OperationId == operationId);
+            if (msiInstallerModel != null)
+            {
+                installerModels.Remove(msiInstallerModel);
+                if (notify) _ = SendMessage($"MSI:KILL({operationId})");
+            }
+        }
+
+        private void GetMsiInstallerMessage(string operationId, MsiState message)
+        {
+            MsiInstallerModel msiInstallerModel = installerModels.FirstOrDefault(i => i.OperationId == operationId);
+            if (msiInstallerModel != null)
+            {
+                msiInstallerModel.MsiInstallerHelper.OnResponse(message);
             }
         }
     }
