@@ -11,6 +11,17 @@ using Windows.Web;
 
 namespace CDPI_UI.Helper
 {
+    public class AddonNotInstalledException : System.Exception
+    {
+        public AddonNotInstalledException() : base() { }
+        public AddonNotInstalledException(string message) : base(message) { }
+        public AddonNotInstalledException(string message, System.Exception inner) : base(message, inner) { }
+
+        protected AddonNotInstalledException(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
+
     public class ErrorsHelper
     {
         public enum PrettyErrorCode
@@ -49,6 +60,12 @@ namespace CDPI_UI.Helper
             EXTRACT_INVALID_ARCHIVE,
             EXTRACT_ENTRY_CORRUPTED,
             EXTRACT_UNKNOWN,
+
+            // MSI
+            MSI_INSTALL_FAILURE,
+
+            // Store
+            ADDON_NOT_INSTALLED,
 
             UNKNOWN,
         }
@@ -104,6 +121,10 @@ namespace CDPI_UI.Helper
                                 break;
                         }
                     }
+                    if (current is AddonNotInstalledException)
+                        return PrettyErrorCode.ADDON_NOT_INSTALLED;
+                    if (current is Msiexception)
+                        return PrettyErrorCode.MSI_INSTALL_FAILURE;
                     if (current is UriFormatException)
                         return PrettyErrorCode.INVALID_URI;
                     if (current is HttpRequestException httpEx && httpEx.StatusCode.HasValue)
