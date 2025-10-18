@@ -178,6 +178,15 @@ namespace CDPI_UI
             window.Hide();
         }
 
+        public void CloseWindow<TWindow>() where TWindow : Window
+        {
+            foreach (var viewWindow in OpenWindows.OfType<TWindow>().ToList())
+            {
+                viewWindow.Close();
+                OpenWindows.Remove(viewWindow);
+            }
+        }
+
         public async Task<TWindow> SafeCreateNewWindow<TWindow>(bool activate = true) where TWindow : Window, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
