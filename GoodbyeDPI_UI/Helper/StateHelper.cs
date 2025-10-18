@@ -31,6 +31,17 @@ namespace CDPI_UI.Helper
 
         public string workDirectory = Directory.GetCurrentDirectory();
 
+        // Enums
+
+        public enum ProxySetupTypes
+        {
+            None,
+            AllSystem,
+            ProxiFyre,
+            NoActions,
+            AsInConfig,
+        }
+
         // Store
 
         public const string StoreRepo = "Storik4pro/CDPIUI-Store";
@@ -66,6 +77,7 @@ namespace CDPI_UI.Helper
 
         public Dictionary<string, string> ComponentIdPairs = new();
         public static List<string> GoodCheckSupportedComponents = ["CSZTBN012", "CSGIVS036", "CSBIHA024"];
+        public static List<string> ProxyLikeComponents = ["CSSIXC048", "CSBIHA024"];
 
         public bool isCheckedComponentsUpdateComplete = false;
         public string lastComponentsUpdateError = "";
@@ -78,6 +90,7 @@ namespace CDPI_UI.Helper
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
             FileTypes.Add("msi", ".msi");
+            FileTypes.Add("elmsi", ".exe");
 
             string exePath = Assembly.GetEntryAssembly()?.Location
                  ?? Assembly.GetExecutingAssembly()?.Location
