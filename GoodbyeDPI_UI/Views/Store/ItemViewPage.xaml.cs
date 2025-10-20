@@ -85,6 +85,7 @@ namespace CDPI_UI.Views.Store
                 _storeId = storeId;
 
                 ConnectHandlers();
+                CheckCurrentStatus();
 
                 item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
 
@@ -126,10 +127,28 @@ namespace CDPI_UI.Views.Store
                     LinksGrid.Visibility = Visibility.Collapsed;
 
                 loaded = true;
+
+                
             }
             else
             {
                 ItemName.Text = "Template page";
+            }
+        }
+
+        private void CheckCurrentStatus()
+        {
+            string operationId = StoreHelper.Instance.GetOperationIdFromItemId(_storeId);
+            if (!string.IsNullOrEmpty(operationId))
+            {
+                StopActionButton.IsEnabled = true;
+                StatusProgressbar.IsIndeterminate = true;
+                ErrorStatusGrid.Visibility = Visibility.Collapsed;
+                ItemActionButton.Visibility = Visibility.Collapsed;
+                DownloadStatusGrid.Visibility = Visibility.Visible;
+
+                string status = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadStage;
+                PreferItemDownloadingStateActions(status);
             }
         }
 
@@ -194,6 +213,52 @@ namespace CDPI_UI.Views.Store
 
         }
 
+        private void PreferItemDownloadingStateActions(string state)
+        {
+            string stageHeaderText = string.Empty;
+            switch (state)
+            {
+                case "GETR":
+                    stageHeaderText = localizer.GetLocalizedString("GettingReady");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "END":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "Downloading":
+                    stageHeaderText = localizer.GetLocalizedString("Downloading");
+                    StatusProgressbar.IsIndeterminate = false;
+                    CurrentStatusSpeedTextBlock.Visibility = Visibility.Visible;
+                    break;
+                case "Extracting":
+                    stageHeaderText = localizer.GetLocalizedString("Installing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "ErrorHappens":
+                    stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
+                    break;
+                case "Completed":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "CANC":
+                    stageHeaderText = localizer.GetLocalizedString("Cancel");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "ConnectingToService":
+                    stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
+                    CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("ConnectingToServiceTip");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                default:
+                    stageHeaderText = localizer.GetLocalizedString(state);
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+            }
+            CurrentStatusTextBlock.Text = stageHeaderText;
+        }
+
         private void ConnectHandlers()
         {
             _itemDownloadStageChangedHandler  = (data) =>
@@ -204,52 +269,9 @@ namespace CDPI_UI.Views.Store
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
 
-                string stageHeaderText;
-
                 CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
 
-                switch (stage)
-                {
-                    case "GETR":
-                        stageHeaderText = localizer.GetLocalizedString("GettingReady");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    case "END":
-                        stageHeaderText = localizer.GetLocalizedString("Finishing");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    case "Downloading":
-                        stageHeaderText = localizer.GetLocalizedString("Downloading");
-                        StatusProgressbar.IsIndeterminate = false;
-                        CurrentStatusSpeedTextBlock.Visibility = Visibility.Visible;
-                        break;
-                    case "Extracting":
-                        stageHeaderText = localizer.GetLocalizedString("Installing");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    case "ErrorHappens":
-                        stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
-                        break;
-                    case "Completed":
-                        stageHeaderText = localizer.GetLocalizedString("Finishing");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    case "CANC":
-                        stageHeaderText = localizer.GetLocalizedString("Cancel");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    case "ConnectingToService":
-                        stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
-                        CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("ConnectingToServiceTip");
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                    default:
-                        stageHeaderText = localizer.GetLocalizedString(stage);
-                        StatusProgressbar.IsIndeterminate = true;
-                        break;
-                }
-
-                CurrentStatusTextBlock.Text = stageHeaderText;
+                PreferItemDownloadingStateActions(stage);
             };
             StoreHelper.Instance.ItemDownloadStageChanged += _itemDownloadStageChangedHandler;
 
@@ -476,6 +498,18 @@ namespace CDPI_UI.Views.Store
             else
             {
                 return false;
+            }
+        }
+
+        private void ShowFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Utils.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(item.store_id).Directory);
+            }
+            catch
+            {
+
             }
         }
     }

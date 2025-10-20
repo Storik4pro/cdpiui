@@ -59,6 +59,7 @@
                     <VisualState.Setters>
                         <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
                         <Setter Target="MainStackPanel.Width" Value="1860" />
+                        <Setter Target="MainStackPanel.Padding" Value="100, 100, 100, 100" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -201,6 +202,13 @@
                                                 Click="ReinstallButton_Click">
                                     <MenuFlyoutItem.Icon>
                                         <FontIcon Glyph="&#xE895;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="StoreShowItemFolder"
+                                                x:Name="ShowFolderButton" 
+                                                Click="ShowFolderButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE838;" />
                                     </MenuFlyoutItem.Icon>
                                 </MenuFlyoutItem>
                             </MenuFlyout>
