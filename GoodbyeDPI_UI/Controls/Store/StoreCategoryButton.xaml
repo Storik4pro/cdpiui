@@ -60,7 +60,7 @@
             <ColorAnimation
                 Storyboard.TargetName="TextBlockForegroundBrush"
                 Storyboard.TargetProperty="Color"
-                To="{StaticResource TextFillColorPrimary}"
+                To="{ThemeResource TextFillColorPrimary}"
                 Duration="0:0:0.2" />
             <DoubleAnimation Storyboard.TargetName="ContentTranslateTransform"
                  Storyboard.TargetProperty="X"
