@@ -209,10 +209,12 @@ namespace CDPI_UI
                 }
 
                 var newViewWindow = new TWindow();
+                WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
                 if (activate) newViewWindow.Activate();
 
                 RegisterWindow(newViewWindow);
                 await Task.CompletedTask;
+
                 return newViewWindow;
             }
         }
@@ -221,11 +223,30 @@ namespace CDPI_UI
         {
             if (window == null) return;
 
+            UpdateThemeForWindow(window, CurrentTheme);
+            
+
             if (!OpenWindows.Contains(window))
                 OpenWindows.Add(window);
 
             window.Closed -= Window_ClosedHandler;
             window.Closed += Window_ClosedHandler;
+
+            // Looks pretty bad for weak PC
+            // window.SizeChanged -= Window_SizeChanged;
+            // window.SizeChanged += Window_SizeChanged;
+        }
+
+        private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+        {
+            if (sender is not Window window) return;
+            if (args.Handled) return;
+
+            try
+            {
+                WindowHelper.SaveWindowSizeAndPostionsettings(window);
+            }
+            catch { }
         }
 
         private void Window_ClosedHandler(object sender, WindowEventArgs e)
@@ -235,7 +256,9 @@ namespace CDPI_UI
 
             try
             {
+                WindowHelper.SaveWindowSizeAndPostionsettings(window);
                 window.Closed -= Window_ClosedHandler;
+                window.SizeChanged -= Window_SizeChanged;
 
                 try
                 {
@@ -327,7 +350,6 @@ namespace CDPI_UI
             return OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
         }
 
-        private Window m_window;
         public static TEnum GetEnum<TEnum>(string text) where TEnum : struct
         {
             if (!typeof(TEnum).GetTypeInfo().IsEnum)
@@ -489,6 +511,26 @@ namespace CDPI_UI
             return CurrentTheme;
         }
 
+        public void UpdateThemeForWindow(Window window, ElementTheme theme)
+        {
+            if (window.Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = theme;
+                if (theme == ElementTheme.Dark)
+                {
+                    TitleBarHelper.SetCaptionButtonColors(window, Colors.White);
+                }
+                else if (theme == ElementTheme.Light)
+                {
+                    TitleBarHelper.SetCaptionButtonColors(window, Colors.Black);
+                }
+                else
+                {
+                    TitleBarHelper.ApplySystemThemeToCaptionButtons(window);
+                }
+            }
+        }
+
         public void UpdateThemeForAllWindows(ElementTheme theme)
         {
             CurrentTheme = theme;
@@ -498,20 +540,7 @@ namespace CDPI_UI
             {
                 try
                 {
-                    if (window.Content is FrameworkElement rootElement)
-                    {
-                        rootElement.RequestedTheme = theme;
-                        if (theme == ElementTheme.Dark)
-                        {
-                            TitleBarHelper.SetCaptionButtonColors(window, Colors.White);
-                        } else if (theme == ElementTheme.Light)
-                        {
-                            TitleBarHelper.SetCaptionButtonColors(window, Colors.Black);
-                        } else
-                        {
-                            TitleBarHelper.ApplySystemThemeToCaptionButtons(window);
-                        }
-                    }
+                    UpdateThemeForWindow(window, theme);
                 }
                 catch
                 {
