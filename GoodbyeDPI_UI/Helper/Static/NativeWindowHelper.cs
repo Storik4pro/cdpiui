@@ -26,11 +26,6 @@ namespace CDPI_UI.Helper.Static
 
         private delegate IntPtr WndProcDelegate(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        // Static field to hold the delegate, preventing it from being garbage-collected
-        private static WndProcDelegate _currentWndProcDelegate;
-
-
-        // Delegate for the new window procedure
         private static readonly ConcurrentDictionary<IntPtr, IntPtr> _originalProcs = new();
         private static readonly ConcurrentDictionary<IntPtr, WndProcDelegate> _wndProcDelegates = new();
 
