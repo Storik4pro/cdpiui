@@ -150,6 +150,7 @@ namespace CDPI_UI.Helper
             public string ItemId { get; }
             public string Version { get; }
             public string Status { get; set; } = "WAIT";
+            public string DownloadStage { get; set; } = string.Empty;
 
             public QueueItem(string itemId, string operationId, string version = null)
             {
@@ -594,6 +595,7 @@ namespace CDPI_UI.Helper
             if (CurrentDownloadingItem != null && CurrentDownloadingItem.ItemId == itemId)
             {
                 CurrentDownloadingItem.Status = "CANC";
+                CurrentDownloadingItem.DownloadStage = "CANC";
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(CurrentDownloadingItem.OperationId, CurrentDownloadingItem.Status));
                 DownloadManager?.Dispose();
                 DownloadManager = null;
@@ -640,6 +642,19 @@ namespace CDPI_UI.Helper
             return null;
         }
 
+        public QueueItem GetQueueItemFromOperationId(string operationId)
+        {
+            if (CurrentDownloadingItem != null && CurrentDownloadingItem.OperationId == operationId)
+                return CurrentDownloadingItem;
+
+            foreach (var item in _queue)
+            {
+                if (item.OperationId == operationId)
+                    return item;
+            }
+            return null;
+        }
+
         private void TryProcessNext()
         {
             if (_queue.Count == 0)
@@ -662,9 +677,11 @@ namespace CDPI_UI.Helper
             try
             {
                 qi.Status = "GETR";
+                qi.DownloadStage =qi.Status;
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
                 await InstallItem(qi);
                 qi.Status = "END";
+                qi.DownloadStage = qi.Status;
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
             }
             catch
@@ -677,6 +694,7 @@ namespace CDPI_UI.Helper
             lock (_lock)
             {
                 CurrentDownloadingItem = null;
+                QueueUpdated?.Invoke();
                 TryProcessNext();
             }
         }
@@ -701,6 +719,7 @@ namespace CDPI_UI.Helper
             };
             DownloadManager.StageChanged += (stage) =>
             {
+                CurrentDownloadingItem.DownloadStage = stage;
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(operationId, stage));
             };
             DownloadManager.ErrorHappens += (data) =>
@@ -923,7 +942,7 @@ namespace CDPI_UI.Helper
             }
 
             // For testing only
-            // await Task.Delay(10000);
+            await Task.Delay(10000);
 
             string downloadUrl = "";
             string tag = "";
@@ -959,7 +978,7 @@ namespace CDPI_UI.Helper
                 if (downloadUrl == "ERR_TOO_MANY_VARIANTS")
                 {
                     ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
-                    Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens.");
+                    Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens."); // TODO: Fix
                 }
                 else
                 {

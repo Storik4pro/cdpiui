@@ -115,6 +115,10 @@
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEBD3;" />
                     </NavigationViewItem.Icon>
+                    <NavigationViewItem.InfoBadge>
+                        <InfoBadge x:Name="NowDownloadingInfoBadge" VerticalAlignment="Top" Width="6" Height="6" Margin="1 0 0 28" Opacity="0"/>
+                    </NavigationViewItem.InfoBadge>
+
                 </NavigationViewItem>
                 <NavigationViewItem l:Uids.Uid="LibraryButton" Tag="CDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>

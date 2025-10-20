@@ -61,13 +61,28 @@ public sealed partial class StoreWindow : WindowEx
         SetTitleBar(WindowMoveAera);
         NavView.SelectionChanged += NavView_SelectionChanged;
 
+        StoreHelper.Instance.QueueUpdated += StoreHelper_QueueUpdated;
+
         StoreHelper.Instance.ItemInstallingErrorHappens += Instance_ItemInstallingErrorHappens;
 
         this.Closed += StoreWindow_Closed;
     }
 
+    private void StoreHelper_QueueUpdated()
+    {
+        if (StoreHelper.Instance.GetQueue().Count > 0 || !string.IsNullOrEmpty(StoreHelper.Instance.GetCurrentQueueOperationId())) 
+        {
+            NowDownloadingInfoBadge.Opacity = 1;
+        }
+        else
+        {
+            NowDownloadingInfoBadge.Opacity = 0;
+        }
+    }
+
     private void Instance_ItemInstallingErrorHappens(Tuple<string, string> obj)
     {
+        /*
         var dialog = new ContentDialog
         {
             Title = "Error",
@@ -76,18 +91,21 @@ public sealed partial class StoreWindow : WindowEx
             XamlRoot = this.Content.XamlRoot,
         };
         _ = dialog.ShowAsync();
+        */
     }
 
     private void StoreWindow_Closed(object sender, WindowEventArgs args)
     {
         Instance = null;
         StoreHelper.Instance.ItemInstallingErrorHappens -= Instance_ItemInstallingErrorHappens;
+        StoreHelper.Instance.QueueUpdated -= StoreHelper_QueueUpdated;
         ((App)Application.Current).OpenWindows.Remove(this);
     }
 
     ~StoreWindow()
     {
         StoreHelper.Instance.ItemInstallingErrorHappens -= Instance_ItemInstallingErrorHappens;
+        StoreHelper.Instance.QueueUpdated -= StoreHelper_QueueUpdated;
         ((App)Application.Current).OpenWindows.Remove(this);
     }
 
