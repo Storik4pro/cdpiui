@@ -1,12 +1,19 @@
-name: Build portable and create patch
+name: Build portable and create patch (manual)
 
 on:
-  release:
-    types: [created]
   workflow_dispatch:
+    inputs:
+      update_url:
+        description: '(optional) URL to update.exe (will be downloaded and included). If empty, uses Update/ from repo.'
+        required: false
+        default: ''
+      version:
+        description: '(optional) version string for requirements (if empty, workflow will try to infer)'
+        required: false
+        default: ''
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-and-patch:
@@ -27,49 +34,53 @@ jobs:
       - name: Restore solutions (if needed)
         run: dotnet restore
 
-      # Publish CDPIUI_TrayIcon
       - name: Publish CDPIUI_TrayIcon
         run: |
           dotnet publish ./CDPIUI_TrayIcon/CDPIUI_TrayIcon.csproj -c Release -r win-x64 -o ./artifacts/CDPIUI_TrayIcon/publish
 
-      # Publish GoodbyeDPI_UI
       - name: Publish GoodbyeDPI_UI
         run: |
           dotnet publish ./GoodbyeDPI_UI/GoodbyeDPI_UI.csproj -c Release -r win-x64 -o ./artifacts/GoodbyeDPI_UI/publish
 
-      # Copy Update folder (user said Update not changing; if you upload Update manually,
-      # put files into Update/ or extra_deps/ before running the workflow)
-      - name: Copy Update folder
-        run: |
-          if (Test-Path Update) {
-            robocopy Update artifacts\Update /MIR
-          } else {
-            echo "Update folder not found in repo root — ensure Update/ is present or upload manually to release assets."
-          }
+      # Handle Update: prefer explicit URL supplied by user, otherwise use Update/ from repo
+      - name: Prepare Update (from URL if provided)
         shell: powershell
+        run: |
+          $updateUrl = "${{ github.event.inputs.update_url }}"
+          $outDir = "artifacts/Update"
+          Remove-Item -Recurse -Force $outDir -ErrorAction SilentlyContinue
+          if (-not [string]::IsNullOrWhiteSpace($updateUrl)) {
+            New-Item -ItemType Directory -Path $outDir | Out-Null
+            $fileName = Split-Path $updateUrl -Leaf
+            $dest = Join-Path $outDir $fileName
+            Write-Output "Downloading update from $updateUrl to $dest"
+            Invoke-WebRequest -Uri $updateUrl -OutFile $dest -UseBasicParsing -Headers @{ 'Accept' = '*/*' }
+          } elseif (Test-Path Update) {
+            robocopy Update artifacts\Update /MIR | Out-Null
+          } else {
+            Write-Output "No Update provided and Update/ not found in repo. Continuing without Update."
+          }
 
-      # Create portable folder structure
       - name: Prepare portable structure
+        shell: powershell
         run: |
           Remove-Item -Recurse -Force ./portable_tmp -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Path ./portable_tmp | Out-Null
-          # Put apps into root or desired structure
-          robocopy artifacts\CDPIUI_TrayIcon\publish portable_tmp\CDPIUI_TrayIcon /MIR
-          robocopy artifacts\GoodbyeDPI_UI\publish portable_tmp\GoodbyeDPI_UI /MIR
+          robocopy artifacts\CDPIUI_TrayIcon\publish portable_tmp\CDPIUI_TrayIcon /MIR | Out-Null
+          robocopy artifacts\GoodbyeDPI_UI\publish portable_tmp\GoodbyeDPI_UI /MIR | Out-Null
           if (Test-Path artifacts\Update) {
-            robocopy artifacts\Update portable_tmp\Update /MIR
+            robocopy artifacts\Update portable_tmp\Update /MIR | Out-Null
           }
-        shell: powershell
 
       - name: Create _portable.zip
+        shell: powershell
         run: |
           Remove-Item -Force _portable.zip -ErrorAction SilentlyContinue
           Add-Type -AssemblyName System.IO.Compression.FileSystem
           [System.IO.Compression.ZipFile]::CreateFromDirectory("portable_tmp", "_portable.zip")
           Write-Output "Created _portable.zip"
-        shell: powershell
 
-      # Download previous _portable.zip from last release (if any)
+      # Find previous _portable.zip in repo releases (if any)
       - name: Find previous release portable asset (if exists)
         id: find_prev
         uses: actions/github-script@v6
@@ -80,58 +91,51 @@ jobs:
               repo: context.repo.repo,
               per_page: 20
             });
-            // find the latest release (excluding the one just created if triggered by release)
-            let currentTag = process.env.GITHUB_REF?.replace('refs/tags/','') || null;
-            // choose first release that has an asset name containing "_portable.zip" and is not draft
             for (const r of releases.data) {
               if (r.draft) continue;
-              if (currentTag && r.tag_name === currentTag) continue;
-              const hasPortable = r.assets?.some(a => a.name && a.name.includes('_portable.zip'));
-              if (hasPortable) {
-                // return asset browser_download_url and tag
-                const asset = r.assets.find(a => a.name.includes('_portable.zip'));
+              // find first release (most recent) that has an asset name containing "_portable.zip"
+              const asset = r.assets?.find(a => a.name && a.name.includes('_portable.zip'));
+              if (asset) {
                 return { url: asset.browser_download_url, tag: r.tag_name };
               }
             }
             return null;
-      - name: Debug prev
-        run: echo "Previous portable asset"
 
       - name: Download previous _portable.zip (if found)
         if: steps.find_prev.outputs.result != 'null'
+        shell: powershell
         run: |
           $obj = ConvertFrom-Json '${{ steps.find_prev.outputs.result }}'
           $url = $obj.url
           Write-Output "Downloading previous portable from $url"
+          # Use GITHUB_TOKEN for authenticated download, in case private assets
           Invoke-WebRequest -Uri $url -OutFile prev_portable.zip -UseBasicParsing -Headers @{ Authorization = "token $env:GITHUB_TOKEN" }
-        shell: powershell
 
-      # Create patch using script (script will handle case when prev not found -> full payload)
-      - name: Create patch (make_patch.ps1)
+      - name: Ensure scripts directory exists
+        run: mkdir -Force .\.github\scripts
+
+      - name: Save make_patch.ps1 to scripts (if not committed)
         run: |
-          mkdir -Force .\.github\scripts
-          # assumes the script already in repo as .github/scripts/make_patch.ps1
-          pwsh -NoProfile -ExecutionPolicy Bypass .\.github\scripts\make_patch.ps1 `
-            -CurrentZip _portable.zip `
-            -PrevZip (if (Test-Path prev_portable.zip) { "prev_portable.zip" } else { "" }) `
-            -OutPatch patch.cdpipatch `
-            -Version "${{ github.event.release?.tag_name || github.ref_name || format('{0:yyyyMMddHHmm}', (Get-Date)) }}" `
-            -DownloadUrl "${{ github.event.release?.assets_url || '' }}"
+          echo "Assumes .github/scripts/make_patch.ps1 is present in repo. If not, add it." 
+
+      - name: Run patch creation script
         shell: powershell
+        run: |
+          $prev = ""
+          if (Test-Path prev_portable.zip) { $prev = "prev_portable.zip" }
+          $verInput = "${{ github.event.inputs.version }}"
+          $cmd = ".\.github\scripts\make_patch.ps1 -CurrentZip _portable.zip -PrevZip $prev -OutPatch patch.cdpipatch -Version `"$verInput`" -DownloadUrl `""`""
+          Write-Output "Running: $cmd"
+          pwsh -NoProfile -ExecutionPolicy Bypass $cmd
 
-      # Upload patch as release asset if this workflow is triggered by a release
-      - name: Upload patch to release (if release event)
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: patch.cdpipatch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Upload patch as artifact if manual run
-      - name: Upload patch artifact (workflow_dispatch)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload _portable.zip artifact
         uses: actions/upload-artifact@v4
         with:
-          name: patch
+          name: portable_zip
+          path: _portable.zip
+
+      - name: Upload patch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: patch_cdpipatch
           path: patch.cdpipatch
