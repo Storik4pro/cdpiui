@@ -64,7 +64,7 @@ namespace CDPI_UI
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
 
             InitializeWindow();
-            WindowHelper.SetWindowSize(this, 800, 600);
+
             this.Closed += ViewWindow_Closed;
             TrySetMicaBackdrop(true);
 
@@ -405,8 +405,6 @@ namespace CDPI_UI
             if (msg == WM_GETMINMAXINFO)
             {
                 MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = 484;
-                minMaxInfo.ptMinTrackSize.y = 300;
                 Marshal.StructureToPtr(minMaxInfo, lParam, true);
             }
             return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);

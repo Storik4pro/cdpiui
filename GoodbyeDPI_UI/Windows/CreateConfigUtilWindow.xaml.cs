@@ -56,8 +56,6 @@ namespace CDPI_UI
             appWindowPresenter.IsMaximizable = false;
             appWindowPresenter.IsMinimizable = false;
 
-            WindowHelper.SetWindowSize(this, 900, 550);
-
             NativeWindowHelper.ForceDisableMaximize(this);
 
             Instance = this;
@@ -197,8 +195,6 @@ namespace CDPI_UI
             if (msg == WM_GETMINMAXINFO)
             {
                 MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = 484;
-                minMaxInfo.ptMinTrackSize.y = 300;
                 Marshal.StructureToPtr(minMaxInfo, lParam, true);
             }
             return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);

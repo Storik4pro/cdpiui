@@ -60,8 +60,6 @@ namespace CDPI_UI
             appWindowPresenter.IsMaximizable = false;
             appWindowPresenter.IsMinimizable = false;
 
-            WindowHelper.SetWindowSize(this, 900, 550);
-
             Instance = this;
 
             ((App)Application.Current).OpenWindows.Add(this);

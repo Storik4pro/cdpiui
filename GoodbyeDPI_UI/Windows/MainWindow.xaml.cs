@@ -52,7 +52,6 @@ namespace CDPI_UI
 
             Instance = this;
 
-            WindowHelper.SetWindowSize(this, 800, 600);
             ((App)Application.Current).OpenWindows.Add(this);
 
             if (this.Content is FrameworkElement rootElement)

@@ -40,7 +40,7 @@ public sealed partial class ViewGoodCheckOutputWindow : WindowEx
     {
         InitializeComponent();
         InitializeWindow();
-        WindowHelper.SetWindowSize(this, 800, 600);
+
         this.Closed += ViewGoodCheckOutputWindow_Closed;
         TrySetMicaBackdrop(true);
 
@@ -194,7 +194,7 @@ public sealed partial class ViewGoodCheckOutputWindow : WindowEx
     {
         var cross = new TextBlock
         {
-            Text = "✖",
+            Text = "ERR",
             FontSize = 14,
             VerticalAlignment = VerticalAlignment.Center
         };

@@ -50,8 +50,6 @@ namespace CDPI_UI
             appWindowPresenter.IsMaximizable = false;
             appWindowPresenter.IsMinimizable = false;
 
-            WindowHelper.SetWindowSize(this, 400, 150);
-
             ((App)Application.Current).OpenWindows.Add(this);
 
             if (this.Content is FrameworkElement rootElement)
