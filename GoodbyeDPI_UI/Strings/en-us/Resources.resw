@@ -1048,4 +1048,13 @@ Additional info:
   <data name="AutoCorrectError" xml:space="preserve">
     <value>AutoCorrect exception happens</value>
   </data>
+  <data name="StoreShowItemFolder.Text" xml:space="preserve">
+    <value>Show local files</value>
+  </data>
+  <data name="DeveloperNotCommentedRelease" xml:space="preserve">
+    <value>Developer did not leave a comment for this release.</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
 </root>

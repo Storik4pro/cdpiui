@@ -501,7 +501,7 @@
     <value>Сообщение от разработчика</value>
   </data>
   <data name="MessageFromDeveloperTip" xml:space="preserve">
-    <value>Разработчик посчитал нужным сообщить указанную информацию. Это может быть предостережением или просто информацией, на которую разработчик захотел обратить внимание. </value>
+    <value>Это официальная заметка от автора или команды разработки, предназначенная для информирования пользователя о важных деталях, связанных с элементом. Сообщение может содержать предупреждение или иную информацию.</value>
   </data>
   <data name="NewestVersionInstalled" xml:space="preserve">
     <value>Все обновления установлены</value>
@@ -1050,5 +1050,14 @@
   </data>
   <data name="AutoCorrectError" xml:space="preserve">
     <value>Неожиданная ошибка автокоррекции файлов</value>
+  </data>
+  <data name="StoreShowItemFolder.Text" xml:space="preserve">
+    <value>Показать локальные файлы</value>
+  </data>
+  <data name="DeveloperNotCommentedRelease" xml:space="preserve">
+    <value>У этой версии нет списка изменений или описания.</value>
+  </data>
+  <data name="Retry" xml:space="preserve">
+    <value>Повторить попытку</value>
   </data>
 </root>
