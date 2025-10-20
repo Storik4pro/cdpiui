@@ -34,7 +34,7 @@ namespace CDPIUI_TrayIcon.Helper
 
                     LogonTrigger trigger = new LogonTrigger
                     {
-                        UserId = Environment.UserName 
+                        UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name,
                     };
                     taskDefinition.Triggers.Add(trigger);
 
@@ -42,7 +42,7 @@ namespace CDPIUI_TrayIcon.Helper
 
                     taskDefinition.Principal.RunLevel = TaskRunLevel.Highest;
 
-                    taskDefinition.Principal.UserId = Environment.UserName;
+                    taskDefinition.Principal.UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                     taskDefinition.Principal.LogonType = TaskLogonType.InteractiveToken;
 
                     taskService.RootFolder.RegisterTaskDefinition(TaskName, taskDefinition);
@@ -68,7 +68,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                Logger.Instance.CreateErrorLog(nameof(AutoStartManager), $"Autorun error: {ex.Message}");
+                Logger.Instance.CreateErrorLog(nameof(AutoStartManager), $"Autorun error: {ex}");
             }
             return false;
         }
