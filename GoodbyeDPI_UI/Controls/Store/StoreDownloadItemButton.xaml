@@ -6,7 +6,8 @@
     xmlns:local="using:CDPI_UI.Controls.Store"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -88,7 +89,7 @@
                     </StackPanel>
                     <StackPanel x:Name="StatusStackPanel" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="5" Margin="0 5 0 2" Spacing="10">
                         
-                        <TextBlock x:Name="BigStatusTextBlock"  Text="Waiting..." Visibility="Visible" />
+                        <TextBlock x:Name="BigStatusTextBlock"  Text="Getting ready..." Visibility="Visible" />
                         <TextBlock x:Name="SpeedTextBlock"  Text="" Visibility="Visible" Grid.Column="1"/>
                         <TextBlock x:Name="TimeTextBlock"  Text="" Visibility="Visible" Grid.Column="1"/>
                         <TextBlock x:Name="ErrorTextBlock" Visibility="Visible" IsTextSelectionEnabled="True"/>
@@ -116,7 +117,9 @@
                                         UsePipeTables="True"
                                         UseTaskLists="True"/>
                                 </Grid>
-                                <HyperlinkButton x:Name="ViewMoreButton" Content="View more" Padding="6 2" Margin="14 0 0 0" Visibility="Collapsed" Click="ViewMoreButton_Click"/>
+                                <HyperlinkButton x:Name="ViewMoreButton" Padding="6 2" Margin="14 0 0 0" Visibility="Collapsed" Click="ViewMoreButton_Click">
+                                    <TextBlock l:Uids.Uid="ViewMoreTextBlock"/>
+                                </HyperlinkButton>
                             </StackPanel>
                         </Grid>
                     </StackPanel>

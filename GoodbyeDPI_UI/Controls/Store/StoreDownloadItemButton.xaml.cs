@@ -1,7 +1,8 @@
-using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using CDPI_UI.Controls.Dialogs.Universal;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Views.Store;
+using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,6 +22,7 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -65,12 +67,24 @@ namespace CDPI_UI.Controls.Store
             set => _config = value;
         }
 
+        private ILocalizer localizer = Localizer.Get();
+
         public StoreDownloadItemButton()
         {
             InitializeComponent();
             _config = new MarkdownConfig();
 
             this.Loaded += StoreDownloadItemButton_Loaded;
+        }
+
+        private void CheckCurrentStatus()
+        {
+            string operationId = StoreHelper.Instance.GetOperationIdFromItemId(StoreId);
+            if (!string.IsNullOrEmpty(operationId))
+            {
+                string status = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadStage;
+                PreferItemDownloadingStateActions(status);
+            }
         }
 
         private void StoreDownloadItemButton_Loaded(object sender, RoutedEventArgs e)
@@ -89,6 +103,7 @@ namespace CDPI_UI.Controls.Store
                 SetValue(StoreIdProperty, value);
                 RemoveHandlers();
                 ConnectHandlers();
+                CheckCurrentStatus();
             }
         }
 
@@ -138,7 +153,7 @@ namespace CDPI_UI.Controls.Store
 
         public static readonly DependencyProperty TooltipProperty =
             DependencyProperty.Register(
-                nameof(Tooltip), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata("Cancel")
+                nameof(Tooltip), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(Localizer.Get().GetLocalizedString("Cancel"))
             );
 
         public string Category
@@ -179,7 +194,7 @@ namespace CDPI_UI.Controls.Store
             get { return (string)GetValue(DescriptionProperty); }
             set { 
                 if (string.IsNullOrEmpty(value))
-                    SetValue(DescriptionProperty, "Developer did not leave a comment for this release.");
+                    SetValue(DescriptionProperty, localizer.GetLocalizedString("DeveloperNotCommentedRelease"));
                 else 
                     SetValue(DescriptionProperty, value); 
             }
@@ -299,12 +314,12 @@ namespace CDPI_UI.Controls.Store
             ErrorTextBlock.Text = errorCode;
             SpeedTextBlock.Text = "";
             TimeTextBlock.Text = "";
-            BigStatusTextBlock.Text = "Произошла ошибка";
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("ErrorHappens");
 
             ProgressBar.IsIndeterminate = false;
             ProgressBar.Value = 100;
 
-            Tooltip = "Retry";
+            Tooltip = localizer.GetLocalizedString("Retry");
 
             ProgressBar.Foreground = new SolidColorBrush((Color)Application.Current.Resources["SystemFillColorCritical"]);
             RemoveHandlers();
@@ -350,6 +365,52 @@ namespace CDPI_UI.Controls.Store
             TimeTextBlock.Text = Utils.ConvertMinutesToPrettyText(time.Minutes);
         }
 
+        private void PreferItemDownloadingStateActions(string state)
+        {
+            ProgressBar.Visibility = Visibility.Visible;
+            string stageHeaderText;
+            switch (state)
+            {
+                case "GETR":
+                    stageHeaderText = localizer.GetLocalizedString("GettingReady");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "END":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "Downloading":
+                    stageHeaderText = localizer.GetLocalizedString("Downloading");
+                    ProgressBar.IsIndeterminate = false;
+                    break;
+                case "Extracting":
+                    stageHeaderText = localizer.GetLocalizedString("Installing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "ErrorHappens":
+                    stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
+                    break;
+                case "Completed":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "CANC":
+                    stageHeaderText = localizer.GetLocalizedString("Cancel");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "ConnectingToService":
+                    stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                default:
+                    stageHeaderText = localizer.GetLocalizedString(state);
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+            }
+
+            BigStatusTextBlock.Text = stageHeaderText;
+        }
+
         private void StoreHelper_ItemDownloadStageChanged(Tuple<string, string> obj)
         {
             string operationId = obj.Item1;
@@ -358,45 +419,7 @@ namespace CDPI_UI.Controls.Store
             if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                 return;
 
-            string stageHeaderText;
-
-            ProgressBar.Visibility = Visibility.Visible;
-
-            switch (stage)
-            {
-                case "GETR":
-                    stageHeaderText = "Подготовка";
-                    ProgressBar.IsIndeterminate = true;
-                    break;
-                case "END":
-                    stageHeaderText = "Завершение";
-                    ProgressBar.IsIndeterminate = true;
-                    break;
-                case "Downloading":
-                    stageHeaderText = "Скачивание";
-                    ProgressBar.IsIndeterminate = false;
-                    break;
-                case "Extracting":
-                    stageHeaderText = "Установка";
-                    ProgressBar.IsIndeterminate = true;
-                    break;
-                case "ErrorHappens":
-                    stageHeaderText = "Произошла ошибка";
-                    break;
-                case "Completed":
-                    stageHeaderText = "Завершение";
-                    ProgressBar.IsIndeterminate = true;
-                    break;
-                case "CANC":
-                    stageHeaderText = "Отмена";
-                    ProgressBar.IsIndeterminate = true;
-                    break;
-                default:
-                    stageHeaderText = "";
-                    break;
-            }
-
-            BigStatusTextBlock.Text = stageHeaderText;
+            PreferItemDownloadingStateActions(stage);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -426,7 +449,7 @@ namespace CDPI_UI.Controls.Store
             MarkdownTextViewContentDialog dialog = new MarkdownTextViewContentDialog()
             {
                 XamlRoot = this.XamlRoot,
-                Title = "View more",
+                Title = localizer.GetLocalizedString("ViewMore"),
                 Text = Description
             };
 

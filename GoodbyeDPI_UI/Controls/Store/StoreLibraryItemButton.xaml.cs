@@ -155,5 +155,17 @@ namespace CDPI_UI.Controls.Store
             DeleteButton.IsEnabled = false;
             ReinstallButton.IsEnabled = false;
         }
+
+        private void ShowFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Helper.Static.Utils.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(StoreId).Directory);
+            }
+            catch
+            {
+
+            }
+        }
     }
 }
