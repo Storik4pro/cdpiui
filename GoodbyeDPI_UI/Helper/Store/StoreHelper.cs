@@ -942,7 +942,7 @@ namespace CDPI_UI.Helper
             }
 
             // For testing only
-            await Task.Delay(10000);
+            // await Task.Delay(10000);
 
             string downloadUrl = "";
             string tag = "";
@@ -1038,7 +1038,13 @@ namespace CDPI_UI.Helper
             if (cancellationToken.IsCancellationRequested)
                 return;
 
-            if (id == StateHelper.ApplicationStoreId) return;
+            if (id == StateHelper.ApplicationStoreId)
+            {
+                if (!Utils.IsApplicationBuildAsSingleFile) return;
+
+                await GetPatchReadyToInstall(Path.Combine(itemFolder, "patch.cdpipatch"), qi.OperationId);
+                return;
+            }
 
             try
             {
@@ -1088,6 +1094,71 @@ namespace CDPI_UI.Helper
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
             }
+        }
+
+        private async Task<bool> GetPatchReadyToInstall(string filePath, string operationId)
+        {
+            string appItemDirectory = Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.ApplicationStoreId);
+            string patchesDir = Path.Combine(appItemDirectory, "Patches");
+            string finalDir = Path.Combine(appItemDirectory, "CDPIUI");
+
+            string makePatchFolder = Path.Combine(patchesDir, Path.GetFileNameWithoutExtension(filePath));
+            Utils.ExtractZip(filePath, "/", makePatchFolder);
+
+            string requirementsFile = Path.Combine(makePatchFolder, "requirements.json");
+            var requirements = Utils.LoadJson<PatchRequirements>(requirementsFile);
+
+            List<string> patches = [];
+
+            foreach (var requirement in requirements.Requirements)
+            {
+                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+                int secondsSinceEpoch = (int)t.TotalSeconds;
+                string _dir = Path.Combine(makePatchFolder, secondsSinceEpoch.ToString());
+
+                patches.Add(_dir);
+
+                bool result = await DownloadManager.DownloadAndExtractAsync(
+                    requirement,
+                    _dir,
+                    extractArchive: true,
+                    extractSkipFiletypes: [],
+                    extractRootFolder: "CDPIUI/",
+                    executableFileName: "",
+                    filetype: "archive"
+                );
+
+                if (!result)
+                {
+                    return false;
+                }
+            }
+
+            patches.Reverse();
+
+            try
+            {
+                // string[] dirs = Directory.GetDirectories(patchesDir, "*", SearchOption.TopDirectoryOnly);
+                foreach (string dir in patches)
+                {
+                    Directory.Move(dir, finalDir); // TEST
+                }
+                Directory.Move(Path.Combine(makePatchFolder, "CDPIUI"), finalDir);
+
+                string finalPatchFileName = Path.Combine(appItemDirectory, "patch.cdpipatch");
+
+                if (File.Exists(finalPatchFileName)) {
+                    File.Delete(finalPatchFileName);
+                }
+                ZipFile.CreateFromDirectory(makePatchFolder, finalPatchFileName);
+            }
+            catch (Exception ex)
+            {
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(operationId, HandleException(ex)));
+                return false;
+            }
+
+            return true;
         }
 
         public async void CheckUpdates()
