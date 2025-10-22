@@ -24,6 +24,7 @@
 	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <UserSecretsId>393d1168-0d99-4c7a-99eb-7a1fb31f2f24</UserSecretsId>
     <Configurations>Debug;Release;SingleFileRelease;MsiRelease</Configurations>
+    <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
@@ -357,15 +358,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x86'">
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x64'">
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x86'">
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x64'">
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\en-us\Resources.resw" />
