@@ -63,6 +63,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4746CF694D164BF5A7E96449EEA89284"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_592B4E966BB64A8BBBE0839D99477F73"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,12 +106,6 @@
         "Entry"
         {
         "MsmKey" = "8:_AF6F2DA83574403EBEBE6DF6A10399B2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -423,7 +423,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -474,7 +474,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -565,7 +565,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -616,7 +616,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -667,7 +667,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -987,7 +987,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDPI UI"
         "ProductCode" = "8:{FB5C0E09-0FDA-48E9-9293-34972682B78A}"
-        "PackageCode" = "8:{8BE57818-548B-41AC-950F-26A0F32951C5}"
+        "PackageCode" = "8:{07798DDD-6529-4A61-806F-BF56769CB1B7}"
         "UpgradeCode" = "8:{AB14590E-0D10-416F-9A0E-07E63074B603}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -1107,35 +1107,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_082EB7E0C0884297A2D9E894B5EB5767"
-            {
-            "Name" = "8:CDPI UI"
-            "Arguments" = "8:"
-            "Description" = "8:Run CDPI UI application"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
-            "Folder" = "8:_89E396BABF19485790686B93CA86F25E"
-            "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
-            "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3B0EE33C07B641F89ED07ECA067995DF"
-            {
-            "Name" = "8:CDPI UI"
-            "Arguments" = "8:"
-            "Description" = "8:Run CDPI UI application"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
-            "Folder" = "8:_81DE9CAD24F74FBD84240289D54A5CFA"
-            "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
-            "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A3C3CE66547A4CA8885F217D7BD56D8F"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_392F3CE8651340239A32006CF4820CF4"
             {
             "Name" = "8:CDPI UI"
             "Arguments" = "8:"
@@ -1143,10 +1115,24 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_B8FD454751554FF38406A5FE8BEC80D3"
+            "Target" = "8:_4746CF694D164BF5A7E96449EEA89284"
+            "Folder" = "8:_89E396BABF19485790686B93CA86F25E"
+            "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
+            "Icon" = "8:_3399A50A02B94BF8BA3D7695E165D5AC"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_789E3A081E7E4F8ABCB1BDBEA88C0EBD"
+            {
+            "Name" = "8:CDPI UI"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_4746CF694D164BF5A7E96449EEA89284"
             "Folder" = "8:_87B92960C21F4968B827F5DFDB6748AA"
             "WorkingFolder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
-            "Icon" = "8:_5DC36C33EDAE4160AACB50038B404F42"
+            "Icon" = "8:_3399A50A02B94BF8BA3D7695E165D5AC"
             "Feature" = "8:"
             }
         }
@@ -1550,7 +1536,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_293D2CAAC21145B999F3DCF01182BD4E"
             {
-            "SourcePath" = "8:..\\CDPIUI_TrayIcon\\bin\\Release\\Publish\\CDPIUI_TrayIcon.exe"
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\bin\\ARM64\\Release\\net8.0-windows10.0.22621.0\\publish\\CDPIUI_TrayIcon.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_552C7EC32DDA4E0DBE5B1D3CC4DADCF0"
@@ -1577,7 +1563,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B8FD454751554FF38406A5FE8BEC80D3"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4746CF694D164BF5A7E96449EEA89284"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\obj\\x64\\MsiRelease\\net8.0-windows10.0.22621.0\\win-x64\\apphost.exe"
             "TargetName" = "8:"
@@ -1604,6 +1590,7 @@
             "PublishProfilePath" = "8:Properties\\PublishProfiles\\MsiProfile.pubxml"
                 "ExcludeFilters"
                 {
+                "ExcludeFilter" = "8:ca-Es-VALENCIA"
                 }
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E89FD5EB301E4E4CA1C3174312479825"
