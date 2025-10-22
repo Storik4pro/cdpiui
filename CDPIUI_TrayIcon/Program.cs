@@ -34,6 +34,27 @@ class Programm
             RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
         }
 
+        string updateFilePath = Path.Combine(Utils.GetDataDirectory(), "Update.exe");
+        string newUpdateFilePath = Path.Combine(Utils.GetDataDirectory(), "_Update.exe");
+        try
+        {
+            if (File.Exists(newUpdateFilePath))
+            {
+                File.Move(newUpdateFilePath, updateFilePath);
+            }
+        }
+        catch
+        {
+            if (args.Contains("--after-patching"))
+            {
+                Logger.Instance.CreateErrorLog("Update", "Update not finished correctly");
+                TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
+            }
+        }
+
+        
+        
+
         if (args.Contains("--after-failed-update"))
         {
             TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
