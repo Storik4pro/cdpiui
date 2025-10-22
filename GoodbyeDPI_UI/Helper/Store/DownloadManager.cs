@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using CDPI_UI.Helper.Static;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -116,7 +117,7 @@ namespace CDPI_UI.Helper
                 if (extractArchive)
                 {
                     StageChanged?.Invoke("Extracting");
-                    ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes);
+                    Utils.ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes);
                 }
                 else
                 {
@@ -243,104 +244,7 @@ namespace CDPI_UI.Helper
         }
 
 
-        private static void ExtractZip(
-            string zipFilePath,
-            string zipFolderToUnpack,
-            string extractTo,
-            IEnumerable<string> filesToSkip = null
-        )
-        {
-            filesToSkip = filesToSkip ?? Enumerable.Empty<string>();
-
-            if (!Directory.Exists(extractTo))
-                Directory.CreateDirectory(extractTo);
-
-            using (var archive = ZipFile.OpenRead(zipFilePath))
-            {
-                var entries = archive.Entries;
-                int totalFiles = entries.Count;
-                int extractedFiles = 0;
-
-                if (zipFolderToUnpack == "/")
-                    zipFolderToUnpack = string.Empty;
-                else if (zipFolderToUnpack.EndsWith("/"))
-                    zipFolderToUnpack = zipFolderToUnpack.TrimEnd('/');
-
-                var patternSegments = string.IsNullOrEmpty(zipFolderToUnpack)
-                                        ? Array.Empty<string>()
-                                        : zipFolderToUnpack.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var entry in entries)
-                {
-                    var entryPath = entry.FullName.Replace('\\', '/').TrimStart('/');
-
-                    var entrySegments = entryPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    bool isMatch = true;
-                    if (patternSegments.Length > 0)
-                    {
-                        if (entrySegments.Length < patternSegments.Length)
-                        {
-                            isMatch = false;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < patternSegments.Length; i++)
-                            {
-                                var pat = patternSegments[i];
-                                var seg = entrySegments[i];
-
-                                if (pat == "$ANY")
-                                {
-                                    continue;
-                                }
-
-                                if (!string.Equals(pat, seg, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    isMatch = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!isMatch)
-                        continue;
-
-                    var relativeSegments = entrySegments.Skip(patternSegments.Length).ToArray();
-                    var relativePath = string.Join("/", relativeSegments).TrimStart('/');
-
-                    if (string.IsNullOrEmpty(relativePath))
-                        continue;
-
-                    if (filesToSkip.Any(skip => relativePath.Contains(skip)))
-                        continue;
-
-                    var destinationPath = Path.Combine(extractTo, relativePath);
-                    var destinationDir = Path.GetDirectoryName(destinationPath);
-                    if (!Directory.Exists(destinationDir))
-                        Directory.CreateDirectory(destinationDir);
-
-                    if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
-                        && File.Exists(destinationPath))
-                    {
-                        continue;
-                    }
-
-                    if (entry.FullName.EndsWith("/"))
-                    {
-                        if (!Directory.Exists(destinationPath))
-                            Directory.CreateDirectory(destinationPath);
-                    }
-                    else
-                    {
-                        entry.ExtractToFile(destinationPath, overwrite: false);
-                    }
-
-                    extractedFiles++;
-                }
-            }
-        }
+        
 
         public void HandleMsiInstallerMessage(MsiCallback callback)
         {
