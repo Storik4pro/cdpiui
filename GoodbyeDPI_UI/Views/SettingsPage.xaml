@@ -81,6 +81,9 @@
                 <controls:SettingsCard l:Uids.Uid="AutorunButton">
                     <ToggleSwitch x:Name="AutorunToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Toggled="AutorunToggleSwitch_Toggled"   Margin="0, 0, 0, 0" />
                 </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="HideToTrayOnStartupCard">
+                    <ToggleSwitch x:Name="HideInTrayToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Toggled="HideInTrayToggleSwitch_Toggled" Margin="0, 0, 0, 0" />
+                </controls:SettingsCard>
                 <TextBlock l:Uids.Uid="PersonalizeTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                 <controls:SettingsCard l:Uids.Uid="LanguageSelector">
                     <ComboBox x:Name="LanguageComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>

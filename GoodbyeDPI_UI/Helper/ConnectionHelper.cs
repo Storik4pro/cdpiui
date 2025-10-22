@@ -91,7 +91,8 @@ namespace CDPI_UI.Helper
             {
                 try
                 {
-                    var psi = new ProcessStartInfo(Path.Combine(StateHelper.GetDataDirectory(getCurrent:true), "CDPIUI_TrayIcon.exe"), "--show-ui")
+                    string startupString = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup") ? "--autorun" : "--show-ui";
+                    var psi = new ProcessStartInfo(Path.Combine(StateHelper.GetDataDirectory(getCurrent:true), "CDPIUI_TrayIcon.exe"), startupString)
                     {
                         UseShellExecute = true,
                         Verb = "runas"

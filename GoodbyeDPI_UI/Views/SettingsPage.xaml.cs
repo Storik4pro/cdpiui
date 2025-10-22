@@ -70,6 +70,8 @@ namespace CDPI_UI.Views
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
             AppUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
             StoreUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
+
+            HideInTrayToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup");
         }
 
         private void SettingsManager_PropertyChanged(string propertyName)
@@ -193,6 +195,11 @@ namespace CDPI_UI.Views
         {
             localizer.SetLanguage(((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
             SettingsManager.Instance.SetValue<string>("SYSTEM", "language", ((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
+        }
+
+        private void HideInTrayToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue<bool>("APPEARANCE", "hideToTrayOnStartup", HideInTrayToggleSwitch.IsOn);
         }
     }
 }
