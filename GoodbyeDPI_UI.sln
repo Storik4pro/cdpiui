@@ -116,7 +116,6 @@ Global
 		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|ARM64.ActiveCfg = Release
 		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|ARM64.Build.0 = Release
 		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|x64.ActiveCfg = Release
-		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|x64.Build.0 = Release
 		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|x86.ActiveCfg = Release
 		{DBE9999D-346E-CA63-6964-F3B7FC1D42B4}.SingleFileRelease|x86.Build.0 = Release
 	EndGlobalSection
