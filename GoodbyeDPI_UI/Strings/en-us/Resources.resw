@@ -1057,4 +1057,7 @@ Additional info:
   <data name="Retry" xml:space="preserve">
     <value>Retry</value>
   </data>
+  <data name="HideToTrayOnStartupCard.Header" xml:space="preserve">
+    <value>Hide application in system tray and run current component when launched from the "Start" menu</value>
+  </data>
 </root>

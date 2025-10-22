@@ -1060,4 +1060,7 @@
   <data name="Retry" xml:space="preserve">
     <value>Повторить попытку</value>
   </data>
+  <data name="HideToTrayOnStartupCard.Header" xml:space="preserve">
+    <value>Прятать приложение в системный лоток уведомлений при запуске из меню "Пуск"</value>
+  </data>
 </root>
