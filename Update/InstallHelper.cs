@@ -54,7 +54,7 @@ namespace Update
         private string _archiveFilePath;
         private string _targetFolder;
         private string _targetExecutable;
-        private readonly List<string> _skipFiles = new List<string> { "update.exe" };
+        private readonly List<string> _skipFiles = new List<string> { "Update.exe" };
         private const string UiRootPrefix = ""; 
 
         public Action<InstallState> InstallationStateChanged;
