@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace CDPI_UI.Helper
 {
+    public class PatchRequirements
+    {
+        public List<string> Requirements { get; set; }
+    }
     public class ApplicationUpdateHelper
     {
         private static ApplicationUpdateHelper _instance;
