@@ -25,6 +25,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI;
@@ -555,12 +556,15 @@ namespace CDPI_UI
             StorageFolder stringsFolder = await StorageFolder.GetFolderFromPathAsync(stringsFolderPath);
 
             string lang = SettingsManager.Instance.GetValue<string>("SYSTEM", "language");
-            CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            var culture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             if (lang == "NaN")
             {
-                if (installedUICulture.Name == "ru" || installedUICulture.Name == "en-US")
-                    lang = installedUICulture.Name;
-                else lang = "en-us";
+                lang = culture switch
+                {
+                    "en" => "en-us",
+                    "ru" => "ru",
+                    _ => "en-us",
+                };
             }
 
             ILocalizer localizer = await new LocalizerBuilder()
