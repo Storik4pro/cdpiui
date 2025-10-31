@@ -6,29 +6,83 @@
     xmlns:local="using:CDPI_UI.Views.CreateConfigHelper"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="SSmall">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="400"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SecondStackPanel.(Grid.Row)" Value="1"/>
+                        <Setter Target="SecondStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="SecondStackPanel.Margin" Value="0 10 0 0"/>
+                        
+                        <Setter Target="ThirdStackPanel.(Grid.Row)" Value="2"/>
+                        <Setter Target="ThirdStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="ThirdStackPanel.Margin" Value="0 10 0 0"/>
+
+                        <Setter Target="SecondDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="840"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ThirdStackPanel.(Grid.Row)" Value="1"/>
+                        <Setter Target="ThirdStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ThirdStackPanel.Margin" Value="0 10 0 0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Big">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1240"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SecondStackPanel.(Grid.Row)" Value="0"/>
+                        <Setter Target="SecondStackPanel.(Grid.Column)" Value="1"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Visible"/>
+                        <Setter Target="SecondDescriptionTextBlock.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <ScrollViewer>
             <StackPanel Padding="20" VerticalAlignment="Center" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Image Source="/Assets/Store/empty.png" Width="60"/>
+                    <Image Source="/Assets/Icons/Edit-68x68.png" Width="60"/>
                     <StackPanel>
-                        <TextBlock Text="Welcome" Style="{ThemeResource TitleTextBlockStyle}"/>
-                        <TextBlock Text="What are you looking for?"/>
+                        <TextBlock l:Uids.Uid="WelcomeTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock l:Uids.Uid="WelcomeTipTextBlock"/>
                     </StackPanel>
                 </StackPanel>
-                <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="400">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Features" FontWeight="Light" FontSize="16"/>
+                        <TextBlock l:Uids.Uid="FeaturesTextBlock" FontWeight="Light" FontSize="16"/>
                         <StackPanel Grid.Column="0" Spacing="5" >
-                            <TextBlock Text="Basic" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                                 <Button x:Name="CreateNewConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="CreateNewConfigButton_Click">
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE710;" />
-                                            <TextBlock Text="Create new config" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="CreateNewConfigMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
@@ -36,7 +90,7 @@
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE8E5;" />
-                                            <TextBlock Text="Import config from file" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="ImportConfigFromFileTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
@@ -44,20 +98,20 @@
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE70F;" />
-                                            <TextBlock Text="Edit existing config" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="EditConfigMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="0" Spacing="5" >
-                            <TextBlock Text="GoodCheck config selection" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock l:Uids.Uid="GoodCheckConfigSelectionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                                 <Button x:Name="GoodCheckBeginSelectionButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="GoodCheckBeginSelectionButton_Click">
                                     <Button.Content>
                                         <Grid>
-                                            <FontIcon Glyph="&#xEB9D;" />
-                                            <TextBlock Text="Begin new selection" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                                            <TextBlock l:Uids.Uid="BeginNewSelectionTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
@@ -65,7 +119,7 @@
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE823;" />
-                                            <TextBlock Text="Recent selections" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="RecentGoodCheckSelectionsTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
@@ -73,32 +127,32 @@
 
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Grid.Column="2" Spacing="10">
-                        <TextBlock Text="Store" FontWeight="Light" FontSize="16"/>
+                    <StackPanel x:Name="SecondStackPanel" Grid.Column="1" Spacing="10">
+                        <TextBlock l:Uids.Uid="StoreWindowTitleTextBlock" FontWeight="Light" FontSize="16"/>
                         <StackPanel Grid.Column="0" Spacing="5" >
-                            <TextBlock Text="Explore new AddOns and Components" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock x:Name="SecondDescriptionTextBlock" l:Uids.Uid="StoreExploreNewAddOnsAndComponentsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                                 <Button x:Name="StoreButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="StoreButton_Click">
                                     <Button.Content>
                                         <Grid>
                                             <Image Source="/Assets/Icons/Store.png" Width="28"/>
-                                            <TextBlock Text="Open store" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="StoreOpenMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Grid.Column="4" Spacing="10">
-                        <TextBlock Text="Help+Support" FontWeight="Light" FontSize="16"/>
+                    <StackPanel x:Name="ThirdStackPanel" Grid.Column="2" Spacing="10">
+                        <TextBlock l:Uids.Uid="HelpSupportTitle" FontWeight="Light" FontSize="16"/>
                         <StackPanel Grid.Column="0" Spacing="5" >
-                            <TextBlock Text="" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock x:Name="ThirdDescriptionTextBlock" Text="" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
                                 <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                     <Button.Content>
                                         <Grid>
-                                            <FontIcon Glyph="&#xE897;" />
-                                            <TextBlock Text="Open offline help" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/Help.ico"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                                            <TextBlock l:Uids.Uid="HelpOfflineMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
@@ -106,14 +160,14 @@
                                     <Button.Content>
                                         <Grid>
                                             <FontIcon Glyph="&#xE774;" />
-                                            <TextBlock Text="Visit online repository" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                            <TextBlock l:Uids.Uid="VisitGitHubPageMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                                         </Grid>
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
-                </VariableSizedWrapGrid>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>

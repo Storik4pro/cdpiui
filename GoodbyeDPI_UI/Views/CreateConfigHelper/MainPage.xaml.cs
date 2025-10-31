@@ -1,4 +1,5 @@
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
@@ -41,8 +42,12 @@ namespace CDPI_UI.Views.CreateConfigHelper
 
         private async void ImportConfigButton_Click(object sender, RoutedEventArgs e)
         {
-            ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot };
-            await dialog.ShowAsync();
+            if (!SettingsManager.Instance.GetValue<bool>("AD", "ImportConfigFromFile"))
+            {
+                ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot };
+                await dialog.ShowAsync();
+                SettingsManager.Instance.SetValue("AD", "ImportConfigFromFile", true);
+            }
 
             string filePath;
 
