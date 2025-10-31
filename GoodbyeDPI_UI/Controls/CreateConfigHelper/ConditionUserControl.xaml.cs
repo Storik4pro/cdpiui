@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -105,6 +106,13 @@ namespace CDPI_UI
                 RemoveCommand.Execute(RemoveCommandParameter);
                 return;
             }
+        }
+
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var package = new DataPackage();
+            package.SetText($"%{VarName}%");
+            Clipboard.SetContent(package);
         }
     }
 }

@@ -6,35 +6,52 @@
     xmlns:local="using:CDPI_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid Margin="0 2.5">
+        
+        
         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="5"/>
-        <VariableSizedWrapGrid ItemWidth="300" ItemHeight="45" Orientation="Horizontal" Margin="10">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
 
-            <StackPanel x:Name="VariableNameStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind VarName, Mode=OneWay}">
-                <TextBlock Text="Name" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                <TextBlock Text="{x:Bind VarName, Mode=OneWay}" IsTextSelectionEnabled="True"/>
+            <StackPanel x:Name="VariableNameStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind VarName, Mode=OneWay}" Grid.ColumnSpan="3">
+                <TextBlock Text="{x:Bind VarName, Mode=OneWay}" IsTextSelectionEnabled="True" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
             </StackPanel>
-            <StackPanel x:Name="VariableOnStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind OnValue, Mode=OneWay}">
-                <TextBlock Text="OnValue" Style="{ThemeResource CaptionTextBlockStyle}"/>
+            
+            <StackPanel x:Name="VariableOnStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind OnValue, Mode=OneWay}" Grid.Row="1" Grid.Column="0">
+                <TextBlock l:Uids.Uid="OnValueTextBlock" Style="{ThemeResource CaptionTextBlockStyle}"/>
                 <TextBlock Text="{x:Bind OnValue, Mode=OneWay}" IsTextSelectionEnabled="True"/>
             </StackPanel>
-            <StackPanel x:Name="VariableOffStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind OffValue, Mode=OneWay}">
-                <TextBlock Text="OffValue" Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <StackPanel x:Name="VariableOffStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind OffValue, Mode=OneWay}" Grid.Row="1" Grid.Column="2">
+                <TextBlock l:Uids.Uid="OffValueTextBlock" Style="{ThemeResource CaptionTextBlockStyle}"/>
                 <TextBlock Text="{x:Bind OffValue, Mode=OneWay}" IsTextSelectionEnabled="True"/>
             </StackPanel>
-            <StackPanel x:Name="VariableDescriptionStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind Description, Mode=OneWay}">
+            <StackPanel x:Name="VariableDescriptionStackPanel" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind Description, Mode=OneWay}" Visibility="Collapsed">
                 <TextBlock Text="Description" Style="{ThemeResource CaptionTextBlockStyle}"/>
                 <TextBlock Text="{x:Bind Description, Mode=OneWay}" IsTextSelectionEnabled="True"/>
             </StackPanel>
-        </VariableSizedWrapGrid>
-        <StackPanel Grid.Column="5" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10 0">
-            <Button Padding="6" ToolTipService.ToolTip="Remove" Click="Button_Click">
-                <Button.Content>
-                    <FontIcon Glyph="&#xE711;" FontSize="16" />
-                </Button.Content>
-            </Button>
-        </StackPanel>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Right">
+                <Button Padding="6" x:Name="CopyButton" l:Uids.Uid="CopyButton" Click="CopyButton_Click">
+                    <FontIcon Glyph="&#xE8C8;" FontSize="16" />
+                </Button>
+                <Button Padding="6" l:Uids.Uid="RemoveButton" Click="Button_Click">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE711;" FontSize="16" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+        
     </Grid>
 </UserControl>
