@@ -799,7 +799,7 @@ Please, install lates version of "{0}" in Store</value>
     <value>Import config from file...</value>
   </data>
   <data name="EditConfigMenuItem.Text" xml:space="preserve">
-    <value>Edit installed config...</value>
+    <value>Edit installed config</value>
   </data>
   <data name="GoodCheckConfigSelectionMenuItem.Text" xml:space="preserve">
     <value>GoodCheck config selection</value>
@@ -1059,5 +1059,303 @@ Additional info:
   </data>
   <data name="HideToTrayOnStartupCard.Header" xml:space="preserve">
     <value>Hide application in system tray and run current component when launched from the "Start" menu</value>
+  </data>
+  <data name="ViewInStoreTextBlock.Text" xml:space="preserve">
+    <value>View in Store</value>
+  </data>
+  <data name="GetButton.Content" xml:space="preserve">
+    <value>Get</value>
+  </data>
+  <data name="StoreSmallCategoryText" xml:space="preserve">
+    <value>Category: {0}</value>
+  </data>
+  <data name="StoreSmallDeveloperText" xml:space="preserve">
+    <value>Developer: {0}</value>
+  </data>
+  <data name="StoreSmallItemName" xml:space="preserve">
+    <value>Get {0}?</value>
+  </data>
+  <data name="StoreSmallItemNameComplete" xml:space="preserve">
+    <value>Installing {0} is completed</value>
+  </data>
+  <data name="CannotInstallItemTextBlock.Text" xml:space="preserve">
+    <value>Cannot install this item</value>
+  </data>
+  <data name="ValueTextBox.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="EditValueTextBox.Text" xml:space="preserve">
+    <value>Edit value</value>
+  </data>
+  <data name="CopyButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="AreYouSureTextBlock.Text" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="ActionCannotBeUndoTextBlock.Text" xml:space="preserve">
+    <value>This action cannot be undo.</value>
+  </data>
+  <data name="YesRemoveButton.Content" xml:space="preserve">
+    <value>Yes, remove</value>
+  </data>
+  <data name="NoCancelTextBlock.Text" xml:space="preserve">
+    <value>No, cancel</value>
+  </data>
+  <data name="EditVariableContentDialogTitle" xml:space="preserve">
+    <value>Edit variable %{0}%</value>
+  </data>
+  <data name="DescriptionNotProvided" xml:space="preserve">
+    <value>There is no description available for this variable.</value>
+  </data>
+  <data name="SelectFromTemplateTextBlock.Text" xml:space="preserve">
+    <value>Select one of available templates</value>
+  </data>
+  <data name="EditForYourSelfTextBlock.Text" xml:space="preserve">
+    <value>Edit for yourself</value>
+  </data>
+  <data name="EditVarContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EditVarContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OnValueTextBlock.Text" xml:space="preserve">
+    <value>OnValue</value>
+  </data>
+  <data name="OffValueTextBlock.Text" xml:space="preserve">
+    <value>OffValue</value>
+  </data>
+  <data name="ImportConfigFromFile" xml:space="preserve">
+    <value>Import config from file</value>
+  </data>
+  <data name="EditConfig" xml:space="preserve">
+    <value>Edit config</value>
+  </data>
+  <data name="Edited" xml:space="preserve">
+    <value>edited</value>
+  </data>
+  <data name="SaveAsACopy" xml:space="preserve">
+    <value>Save as a copy</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CreateNewConfig" xml:space="preserve">
+    <value>Create new config</value>
+  </data>
+  <data name="NothingToPreview" xml:space="preserve">
+    <value>Nothing to preview</value>
+  </data>
+  <data name="StopTest" xml:space="preserve">
+    <value>Stop testing</value>
+  </data>
+  <data name="TestThis" xml:space="preserve">
+    <value>Test this</value>
+  </data>
+  <data name="ShowConfigSettings" xml:space="preserve">
+    <value>Show config settings</value>
+  </data>
+  <data name="HideConfigSettings" xml:space="preserve">
+    <value>Hide config settings</value>
+  </data>
+  <data name="TargetComponentTextBlock.Text" xml:space="preserve">
+    <value>Target component*</value>
+  </data>
+  <data name="DisplayNameTextBlock.Text" xml:space="preserve">
+    <value>Display name*</value>
+  </data>
+  <data name="VariablesTextBlock.Text" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="ConditionsTextBlock.Text" xml:space="preserve">
+    <value>Conditions</value>
+  </data>
+  <data name="CreateNewConditionButton.Content" xml:space="preserve">
+    <value>Add new condition</value>
+  </data>
+  <data name="VarNameTextBlock.Text" xml:space="preserve">
+    <value>Variable name </value>
+  </data>
+  <data name="PreviewSampleTextBlock.Text" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="SaveTextBlock.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SelectComponentTextBlock.Text" xml:space="preserve">
+    <value>Select component</value>
+  </data>
+  <data name="SelectConfigToEditTextBlock.Text" xml:space="preserve">
+    <value>Select config you want to edit</value>
+  </data>
+  <data name="SelectConfigToEditContentDialog.Title" xml:space="preserve">
+    <value>Edit config</value>
+  </data>
+  <data name="SelectConfigToEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfigCreatedSucsessfullyContentDialog.Title" xml:space="preserve">
+    <value>Config created sucsessfully</value>
+  </data>
+  <data name="ConfigCreatedSucsessfullyContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Exit this helper</value>
+  </data>
+  <data name="ConfigCreatedSucsessfullyContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Go to home page</value>
+  </data>
+  <data name="ConfigCreatedSucsessfullyTextBlock.Text" xml:space="preserve">
+    <value>This config will be created successfully. Now you can select it in config selector on component settings page
+What you want to do next?</value>
+  </data>
+  <data name="ImportConfigFromFileContentDialog.Title" xml:space="preserve">
+    <value>Import config from file</value>
+  </data>
+  <data name="ImportConfigFromFileContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Nevermind</value>
+  </data>
+  <data name="RecentGoodCheckSelectionContentDialog.Title" xml:space="preserve">
+    <value>Recent GoodCheck selections</value>
+  </data>
+  <data name="GoodCheckReportErrorTextBlock.Text" xml:space="preserve">
+    <value>You don't make any selections yet.</value>
+  </data>
+  <data name="RecentGoodCheckSelectionContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfigFileChooseContentDialog.Title" xml:space="preserve">
+    <value>File picker</value>
+  </data>
+  <data name="ConfigFileChooseContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="ConfigFileChooseContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfigFileChooseTextBlock.Text" xml:space="preserve">
+    <value>Config you imported need some files for his work. If you close this dialog import will be aborted</value>
+  </data>
+  <data name="AutoCorrectOfferTextBlock.Text" xml:space="preserve">
+    <value>Autocorrect offer:</value>
+  </data>
+  <data name="AutoCorrectSelectManuallyTextBlock.Text" xml:space="preserve">
+    <value>Select manually</value>
+  </data>
+  <data name="AutoCorrectApplyTextBlock.Text" xml:space="preserve">
+    <value>Apply autocorrect</value>
+  </data>
+  <data name="ViewTextBlock.Text" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="ViewGoodCheckReportTextBlock.Text" xml:space="preserve">
+    <value>View GoodCheck report</value>
+  </data>
+  <data name="HideTipTextBlock.Text" xml:space="preserve">
+    <value>Hide tip</value>
+  </data>
+  <data name="ReportGoForwardButtonTeachingTip.Title" xml:space="preserve">
+    <value>Some sitelists not marked</value>
+  </data>
+  <data name="ReportGoForwardButtonTeachingTip.Subtitle" xml:space="preserve">
+    <value>Do you want to continue anyway? (You actually can go back to this page later)</value>
+  </data>
+  <data name="ReportGoForwardButtonTeachingTip.ActionButtonContent" xml:space="preserve">
+    <value>Yes, I want</value>
+  </data>
+  <data name="ReportGoForwardButtonTeachingTip.CloseButtonContent" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="SuccessTextBlock.Text" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="FailureTextBlock.Text" xml:space="preserve">
+    <value>Failure</value>
+  </data>
+  <data name="FlagsTextBlock.Text" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="SuccessStrategiesTextBlock.Text" xml:space="preserve">
+    <value>Success strategies</value>
+  </data>
+  <data name="FailureStrategiesTextBlock.Text" xml:space="preserve">
+    <value>Failure strategies</value>
+  </data>
+  <data name="ContentNotDisplayedTextBlock.Text" xml:space="preserve">
+    <value>Failure strategies are not displayed because your performance settings are set to "Prefer fewer elements per page"</value>
+  </data>
+  <data name="ViewFullStrategyButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View full strategy string</value>
+  </data>
+  <data name="SetFlag" xml:space="preserve">
+    <value>Set flag</value>
+  </data>
+  <data name="RemoveFlag" xml:space="preserve">
+    <value>Remove flag</value>
+  </data>
+  <data name="ViewArguments" xml:space="preserve">
+    <value>View arguments</value>
+  </data>
+  <data name="EditByeDPIModeButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit group trigger</value>
+  </data>
+  <data name="TriggerGrid.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Trigger </value>
+  </data>
+  <data name="ChooseGroupContentDialog.Title" xml:space="preserve">
+    <value>Select group trigger</value>
+  </data>
+  <data name="ChooseGroupContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ChooseGroupContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ExitAsk" xml:space="preserve">
+    <value>Are you sure you want to exit? Unsaved changes will be lost.</value>
+  </data>
+  <data name="MarkStrategiesTextBlock.Text" xml:space="preserve">
+    <value>Strategies you marked with flag</value>
+  </data>
+  <data name="ReadyToAddStrategiesTextBlock.Text" xml:space="preserve">
+    <value>Strategies you want to add into new config</value>
+  </data>
+  <data name="DefaultDesignerPivot.Text" xml:space="preserve">
+    <value>Default designer</value>
+  </data>
+  <data name="GUIDesignerPivot.Text" xml:space="preserve">
+    <value>Graphic designer</value>
+  </data>
+  <data name="AdditionalSettingsTitle.Text" xml:space="preserve">
+    <value>Additional settings</value>
+  </data>
+  <data name="GraphicDesignerNotReadyTextBlock.Text" xml:space="preserve">
+    <value>Graphic designer not ready</value>
+  </data>
+  <data name="GraphicDesignerNotReadyTipTextBlock.Text" xml:space="preserve">
+    <value>To enable graphic designer select target component firstly.</value>
+  </data>
+  <data name="WelcomeTextBlock.Text" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="WelcomeTipTextBlock.Text" xml:space="preserve">
+    <value>What are you looking for?</value>
+  </data>
+  <data name="FeaturesTextBlock.Text" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="ImportConfigFromFileTextBlock.Text" xml:space="preserve">
+    <value>Import config from file</value>
+  </data>
+  <data name="RecentGoodCheckSelectionsTextBlock.Text" xml:space="preserve">
+    <value>Recent selections</value>
+  </data>
+  <data name="StoreExploreNewAddOnsAndComponentsTextBlock.Text" xml:space="preserve">
+    <value>Explore new AddOns and Components</value>
   </data>
 </root>

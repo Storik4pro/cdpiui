@@ -117,51 +117,79 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByeDPIModeHelpTextBlock.Text" xml:space="preserve">
-    <value>This group will only be active if one of the events from the previous one has occurred.
-Possible events:
-     torst: Timeout or server reset connection after first request
-     redirect: HTTP Redirect with Location whose domain does not match the outgoing one
-     ssl_err: No ServerHello was received in response to ClientHello or the SH contains an invalid session_id
-     none : The previous group was skipped, for example due to domain or protocol restrictions</value>
+  <data name="A" xml:space="preserve">
+    <value>Additional space between method and URI</value>
   </data>
-  <data name="DefaultTip" xml:space="preserve">
-    <value>Something doesn't work or you have some questions? Maybe that articles can help you</value>
+  <data name="Debug" xml:space="preserve">
+    <value>Show debug info</value>
   </data>
-  <data name="ImportConfigTip.Text" xml:space="preserve">
-    <value>You can import .BAT and .CMD files as config files!</value>
+  <data name="DNSIpv4Only" xml:space="preserve">
+    <value>Filter only IPv4</value>
   </data>
-  <data name="NONE" xml:space="preserve">
-    <value>Previous group skipped</value>
+  <data name="DnsVerb" xml:space="preserve">
+    <value>Detailed DNS messages</value>
   </data>
-  <data name="OpenOfflineHelp" xml:space="preserve">
-    <value>Open offline help</value>
+  <data name="E" xml:space="preserve">
+    <value>HTTPS fragmentation</value>
   </data>
-  <data name="REDIRECT" xml:space="preserve">
-    <value>Redirect location to different domain</value>
+  <data name="EnableDoH" xml:space="preserve">
+    <value>Enable DNS over HTTPS</value>
   </data>
-  <data name="SSLERR" xml:space="preserve">
-    <value>ssl error</value>
+  <data name="F" xml:space="preserve">
+    <value>HTTP fragmentation</value>
   </data>
-  <data name="TipTextBlock.Text" xml:space="preserve">
-    <value>Flashlight tip</value>
+  <data name="K" xml:space="preserve">
+    <value>HTTP keep-alive fragmentation</value>
   </data>
-  <data name="Title" xml:space="preserve">
-    <value>Flashlight tips+tricks</value>
+  <data name="M" xml:space="preserve">
+    <value>Mix case in Host</value>
   </data>
-  <data name="TitleTextBlock.Text" xml:space="preserve">
-    <value>Flashlight tips+tricks</value>
+  <data name="N" xml:space="preserve">
+    <value>Do not wait for the ACK of the first segment</value>
   </data>
-  <data name="TORST" xml:space="preserve">
-    <value>Timeout / Connection aborted</value>
+  <data name="NativeFrag" xml:space="preserve">
+    <value>Native fragmentation</value>
   </data>
-  <data name="ViewGoodCheckReportTipTextBlock.Text" xml:space="preserve">
-    <value>Firstly mark worked arguments using flags in every sitelist group. Then click to "NEXT" button to create new config with selected arguments</value>
+  <data name="NoSni" xml:space="preserve">
+    <value>Allow no SNI</value>
   </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Welcome to the app! I'm flashlight and I can help you in your adventure. If you have any questions open help or just ask about it on community page. You can find all link in "About" page</value>
+  <data name="P" xml:space="preserve">
+    <value>Block passive DPI</value>
   </data>
-  <data name="WhatDoesItMeanTextBlock.Text" xml:space="preserve">
-    <value>What does it mean?</value>
+  <data name="Pattern" xml:space="preserve">
+    <value>Bypass DPI using this packet pattern</value>
+  </data>
+  <data name="Q" xml:space="preserve">
+    <value>Block QUIC/HTTP3</value>
+  </data>
+  <data name="R" xml:space="preserve">
+    <value>Replace Host with hoSt</value>
+  </data>
+  <data name="ReverseFrag" xml:space="preserve">
+    <value>Reverse fragmentation</value>
+  </data>
+  <data name="S" xml:space="preserve">
+    <value>Remove space between Host and its value</value>
+  </data>
+  <data name="Silent" xml:space="preserve">
+    <value>Do not show banner and system information</value>
+  </data>
+  <data name="SystemProxy" xml:space="preserve">
+    <value>Use system proxy</value>
+  </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>Delay before startup (ms)</value>
+  </data>
+  <data name="W" xml:space="preserve">
+    <value>Process all ports</value>
+  </data>
+  <data name="WindowSize" xml:space="preserve">
+    <value>Chunk size (bytes)</value>
+  </data>
+  <data name="WrongChksum" xml:space="preserve">
+    <value>Incorrect checksum</value>
+  </data>
+  <data name="WrongSeq" xml:space="preserve">
+    <value>Incorrect SEQ/ACK</value>
   </data>
 </root>

@@ -117,16 +117,51 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ByeDPIModeHelpTextBlock.Text" xml:space="preserve">
+    <value>Эта группа будет активна, только если произошло одно из событий с предыдущей
+Возможные события:
+     torst   : Вышло время ожидания или сервер сбросил подключение после первого запроса
+     redirect: HTTP Redirect с Location, домен которого не совпадает с исходящим
+     ssl_err : В ответ на ClientHello не пришел ServerHello или SH содержит некорректный session_id
+     none    : Предыдущая группа пропущена, например из-за ограничения по доменам или протоколам</value>
+  </data>
   <data name="DefaultTip" xml:space="preserve">
     <value>Что-то не работает или появились вопросы? Возможно, эти разделы справки могут вам помочь</value>
+  </data>
+  <data name="ImportConfigTip.Text" xml:space="preserve">
+    <value>Вы можете импортировать пресет из .BAT и .CMD файлов!</value>
+  </data>
+  <data name="NONE" xml:space="preserve">
+    <value>Предыдущая группа пропущена </value>
   </data>
   <data name="OpenOfflineHelp" xml:space="preserve">
     <value>Открыть локальную справку</value>
   </data>
+  <data name="REDIRECT" xml:space="preserve">
+    <value>Перенаправление на другой домен</value>
+  </data>
+  <data name="SSLERR" xml:space="preserve">
+    <value>Некорректный session_id</value>
+  </data>
+  <data name="TipTextBlock.Text" xml:space="preserve">
+    <value>Совет от Фонарика</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Советы от Фонарика</value>
   </data>
+  <data name="TitleTextBlock.Text" xml:space="preserve">
+    <value>Советы от Фонарика</value>
+  </data>
+  <data name="TORST" xml:space="preserve">
+    <value>Вышло время ожидания / Подключение сброшено</value>
+  </data>
+  <data name="ViewGoodCheckReportTipTextBlock.Text" xml:space="preserve">
+    <value>Для начала отметьте рабочие аргументы используя флажки для каждого списка сайтов. После этого нажмите на кнопку "Далее", чтобы выбрать самые подходящие параметры и объединить их в один пресет.</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Рад видеть тебя здесь! В этом виджете вы увидите советы для комфортного использования приложения</value>
+  </data>
+  <data name="WhatDoesItMeanTextBlock.Text" xml:space="preserve">
+    <value>Что это значит?</value>
   </data>
 </root>
