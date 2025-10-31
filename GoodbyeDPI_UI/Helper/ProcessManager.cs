@@ -165,29 +165,11 @@ namespace CDPI_UI.Helper
             }
         }
 
-        private List<string> Tokens = new() { "-p", "--port", "-i", "--ip", "-addr" };
+        
 
         private string ReplaceArgsForProxy(string args, string ip, string port, string componentId)
         {
-            string[] splittedArgs = args.Split(' ');
-            string finalArgs = string.Empty;
-            for (int i = 0; i < splittedArgs.Length; i++)
-            {
-                string token = splittedArgs[i].Split("=")[0];
-                if (Tokens.Contains(token))
-                {
-                    if (splittedArgs[i].Contains('='))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        i++;
-                        continue;
-                    }
-                }
-                finalArgs += $"{token} ";
-            }
+            string finalArgs = Utils.ReplaseIp(args);
             if (componentId == "CSSIXC048")
                 finalArgs = $"-addr={ip} -port={port} " + finalArgs;
             else

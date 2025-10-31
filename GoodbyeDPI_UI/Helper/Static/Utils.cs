@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -358,6 +359,43 @@ namespace CDPI_UI.Helper.Static
                     extractedFiles++;
                 }
             }
+        }
+
+        public static List<string> Tokens = new() { "-p", "--port", "-i", "--ip", "-addr" };
+
+        public static string ReplaseIp(string args)
+        {
+            string[] splittedArgs = args.Split(' ');
+            string finalArgs = string.Empty;
+            for (int i = 0; i < splittedArgs.Length; i++)
+            {
+                var spA = splittedArgs[i].Split("=");
+                string token = spA[0];
+                string value = spA.Length > 1 ? spA[1] + " " : string.Empty;
+                if (Tokens.Contains(token))
+                {
+                    if (splittedArgs[i].Contains('='))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        i++;
+                        continue;
+                    }
+                }
+                if (!string.IsNullOrEmpty(value))
+                {
+                    finalArgs += $"{token}={value}";
+                }
+                else
+                {
+                    finalArgs += $"{token} ";
+                }
+
+            }
+            return finalArgs;
+
         }
 
 #if SINGLEFILE
