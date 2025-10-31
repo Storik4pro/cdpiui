@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
+    l:Uids.Uid="ConfigFileChooseContentDialog"
     x:Name="RootDialog"
     x:Class="CDPI_UI.Controls.Dialogs.CreateConfigHelper.SelectUsedFilesForConfigContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,10 +10,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="File chooser"
-    PrimaryButtonText="Continue"
+    xmlns:l="using:WinUI3Localizer"
     IsPrimaryButtonEnabled="False"
-    SecondaryButtonText="Cancel"
     DefaultButton="Primary"
     PrimaryButtonClick="RootDialog_PrimaryButtonClick"
     Style="{ThemeResource DefaultContentDialogStyle}">
@@ -22,7 +21,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Config you imported need some files for his work. If you close this dialog import will be aborted" TextWrapping="Wrap"/>
+        <TextBlock l:Uids.Uid="ConfigFileChooseTextBlock" TextWrapping="Wrap"/>
         <ScrollViewer Grid.Row="1">
             <ListView x:Name="FilesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                       ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">

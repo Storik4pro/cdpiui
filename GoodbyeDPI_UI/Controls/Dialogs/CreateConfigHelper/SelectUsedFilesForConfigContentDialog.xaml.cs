@@ -82,7 +82,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
 
         private void SelectUsedFilesForConfigContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_askAutoFillMode == AskAutoFillMode.Qiet)
+            if (_askAutoFillMode == AskAutoFillMode.Quiet)
             {
                 Result = CreateConfigResult.Selected;
                 AutoCorrectActions();
@@ -247,8 +247,11 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 try
                 {
                     string filepath = Regex.Replace(model.FilePath, @"%(?<name>[A-Za-z0-9_]+)%", "");
+                    Logger.Instance.CreateDebugLog(nameof(SelectUsedFilesForConfigContentDialog), $"{filepath}");
+
                     if (!string.Equals(Path.GetFileNameWithoutExtension(model.AutoCorrectFilePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
                         File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(filepath)), true);
+
                     Files.Add(
                         model.FilePath,
                         "$GETCURRENTDIR()/" +
@@ -257,6 +260,8 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                                 model.ConvertDirectoryPath, StateHelper.LocalUserItemsId), Path.GetFileName(filepath)
                                 )
                         );
+
+                    Logger.Instance.CreateDebugLog(nameof(SelectUsedFilesForConfigContentDialog), $"{model.FilePath}");
 
                 }
                 catch (Exception ex)

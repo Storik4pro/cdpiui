@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
+    l:Uids.Uid="RecentGoodCheckSelectionContentDialog"
     x:Name="RootDialog"
     x:Class="CDPI_UI.Controls.Dialogs.CreateConfigHelper.RecentGoodCheckSelectionsContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,8 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:lcontrol="using:CDPI_UI"
-    Title="Recent GoodCheck selections"
-    SecondaryButtonText="Cancel"
+    xmlns:l="using:WinUI3Localizer"
     Style="{ThemeResource DefaultContentDialogStyle}">
 
     <Grid Width="400">
@@ -19,7 +19,7 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="ReportErrorTextBlock" Text="ERR_REPORT_LOAD_FAILURE" Grid.Row="2" Visibility="Collapsed"/>
+        <TextBlock x:Name="ReportErrorTextBlock" l:Uids.Uid="GoodCheckReportErrorTextBlock" Grid.Row="2" Visibility="Collapsed"/>
         <ScrollViewer x:Name="ConfigsScrollViewer" Grid.Row="2" Visibility="Visible">
             <ListView x:Name="ConfigsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                   ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">

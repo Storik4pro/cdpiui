@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
+    l:Uids.Uid="SelectConfigToEditContentDialog"
     x:Name="RootDialog"
     x:Class="CDPI_UI.Controls.Dialogs.CreateConfigHelper.SelectConfigToEditContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,9 +9,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lcontrol="using:CDPI_UI"
+    xmlns:l="using:WinUI3Localizer"
     mc:Ignorable="d"
-    Title="Select config to edit"
-    SecondaryButtonText="Cancel"
     Style="{ThemeResource DefaultContentDialogStyle}">
 
     <Grid Width="400">
@@ -20,13 +20,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <TextBlock Text="Select component" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" Margin="0 0 0 2"/>
+            <TextBlock l:Uids.Uid="SelectComponentTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" Margin="0 0 0 2"/>
             <ComboBox x:Name="ComponentChooseComboBox" 
                       HorizontalAlignment="Stretch" 
                       SelectionChanged="ComponentChooseComboBox_SelectionChanged"
                       DisplayMemberPath="Name"
                       Margin="0 0 0 5"/>
-            <TextBlock x:Name="SelectText" Text="Select config you want to edit" Grid.Row="0" TextWrapping="Wrap" Visibility="Collapsed"/>
+            <TextBlock x:Name="SelectText" l:Uids.Uid="SelectConfigToEditTextBlock" Grid.Row="0" TextWrapping="Wrap" Visibility="Collapsed"/>
         </StackPanel>
         <StackPanel x:Name="LoadingStackPanel" Grid.Row="2" Visibility="Collapsed">
             <ProgressRing IsIndeterminate="True"/>

@@ -17,6 +17,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -38,6 +39,8 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
         public SelectResult SelectedResult { get; private set; } = SelectResult.Nothing;
 
         private ObservableCollection<ReportFileToEditModel> ReportModels = new();
+
+        private ILocalizer localizer = Localizer.Get();
 
         public RecentGoodCheckSelectionsContentDialog()
         {
@@ -97,7 +100,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                     creationTime = File.GetLastWriteTime(filePath);
                 }
 
-                var displayName = $"Report {creationTime.ToString("HH:mm dd.MM.yy")}";
+                var displayName = $"{localizer.GetLocalizedString("Report")} {creationTime.ToString("HH:mm dd.MM.yy")}";
 
                 double sizeKb = 0;
                 try

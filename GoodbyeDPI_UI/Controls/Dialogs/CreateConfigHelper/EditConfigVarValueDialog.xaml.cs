@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,13 +24,15 @@ namespace CDPI_UI.Controls.Dialogs
     {
         public string VarValue { get; private set; } = string.Empty;
 
+        private ILocalizer localizer = Localizer.Get();
+
         public EditConfigVarValueDialog(string varName, string varValue, AvailableVarValues varValues)
         {
             InitializeComponent();
-            this.Title = $"Edit variable %{varName}%";
+            this.Title = string.Format(localizer.GetLocalizedString("EditVariableContentDialogTitle"), varName);
             VarValueTextBox.Text = varValue;
 
-            DescriptionTextBlock.Text = varValues?.Comment ?? "There is no description available for this variable.";
+            DescriptionTextBlock.Text = varValues?.Comment ?? localizer.GetLocalizedString("DescriptionNotProvided");
 
             if (varValues != null && varValues.Values.Count > 0)
             {
