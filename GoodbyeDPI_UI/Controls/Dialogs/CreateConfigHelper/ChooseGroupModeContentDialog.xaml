@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    l:Uids.Uid="ChooseGroupContentDialog"
+    x:Class="CDPI_UI.Controls.Dialogs.CreateConfigHelper.ChooseGroupModeContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Dialogs.CreateConfigHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Spacing="10">
+                <labs:TokenView x:Name="ModeTokenView" IsWrapped="True" SelectionMode="Multiple">
+                    <labs:TokenView.ItemTemplate>
+                        <DataTemplate x:DataType="local:ByeDPIModeComboBoxItem">
+                            <Grid ToolTipService.ToolTip="{x:Bind DisplayTip, Mode=OneWay}">
+                                <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </labs:TokenView.ItemTemplate>
+                </labs:TokenView>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE9CE;" FontSize="16"/>
+                        <TextBlock l:Uids.Uid="/Flashlight/WhatDoesItMeanTextBlock"/>
+                    </StackPanel>
+                    <Grid>
+                        <Rectangle Fill="{ThemeResource CardBackgroundFillColorSecondaryBrush}"/>
+                        <TextBlock x:Name="QHelpTextBlock" l:Uids.Uid="/Flashlight/ByeDPIModeHelpTextBlock" Margin="10" TextWrapping="Wrap"/>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</ContentDialog>
