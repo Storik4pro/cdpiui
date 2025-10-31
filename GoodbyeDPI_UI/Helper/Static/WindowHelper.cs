@@ -1,4 +1,5 @@
-﻿using Microsoft.UI;
+﻿using CDPI_UI.Messages;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Documents;
@@ -31,6 +32,7 @@ namespace CDPI_UI.Helper
             ResizeAndPositionUtility,
             ResizeAndPositionFollowSystem,
             OnlyPositionWizard,
+            Message,
             AlwaysCenter
         }
         private enum WindowPositionVariants
@@ -53,6 +55,7 @@ namespace CDPI_UI.Helper
             { nameof(CreateConfigUtilWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(CreateConfigHelperWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
+            { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
         };
         // positionType, Width, Height
         private static Dictionary<WindowResizeOptions, Tuple<WindowPositionVariants, int, int>> WindowsResizeParams = new()
@@ -63,6 +66,7 @@ namespace CDPI_UI.Helper
             { WindowResizeOptions.ResizeAndPositionFollowSystem, Tuple.Create(WindowPositionVariants.FollowSystem, -1, -1) },
             { WindowResizeOptions.OnlyPositionWizard, Tuple.Create(WindowPositionVariants.CenterIn, 900, 550) },
             { WindowResizeOptions.AlwaysCenter, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 400, 150) },
+            { WindowResizeOptions.Message, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 700, 400) },
         };
 
         public static void SetWindowSize(Window window, int width, int height)
