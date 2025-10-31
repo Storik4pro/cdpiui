@@ -1,3 +1,5 @@
+using CDPI_UI.Helper;
+using CDPI_UI.Messages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -72,8 +74,16 @@ public sealed partial class MainPage : Page
         Navigate<ManualSetupPage>();
     }
 
-    private void ProxiFyreCard_Click(object sender, RoutedEventArgs e)
+    private async void ProxiFyreCard_Click(object sender, RoutedEventArgs e)
     {
-        Navigate<ProxiFyreSetupPage>();
+        if (!DatabaseHelper.Instance.IsItemInstalled("ASPEWK002"))
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<StoreSmallDownloadDialog>();
+            window.SetItemToViewId("ASPEWK002");
+        }
+        else
+        {
+            Navigate<ProxiFyreSetupPage>();
+        }
     }
 }
