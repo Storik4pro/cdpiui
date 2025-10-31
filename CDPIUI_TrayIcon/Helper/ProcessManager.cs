@@ -35,7 +35,6 @@ namespace CDPIUI_TrayIcon.Helper
         private string? Args;
 
         public Action<bool>? ProcessStateChanged;
-        public bool processState = false;
         public string ProcessName = string.Empty;
 
         
@@ -228,7 +227,10 @@ namespace CDPIUI_TrayIcon.Helper
         public void SendDefaultProcessOutput()
         {
             _ = PipeServer.Instance.SendMessage($"CONPTY:FULLOUTPUT({conPTYHelper.GetDefaultOutput()})");
-
+        }
+        public bool GetState()
+        {
+            return conPTYHelper.processState;
         }
         public void SendState()
         {

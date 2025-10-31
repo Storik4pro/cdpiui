@@ -124,7 +124,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         private void ProcessControlItem_Click(object? sender, EventArgs e)
         {
-            if (ProcessManager.Instance.processState)
+            if (ProcessManager.Instance.GetState())
             {
                 _ = ProcessManager.Instance.StopProcess();
             }
