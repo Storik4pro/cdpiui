@@ -155,7 +155,7 @@ namespace CDPI_UI
             DatabaseHelper.Instance.QuickRestore();
             await InitializeLocalizer();
 
-            await CleanOldWorkDirectoriesAsync();
+            // await CleanOldWorkDirectoriesAsync();
             await Task.CompletedTask;
         }
 
