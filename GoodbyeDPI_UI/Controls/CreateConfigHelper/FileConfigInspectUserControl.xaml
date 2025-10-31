@@ -6,7 +6,8 @@
     xmlns:local="using:CDPI_UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Border Grid.ColumnSpan="3" Grid.RowSpan="2"
@@ -23,7 +24,7 @@
             <StackPanel Margin="0 0 0 10">
                 <TextBlock x:Name="FileNameTextBlock" Text="{x:Bind FilePath, Mode=OneWay}" IsTextSelectionEnabled="True"/>
                 <StackPanel x:Name="AutoCorrectStackPanel">
-                    <TextBlock Text="Autocorrect offer:" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
+                    <TextBlock l:Uids.Uid="AutoCorrectOfferTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -32,7 +33,9 @@
                         <TextBlock x:Name="AutoCorrectOfferTextBlock" Text="{x:Bind AutoCorrectFilePath, Mode=OneWay}" IsTextSelectionEnabled="True"/>
                         <RichTextBlock Grid.Column="1">
                             <Paragraph>
-                                <Hyperlink Click="Hyperlink_Click">View</Hyperlink>
+                                <Hyperlink Click="Hyperlink_Click">
+                                    <Run l:Uids.Uid="ViewTextBlock"/>
+                                </Hyperlink>
                             </Paragraph>
                         </RichTextBlock>
                     </Grid>
@@ -49,14 +52,14 @@
                         Click="ApplyAutoCorrectButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <FontIcon Glyph="&#xE8FB;" FontSize="16"/>
-                        <TextBlock Text="Apply autocorrect"/>
+                        <TextBlock l:Uids.Uid="AutoCorrectApplyTextBlock"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="SelectNewFile" Padding="6" HorizontalAlignment="Stretch" Grid.Column="2"
                         Click="SelectNewFile_Click">
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <FontIcon Glyph="&#xE8E5;" FontSize="16"/>
-                        <TextBlock Text="Select manually"/>
+                        <TextBlock l:Uids.Uid="AutoCorrectSelectManuallyTextBlock"/>
                     </StackPanel>
                 </Button>
             </Grid>

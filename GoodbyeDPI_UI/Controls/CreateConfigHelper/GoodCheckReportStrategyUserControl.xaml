@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    >
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid
         PointerEntered="UserControl_PointerEntered"
@@ -31,26 +31,32 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Spacing="5">
                         <FontIcon Glyph="&#xE930;" FontSize="16"/>
-                        <TextBlock Text="Success" VerticalAlignment="Center"/>
+                        <TextBlock l:Uids.Uid="SuccessTextBlock" VerticalAlignment="Center"/>
                     </StackPanel>
                     <TextBlock Grid.Column="1" Text="{x:Bind SuccessCount, Mode=OneWay}" TextAlignment="Right"/>
                     <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="5">
                         <FontIcon Glyph="&#xEA39;" FontSize="16"/>
-                        <TextBlock Text="Failure" VerticalAlignment="Center"/>
+                        <TextBlock l:Uids.Uid="FailureTextBlock" VerticalAlignment="Center"/>
                     </StackPanel>
                     <TextBlock  Grid.Column="4" Text="{x:Bind FailureCount, Mode=OneWay}" TextAlignment="Right"/>
                 </Grid>
             </StackPanel>
             <StackPanel x:Name="ControlsStackPanel" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="Visible" Grid.Column="1">
                 <local:IconButton x:Name="PlayIconButton" IsButtonToggle="True" IconGlyph="&#xE768;" CheckedIconGlyph="&#xF8AE;" 
-                                  ToolTipService.ToolTip="{Binding PlayIconTooltip, ElementName=RootControl}"
-                                  ClickCommand="{Binding PlayCommand, ElementName=RootControl}"/>
-                <local:IconButton x:Name="ViewIconButton" IconGlyph="&#xE890;" ToolTipService.ToolTip="View full strategy string" 
+                                  ClickCommand="{Binding PlayCommand, ElementName=RootControl}">
+                    <ToolTipService.ToolTip>
+                        <ToolTip x:Name="PlayToolTip"/>
+                    </ToolTipService.ToolTip>
+                </local:IconButton>
+                <local:IconButton x:Name="ViewIconButton" IconGlyph="&#xE890;" l:Uids.Uid="ViewFullStrategyButton"
                                   ClickCommand="{Binding ViewFullCommand, ElementName=RootControl}"/>
                 <local:IconButton x:Name="FlagIconButton" IsButtonToggle="True" IconGlyph="&#xE7C1;" CheckedIconGlyph="&#xEB4B;" 
                                   Checked="{x:Bind Flag, Mode=TwoWay}"
-                                  ToolTipService.ToolTip="{Binding FlagIconTooltip, ElementName=RootControl}"
-                                  ClickCommand="{Binding SetFlagCommand, ElementName=RootControl}"/>
+                                  ClickCommand="{Binding SetFlagCommand, ElementName=RootControl}">
+                    <ToolTipService.ToolTip>
+                        <ToolTip x:Name="FlagToolTip"/>
+                    </ToolTipService.ToolTip>
+                </local:IconButton>
             </StackPanel>
         </Grid>
         

@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
     CornerRadius="5">
 
     <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0" Click="Button_Click" CornerRadius="{Binding CornerRadius, ElementName=RootControl}">
@@ -37,12 +38,12 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <FontIcon Glyph="&#xE930;" FontSize="16"/>
-                            <TextBlock Text="Success" VerticalAlignment="Center"/>
+                            <TextBlock l:Uids.Uid="SuccessTextBlock" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{x:Bind SuccessCount, Mode=OneWay}" TextAlignment="Right"/>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="5">
                             <FontIcon Glyph="&#xEA39;" FontSize="16"/>
-                            <TextBlock Text="Failure" VerticalAlignment="Center"/>
+                            <TextBlock l:Uids.Uid="FailureTextBlock" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Row="2"  Grid.Column="1" Text="{x:Bind FailureCount, Mode=OneWay}" TextAlignment="Right"/>
                     </Grid>
@@ -57,7 +58,7 @@
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <FontIcon Glyph="&#xE7C1;" FontSize="16"/>
-                            <TextBlock Text="Flags" VerticalAlignment="Center"/>
+                            <TextBlock l:Uids.Uid="FlagsTextBlock" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBlock Grid.Column="1" Text="{x:Bind FlagsCount, Mode=OneWay}" TextAlignment="Right"/>
                     </Grid>

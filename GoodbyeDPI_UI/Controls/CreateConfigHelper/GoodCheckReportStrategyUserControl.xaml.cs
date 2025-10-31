@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,8 +32,8 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
     private bool IsPointerOnControl = false;
     private bool isRunned = false;
 
-    public string PlayIconTooltip { get; private set; } = "Test this";
-    public string FlagIconTooltip { get; private set; } = "Set flag";
+
+    private ILocalizer localizer = Localizer.Get();
 
     public static readonly DependencyProperty FlagToggledCommandProperty =
             DependencyProperty.Register(
@@ -74,6 +75,9 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
         PlayCommand = new RelayCommand(p => Play());
         SetFlagCommand = new RelayCommand(p => SetFlag());
         SetVisible(false);
+
+        FlagToolTip.Content = localizer.GetLocalizedString("SetFlag");
+        PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
     }
 
     public string ComponentId
@@ -120,7 +124,12 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
     public bool Flag
     {
         get { return (bool)GetValue(FlagProperty); }
-        set { SetValue(FlagProperty, value); }
+        set { 
+            SetValue(FlagProperty, value);
+            FlagIconButton.Checked = value;
+            if (FlagIconButton.Checked) FlagIconButton.Visibility = Visibility.Visible;
+            FlagToolTip.Content = FlagIconButton.Checked ? localizer.GetLocalizedString("RemoveFlag") : localizer.GetLocalizedString("SetFlag");
+        }
     }
     public static readonly DependencyProperty FlagProperty =
         DependencyProperty.Register(
@@ -131,9 +140,9 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
     private void SetFlag()
     {
         Flag = FlagIconButton.Checked;
+
         if (FlagToggledCommandParameter == null) FlagToggledCommandParameter = Tuple.Create(Args, FlagIconButton.Checked);
 
-        FlagIconTooltip = FlagIconButton.Checked ? "Remove flag" : "Set flag";
 
         if (FlagToggledCommand != null && FlagToggledCommand.CanExecute(FlagToggledCommandParameter))
         {
@@ -165,7 +174,7 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
         {
             await ProcessManager.Instance.StopProcess();
             PlayIconButton.Checked = false;
-            PlayIconTooltip = "Test this";
+            PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
             isRunned = false;
@@ -178,14 +187,14 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
         if (obj == "started")
         {
             PlayIconButton.Checked = true;
-            PlayIconTooltip = "Stop testing";
+            PlayToolTip.Content = localizer.GetLocalizedString("StopTest");
             PlayIconButton.Visibility = Visibility.Visible;
             isRunned = true;
         }
         else
         {
             PlayIconButton.Checked = false;
-            PlayIconTooltip = "Test this";
+            PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
             isRunned = false;
@@ -197,7 +206,7 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
         ViewApplyArgsContentDialog dialog = new()
         {
             XamlRoot = this.XamlRoot,
-            Title = "View arguments",
+            Title = localizer.GetLocalizedString("ViewArguments"),
             DialogTitle = string.Empty,
             SeparationTextVisible = Visibility.Collapsed,
             Args = [this.Args ?? string.Empty]
