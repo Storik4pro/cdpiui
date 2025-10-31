@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Helper.LScript;
+﻿using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Newtonsoft.Json;
 using SQLitePCL;
@@ -893,6 +894,8 @@ namespace CDPI_UI.Helper.Items
                 if (string.IsNullOrEmpty(input) || files == null || files.Count == 0)
                     return input;
 
+                input = input.Replace("%~dp0", "").Replace("\'", "\"");
+
                 foreach (var kvp in files)
                 {
                     string oldPath = kvp.Key;
@@ -900,11 +903,12 @@ namespace CDPI_UI.Helper.Items
 
                     if (input.Contains(oldPath))
                     {
-                        input = input.Replace("%~dp0", "").Replace("\"", "").Replace("\'", "");
-
                         input = input.Replace(oldPath, $"\"{newPath}\"");
+                        Logger.Instance.CreateDebugLog(nameof(ConfigHelper), $"{input}");
                     }
                 }
+                input = input.Replace("\"\"", "\"");
+
                 return input;
             }
 
