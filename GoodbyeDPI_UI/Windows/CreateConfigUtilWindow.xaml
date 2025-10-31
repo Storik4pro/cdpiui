@@ -21,7 +21,7 @@
               Height="48"
               IsHitTestVisible="True"
               VerticalAlignment="Top"
-              Margin="8, 0, 0, 0">
+              Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -47,14 +47,14 @@
                 </AnimatedIcon>
             </Button>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="8, 0, 0, 0">
+            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="16, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/Assets/StoreLogo.png"
+                <Image Source="/Assets/Icons/GoodCheck.png"
                    HorizontalAlignment="Left"
                    Width="16" Height="16"
                    Margin="0,0" Grid.Column="1"/>

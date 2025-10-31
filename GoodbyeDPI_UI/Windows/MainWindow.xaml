@@ -36,7 +36,7 @@
               Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
               IsHitTestVisible="True"
               VerticalAlignment="Top"
-              Margin="8, 0, 0, 0">
+              Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -62,7 +62,7 @@
                 </AnimatedIcon>
             </Button>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="8, 0, 0, 0">
+            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="16, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>

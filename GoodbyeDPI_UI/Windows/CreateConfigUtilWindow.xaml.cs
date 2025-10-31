@@ -2,6 +2,7 @@ using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.CreateConfigUtil;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -75,6 +76,11 @@ namespace CDPI_UI
             this.Closed += CreateConfigUtilWindow_Closed;
             this.Activated += CreateConfigUtilWindow_Activated;
             this.AppWindow.Destroying += AppWindow_Destroying;
+
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.SetIcon(@"Assets/Icons/GoodCheck.ico");
         }
 
         private void AppWindow_Destroying(AppWindow sender, object args)

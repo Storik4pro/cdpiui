@@ -1,5 +1,6 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -61,6 +62,11 @@ namespace CDPI_UI
 
             ContentFrame.Navigate(typeof(Views.SetupProxy.MainPage));
             SetTitleBar(WindowMoveAera);
+
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.SetIcon(@"Assets/Icons/Proxy.ico");
         }
 
 

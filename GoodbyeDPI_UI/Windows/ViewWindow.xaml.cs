@@ -36,6 +36,8 @@ using CDPI_UI.Controls.Dialogs;
 using WinUIEx;
 using WinUI3Localizer;
 using CDPI_UI.Helper.Static;
+using WindowId = Microsoft.UI.WindowId;
+using Microsoft.UI.Windowing;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -114,6 +116,11 @@ namespace CDPI_UI
             }
             OutputRichTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
             OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
+
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.SetIcon(@"Assets/Icons/Pseudoconsole.ico");
         }
 
         private void TrySetCurentProcess()

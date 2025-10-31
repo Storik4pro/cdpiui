@@ -19,19 +19,20 @@
             <RowDefinition x:Name="StatusBar" Height="28"/>
         </Grid.RowDefinitions>
         <Grid x:Name="AppTitleBar"
-        Canvas.ZIndex="1"
-        Grid.Row="0"
-        Height="48"
-        IsHitTestVisible="True"
-        VerticalAlignment="Top">
+            Canvas.ZIndex="1"
+            Grid.Row="0"
+            Height="48"
+            IsHitTestVisible="True"
+            VerticalAlignment="Top">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="140"/>
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
-                    Source="/Assets/StoreLogo.png"
+                    Source="/Assets/Icons/Edit.png"
                     HorizontalAlignment="Left"
                     Width="16" Height="16"
                     Margin="16,0"/>
@@ -44,7 +45,7 @@
                     Margin="0, 0, 0, 0" />
                 <TextBlock l:Uids.Uid="PreviewTextBlock"
                            x:Name="AppTitleSubTextBlock" 
-                           Grid.Column="3"
+                           Grid.Column="2"
                            TextWrapping="NoWrap"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                            Style="{StaticResource CaptionTextBlockStyle}"

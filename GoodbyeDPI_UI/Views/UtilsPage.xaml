@@ -78,7 +78,7 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE756;" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Pseudoconsole.ico"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="StoreSettingsCard" x:Name="StoreSettingsCard" IsClickEnabled="True" Click="StoreSettingsCard_Click">
@@ -94,7 +94,7 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xEB9D;" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="CreateConfigHelperSettingsCard" x:Name="CreateConfigHelperSettingsCard" IsClickEnabled="True" Click="CreateConfigHelperSettingsCard_Click">
@@ -102,7 +102,7 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png"  ShowAsMonochrome="False"/>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="ProxySettingsCard" x:Name="ProxySettingsCard" IsClickEnabled="True" Click="ProxySettingsCard_Click">
@@ -110,7 +110,7 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png"  ShowAsMonochrome="False"/>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Proxy.ico"  ShowAsMonochrome="False"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="OfflineHelpSettingsCard" x:Name="OfflineHelpSettingsCard" IsClickEnabled="True" IsEnabled="False" Click="OfflineHelpSettingsCard_Click">
@@ -118,7 +118,7 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE897;" />
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Help.ico"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
             </StackPanel>

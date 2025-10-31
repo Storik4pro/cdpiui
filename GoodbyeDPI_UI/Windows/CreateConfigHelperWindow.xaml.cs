@@ -4,6 +4,8 @@ using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.CreateConfigHelper;
 using CDPI_UI.Views.CreateConfigUtil;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -70,6 +72,13 @@ namespace CDPI_UI
             {
                 fe.Loaded += Fe_Loaded;
             }
+
+
+
+            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.SetIcon(@"Assets/Icons/Edit.ico");
         }
 
         private void Fe_Loaded(object sender, RoutedEventArgs e)
@@ -94,10 +103,10 @@ namespace CDPI_UI
         {
             ContentDialog exitDialog = new ContentDialog()
             {
-                Title = "Exit",
-                Content = "Are you sure you want to exit? Unsaved changes will be lost.",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "No",
+                Title = localizer.GetLocalizedString("Exit"),
+                Content = localizer.GetLocalizedString("ExitAsk"),
+                PrimaryButtonText = localizer.GetLocalizedString("Yes"),
+                CloseButtonText = localizer.GetLocalizedString("No"),
                 XamlRoot = this.Content.XamlRoot,
                 Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"]
             };
@@ -227,8 +236,11 @@ namespace CDPI_UI
 
         private async void ImportConfigFromFileButton_Click(object sender, RoutedEventArgs e)
         {
-            ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot};
-            await dialog.ShowAsync();
+            if (!SettingsManager.Instance.GetValue<bool>("AD", "ImportConfigFromFile")) {
+                ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot };
+                await dialog.ShowAsync();
+                SettingsManager.Instance.SetValue("AD", "ImportConfigFromFile", true);
+            }
 
             string filePath;
 

@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
-    xmlns:swapChain="using:Microsoft.Graphics.Canvas.UI.Xaml" 
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:l="using:WinUI3Localizer">
 
@@ -30,13 +29,15 @@
               Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
               IsHitTestVisible="True"
               VerticalAlignment="Top"
-              Margin="8, 0, 0, 0">
+              Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
     
             <Button x:Name="BackButton" 
+                    Grid.Column="1"
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Width="30"
@@ -56,7 +57,7 @@
                 </AnimatedIcon>
             </Button>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="8, 0, 0, 0">
+            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0" Padding="8, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
