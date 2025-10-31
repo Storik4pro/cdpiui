@@ -243,9 +243,12 @@ namespace CDPI_UI.Helper
                 {
                     _ = ProcessManager.Instance.StartProcess();
                 }
-                else if (message.StartsWith("CONPTY:STARTED"))
+                else if (message.StartsWith("CONPTY:CLEAN"))
                 {
                     ProcessManager.Instance.ClearOutput();
+                }
+                else if (message.StartsWith("CONPTY:STARTED"))
+                {
                     ProcessManager.Instance.MarkAsStarted();
                 }
                 else if (message.StartsWith("CONPTY:STOPPED"))

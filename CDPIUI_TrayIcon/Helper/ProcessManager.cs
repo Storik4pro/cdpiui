@@ -130,7 +130,7 @@ namespace CDPIUI_TrayIcon.Helper
             var workingDirectory = Path.GetDirectoryName(exePath);
 
             ProcessName = Path.GetFileName(exePath);
-
+            await PipeServer.Instance.SendMessage("CONPTY:CLEAN");
             await PipeServer.Instance.SendMessage("CONPTY:STARTED");
 
             SendNowSelectedComponentName();
