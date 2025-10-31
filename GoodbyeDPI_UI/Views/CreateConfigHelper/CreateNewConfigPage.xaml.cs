@@ -1,5 +1,6 @@
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.CreateConfigHelper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
@@ -20,13 +21,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using System.Windows.Media;
+using TextControlBoxNS;
 using Unidecode.NET;
 using Windows.ApplicationModel.Chat;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -51,14 +56,73 @@ public class VariableModel
     public AvailableVarValues AvailableValues { get; set; } = null;
     
 }
+
+public partial class GraphicDesignerSettingItemModel : INotifyPropertyChanged
+{
+    public string Guid { get; set; }
+    public string DisplayName { get; set; }
+    public string Description { get; set; }
+    public bool EnableTextInput { get; set; }
+    public string _value = "";
+    public string Value {
+        get => _value;
+        set => SetField(ref _value, value);
+    }
+
+    private bool isChecked = false;
+    public bool IsChecked
+    {
+        get => isChecked;
+        set => SetField(ref isChecked, value);
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+}
+
 public enum AskAutoFillMode
 {
     Ask,
-    Qiet
+    Quiet
 }
+
+internal class CmdPrompt : SyntaxHighlightLanguage
+{
+    public CmdPrompt()
+    {
+        this.Name = "CMD Prompt";
+        this.Author = "Storik4";
+        this.Filter = new string[0];
+        this.Description = "Syntax highlighting for CMD";
+        this.Highlights = new SyntaxHighlights[]
+        {
+                new SyntaxHighlights("(:.*)", "#00C000", "#ffff00"),
+                new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#6e86ff"),
+                new SyntaxHighlights("(\\*)", "#dd0077", "#dd0077"),
+                new SyntaxHighlights("(%.+?%)", "#dd0077", "#5fe354"),
+                new SyntaxHighlights("((--(\\w+(-)*)+)|(-(\\w+(-)*)+))(\\s|$|=)", "#888888", "#888888"),
+                new SyntaxHighlights("(--new)|(-A.*?(?:\\s|^|=))|(--auto.*?(?:\\s|^|=))", "#000000", "#ffffff"),
+                new SyntaxHighlights("\\b([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[eE]([+-]?\\d+))?\\b", "#dd00dd", "#ff6b84"),
+        };
+    }
+}
+
 
 public sealed partial class CreateNewConfigPage : Page
 {
+    private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036"];
     
     private class ComponentModel
     {
@@ -73,9 +137,15 @@ public sealed partial class CreateNewConfigPage : Page
     public ICommand RemoveVariableCommand { get; }
     public ICommand VariableChangedCommand { get; }
 
+    public ICommand GraphicDesignerTextValueChangedCommand { get; }
+    public ICommand GraphicDesignerBoolValueToggledCommand { get; }
+    public ObservableCollection<GraphicDesignerSettingItemModel> DesignerSettingItemModels { get; } = [];
+
     private object navigationParameter;
 
     private ConfigItem ConfigItem;
+
+    private ILocalizer localizer = Localizer.Get();
 
     public CreateNewConfigPage()
     {
@@ -89,8 +159,22 @@ public sealed partial class CreateNewConfigPage : Page
         ConditionsListView.ItemsSource = Conditions;
         VariablesListView.ItemsSource = Variables;
 
-        InitPage();
+        GraphicDesignerTextValueChangedCommand = new RelayCommand(p => HandleGraphicDesignerTextValueChanged((Tuple<string, string>)p));
+        GraphicDesignerBoolValueToggledCommand = new RelayCommand(p => HandleGraphicDesignerBoolValueToggled((Tuple<string, bool>)p));
 
+        GUIDesignerListView.ItemsSource = DesignerSettingItemModels;
+
+        StartupStringTextBox.SyntaxHighlighting = new CmdPrompt();
+
+        StartupStringTextBox.UseSpacesInsteadTabs = true;
+        StartupStringTextBox.NumberOfSpacesForTab = 4;
+
+        InitPage();
+    }
+
+    private void CreateNewConfigPage_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        
     }
 
     private void CreateNewConfigPage_Loaded(object sender, RoutedEventArgs e)
@@ -107,7 +191,7 @@ public sealed partial class CreateNewConfigPage : Page
             {
                 AskAutoFillFiles(
                     editCfgTuple.Item2,
-                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Qiet);
+                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Quiet);
             }
         }
         if (navigationParameter != null && navigationParameter is Tuple<string, string, string> createNewFromString)
@@ -118,7 +202,7 @@ public sealed partial class CreateNewConfigPage : Page
             };
             AskAutoFillFiles(
                     ConfigItem,
-                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: StateHelper.LocalUserItemsId), AskAutoFillMode.Qiet);
+                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: StateHelper.LocalUserItemsId), AskAutoFillMode.Quiet);
         }
         AuditSaveAvailable();
         navigationParameter = null;
@@ -134,7 +218,7 @@ public sealed partial class CreateNewConfigPage : Page
             ConfigItem = tuple.Item2;
             bool errorHappens = tuple.Item3;
 
-            PageTitleTextBlock.Text = "Import config from file";
+            PageTitleTextBlock.Text = localizer.GetLocalizedString("ImportConfigFromFile");
             if (ConfigItem.target != null)
             {
                 ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
@@ -142,7 +226,7 @@ public sealed partial class CreateNewConfigPage : Page
                     .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
             }
 
-            StartupStringTextBox.Text = ConfigItem.startup_string;
+            AddWrap();
 
             navigationParameter = tuple;
         }
@@ -155,7 +239,7 @@ public sealed partial class CreateNewConfigPage : Page
 
             if (operationType == "CFGEDIT")
             {
-                PageTitleTextBlock.Text = "Edit config";
+                PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
                 if (ConfigItem.target != null)
                 {
                     ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
@@ -167,18 +251,20 @@ public sealed partial class CreateNewConfigPage : Page
 
                 if (ConfigItem.packId != StateHelper.LocalUserItemsId)
                 {
-                    DisplayNameTextBox.Text = $"{ConfigItem.name} (edited)";
-                    SaveButtonText.Text = "Save as a copy";
+                    DisplayNameTextBox.Text = $"{ConfigItem.name} ({localizer.GetLocalizedString("Edited")})";
+                    SaveButtonText.Text = localizer.GetLocalizedString("SaveAsACopy");
                 }
                 else
                 {
                     DisplayNameTextBox.Text = $"{ConfigItem.name}";
                 }
 
+                
+
                 LoadVars(ConfigItem);
                 LoadConditions(ConfigItem);
-                
-                StartupStringTextBox.Text = ConfigItem.startup_string;
+
+                AddWrap();
             }
         }
         else if (e.Parameter is Tuple<string, string, string> createNewFromString)
@@ -191,7 +277,7 @@ public sealed partial class CreateNewConfigPage : Page
 
             if (createNewFromString.Item1 == "CFGSTRING")
             {
-                StartupStringTextBox.Text = createNewFromString.Item2;
+                AddWrap(createNewFromString.Item2);
             }
         }
         else if (e.Parameter is Tuple<string, string> createNewConfig)
@@ -202,6 +288,7 @@ public sealed partial class CreateNewConfigPage : Page
                     .Cast<ComponentModel>()
                     .FirstOrDefault(c => c.Id == createNewConfig.Item2);
         }
+        CheckViewType();
     }
 
     private async void AskAutoFillFiles(ConfigItem configItem, string dir, AskAutoFillMode askAutoFillMode = AskAutoFillMode.Ask)
@@ -216,9 +303,10 @@ public sealed partial class CreateNewConfigPage : Page
         if (dialog.Result == CreateConfigResult.Selected)
         {
             ConfigItem = ConfigHelper.ReplaceFilesPath(ConfigItem, dialog.Files);
-            StartupStringTextBox.Text = ConfigItem.startup_string;
+            AddWrap();
 
             LoadVars(configItem);
+            AuditSaveAvailable();
         }
         else
         {
@@ -327,6 +415,11 @@ public sealed partial class CreateNewConfigPage : Page
         ComponentChooseComboBox.ItemsSource = components;
 
         AuditSaveAvailable();
+
+        SaveButtonText.Text = localizer.GetLocalizedString("Save");
+        PageTitleTextBlock.Text = localizer.GetLocalizedString("CreateNewConfig");
+        TestButtonText.Text = localizer.GetLocalizedString("TestThis");
+        ExpandToolTip.Content = localizer.GetLocalizedString("HideConfigSettings");
     }
 
     private bool IsSaveAvailable()
@@ -364,7 +457,7 @@ public sealed partial class CreateNewConfigPage : Page
     {
         if (!IsVarAddAvailable())
         {
-            ConditionPreviewTextBlock.Text = "Nothing to preview";
+            ConditionPreviewTextBlock.Text = localizer.GetLocalizedString("NothingToPreview");
             return;
         }
         ConditionPreviewTextBlock.Text = $"{VarNameTextBox.Text.Replace(" ", "")}==true ? {OnValueTextBox.Text} : {OffValueTextBox.Text}";
@@ -390,7 +483,7 @@ public sealed partial class CreateNewConfigPage : Page
         DescriptionTextBox.Text = "";
         OnValueTextBox.Text = "";
         OffValueTextBox.Text = "";
-        ConditionPreviewTextBlock.Text = "Nothing to preview";
+        ConditionPreviewTextBlock.Text = localizer.GetLocalizedString("NothingToPreview");
     }
 
     private Tuple<Dictionary<string, bool>, List<string>> CreateVariables(int secondsSinceEpoch)
@@ -456,7 +549,7 @@ public sealed partial class CreateNewConfigPage : Page
             variables = vars,
             commaVars = Variables.ToDictionary(v => v.Name, v => v.Value),
             availableCommaVarsValues = Variables.Where(v => v.AvailableValues != null).Select(v => v.AvailableValues).ToList(),
-            startup_string = StartupStringTextBox.Text
+            startup_string = StartupStringTextBox.Text.Replace("\n", " ")
         };
         foreach (var _v in configItem.commaVars)
         {
@@ -472,13 +565,13 @@ public sealed partial class CreateNewConfigPage : Page
         if (state == "started")
         {
             TestButtonGlyph.Glyph = "\uE71A";
-            TestButtonText.Text = "Stop testing";
+            TestButtonText.Text = localizer.GetLocalizedString("StopTest");
             isRunned = true;
         }
         else
         {
             TestButtonGlyph.Glyph = "\uE768";
-            TestButtonText.Text = "Test this";
+            TestButtonText.Text = localizer.GetLocalizedString("TestThis");
             isRunned = false;
         }
     }
@@ -492,6 +585,7 @@ public sealed partial class CreateNewConfigPage : Page
 
             await ProcessManager.Instance.StopProcess();
             ComponentModel model = ComponentChooseComboBox.SelectedItem as ComponentModel;
+            ConvertDesignerLikeSettingsToString();
             await ProcessManager.Instance.StartProcess(model.Id, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig(0)));
             
         }
@@ -499,7 +593,7 @@ public sealed partial class CreateNewConfigPage : Page
         {
             await ProcessManager.Instance.StopProcess();
             TestButtonGlyph.Glyph = "\uE768";
-            TestButtonText.Text = "Test this";
+            TestButtonText.Text = localizer.GetLocalizedString("TestThis");
             isRunned = false;
             ProcessManager.Instance.onProcessStateChanged -= Instance_onProcessStateChanged;
         }
@@ -526,6 +620,7 @@ public sealed partial class CreateNewConfigPage : Page
 
     private async void SaveConfigButton_Click(object sender, RoutedEventArgs e)
     {
+        ConvertDesignerLikeSettingsToString();
         TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
         int secondsSinceEpoch = (int)t.TotalSeconds;
 
@@ -554,8 +649,38 @@ public sealed partial class CreateNewConfigPage : Page
 
     private void ComponentChooseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        CheckViewType();
+
         CreateConfigHelperWindow.Instanse.IsOperationExitAskAvailable = true;
         AuditSaveAvailable();
+    }
+
+    private void CheckViewType()
+    {
+        if (ComponentChooseComboBox.SelectedItem == null)
+        {
+            AdditionalSettingsPanel.Visibility = Visibility.Collapsed;
+            NotReadyErrorGrid.Visibility = Visibility.Visible;
+            return;
+        }
+        else
+        {
+            AdditionalSettingsPanel.Visibility = Visibility.Visible;
+            NotReadyErrorGrid.Visibility = Visibility.Collapsed;
+        }
+        if (DesignerSupportedComponentIds.Contains(((ComponentModel)ComponentChooseComboBox.SelectedItem).Id))
+        {
+            DesignerItem.IsSelected = true;
+            MainPivot.Visibility = Visibility.Visible;
+            HandleSelectionChange(false);
+        }
+        else
+        {
+            HandleSelectionChange(true);
+            DefaultDesigner.IsSelected = true;
+            MainPivot.Visibility = Visibility.Collapsed;
+        }
+        
     }
 
     private void DisplayNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -564,7 +689,7 @@ public sealed partial class CreateNewConfigPage : Page
         AuditSaveAvailable();
     }
 
-    private void StartupStringTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    private void StartupStringTextBox_TextChanged(TextControlBox sender)
     {
         CreateConfigHelperWindow.Instanse.IsOperationExitAskAvailable = true;
         AuditSaveAvailable();
@@ -615,5 +740,129 @@ public sealed partial class CreateNewConfigPage : Page
                 break;
             }
         }
+    }
+
+    private bool isOpened = true;
+
+    private void ExpandButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!isOpened)
+        {
+            ShowInfoPanel.Begin();
+            HideInfoPanel.Stop();
+            InfoPanelDefinition.Width = new GridLength(350);
+            ShowButtonFontIcon.Glyph = "\uE76C";
+            ExpandToolTip.Content = localizer.GetLocalizedString("HideConfigSettings");
+        }
+        else
+        {
+            ShowInfoPanel.Stop();
+            HideInfoPanel.Begin();
+            InfoPanelDefinition.Width = new GridLength(0);
+            ShowButtonFontIcon.Glyph = "\uE76B";
+            ExpandToolTip.Content = localizer.GetLocalizedString("ShowConfigSettings");
+        }
+        isOpened = !isOpened;
+    }
+
+    private void AddWrap()
+    {
+        if (ConfigItem != null)
+        {
+            StartupStringTextBox.Text = ConfigItem.startup_string.Replace(" --new", "\n--new");
+            StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" -A", "\n-A");
+            StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" --auto", "\n--auto");
+        }
+    }
+    private void AddWrap(string startupString)
+    {
+        StartupStringTextBox.Text = startupString.Replace(" --new", "\n--new");
+        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" -A", "\n-A");
+        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" --auto", "\n--auto");
+    }
+
+    private void HandleSelectionChange(bool showDefaultOnly = false)
+    {
+        if (MainPivot.SelectedItem == DefaultDesigner || showDefaultOnly)
+        {
+            MainGrid.Background = UIHelper.HexToSolidColorBrushConverter("#000000");
+            StartupStringTextBox.Visibility = Visibility.Visible;
+            GUIDesignerGrid.Visibility = Visibility.Collapsed;
+            if (!showDefaultOnly) ConvertDesignerLikeSettingsToString();
+        }
+        else
+        {
+            MainGrid.Background = UIHelper.HexToSolidColorBrushConverter("#282828");
+            StartupStringTextBox.Visibility = Visibility.Collapsed;
+            GUIDesignerGrid.Visibility = Visibility.Visible;
+            LoadDesigner();
+            ConvertStringToDesignerLikeSettings();
+        }
+    }
+
+    private void MainPivot_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        HandleSelectionChange();
+    }
+
+    private string NowConfigLoadedId = string.Empty;
+
+    private void LoadDesigner()
+    {
+        if (ComponentChooseComboBox.SelectedItem == null) return;
+        if (StateHelper.Instance.FindKeyByValue("GoodbyeDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+        {
+            GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(DesignerSettingItemModels);
+            NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("GoodbyeDPI");
+        }
+        else if (StateHelper.Instance.FindKeyByValue("SpoofDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("SpoofDPI"))
+        {
+            GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(DesignerSettingItemModels);
+            NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("SpoofDPI");
+        }
+    }
+
+    private void HandleGraphicDesignerTextValueChanged(Tuple<string, string> tuple)
+    {
+        string guid = tuple.Item1;
+        string value = tuple.Item2;
+
+        var item = DesignerSettingItemModels.FirstOrDefault(x => x.Guid == guid);
+        if (item != null)
+        {
+            item.Value = value;
+            Debug.WriteLine(item.Value);
+        }
+    }
+
+    private void HandleGraphicDesignerBoolValueToggled(Tuple<string, bool> tuple)
+    {
+        
+        string guid = tuple.Item1;
+        bool _value = tuple.Item2;
+
+        var item = DesignerSettingItemModels.FirstOrDefault(x => x.Guid == guid);
+        if (item != null)
+        {
+            Debug.WriteLine(_value);
+            item.IsChecked = _value;
+            
+        }
+    }
+
+    private void ConvertStringToDesignerLikeSettings()
+    {
+        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
+        AdditionalSettingsTextBox.Text = GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(DesignerSettingItemModels, StartupStringTextBox.Text);
+    }
+    private void ConvertDesignerLikeSettingsToString()
+    {
+        if (ComponentChooseComboBox.SelectedItem != null && !DesignerSupportedComponentIds.Contains(((ComponentModel)ComponentChooseComboBox.SelectedItem).Id))
+        {
+            return;
+        }
+
+        StartupStringTextBox.Text = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(DesignerSettingItemModels, AdditionalSettingsTextBox.Text);
+        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
     }
 }

@@ -8,8 +8,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:lcontrol="using:CDPI_UI">
-    
+    xmlns:lcontrol="using:CDPI_UI"
+    xmlns:textcontrolbox="using:TextControlBoxNS"
+    xmlns:l="using:WinUI3Localizer">
+
     <Page.Resources>
         <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -24,108 +26,204 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Storyboard x:Name="HideInfoPanel">
+            <DoubleAnimation From="0" To="350" Duration="00:00:0.8" 
+                             Storyboard.TargetName="GridTranslateTransform" 
+                             Storyboard.TargetProperty="X">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase Exponent="7" EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="ShowInfoPanel">
+            <DoubleAnimation From="350" To="0" Duration="00:00:0.8" 
+                             Storyboard.TargetName="GridTranslateTransform" 
+                             Storyboard.TargetProperty="X">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase Exponent="7" EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
     </Page.Resources>
-    
+
     <Grid>
-        <ScrollViewer Padding="20">
-            <StackPanel Spacing="10">
-                <TextBlock x:Name="PageTitleTextBlock" Text="Create new config" FontWeight="Light" FontSize="28"/>
-                <StackPanel Spacing="5">
-                    <TextBlock Text="Target component*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <ComboBox x:Name="ComponentChooseComboBox" Width="300" DisplayMemberPath="Name" SelectionChanged="ComponentChooseComboBox_SelectionChanged"/>
-                </StackPanel>
-                <StackPanel Spacing="5">
-                    <TextBlock Text="Display name*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <TextBox x:Name="DisplayNameTextBox" Width="300" HorizontalAlignment="Left" TextChanged="DisplayNameTextBox_TextChanged"/>
-                </StackPanel>
-                <StackPanel x:Name="VariablesStackPanel" Spacing="5" Visibility="Collapsed">
-                    <TextBlock Text="Variables" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <ListView x:Name="VariablesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition x:Name="InfoPanelDefinition" Width="350"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid x:Name="MainGrid" Background="Black" RequestedTheme="Dark">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <SelectorBar x:Name="MainPivot" SelectionChanged="MainPivot_SelectionChanged" Grid.Row="0" Visibility="Visible">
+                    <SelectorBarItem l:Uids.Uid="DefaultDesignerPivot" x:Name="DefaultDesigner"/>
+                    <SelectorBarItem l:Uids.Uid="GUIDesignerPivot" x:Name="DesignerItem"/>
+                </SelectorBar>
+                <Grid x:Name="GUIDesignerGrid" Visibility="Collapsed" Padding="10 0 20 0" MinWidth="400" Grid.Row="1">
+                    <ScrollViewer Padding="0 0 15 10">
+                        <StackPanel Spacing="5">
+                            <ListView x:Name="GUIDesignerListView" SelectionMode="None" Padding="0"
                               ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="local:VariableModel">
-                                <lcontrol:VariableUserControl 
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:GraphicDesignerSettingItemModel">
+                                        <lcontrol:ComponentSettingUserControl 
+                                    Guid="{x:Bind Guid, Mode=OneWay}"
+                                    DisplayName="{x:Bind DisplayName, Mode=OneWay}"
+                                    Description="{x:Bind Description, Mode=OneWay}"
+                                    EnableTextInput="{x:Bind EnableTextInput, Mode=OneWay}"
+                                    TextValue="{x:Bind Value, Mode=OneWay}"
+                                    IsSettingChecked="{x:Bind IsChecked, Mode=OneWay}"
+                                    ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
+                                    ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="2"/>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                            <StackPanel x:Name="AdditionalSettingsPanel" Visibility="Collapsed">
+                                <TextBlock l:Uids.Uid="AdditionalSettingsTitle" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <TextBox x:Name="AdditionalSettingsTextBox"/>
+                            </StackPanel>
+                            <Grid MinHeight="150" x:Name="NotReadyErrorGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEB3C;" FontSize="64"/>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock l:Uids.Uid="GraphicDesignerNotReadyTextBlock" Style="{ThemeResource SubheaderTextBlockStyle}"/>
+                                    <TextBlock l:Uids.Uid="GraphicDesignerNotReadyTipTextBlock" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+                <textcontrolbox:TextControlBox x:Name="StartupStringTextBox" Grid.Row="1" HorizontalAlignment="Stretch" TextChanged="StartupStringTextBox_TextChanged" MinHeight="150" VerticalAlignment="Stretch" Visibility="Collapsed"/>
+            </Grid>
+            <Grid Background="#282828" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 25 0 0">
+                <Button x:Name="ExpandButton"  Padding="6"  CornerRadius="0" 
+                    Background="{ThemeResource ControlAltFillColorSecondaryBrush}" BorderThickness="0" Click="ExpandButton_Click">
+                    <ToolTipService.ToolTip>
+                        <ToolTip x:Name="ExpandToolTip"/>
+                    </ToolTipService.ToolTip>
+                    <FontIcon x:Name="ShowButtonFontIcon" Glyph="&#xE76C;"/>
+                </Button>
+            </Grid>
+        </Grid>
+        <Grid Width="350" HorizontalAlignment="Right" Grid.ColumnSpan="2" Background="#282828" RequestedTheme="Dark">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="GridTranslateTransform"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Column="1" Background="{ThemeResource ControlAltFillColorSecondaryBrush}">
+                <StackPanel Spacing="10" Margin="20 20 20 0">
+                    <TextBlock x:Name="PageTitleTextBlock" FontWeight="Light" FontSize="28"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock l:Uids.Uid="TargetComponentTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <ComboBox x:Name="ComponentChooseComboBox" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectionChanged="ComponentChooseComboBox_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                        <TextBlock l:Uids.Uid="DisplayNameTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <TextBox x:Name="DisplayNameTextBox" HorizontalAlignment="Stretch" TextChanged="DisplayNameTextBox_TextChanged"/>
+                    </StackPanel>
+                    <StackPanel x:Name="VariablesStackPanel" Spacing="5" Visibility="Collapsed">
+                        <TextBlock l:Uids.Uid="VariablesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <ListView x:Name="VariablesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:VariableModel">
+                                    <lcontrol:VariableUserControl 
                                     VarName="{x:Bind Name, Mode=OneWay}" 
                                     VarValue="{x:Bind Value, Mode=OneWay}"
                                     AvailableVarValues="{x:Bind AvailableValues, Mode=OneWay}"
                                     RemoveCommand="{Binding DataContext.RemoveVariableCommand, ElementName=RootPage}"
                                     RemoveCommandParameter="{x:Bind}"
                                     ValueChangedCommand="{Binding DataContext.VariableChangedCommand, ElementName=RootPage}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    
-                </StackPanel>
-                <StackPanel Spacing="5">
-                    <TextBlock Text="Startup string*" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <TextBox x:Name="StartupStringTextBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" TextChanged="StartupStringTextBox_TextChanged" IsSpellCheckEnabled="False"/>
-                </StackPanel>
-                <StackPanel Spacing="5">
-                    <TextBlock Text="Conditions" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <Button Content="Add new condition">
-                        <Button.Flyout>
-                            <Flyout x:Name="ConditionFlyout" Opened="ConditionFlyout_Opened">
-                                <StackPanel Width="300">
-                                    <TextBlock Text="Variable name" Style="{ThemeResource BodyStrongTextBlockStyle}" />
-                                    <TextBox x:Name="VarNameTextBox" TextChanged="VarNameTextBox_TextChanged" IsSpellCheckEnabled="False"/>
-                                    <TextBlock Text="Description" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
-                                    <TextBox x:Name="DescriptionTextBox"/>
-                                    <TextBlock Text="OnValue" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
-                                    <TextBox x:Name="OnValueTextBox" TextChanged="OnValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
-                                    <TextBlock Text="OffValue" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
-                                    <TextBox x:Name="OffValueTextBox" TextChanged="OffValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
-                                    <TextBlock Text="Preview" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
-                                    <Grid>
-                                        <Border BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}" Background="Black" BorderThickness="1" CornerRadius="5"/>
-                                        <TextBlock x:Name="ConditionPreviewTextBlock" Text="Nothing to preview." IsTextSelectionEnabled="True" Margin="5" TextWrapping="Wrap" FontFamily="Consolas"/>
-                                    </Grid>
-                                    <Button x:Name="SaveConditionButton" Margin="0 10 0 0" Width="150" Click="SaveConditionButton_Click" IsEnabled="False">
-                                        <Button.Content>
-                                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <FontIcon Glyph="&#xE74E;" FontSize="16" />
-                                                <TextBlock Text="Save"/>
-                                            </StackPanel>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                    <ListView x:Name="ConditionsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                        <TextBlock l:Uids.Uid="ConditionsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <Button l:Uids.Uid="CreateNewConditionButton">
+                            <Button.Flyout>
+                                <Flyout x:Name="ConditionFlyout" Opened="ConditionFlyout_Opened">
+                                    <StackPanel Width="300">
+                                        <TextBlock l:Uids.Uid="VarNameTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        <TextBox x:Name="VarNameTextBox" TextChanged="VarNameTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                        <TextBlock l:Uids.Uid="DescriptionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                        <TextBox x:Name="DescriptionTextBox"/>
+                                        <TextBlock l:Uids.Uid="OnValueTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                        <TextBox x:Name="OnValueTextBox" TextChanged="OnValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                        <TextBlock l:Uids.Uid="OffValueTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                        <TextBox x:Name="OffValueTextBox" TextChanged="OffValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
+                                        <TextBlock l:Uids.Uid="PreviewSampleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                                        <Grid>
+                                            <Border BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}" Background="Black" BorderThickness="1" CornerRadius="5"/>
+                                            <TextBlock x:Name="ConditionPreviewTextBlock" IsTextSelectionEnabled="True" Margin="5" TextWrapping="Wrap" FontFamily="Consolas"/>
+                                        </Grid>
+                                        <Button x:Name="SaveConditionButton" Margin="0 10 0 0" Width="150" Click="SaveConditionButton_Click" IsEnabled="False">
+                                            <Button.Content>
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <FontIcon Glyph="&#xE74E;" FontSize="16" />
+                                                    <TextBlock l:Uids.Uid="SaveTextBlock"/>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <ListView x:Name="ConditionsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                               ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="local:ConditionVariableModel">
-                                <lcontrol:ConditionUserControl VarName="{x:Bind Name, Mode=OneWay}" 
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:ConditionVariableModel">
+                                    <lcontrol:ConditionUserControl VarName="{x:Bind Name, Mode=OneWay}" 
                                                                OnValue="{x:Bind OnValue, Mode=OneWay}" 
                                                                OffValue="{x:Bind OffValue, Mode=OneWay}" 
                                                                Description="{x:Bind Description, Mode=OneWay}" 
                                                                RemoveCommand="{Binding DataContext.RemoveConditionCommand, ElementName=RootPage}"
                                                                RemoveCommandParameter="{x:Bind}"/>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
                 </StackPanel>
-                
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-                    <Button x:Name="TestButton" Padding="6" MinWidth="150" Click="TestButton_Click">
+            </ScrollViewer>
+            <Grid Grid.Row="1">
+                <Rectangle Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Padding="20">
+                    <Button x:Name="TestButton" Padding="6" Width="148" Click="TestButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <FontIcon x:Name="TestButtonGlyph" Glyph="&#xE768;" FontSize="16" />
-                                <TextBlock x:Name="TestButtonText" Text="Test this"/>
+                                <TextBlock x:Name="TestButtonText" />
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <Button x:Name="SaveConfigButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" Click="SaveConfigButton_Click">
+                    <Button x:Name="SaveConfigButton" Style="{ThemeResource AccentButtonStyle}" Width="148" Click="SaveConfigButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <FontIcon Glyph="&#xE74E;" FontSize="16" />
-                                <TextBlock x:Name="SaveButtonText" Text="Save"/>
+                                <TextBlock x:Name="SaveButtonText"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>
                 </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>
