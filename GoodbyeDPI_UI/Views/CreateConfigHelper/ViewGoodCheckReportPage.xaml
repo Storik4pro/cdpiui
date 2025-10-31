@@ -8,7 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lcontrol="using:CDPI_UI"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +19,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer Padding="20 20 20 5">
             <StackPanel Spacing="10">
-                <TextBlock x:Name="PageTitleTextBlock" Text="View GoodCheck report" FontWeight="Light" FontSize="28"/>
+                <TextBlock x:Name="PageTitleTextBlock" l:Uids.Uid="ViewGoodCheckReportTextBlock" FontWeight="Light" FontSize="28"/>
                 <ListView x:Name="HeadersListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                           ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                     <ListView.ItemTemplate>
@@ -43,10 +44,12 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid Padding="20 0">
-                <TextBlock Text="Flashlight tip" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <TextBlock l:Uids.Uid="/Flashlight/TipTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                 <RichTextBlock HorizontalAlignment="Right">
                     <Paragraph>
-                        <Hyperlink Click="Hyperlink_Click">Hide tip</Hyperlink>
+                        <Hyperlink Click="Hyperlink_Click">
+                            <Run l:Uids.Uid="HideTipTextBlock"/>
+                        </Hyperlink>
                     </Paragraph>
                 </RichTextBlock>
             </Grid>
@@ -72,20 +75,17 @@
                     </FontIcon>
                 </Grid>
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="Firstly mark worked arguments using flags in every sitelist group. Then click to NEXT button to create new config with selected arguments" TextWrapping="Wrap"/>
+                    <TextBlock l:Uids.Uid="/Flashlight/ViewGoodCheckReportTipTextBlock" TextWrapping="Wrap"/>
                 </StackPanel>
             </Grid>
         </Grid>
         <Grid Grid.Row="2" Padding="0">
             <Border Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" CornerRadius="0" Grid.Row="1" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Padding="0 10 20 10">
-                <Button x:Name="GoForwardButton" Content="Next" MinWidth="150" Style="{ThemeResource AccentButtonStyle}" Click="GoForwardButton_Click"/>
+                <Button x:Name="GoForwardButton" l:Uids.Uid="GoForwardButton" MinWidth="150" Style="{ThemeResource AccentButtonStyle}" Click="GoForwardButton_Click"/>
                 <TeachingTip
                     x:Name="GoForwardButtonTeachingTip"
-                    Title="Some sitelists not marked"
-                    Subtitle="Do you want to continue anyway? (You actually can go back to this page later)"
-                    ActionButtonContent="Yes, I want"
-                    CloseButtonContent="No"
+                    l:Uids.Uid="ReportGoForwardButtonTeachingTip"
                     IsLightDismissEnabled="True"
                     ActionButtonClick="GoForwardButtonTeachingTip_ActionButtonClick"
                     Target="{x:Bind GoForwardButton}">
