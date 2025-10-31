@@ -136,16 +136,21 @@ namespace CDPI_UI.Views.Store
             }
         }
 
+        private void GetReadyUI()
+        {
+            StopActionButton.IsEnabled = true;
+            StatusProgressbar.IsIndeterminate = true;
+            ErrorStatusGrid.Visibility = Visibility.Collapsed;
+            ItemActionButton.Visibility = Visibility.Collapsed;
+            DownloadStatusGrid.Visibility = Visibility.Visible;
+        }
+
         private void CheckCurrentStatus()
         {
             string operationId = StoreHelper.Instance.GetOperationIdFromItemId(_storeId);
             if (!string.IsNullOrEmpty(operationId))
             {
-                StopActionButton.IsEnabled = true;
-                StatusProgressbar.IsIndeterminate = true;
-                ErrorStatusGrid.Visibility = Visibility.Collapsed;
-                ItemActionButton.Visibility = Visibility.Collapsed;
-                DownloadStatusGrid.Visibility = Visibility.Visible;
+                GetReadyUI();
 
                 string status = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadStage;
                 PreferItemDownloadingStateActions(status);
@@ -268,6 +273,7 @@ namespace CDPI_UI.Views.Store
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
+                GetReadyUI();
 
                 CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
 
@@ -397,11 +403,7 @@ namespace CDPI_UI.Views.Store
             ConnectHandlers();
             errorHappens = false;
 
-            StopActionButton.IsEnabled = true;
-            StatusProgressbar.IsIndeterminate = true;
-            ErrorStatusGrid.Visibility = Visibility.Collapsed;
-            ItemActionButton.Visibility = Visibility.Collapsed;
-            DownloadStatusGrid.Visibility = Visibility.Visible;
+            GetReadyUI();
 
             CurrentStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
             StoreHelper.Instance.AddItemToQueue(_storeId, string.Empty);
