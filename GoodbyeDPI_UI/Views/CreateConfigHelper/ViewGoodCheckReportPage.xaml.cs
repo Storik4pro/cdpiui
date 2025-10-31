@@ -1,4 +1,5 @@
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPI_UI.Helper.Static;
 using CDPI_UI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -192,23 +193,16 @@ namespace CDPI_UI.Views.CreateConfigHelper
                 return;
             }
 
-            List<DragItem> list = [];
-            foreach (var item in HeaderModels)
-            {
-                string sitelistName = item.FileName;
-                foreach (var strategy in item.Strategies)
-                {
-                    if (strategy.Flag)
-                    {
-                        list.Add(new(strategy.Strategy, sitelistName, item.Directory));
-                    }
-                }
-            }
-
-            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, list), new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, CreateDragList()), new DrillInNavigationTransitionInfo());
         }
 
         private void GoForwardButtonTeachingTip_ActionButtonClick(TeachingTip sender, object args)
+        {
+            
+            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, CreateDragList()), new DrillInNavigationTransitionInfo());
+        }
+
+        private List<DragItem> CreateDragList()
         {
             List<DragItem> list = [];
             foreach (var item in HeaderModels)
@@ -218,12 +212,11 @@ namespace CDPI_UI.Views.CreateConfigHelper
                 {
                     if (strategy.Flag)
                     {
-                        list.Add(new(strategy.Strategy, sitelistName, item.Directory));
+                        list.Add(new(Utils.ReplaseIp(strategy.Strategy), sitelistName, item.Directory, false, [], Guid.NewGuid()));
                     }
                 }
             }
-
-            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, list), new DrillInNavigationTransitionInfo());
+            return list;
         }
     }
 }

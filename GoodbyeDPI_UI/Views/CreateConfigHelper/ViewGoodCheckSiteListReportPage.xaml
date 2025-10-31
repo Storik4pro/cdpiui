@@ -9,7 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:modal="using:CDPI_UI.Helper.CreateConfigUtil.GoodCheck"
     mc:Ignorable="d"
-    xmlns:lcontrol="using:CDPI_UI">
+    xmlns:lcontrol="using:CDPI_UI"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid>
         <ScrollViewer>
@@ -21,7 +22,7 @@
                     CornerRadius="0"/>
                 <StackPanel x:Name="ContentPanel" Padding="20 0">
                     <StackPanel x:Name="SuccessStackPanel">
-                        <TextBlock Text="Success stategies" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <TextBlock l:Uids.Uid="SuccessStrategiesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                         
                         <ListView x:Name="SuccessStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                                   ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
@@ -41,8 +42,8 @@
                         
                     </StackPanel>
                     <StackPanel x:Name="FailureStackPanel">
-                        <TextBlock Text="Failure stategies" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                        <TextBlock x:Name="FailureNotSetTextBlock" Text='Failure strategies are not displayed because your performance settings are set to "Prefer fewer elements per page"'/>
+                        <TextBlock l:Uids.Uid="FailureStrategiesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                        <TextBlock x:Name="FailureNotSetTextBlock" l:Uids.Uid="ContentNotDisplayedTextBlock"/>
                         <ListView x:Name="FailureStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
                                   ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                             <ListView.ItemTemplate>
