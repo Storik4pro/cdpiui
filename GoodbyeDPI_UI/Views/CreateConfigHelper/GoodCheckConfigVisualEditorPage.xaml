@@ -10,6 +10,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:lcontrol="using:CDPI_UI"
     mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
     SizeChanged="RootPage_SizeChanged">
 
     <Grid>
@@ -24,7 +25,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="PageTitleTextBlock" Text="Create new config" FontWeight="Light" FontSize="28"/>
+            <TextBlock x:Name="PageTitleTextBlock" l:Uids.Uid="CreateNewConfigMenuItem" FontWeight="Light" FontSize="28"/>
             
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -39,7 +40,7 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Strategies you marked with flag"/>
+                    <TextBlock l:Uids.Uid="MarkStrategiesTextBlock"/>
                     <ListView x:Name="LeftListView"
                           ItemContainerStyle="{StaticResource ListViewItemStretchStyle}"
                           Grid.Row="1"
@@ -54,9 +55,9 @@
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:DragItem">
                                 <lcontrol:CreateConfigDesignerUserControl
-                                Args="{Binding Args}"
-                                SiteListName="{Binding SiteListName}"
-                                Margin="0 2.5"/>
+                                    Args="{Binding Args}"
+                                    SiteListName="{Binding SiteListName}"
+                                    Margin="0 2.5"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -69,26 +70,31 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Strategies you want to add into new config"/>
+                    <TextBlock l:Uids.Uid="ReadyToAddStrategiesTextBlock"/>
                     <ListView x:Name="RightListView"
-                          ItemContainerStyle="{StaticResource ListViewItemStretchStyle}"
-                          Grid.Row="1"
-                          AllowDrop="True"
-                          CanDragItems="True"
-                          CanReorderItems="True"
-                          SelectionMode="Single"
-                          DragItemsStarting="RightListView_DragItemsStarting"
-                          DragOver="RightListView_DragOver"
-                          Drop="RightListView_Drop"
-                          BorderThickness="1"
+                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}"
+                              Grid.Row="1"
+                              AllowDrop="True"
+                              CanDragItems="True"
+                              CanReorderItems="True"
+                              SelectionMode="Single"
+                              DragItemsStarting="RightListView_DragItemsStarting"
+                              DragOver="RightListView_DragOver"
+                              Drop="RightListView_Drop"
+                              DragItemsCompleted="RightListView_DragItemsCompleted"
+                              BorderThickness="1"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:DragItem">
                                 <lcontrol:CreateConfigDesignerUserControl
-                                 Args="{Binding Args}"
-                                 SiteListName="{Binding SiteListName}"
-                                 Margin="0 2.5"/>
+                                    Guid="{x:Bind Id, Mode=OneWay}"
+                                    Args="{Binding Args}"
+                                    SiteListName="{Binding SiteListName}"
+                                    ShowGroupModeChooser="{x:Bind ShowGroupModeChooser, Mode=OneWay}"
+                                    Modes="{x:Bind Modes, Mode=OneWay}"
+                                    ModeChangedCommand="{Binding ChangeMode, ElementName=RootPage}"
+                                    Margin="0 2.5"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -101,8 +107,8 @@
         <Grid Grid.Row="2" Padding="0">
             <Border Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" CornerRadius="0" Grid.Row="1" />
             <Grid HorizontalAlignment="Stretch" Padding="20 10 20 10">
-                <Button x:Name="GoBackButton" Content="Back" MinWidth="150" Click="GoBackButton_Click"/>
-                <Button x:Name="GoForwardButton" Content="Next" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" HorizontalAlignment="Right" Click="GoForwardButton_Click"/>
+                <Button x:Name="GoBackButton" l:Uids.Uid="GoBackButton" MinWidth="150" Click="GoBackButton_Click"/>
+                <Button x:Name="GoForwardButton" l:Uids.Uid="GoForwardButton" Style="{ThemeResource AccentButtonStyle}" MinWidth="150" HorizontalAlignment="Right" Click="GoForwardButton_Click"/>
             </Grid>
         </Grid>
     </Grid>
