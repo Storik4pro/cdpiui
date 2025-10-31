@@ -87,6 +87,8 @@ namespace CDPI_UI
                 $"System: {Environment.OSVersion.ToString()}\n" +
                 $"Architecture: {RuntimeInformation.OSArchitecture.ToString()}";
             AdditionalTextBlock.Text = additionalInfo;
+
+            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(this);
         }
 
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
