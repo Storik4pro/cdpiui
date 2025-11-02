@@ -59,7 +59,7 @@ namespace CDPI_UI.Views.Store
 
         private async void LoadCategory()
         {
-            bool result = await Helper.StoreHelper.Instance.LoadAllStoreDatabase();
+            bool result = await Helper.StoreHelper.Instance.LoadAllStoreDatabase(forseSync:false);
             // bool result = true;
             if (result)
             {
