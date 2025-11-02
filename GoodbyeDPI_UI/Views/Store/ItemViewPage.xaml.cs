@@ -407,6 +407,8 @@ namespace CDPI_UI.Views.Store
 
             CurrentStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
             StoreHelper.Instance.AddItemToQueue(_storeId, string.Empty);
+
+            ItemActionButton.IsEnabled = item.type == "component";
         }
 
         private void ItemCategoryButton_Click(object sender, RoutedEventArgs e)
@@ -474,13 +476,29 @@ namespace CDPI_UI.Views.Store
             DownloadStatusGrid.Visibility = Visibility.Visible;
 
             StoreHelper.Instance.RemoveItem(_storeId);
+
+            ItemActionButton.IsEnabled = IsItemSupported();
         }
 
-        private void ReinstallButton_Click(object sender, RoutedEventArgs e)
+        private async void ReinstallButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO: downloading from saved URL
-            StoreHelper.Instance.RemoveItem(_storeId);
-            InstallingItemActions();
+            // TODO: show warning
+
+            ContentDialog dialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                Title = localizer.GetLocalizedString("ReinstallWarningTitle"),
+                Content = localizer.GetLocalizedString("ReinstallWarningMessage"),
+                PrimaryButtonText = localizer.GetLocalizedString("Yes"),
+                CloseButtonText = localizer.GetLocalizedString("No"),
+                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style
+            };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                StoreHelper.Instance.RemoveItem(_storeId);
+                InstallingItemActions();
+            }
         }
 
         private async Task<bool> AskLicense()
