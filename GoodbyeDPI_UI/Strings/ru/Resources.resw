@@ -1361,4 +1361,7 @@
   <data name="StoreExploreNewAddOnsAndComponentsTextBlock.Text" xml:space="preserve">
     <value>Изучите новые дополнения и компоненты</value>
   </data>
+  <data name="ComponentNotSupportedGrouppingTextBlock.Text" xml:space="preserve">
+    <value>Выбранный вами компонент не поддерживает группирование стратегий </value>
+  </data>
 </root>

@@ -1358,4 +1358,7 @@ What you want to do next?</value>
   <data name="StoreExploreNewAddOnsAndComponentsTextBlock.Text" xml:space="preserve">
     <value>Explore new AddOns and Components</value>
   </data>
+  <data name="ComponentNotSupportedGrouppingTextBlock.Text" xml:space="preserve">
+    <value>Component you selected isn't supported strategies groups.</value>
+  </data>
 </root>
