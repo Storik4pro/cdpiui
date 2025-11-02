@@ -401,6 +401,31 @@ namespace CDPI_UI
             }
         }
 
+        private long LastTimestamp = 0;
+        private int DoubleClickTimeMS = 250;
+
+
+        private void ImageAera_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+            if (milliseconds - LastTimestamp < DoubleClickTimeMS && milliseconds != 0)
+            {
+                this.Close();
+            }
+            else
+            {
+                LastTimestamp = milliseconds;
+            }
+
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            RECT pos;
+            GetWindowRect(hWnd, out pos);
+            IntPtr hMenu = GetSystemMenu(hWnd, false);
+            int cmd = TrackPopupMenu(hMenu, 0x100, pos.left + 10, pos.top + 40, 0, hWnd, IntPtr.Zero);
+            if (cmd > 0) SendMessage(hWnd, 0x112, (IntPtr)cmd, IntPtr.Zero);
+        }
+
         #region WINAPI
         private void InitializeWindow()
         {
@@ -458,6 +483,20 @@ namespace CDPI_UI
 
             return false;
         }
+
+        [DllImport("user32.dll")]
+        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+        [DllImport("user32.dll")]
+        static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [DllImport("user32.dll")]
+        static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
+           int nReserved, IntPtr hWnd, IntPtr prcRect);
+        [DllImport("user32.dll")]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
+        struct RECT { public int left, top, right, bottom; }
+
         #endregion
+
+        
     }
 }
