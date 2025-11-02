@@ -26,11 +26,12 @@ namespace CDPIUI_TrayIcon.Helper
             { "Pseudoconsole", "Open pseudoconsole (View process output)" },
             { "MsiInstallerHelper", "MSI installer helper" },
             { "MsiInstallerHelperErr", "Cannot install application package {0}. Error code is: {1}" },
+            { "ProxySetupAsk", "Component {0} requires additional configuration before it can be used.\nClick or tap here to configure it." }
         };
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
-            { "UpdateFailure", "Не удалось обновить приложение.\nНажмите или коснитесь здесь, чтобы открыть лог" },
+            { "UpdateFailure", "Не удалось обновить приложение.\nНажмите или коснитесь здесь, чтобы покзать журнал" },
             { "TrayHide", "Приложение запущено и свернуто в системный лоток.\nНажмите или коснитесь здесь, чтобы показать интерфейс" },
             { "Autorun", "Автозапуск" },
             { "AutorunERR", "Не удалось добавить приложение в автозапуск." },
@@ -46,6 +47,7 @@ namespace CDPIUI_TrayIcon.Helper
             { "Pseudoconsole", "Открыть псевдоконсоль (Просмотр вывода процесса)" },
             { "MsiInstallerHelper", "Помощник настройки MSI" },
             { "MsiInstallerHelperErr", "Не удалось установить пакет приложения {0}. Код ошибки: {1}" },
+            { "ProxySetupAsk", "Компонент {0} требует дополнительной настройки перед началом работы.\nНажмите или коснитесь здесь, чтобы настроить его." }
         };
 
         public static string GetLocaleString(string key)

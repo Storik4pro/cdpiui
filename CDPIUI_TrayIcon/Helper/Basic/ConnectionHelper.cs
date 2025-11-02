@@ -372,7 +372,20 @@ namespace CDPIUI_TrayIcon.Helper
                     ProcessManager.Instance.CleanProxy();
                 }
             }
-            Debug.WriteLine("RELEASE");
+            else if (message.StartsWith("NOTIFY:"))
+            {
+                if (message.StartsWith("NOTIFY:PROXY_SETUP_REQUIRED"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    TrayIconHelper.Instance.ShowMessage("CDPI UI", string.Format(LocaleHelper.GetLocaleString("ProxySetupAsk"), result[0]), "OPEN_PROXY_SETUP");
+                }
+            }
+                Debug.WriteLine("RELEASE");
 
         }
 

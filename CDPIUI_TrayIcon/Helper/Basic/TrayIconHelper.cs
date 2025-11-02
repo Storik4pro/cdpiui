@@ -191,6 +191,12 @@ namespace CDPIUI_TrayIcon.Helper
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
                     }
                     break;
+                case "OPEN_PROXY_SETUP":
+                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_PROXY_SETUP"))
+                    {
+                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-proxy-setup");
+                    }
+                    break;
                 case "LOGGER:OPEN_MSI_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "MsiInstallerHelper.log"));
                     break;
@@ -203,6 +209,8 @@ namespace CDPIUI_TrayIcon.Helper
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-update-page");
                     }
                     break;
+                
+
             }
         }
 
