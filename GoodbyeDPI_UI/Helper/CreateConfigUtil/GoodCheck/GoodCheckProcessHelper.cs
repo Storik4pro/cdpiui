@@ -173,6 +173,7 @@ namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
             ComponentName = StateHelper.Instance.ComponentIdPairs[componentId].ToLower();
 
             if (ComponentName == "byedpi") ComponentName = "ciadpi";
+            else if (ComponentName == "goodbyedpi") ComponentName = "gdpi";
 
             ComponentId = componentId;
             _mode = checkMode;
