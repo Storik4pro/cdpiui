@@ -109,12 +109,12 @@ internal class CmdPrompt : SyntaxHighlightLanguage
         this.Highlights = new SyntaxHighlights[]
         {
                 new SyntaxHighlights("(:.*)", "#00C000", "#ffff00"),
-                new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#6e86ff"),
                 new SyntaxHighlights("(\\*)", "#dd0077", "#dd0077"),
                 new SyntaxHighlights("(%.+?%)", "#dd0077", "#5fe354"),
                 new SyntaxHighlights("((--(\\w+(-)*)+)|(-(\\w+(-)*)+))(\\s|$|=)", "#888888", "#888888"),
                 new SyntaxHighlights("(--new)|(-A.*?(?:\\s|^|=))|(--auto.*?(?:\\s|^|=))", "#000000", "#ffffff"),
                 new SyntaxHighlights("\\b([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[eE]([+-]?\\d+))?\\b", "#dd00dd", "#ff6b84"),
+                new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#6e86ff"),
         };
     }
 }
