@@ -1361,4 +1361,10 @@ What you want to do next?</value>
   <data name="ComponentNotSupportedGrouppingTextBlock.Text" xml:space="preserve">
     <value>Component you selected isn't supported strategies groups.</value>
   </data>
+  <data name="ReinstallWarningTitle" xml:space="preserve">
+    <value>Reinstall this item?</value>
+  </data>
+  <data name="ReinstallWarningMessage" xml:space="preserve">
+    <value>You personal data (e.g. site lists) will be lost. This action cannot be undo.</value>
+  </data>
 </root>

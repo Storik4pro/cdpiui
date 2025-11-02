@@ -1364,4 +1364,10 @@
   <data name="ComponentNotSupportedGrouppingTextBlock.Text" xml:space="preserve">
     <value>Выбранный вами компонент не поддерживает группирование стратегий </value>
   </data>
+  <data name="ReinstallWarningTitle" xml:space="preserve">
+    <value>Переустановить этот элемент?</value>
+  </data>
+  <data name="ReinstallWarningMessage" xml:space="preserve">
+    <value>Ваши настройки, связанные с этим элементом будут безвозвратно утеряны.</value>
+  </data>
 </root>
