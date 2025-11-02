@@ -120,6 +120,11 @@ namespace CDPI_UI.Views.CreateConfigHelper
             {
                 ComponentId = items.Item1;
                 _parameter = items;
+
+                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+                {
+                    WarningGrid.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -183,11 +188,22 @@ namespace CDPI_UI.Views.CreateConfigHelper
         private void RightListView_DragOver(object sender, DragEventArgs e)
         {
             if (_dragSource == "Left")
+            {
+                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI") && RightItems.Count >= 1)
+                {
+                    e.AcceptedOperation = DataPackageOperation.None;
+                    return;
+                }
                 e.AcceptedOperation = DataPackageOperation.Copy;
+            }
             else if (_dragSource == "Right")
+            {
                 e.AcceptedOperation = DataPackageOperation.Move;
+            }
             else
+            {
                 e.AcceptedOperation = DataPackageOperation.None;
+            }
         }
 
         private void LeftListView_DragOver(object sender, DragEventArgs e)
@@ -205,20 +221,24 @@ namespace CDPI_UI.Views.CreateConfigHelper
                 if (e.DataView.Contains(StandardDataFormats.Text))
                 {
                     string idText = e.DataView.Properties.Title;
-                    
+
+                    if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI") && RightItems.Count >= 1)
+                    {
+                        return;
+                    }
 
                     if (Guid.TryParse(idText, out Guid parsedId) && _dragSource == "Left")
                     {
                         var sourceLeft = LeftItems.FirstOrDefault(x => x.Id == parsedId);
                         if (sourceLeft != null && RightItems.FirstOrDefault(x=> x.Id == parsedId) == null)
                         {
-                            RightItems.Add(new DragItem(
-                                sourceLeft.Args, 
-                                sourceLeft.SiteListName, 
-                                sourceLeft.Directory, 
+                            DragItem item = new(sourceLeft.Args,
+                                sourceLeft.SiteListName,
+                                sourceLeft.Directory,
                                 StateHelper.Instance.FindKeyByValue("ByeDPI") == ComponentId,
                                 [ChooseGroupModeContentDialog.ByeDPIGroupModes.None],
-                                parsedId));
+                                parsedId);
+                            RightItems.Add(item);
                             CheckRightItemsSort();
                         }
                     }
@@ -241,6 +261,7 @@ namespace CDPI_UI.Views.CreateConfigHelper
 
         private void CheckRightItemsSort()
         {
+            if (StateHelper.Instance.FindKeyByValue("ByeDPI") != ComponentId) return;
             if (RightItems.Count > 0)
             {
                 var firstItem = RightItems.First();
@@ -322,7 +343,16 @@ namespace CDPI_UI.Views.CreateConfigHelper
 
                     _str += $"-H=\"{Path.Combine(item.Directory, item.SiteListName)}\" {Utils.ReplaseIp(item.Args)} ";
                     startupString += _str;
-                    
+                }
+            }
+            else
+            {
+                foreach (var item in RightItems)
+                {
+                    string _str = "";
+
+                    _str += $"--blacklist=\"{Path.Combine(item.Directory, item.SiteListName)}\" {Utils.ReplaseIp(item.Args)} ";
+                    startupString += _str;
                 }
             }
             Debug.WriteLine(startupString);
