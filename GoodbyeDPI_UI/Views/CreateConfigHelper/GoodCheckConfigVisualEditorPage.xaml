@@ -103,7 +103,19 @@
             </Grid>
 
         </Grid>
-        
+        <Grid Grid.Row="1" x:Name="WarningGrid" Visibility="Collapsed">
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="0" Grid.Row="1" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <FontIcon Glyph="&#xE814;" Foreground="{ThemeResource SystemFillColorCautionBrush}" />
+                <StackPanel Padding="0 10 10 10" Grid.Column="1">
+                    <TextBlock l:Uids.Uid="ComponentNotSupportedGrouppingTextBlock"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
         <Grid Grid.Row="2" Padding="0">
             <Border Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" CornerRadius="0" Grid.Row="1" />
             <Grid HorizontalAlignment="Stretch" Padding="20 10 20 10">
