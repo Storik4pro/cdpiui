@@ -109,6 +109,10 @@ namespace CDPI_UI
                 {
                     await SafeCreateNewWindow<ViewWindow>();
                 }
+                else if (arguments.Contains("--show-proxy-setup"))
+                {
+                    await SafeCreateNewWindow<ProxySetupUtilWindow>();
+                }
                 else
                 {
                     await SafeCreateNewWindow<MainWindow>();

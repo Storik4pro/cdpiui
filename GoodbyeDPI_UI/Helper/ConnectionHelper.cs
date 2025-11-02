@@ -227,6 +227,9 @@ namespace CDPI_UI.Helper
                     case "WINDOW:SHOW_PSEUDOCONSOLE":
                         _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
                         break;
+                    case "WINDOW:SHOW_PROXY_SETUP":
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ProxySetupUtilWindow>();
+                        break;
                     case "WINDOW:SHOW_STORE":
                         _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<StoreWindow>();
                         break;
