@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Formats.Tar;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -262,12 +263,12 @@ namespace CDPI_UI.Helper.Static
             return "EN";
         }
 
-        public static void ExtractZip(
+        public static async Task ExtractZip(
             string zipFilePath,
             string zipFolderToUnpack,
             string extractTo,
             IEnumerable<string> filesToSkip = null
-        ) // TODO: Make async
+        )
         {
             filesToSkip = filesToSkip ?? Enumerable.Empty<string>();
 
@@ -343,6 +344,24 @@ namespace CDPI_UI.Helper.Static
                     if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
                         && File.Exists(destinationPath))
                     {
+                        string destLines = File.ReadAllText(destinationPath);
+                        string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
+                        entry.ExtractToFile(tmpFile, overwrite: true);
+
+                        var stream = File.AppendText(destinationPath);
+
+                        using (stream)
+                        {
+                            foreach (var line in File.ReadLines(tmpFile))
+                            {
+                                if (!destLines.Contains(line))
+                                {
+                                    await stream.WriteLineAsync(line);
+                                }
+                            }
+                        }
+                        File.Delete(tmpFile);
+
                         continue;
                     }
 
@@ -353,7 +372,7 @@ namespace CDPI_UI.Helper.Static
                     }
                     else
                     {
-                        entry.ExtractToFile(destinationPath, overwrite: false);
+                        entry.ExtractToFile(destinationPath, overwrite: true);
                     }
 
                     extractedFiles++;

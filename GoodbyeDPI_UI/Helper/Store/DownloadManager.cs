@@ -117,7 +117,7 @@ namespace CDPI_UI.Helper
                 if (extractArchive)
                 {
                     StageChanged?.Invoke("Extracting");
-                    Utils.ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes);
+                    await Utils.ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes);
                 }
                 else
                 {

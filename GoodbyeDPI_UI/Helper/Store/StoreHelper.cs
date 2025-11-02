@@ -150,14 +150,16 @@ namespace CDPI_UI.Helper
             public string OperationId { get; }
             public string ItemId { get; }
             public string Version { get; }
+            public bool CleanDirectoryBeforeInstalling { get; } = false;
             public string Status { get; set; } = "WAIT";
             public string DownloadStage { get; set; } = string.Empty;
 
-            public QueueItem(string itemId, string operationId, string version = null)
+            public QueueItem(string itemId, string operationId, string version = null, bool cleanDirectoryBeforeInstalling = false)
             {
                 ItemId = itemId;
                 Version = version ?? string.Empty;
                 OperationId = operationId;
+                CleanDirectoryBeforeInstalling = cleanDirectoryBeforeInstalling;
                 Logger.Instance.CreateDebugLog(nameof(QueueItem), Version);
             }
         }
@@ -567,12 +569,12 @@ namespace CDPI_UI.Helper
 
         // Queue
 
-        public void AddItemToQueue(string itemId, string version)
+        public void AddItemToQueue(string itemId, string version, bool cleanDirectoryBeforeInstalling = false)
         {
             if (GetOperationIdFromItemId(itemId) != null) return;
 
             var opId = Guid.NewGuid().ToString();
-            var qi = new QueueItem(itemId, opId, version);
+            var qi = new QueueItem(itemId, opId, version, cleanDirectoryBeforeInstalling);
 
             lock (_queueLock)
             {
@@ -932,7 +934,8 @@ namespace CDPI_UI.Helper
                     !string.Equals(itemFolder, StateHelper.GetDataDirectory(), StringComparison.OrdinalIgnoreCase) &&
                     id != StateHelper.LocalUserItemsId && id != StateHelper.ApplicationStoreId)
                 {
-                    Directory.Delete(itemFolder, recursive: true);
+                    if (qi.CleanDirectoryBeforeInstalling)
+                        Directory.Delete(itemFolder, recursive: true); 
                 }
                 Directory.CreateDirectory(itemFolder);
             }
@@ -1025,7 +1028,7 @@ namespace CDPI_UI.Helper
             }
             else
             {
-                await DownloadManager.DownloadAndExtractAsync(
+                bool result = await DownloadManager.DownloadAndExtractAsync(
                     downloadUrl,
                     itemFolder,
                     extractArchive: item.filetype == "archive",
@@ -1034,6 +1037,7 @@ namespace CDPI_UI.Helper
                     executableFileName: item.target_executable_file,
                     filetype: item.filetype
                 );
+                if (!result) return;
             }
 
             if (cancellationToken.IsCancellationRequested)
@@ -1105,7 +1109,7 @@ namespace CDPI_UI.Helper
             string finalDir = Path.Combine(appItemDirectory, "CDPIUI");
 
             string makePatchFolder = Path.Combine(patchesDir, Path.GetFileNameWithoutExtension(filePath));
-            Utils.ExtractZip(filePath, "/", makePatchFolder);
+            await Utils.ExtractZip(filePath, "/", makePatchFolder);
 
             string requirementsFile = Path.Combine(makePatchFolder, "requirements.json");
             var requirements = Utils.LoadJson<PatchRequirements>(requirementsFile);
@@ -1143,7 +1147,7 @@ namespace CDPI_UI.Helper
                 // string[] dirs = Directory.GetDirectories(patchesDir, "*", SearchOption.TopDirectoryOnly);
                 foreach (string dir in patches)
                 {
-                    Directory.Move(dir, finalDir); // TEST
+                    Directory.Move(dir, finalDir); // TEST 
                 }
                 Directory.Move(Path.Combine(makePatchFolder, "CDPIUI"), finalDir);
 
