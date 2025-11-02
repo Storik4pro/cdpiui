@@ -395,7 +395,13 @@ namespace CDPI_UI.Helper.Static
 
             }
             return finalArgs;
+        }
 
+        public static string NormalizeComponentName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return string.Empty;
+            return name.Replace("dpi", "DPI", StringComparison.OrdinalIgnoreCase).FirstCharToUpper();
         }
 
 #if SINGLEFILE

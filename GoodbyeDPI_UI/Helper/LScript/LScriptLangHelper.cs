@@ -33,8 +33,8 @@ namespace CDPI_UI.Helper.LScript
         }
 
         public static string ExecuteScript(
-            string scriptString, 
-            string scriptArgs = null, 
+            string scriptString,
+            string scriptArgs = null,
             string callItemId = null,
             Dictionary<string, bool> jparams = null
             )
@@ -286,6 +286,47 @@ namespace CDPI_UI.Helper.LScript
             return Tuple.Create(varName, conditionVarName, trueExpr, falseExpr);
         }
 
-        
+        public static void RunScript(string scriptString)
+        {
+            if (string.IsNullOrEmpty(scriptString))
+                return;
+
+            Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
+            string scriptData = "";
+
+            if (match.Success)
+            {
+                scriptData = match.Groups[1].Value;
+            }
+
+            string[] parts = scriptData.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+            string scriptName = parts[0];
+            string[] scriptArgs = parts.Skip(1).ToArray();
+
+            switch (scriptName)
+            {
+                case "finish_component_setup":
+                    FinishComponentSetup(scriptArgs);
+                    break;
+                default:
+                    Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"Unknown script command: {scriptName}");
+                    break;
+            }
+        }
+
+        private static void FinishComponentSetup(string[] args)
+        {
+            if (args.Length < 1)
+                return;
+            string componentName = args[0];
+
+            if (componentName == "byedpi" || componentName == "spoofdpi")
+            {
+                if (SettingsManager.Instance.GetValue<string>("PROXY", "proxyType") == "None")
+                {
+                    _ = PipeClient.Instance.SendMessage($"NOTIFY:PROXY_SETUP_REQUIRED({Utils.NormalizeComponentName(componentName)})");
+                }
+            }
+        }
     }
 }

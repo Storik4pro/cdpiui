@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPI_UI.Helper.LScript;
+using CDPI_UI.Helper.Static;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
 using Microsoft.WindowsAppSDK.Runtime;
@@ -1088,6 +1089,7 @@ namespace CDPI_UI.Helper
                 // TODO: add RequiredItemIds to new installed item from store (foreach)
 
                 DatabaseHelper.Instance.AddOrUpdateItem(databaseStoreItem);
+                LScriptLangHelper.RunScript(item.after_install_actions);
             }
             catch (Exception ex)
             {
