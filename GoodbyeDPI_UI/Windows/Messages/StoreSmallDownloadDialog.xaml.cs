@@ -124,9 +124,10 @@ namespace CDPI_UI.Messages
             DescriptionShimmer.Visibility = visibility;
         }
 
-        public void SetItemToViewId(string id)
+        public async void SetItemToViewId(string id)
         {
             StoreId = id;
+            await StoreHelper.Instance.LoadAllStoreDatabase(forseSync: true);
             LoadItemInfo();
         }
 
