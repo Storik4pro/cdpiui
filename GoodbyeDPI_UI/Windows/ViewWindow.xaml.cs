@@ -64,18 +64,17 @@ namespace CDPI_UI
         {
             this.InitializeComponent();
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
-
             InitializeWindow();
-
             this.Closed += ViewWindow_Closed;
             TrySetMicaBackdrop(true);
 
-            ((App)Application.Current).OpenWindows.Add(this);
+            ProcessManager.Instance.OutputReceived += OnProcessOutputReceived;
 
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-            }
+            ProcessManager.Instance.onProcessStateChanged += ChangeProcessStatus;
+
+            ProcessManager.Instance.ErrorHappens += ErrorHappens;
+
+            ProcessManager.Instance.ProcessNameChanged += ProcessManager_ProcessNameChanged;
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
@@ -90,13 +89,7 @@ namespace CDPI_UI
                 AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
                 DefaultOutputButton.IsChecked = true;
             }
-            ProcessManager.Instance.OutputReceived += OnProcessOutputReceived;
-
-            ProcessManager.Instance.onProcessStateChanged += ChangeProcessStatus;
-
-            ProcessManager.Instance.ErrorHappens += ErrorHappens;
-
-            ProcessManager.Instance.ProcessNameChanged += ProcessManager_ProcessNameChanged;
+            
 
             TrySetCurentProcess();
 
@@ -121,6 +114,8 @@ namespace CDPI_UI
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon(@"Assets/Icons/Pseudoconsole.ico");
+
+            _ = ProcessManager.Instance.GetReady();
         }
 
         private void TrySetCurentProcess()
@@ -191,6 +186,14 @@ namespace CDPI_UI
             if (state == "started")
             {
                 ClearRichTextBlock();
+                if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
+                {
+                    AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
+                }
+                else
+                {
+                    AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
+                }
                 ChangeIcon(true);
 
             } else if (state == "stopped")
@@ -249,7 +252,8 @@ namespace CDPI_UI
         {
             ProcessManager.Instance.OutputReceived -= OnProcessOutputReceived;
             ProcessManager.Instance.onProcessStateChanged -= ChangeProcessStatus;
-            ((App)Application.Current).OpenWindows.Remove(this);
+            ProcessManager.Instance.ErrorHappens -= ErrorHappens;
+            ProcessManager.Instance.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

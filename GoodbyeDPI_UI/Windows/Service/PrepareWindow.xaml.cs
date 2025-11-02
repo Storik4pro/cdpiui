@@ -74,8 +74,7 @@ namespace CDPI_UI
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
-            if (!arguments.Contains("--create-no-window")) this.Close();
-            else this.Hide();
+            this.Hide();
         }
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
         {

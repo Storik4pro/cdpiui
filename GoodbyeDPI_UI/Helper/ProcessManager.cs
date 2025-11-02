@@ -80,10 +80,10 @@ namespace CDPI_UI.Helper
             _outputDefaultBuffer = new StringBuilder();
         }
 
-        public void GetReady()
+        public async Task GetReady()
         {
-            _ = PipeClient.Instance.SendMessage("CONPTY:GETOUTPUT");
-            _ = PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
+            await PipeClient.Instance.SendMessage("CONPTY:GETOUTPUT");
+            await PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
         }
 
         public async Task StartProcess()

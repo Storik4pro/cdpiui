@@ -96,6 +96,44 @@ namespace CDPI_UI
             }
         }
 
+        private async Task PipeConnectedActions()
+        {
+            string[] arguments = Environment.GetCommandLineArgs();
+
+            await PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            await PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
+
+            if (!arguments.Contains("--create-no-window"))
+            {
+                if (arguments.Contains("--show-pseudoconsole"))
+                {
+                    await SafeCreateNewWindow<ViewWindow>();
+                }
+                else
+                {
+                    await SafeCreateNewWindow<MainWindow>();
+                }
+
+                if (arguments.Contains("--show-update-page"))
+                {
+                    await NavigateToUpdatesPage();
+                }
+            }
+            if (arguments.Contains("--get-startup-params"))
+            {
+                await ProcessManager.Instance.StartProcess();
+            }
+            if (arguments.Contains("--check-program-updates"))
+            {
+                await ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
+            }
+
+            if (OpenWindows.Count > 1 && OpenWindows[0] is PrepareWindow)
+            {
+                OpenWindows[0].Close();
+            }
+        }
+
         private void PipeConnected()
         {
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
@@ -103,35 +141,7 @@ namespace CDPI_UI
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
 
-            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
-            ProcessManager.Instance.GetReady();
-
-            string[] arguments = Environment.GetCommandLineArgs();
-
-            if (!arguments.Contains("--create-no-window"))
-            {
-                if (arguments.Contains("--show-pseudoconsole"))
-                {
-                    _ = SafeCreateNewWindow<ViewWindow>();
-                }
-                else
-                {
-                    _ = SafeCreateNewWindow<MainWindow>();
-                }
-
-                if (arguments.Contains("--show-update-page"))
-                {
-                    _ = NavigateToUpdatesPage();
-                }
-            }
-            if (arguments.Contains("--get-startup-params"))
-            {
-                _ = ProcessManager.Instance.StartProcess();
-            }
-            if (arguments.Contains("--check-program-updates"))
-            {
-                _ = ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
-            }
+            _ = PipeConnectedActions();
 
             PipeClient.Instance.Connected -= PipeConnected;
         }
