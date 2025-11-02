@@ -41,6 +41,8 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MainStackPanel.Padding" Value="100, 100, 100, 100" />
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="wSmallState">
@@ -54,7 +56,7 @@
                 </VisualState>
                 <VisualState x:Name="wWideState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1975"/>
+                        <AdaptiveTrigger MinWindowWidth="1935"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
