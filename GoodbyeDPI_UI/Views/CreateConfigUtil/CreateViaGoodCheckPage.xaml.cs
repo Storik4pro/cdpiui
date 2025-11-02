@@ -101,6 +101,11 @@ namespace CDPI_UI.Views.CreateConfigUtil
             {
                 ComponentId = componentId;
 
+                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+                {
+                    ChangeModeComboBox.IsEnabled = false;
+                }
+
                 HideAll();
                 SetLoadingMode(false);
                 SwitchState(States.LetsBegin);
