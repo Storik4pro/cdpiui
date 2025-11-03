@@ -81,12 +81,12 @@ namespace CDPI_UI
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
             {
-                AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
+                //AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
                 CleanOutputButton.IsChecked = true;
             }
             else
             {
-                AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
+                //AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
                 DefaultOutputButton.IsChecked = true;
             }
             
