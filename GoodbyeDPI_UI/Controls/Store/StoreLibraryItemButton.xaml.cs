@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -134,9 +135,11 @@ namespace CDPI_UI.Controls.Store
             StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), StoreId, new SuppressNavigationTransitionInfo());
         }
 
-        private void ActionButton_Click(object sender, RoutedEventArgs e)
+        private async void ActionButton_Click(object sender, RoutedEventArgs e)
         {
+            MainWindow window = await((App)Application.Current).SafeCreateNewWindow<MainWindow>();
 
+            window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
         }
 
         private void ReinstallButton_Click(object sender, RoutedEventArgs e)
