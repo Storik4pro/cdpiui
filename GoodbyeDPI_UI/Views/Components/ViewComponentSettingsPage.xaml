@@ -126,7 +126,7 @@
                         </Button>
                         <Button x:Name="CreateConfigButton" Grid.Column="1" Padding="6" Margin="0 0 10 0" Height="40" Click="CreateConfigButton_Click">
                             <StackPanel Orientation="Horizontal" Spacing="10">
-                                <BitmapIcon UriSource="ms-appx:///Assets/Store/empty.png" Width="23" ShowAsMonochrome="True"/>
+                                <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="23" Height="23"/>
                                 <TextBlock l:Uids.Uid="CreateConfigTextBlock" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
