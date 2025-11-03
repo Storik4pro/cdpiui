@@ -131,7 +131,7 @@ namespace CDPI_UI
             }
             if (arguments.Contains("--begin-compatibility-check"))
             {
-                CompatibilityCheckHelper.Instance.BeginCheck();
+                await CompatibilityCheckHelper.Instance.BeginCheck();
             }
             if (arguments.Contains("--get-startup-params"))
             {

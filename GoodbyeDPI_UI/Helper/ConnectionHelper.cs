@@ -374,7 +374,7 @@ namespace CDPI_UI.Helper
             {
                 if (message.StartsWith("COMPATIBILITYCHECK:BEGIN"))
                 {
-                    CompatibilityCheckHelper.Instance.BeginCheck();
+                    _ = CompatibilityCheckHelper.Instance.BeginCheck();
                 }
             }
         }

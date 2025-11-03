@@ -44,10 +44,22 @@ namespace CDPI_UI.Helper.Items
                         if (config.target != null && config.target.Count == 2)
                         {
                             var databaseItem = DatabaseHelper.Instance.GetItemById(config.target[0]);
-                            Semver.SemVersion requiredVersion = Semver.SemVersion.Parse(config.target[1].Replace("v", ""));
-                            Semver.SemVersion installedVersion = Semver.SemVersion.Parse(databaseItem.CurrentVersion.Replace("v", ""));
 
-                            if (Semver.SemVersion.ComparePrecedence(requiredVersion, installedVersion) == 1)
+                            string curV = databaseItem.CurrentVersion;
+                            if (databaseItem.CurrentVersion.Split(".").Length <= 3)
+                            {
+                                curV += ".0";
+                            }
+                            string serV = config.target[1];
+                            if (config.target[1].Split(".").Length <= 3)
+                            {
+                                serV += ".0";
+                            }
+
+                            Version requiredVersion = new Version(config.target[1].Replace("v", ""));
+                            Version installedVersion = new Version(databaseItem.CurrentVersion.Replace("v", ""));
+
+                            if (requiredVersion > installedVersion)
                             {
                                 if (!outdatedComponents.Contains(config.target[0]))
                                 {

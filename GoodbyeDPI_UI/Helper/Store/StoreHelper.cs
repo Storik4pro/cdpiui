@@ -1234,12 +1234,22 @@ namespace CDPI_UI.Helper
 
                 try
                 {
-                    var currentVersion = Semver.SemVersion.Parse(item.CurrentVersion.Replace("v", ""));
-                    var serverVersion = Semver.SemVersion.Parse(versionData.Item1.Replace("v", ""));
+                    string curV = item.CurrentVersion;
+                    if (curV.Split(".").Length <= 2)
+                    {
+                        curV += ".0";
+                    }
+                    string serV = versionData.Item1;
+                    if (serV.Split(".").Length <= 2)
+                    {
+                        serV += ".0";
+                    }
+                    var currentVersion = new Version(curV.Replace("v", ""));
+                    var serverVersion = new Version(serV.Replace("v", ""));
 
                     Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"{serverVersion}, {currentVersion}");
 
-                    if (Semver.SemVersion.ComparePrecedence(serverVersion, currentVersion) == 1)
+                    if (serverVersion > currentVersion)
                     {
                         UpdatesAvailableList.Add(new()
                         {
