@@ -1370,4 +1370,7 @@
   <data name="ReinstallWarningMessage" xml:space="preserve">
     <value>Ваши настройки, связанные с этим элементом будут безвозвратно утеряны.</value>
   </data>
+  <data name="SimilarItemInstallingContentDialog.Title" xml:space="preserve">
+    <value>С этим элементом также устанавливают</value>
+  </data>
 </root>

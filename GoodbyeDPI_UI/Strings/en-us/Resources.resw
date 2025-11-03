@@ -1367,4 +1367,7 @@ What you want to do next?</value>
   <data name="ReinstallWarningMessage" xml:space="preserve">
     <value>You personal data (e.g. site lists) will be lost. This action cannot be undo.</value>
   </data>
+  <data name="SimilarItemInstallingContentDialog.Title" xml:space="preserve">
+    <value>With this item also installing</value>
+  </data>
 </root>
