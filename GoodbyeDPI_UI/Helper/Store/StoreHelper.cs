@@ -693,7 +693,7 @@ namespace CDPI_UI.Helper
         {
             if (_queue.Count == 0)
             {
-                CompatibilityCheckHelper.Instance.BeginCheck();
+                _ = CompatibilityCheckHelper.Instance.BeginCheck();
                 return;
             }
 
@@ -1234,12 +1234,12 @@ namespace CDPI_UI.Helper
 
                 try
                 {
-                    var currentVersion = new Version(item.CurrentVersion.Replace("v", ""));
-                    var serverVersion = new Version(versionData.Item1.Replace("v", ""));
+                    var currentVersion = Semver.SemVersion.Parse(item.CurrentVersion.Replace("v", ""));
+                    var serverVersion = Semver.SemVersion.Parse(versionData.Item1.Replace("v", ""));
 
                     Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"{serverVersion}, {currentVersion}");
 
-                    if (serverVersion > currentVersion)
+                    if (Semver.SemVersion.ComparePrecedence(serverVersion, currentVersion) == 1)
                     {
                         UpdatesAvailableList.Add(new()
                         {
