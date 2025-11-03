@@ -42,6 +42,7 @@
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\FileConfigInspectUserControl.xaml" />
@@ -53,6 +54,7 @@
     <None Remove="Controls\StoreItemLargeButton.xaml" />
     <None Remove="Controls\StoreItemLinkButton.xaml" />
     <None Remove="Controls\StoreItemSmallButton.xaml" />
+    <None Remove="Controls\Store\StoreAskForSubItemInstallUserControl.xaml" />
     <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
@@ -404,6 +406,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreAskForSubItemInstallUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Settings\Settings.xml">
