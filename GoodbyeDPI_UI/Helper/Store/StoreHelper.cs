@@ -728,6 +728,12 @@ namespace CDPI_UI.Helper
             ItemActionsStopped?.Invoke(qi.ItemId);
             DeleteDownloadManager(qi.OperationId);
 
+            var _item = UpdatesAvailableList.FirstOrDefault(x => x.StoreId == qi.ItemId);
+            if (_item != null)
+            {
+                UpdatesAvailableList.Remove(_item);
+            }
+
             lock (_lock)
             {
                 CurrentDownloadingItem = null;
