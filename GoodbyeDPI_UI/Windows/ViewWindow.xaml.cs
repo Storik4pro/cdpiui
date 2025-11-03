@@ -202,6 +202,20 @@ namespace CDPI_UI
             }
         }
 
+        private string GetProcessName()
+        {
+            if (string.IsNullOrEmpty(ProcessManager.Instance.ProcessName))
+            {
+                var item = DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                if (item != null)
+                {
+                    return item.Executable + ".exe";
+                }
+                return string.Empty;
+            }
+            return ProcessManager.Instance.ProcessName;
+        }
+
         private void ChangeIcon(bool type)
         {
             if (type)
@@ -215,7 +229,8 @@ namespace CDPI_UI
                 StatusIcon.Foreground = successBrush;
                 StatusText.Text = localizer.GetLocalizedString("ProcessStarted");
                 StatusMessage.Title = localizer.GetLocalizedString("ProcessStartedMessageTitle");
-                StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStartedMessageMessage"), ProcessManager.Instance.ProcessName);
+                if (string.IsNullOrEmpty(GetProcessName())) StatusMessage.Message = string.Empty;
+                else StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStartedMessageMessage"), GetProcessName());
                 StatusMessage.Severity = InfoBarSeverity.Success;
             }
             else
@@ -229,7 +244,8 @@ namespace CDPI_UI
                 StatusIcon.Foreground = criticalBrush;
                 StatusText.Text = localizer.GetLocalizedString("ProcessStopped");
                 StatusMessage.Title = localizer.GetLocalizedString("ProcessStoppedMessageTitle");
-                StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStoppedMessageMessage"), ProcessManager.Instance.ProcessName);
+                if (string.IsNullOrEmpty(GetProcessName())) StatusMessage.Message = string.Empty;
+                else StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStoppedMessageMessage"), GetProcessName());
                 StatusMessage.Severity = InfoBarSeverity.Informational;
             }
             StatusHeader.Visibility = Visibility.Visible;
