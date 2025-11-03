@@ -83,7 +83,17 @@
                                    BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
                         <ComboBox x:Name="ConfigChooseCombobox" 
                                   MinWidth="400"
-                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged">
+                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged"
+                                  Height="47">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="local:ComboboxItem">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding name}"/>
+                                        <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
                     </controls:SettingsCard>
 

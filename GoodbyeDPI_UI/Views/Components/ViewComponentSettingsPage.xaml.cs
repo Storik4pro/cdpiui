@@ -31,15 +31,18 @@ namespace CDPI_UI.Views.Components
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    /// 
+
+    public class ComboboxItem
+    {
+        public string file_name { get; set; }
+        public string packId { get; set; }
+        public string name { get; set; }
+        public string packName { get; set; }
+    }
+
     public sealed partial class ViewComponentSettingsPage : Page
     {
-        private class ComboboxItem
-        {
-            public string file_name { get; set; }
-            public string packId { get; set; }
-            public string name { get; set; }
-        }
-
         private string ComponentId = string.Empty;
         private ObservableCollection<ComboboxItem> _comboboxItems = new();
 
@@ -54,7 +57,6 @@ namespace CDPI_UI.Views.Components
             InitializeComponent();
 
             ConfigChooseCombobox.ItemsSource = _comboboxItems;
-            ConfigChooseCombobox.DisplayMemberPath = nameof(ConfigItem.name);
 
             _comboboxItems.CollectionChanged += ComboboxItems_CollectionChanged;
 
@@ -333,6 +335,7 @@ namespace CDPI_UI.Views.Components
                 comboboxItem.file_name = item.file_name;
                 comboboxItem.packId = item.packId;
                 comboboxItem.name = $"{item.name}";
+                comboboxItem.packName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName;
 
                 _comboboxItems.Add(comboboxItem);
             }
