@@ -26,39 +26,46 @@ namespace CDPI_UI.Helper.Items
         public CompatibilityCheckHelper() { }
 
         public bool isCheckActive = false;
-        public async void BeginCheck()
+        public async Task BeginCheck()
         {
             if (isCheckActive) return;
             isCheckActive = true;
-            List<string> outdatedComponents = [];
-            var components = ComponentItemsLoaderHelper.Instance.GetComponentHelpers();
-
-            foreach (var component in components)
+            try
             {
-                ConfigHelper configHelper = component.GetConfigHelper();
+                List<string> outdatedComponents = [];
+                var components = ComponentItemsLoaderHelper.Instance.GetComponentHelpers();
 
-                foreach (var config in configHelper.GetConfigItems())
+                foreach (var component in components)
                 {
-                    if (config.target != null && config.target.Count == 2)
-                    {
-                        var databaseItem = DatabaseHelper.Instance.GetItemById(config.target[0]);
-                        Version requiredVersion = new Version(config.target[1].Replace("v", ""));
-                        Version installedVersion = new Version(databaseItem.CurrentVersion.Replace("v", ""));
+                    ConfigHelper configHelper = component.GetConfigHelper();
 
-                        if (requiredVersion > installedVersion)
+                    foreach (var config in configHelper.GetConfigItems())
+                    {
+                        if (config.target != null && config.target.Count == 2)
                         {
-                            if (!outdatedComponents.Contains(config.target[0]))
+                            var databaseItem = DatabaseHelper.Instance.GetItemById(config.target[0]);
+                            Semver.SemVersion requiredVersion = Semver.SemVersion.Parse(config.target[1].Replace("v", ""));
+                            Semver.SemVersion installedVersion = Semver.SemVersion.Parse(databaseItem.CurrentVersion.Replace("v", ""));
+
+                            if (Semver.SemVersion.ComparePrecedence(requiredVersion, installedVersion) == 1)
                             {
-                                outdatedComponents.Add(config.target[0]);
+                                if (!outdatedComponents.Contains(config.target[0]))
+                                {
+                                    outdatedComponents.Add(config.target[0]);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            foreach (var component in outdatedComponents)
+                foreach (var component in outdatedComponents)
+                {
+                    await PipeClient.Instance.SendMessage($"NOTIFY:CCA({StateHelper.Instance.ComponentIdPairs.FirstOrDefault(x => x.Key == component).Value})");
+                }
+            }
+            catch (Exception ex)
             {
-                await PipeClient.Instance.SendMessage($"NOTIFY:CCA({StateHelper.Instance.ComponentIdPairs.FirstOrDefault(x => x.Key == component).Value})");
+                Logger.Instance.CreateWarningLog(nameof(CompatibilityCheckHelper), $"Cannot begin check: {ex.Message}");
             }
             string[] arguments = Environment.GetCommandLineArgs();
             if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when process take too more time
