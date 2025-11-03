@@ -61,6 +61,7 @@ namespace CDPI_UI.Views
 
         private ObservableCollection<AcknowledgmentsModel> RequrementsList = new ObservableCollection<AcknowledgmentsModel>()
         {
+            new () { Name = "TextControlBox-WinUI by FrozenAssassine" },
             new () { Name = "WinUI3Localizer by Andrew KeepCoding" },
             new () { Name = "WinUIEx by Morten Nielsen" },
             new () { Name = "TaskScheduler by David Hall" },
