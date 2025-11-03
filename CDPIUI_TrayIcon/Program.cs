@@ -68,6 +68,7 @@ class Programm
         }
 
         CheckProgramUpdates();
+        BeginCompatibilityCheck();
 
         Application.Run();
         ToastNotificationManagerCompat.History.Clear();
@@ -98,6 +99,18 @@ class Programm
             if (! await PipeServer.Instance.SendMessage("UPDATE:CHECK"))
             {
                 RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --check-program-updates --exit-after-action");
+            }
+        }
+    }
+
+    private static async void BeginCompatibilityCheck()
+    {
+        await Task.Delay(TimeSpan.FromMinutes(60));
+        if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "compatibilityCheck"))
+        {
+            if (!await PipeServer.Instance.SendMessage("COMPATIBILITYCHECK:BEGIN"))
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --begin-compatibility-check --exit-after-action");
             }
         }
     }

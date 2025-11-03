@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Helper.LScript;
+﻿using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
@@ -691,7 +692,10 @@ namespace CDPI_UI.Helper
         private void TryProcessNext()
         {
             if (_queue.Count == 0)
+            {
+                CompatibilityCheckHelper.Instance.BeginCheck();
                 return;
+            }
 
             if (CurrentDownloadingItem == null)
             {

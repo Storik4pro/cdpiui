@@ -197,6 +197,12 @@ namespace CDPIUI_TrayIcon.Helper
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-proxy-setup");
                     }
                     break;
+                case "OPEN_BEGIN_STORE_UPDATE_CHECK":
+                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_BEGIN_STORE_UPDATE_CHECK"))
+                    {
+                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-begin-store-update-check");
+                    }
+                    break;
                 case "LOGGER:OPEN_MSI_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "MsiInstallerHelper.log"));
                     break;

@@ -1,5 +1,8 @@
-﻿using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+﻿using CDPI_UI;
+using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +15,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using CDPI_UI;
 using static CDPI_UI.Helper.MsiInstallerHelper;
 
 namespace CDPI_UI.Helper
@@ -236,6 +238,10 @@ namespace CDPI_UI.Helper
                     case "WINDOW:SHOW_MAIN:UPDATE_PAGE":
                         _ = ((App)Microsoft.UI.Xaml.Application.Current).NavigateToUpdatesPage();
                         break;
+                    case "WINDOW:SHOW_BEGIN_STORE_UPDATE_CHECK":
+                        ShowStoreWindow();
+                        
+                        break;
                     default:
                         break;
                 }
@@ -364,6 +370,19 @@ namespace CDPI_UI.Helper
                     RemoveMsiInstallerModel(result[0], notify:false);
                 }
             }
+            else if (message.StartsWith("COMPATIBILITYCHECK"))
+            {
+                if (message.StartsWith("COMPATIBILITYCHECK:BEGIN"))
+                {
+                    CompatibilityCheckHelper.Instance.BeginCheck();
+                }
+            }
+        }
+
+        private async void ShowStoreWindow()
+        {
+            var window = await ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.DownloadsPage), "BEGIN_UPDATE", new DrillInNavigationTransitionInfo());
         }
         private class MsiInstallerModel
         {

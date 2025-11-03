@@ -47,6 +47,11 @@ namespace CDPI_UI.Helper.Items
             }
         }
 
+        public List<ComponentHelper> GetComponentHelpers()
+        {
+            return Components;
+        }
+
         public ComponentHelper GetComponentHelperFromId(string id)
         {
             foreach (ComponentHelper componentHelper in Components)

@@ -384,6 +384,17 @@ namespace CDPIUI_TrayIcon.Helper
                     }
                     TrayIconHelper.Instance.ShowMessage("CDPI UI", string.Format(LocaleHelper.GetLocaleString("ProxySetupAsk"), result[0]), "OPEN_PROXY_SETUP");
                 }
+                else if (message.StartsWith("NOTIFY:CCA"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Console.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    TrayIconHelper.Instance.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"), 
+                        string.Format(LocaleHelper.GetLocaleString("ConfigRequiredNewestVersionOfComponent"), result[0]), "OPEN_BEGIN_STORE_UPDATE_CHECK");
+                }
             }
                 Debug.WriteLine("RELEASE");
 

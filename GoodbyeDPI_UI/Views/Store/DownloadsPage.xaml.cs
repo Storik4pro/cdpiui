@@ -70,6 +70,20 @@ namespace CDPI_UI.Views.Store
             ToggleUpdateMode(StoreHelper.Instance.IsNowUpdatesChecked);
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if (e.Parameter is string action)
+            {
+                if (action == "BEGIN_UPDATE")
+                {
+                    if (!StoreHelper.Instance.IsNowUpdatesChecked)
+                        StoreHelper.Instance.CheckUpdates();
+                }
+            }
+        }
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);

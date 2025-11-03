@@ -11,6 +11,7 @@
 		<Setting Key="trayHide" Type="bool" Value="true"/>
 		<Setting Key="appUpdates" Type="bool" Value="true"/>
 		<Setting Key="storeUpdates" Type="bool" Value="true"/>
+    <Setting Key="compatibilityCheck" Type="bool" Value="true"/>
 	</Group>
 	<Group Name="PSEUDOCONSOLE">
 		<Setting Key="outputMode" Type="bool" Value="true" />

@@ -4,6 +4,7 @@ using CDPI_UI.DesktopWap.DataModel;
 using CDPI_UI.DesktopWap.Helper;
 //using CDPI_UI.Data;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views;
 using Microsoft.UI;
@@ -113,6 +114,11 @@ namespace CDPI_UI
                 {
                     await SafeCreateNewWindow<ProxySetupUtilWindow>();
                 }
+                else if (arguments.Contains("--show-begin-store-update-check"))
+                {
+                    StoreWindow window = await SafeCreateNewWindow<StoreWindow>();
+                    window.NavigateSubPage(typeof(Views.Store.DownloadsPage), "BEGIN_UPDATE", new DrillInNavigationTransitionInfo());
+                }
                 else
                 {
                     await SafeCreateNewWindow<MainWindow>();
@@ -122,6 +128,10 @@ namespace CDPI_UI
                 {
                     await NavigateToUpdatesPage();
                 }
+            }
+            if (arguments.Contains("--begin-compatibility-check"))
+            {
+                CompatibilityCheckHelper.Instance.BeginCheck();
             }
             if (arguments.Contains("--get-startup-params"))
             {
