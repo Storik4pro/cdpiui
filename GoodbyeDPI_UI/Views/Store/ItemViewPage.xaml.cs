@@ -3,6 +3,7 @@ using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.Components;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
+using CommunityToolkit.WinUI.Animations.Expressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -393,6 +395,8 @@ namespace CDPI_UI.Views.Store
                 {
                     ItemActionButtonText.Text = localizer.GetLocalizedString("Setup");
                     ItemMoreButton.Visibility = Visibility.Visible;
+
+                    _ = AskAdditionalItems();
                 }
             }
         }
@@ -499,6 +503,34 @@ namespace CDPI_UI.Views.Store
                 StoreHelper.Instance.RemoveItem(_storeId);
                 InstallingItemActions();
             }
+        }
+
+        private async Task AskAdditionalItems()
+        {
+            List<SubItemModel> models = [];
+
+            foreach (var item in StoreHelper.Instance.GetSimilarItemsForStoreId(_storeId)) 
+            {
+                models.Add(new()
+                {
+                    Id = item.store_id,
+                    Name = item.short_name,
+                    Description = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale()),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(
+                        StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
+                        Utils.GetStoreLikeLocale()),
+                    ImageSource = StoreHelper.Instance.ExecuteScript(item.icon),
+                    Developer = item.developer
+                });
+            }
+            Debug.WriteLine(models.Count);
+            if (models.Count == 0) return;
+
+            SubItemInstallAskContentDialog dialog = new(models)
+            {
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
         }
 
         private async Task<bool> AskLicense()

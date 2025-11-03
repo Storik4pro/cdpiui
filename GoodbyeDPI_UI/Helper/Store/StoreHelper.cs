@@ -416,6 +416,36 @@ namespace CDPI_UI.Helper
             return categories;
         }
 
+        public List<RepoCategoryItem> GetSimilarItemsForStoreId(string storeId)
+        {
+            List<string> supportedComponents = ["Zapret", "GoodbyeDPI", "ByeDPI"];
+            List<RepoCategoryItem> items = [];
+            RepoCategoryItem item = GetItemInfoFromStoreId(storeId);
+
+            foreach (RepoCategoryItem itemToCheck in ItemsList)
+            {
+                if (itemToCheck.store_id == storeId) continue;
+
+                if (itemToCheck.type != "configlist") continue;
+
+                foreach (var depensety in itemToCheck.dependencies)
+                {
+                    if (depensety.Length > 0 && depensety[0] == storeId && !DatabaseHelper.Instance.IsItemInstalled(itemToCheck.store_id))
+                    {
+                        items.Add(itemToCheck);
+                    }
+                }
+            }
+
+            if (!DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodCheck")) && 
+                supportedComponents.Contains(StateHelper.Instance.ComponentIdPairs.FirstOrDefault(x => x.Key == storeId).Value))
+            {
+                items.Add(GetItemInfoFromStoreId(StateHelper.Instance.FindKeyByValue("GoodCheck")));
+            }
+
+            return items;
+        }
+
         public RepoCategory GetCategoryFromStoreId(string storeId)
         {
             foreach (RepoCategory repoCategory in FormattedStoreDatabase)
