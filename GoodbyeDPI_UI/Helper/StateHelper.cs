@@ -90,6 +90,7 @@ namespace CDPI_UI.Helper
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
             FileTypes.Add("msi", ".msi");
+            FileTypes.Add("UPDmsi", ".msi");
             FileTypes.Add("elmsi", ".exe");
 
             string exePath = Assembly.GetEntryAssembly()?.Location

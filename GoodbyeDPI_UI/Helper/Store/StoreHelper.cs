@@ -474,7 +474,7 @@ namespace CDPI_UI.Helper
                     store_id = storeId,
                     version_control = "git",
                     version_control_link = StateHelper.ApplicationCheckUpdatesUrl,
-                    filetype = Utils.IsApplicationBuildAsSingleFile? "CDPIUIUpdateItem" : "msi",
+                    filetype = Utils.IsApplicationBuildAsSingleFile? "CDPIUIUpdateItem" : "UPDmsi",
                     target_executable_file = "patch",
                     developer = databaseStoreItem.Developer,
                     name = databaseStoreItem.Name,
