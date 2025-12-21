@@ -55,7 +55,7 @@ namespace Update
         private string _targetFolder;
         private string _targetExecutable;
         private readonly List<string> _skipFiles = new List<string> { "Update.exe" };
-        private const string UiRootPrefix = ""; 
+        private const string UiRootPrefix = "CDPIUI/"; 
 
         public Action<InstallState> InstallationStateChanged;
         public Action<double> ProgressChanged;
