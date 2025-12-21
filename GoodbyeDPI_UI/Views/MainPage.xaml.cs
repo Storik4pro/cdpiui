@@ -28,9 +28,9 @@ namespace CDPI_UI.Views
         public MainPage()
         {
             this.InitializeComponent();
-            ProcessManager.Instance.onProcessStateChanged += OnProcessStateChanged;
-            ProcessManager.Instance.ErrorHappens += OnErrorHappens;
-            ProcessToggleSwitch.IsOn = ProcessManager.Instance.processState;
+            // ProcessManager.Instance.onProcessStateChanged += OnProcessStateChanged;
+            // ProcessManager.Instance.ErrorHappens += OnErrorHappens;
+            // ProcessToggleSwitch.IsOn = ProcessManager.Instance.processState;
 
             ProcessToggleSwitch.Toggled += ToggleSwitch_Toggled;
 
@@ -150,11 +150,11 @@ namespace CDPI_UI.Views
 
             if (toggleSwitch.IsOn)
             {
-                await ProcessManager.Instance.StartProcess();
+                // await ProcessManager.Instance.StartProcess();
             }
             else
             {
-                await ProcessManager.Instance.StopProcess();
+                // await ProcessManager.Instance.StopProcess();
             }
         }
 
