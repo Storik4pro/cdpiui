@@ -59,6 +59,15 @@ namespace CDPI_UI.Helper
 
         private void SettingsManager_EnumPropertyChanged(IEnumerable<string> _enum)
         {
+            if (_enum.Count() >= 2)
+            {
+                if (_enum.ElementAt(0) == "CONFIGS")
+                {
+                    _ = SendMessage($"CONPTY:PROCESSCHANGED({_enum.ElementAt(1)})");
+                    _ = TasksHelper.Instance.SendTaskData(_enum.ElementAt(1));
+                }
+            }
+            /*
             foreach (var group in _enum)
             {
                 if (group == "CONFIGS")
@@ -67,6 +76,7 @@ namespace CDPI_UI.Helper
                     return;
                 }
             }
+            */
         }
 
         public void Init(string pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}")
@@ -221,6 +231,13 @@ namespace CDPI_UI.Helper
             }
             else if (message.StartsWith("WINDOW:"))
             {
+                if (message.StartsWith("WINDOW:SHOW_PSEUDOCONSOLE"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+                    ShowViewWindowForId(result[0]);
+                    return;
+                }
                 switch (message)
                 {
                     case "WINDOW:SHOW_MAIN":
@@ -250,55 +267,63 @@ namespace CDPI_UI.Helper
             {
                 if (message.StartsWith("CONPTY:GET_STARTUP_STRING"))
                 {
-                    _ = ProcessManager.Instance.StartProcess();
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+
+                    TasksHelper.Instance.CreateAndRunNewTask(result[0]);
                 }
-                else if (message.StartsWith("CONPTY:CLEAN"))
+                else if (message.StartsWith("CONPTY:GET_ALL_STARTUP_STRINGS"))
                 {
-                    ProcessManager.Instance.ClearOutput();
+                    TasksHelper.Instance.RunAllPreferredActions();
                 }
-                else if (message.StartsWith("CONPTY:STARTED"))
-                {
-                    ProcessManager.Instance.MarkAsStarted();
-                }
-                else if (message.StartsWith("CONPTY:STOPPED"))
+                else if (message.StartsWith("CONPTY:MARKED_CLEAN"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length == 2)
-                    {
-                        _ = ProcessManager.Instance.ShowErrorMessage(result[0], result[1]);
-                    }
-                    ProcessManager.Instance.MarkAsFinished();
+                    if (result.Length < 1) return;
+
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.ClearOutput();
                 }
-                else if (message.StartsWith("CONPTY:PROCNAME"))
+                else if (message.StartsWith("CONPTY:MARKED_STARTED"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
-                        return;
-                    }
-                    ProcessManager.Instance.ChangeProcName(result[0]);
+                    if (result.Length < 1) return;
+
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.MarkAsStarted();
                 }
-                else if (message.StartsWith("CONPTY:MESSAGE"))
+                else if (message.StartsWith("CONPTY:MARKED_STOPPED"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
+                    if (result.Length == 3)
                     {
-                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
-                        return;
+                        Debug.WriteLine(result[1], result[2]);
+                        TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.ShowErrorMessage(result[1], result[2]);
                     }
-                    ProcessManager.Instance.AddOutput(result[0]);
+                    else if (result.Length == 1)
+                    {
+                        TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.MarkAsFinished();
+                    }
                 }
-                else if (message.StartsWith("CONPTY:FULLOUTPUT"))
+                else if (message.StartsWith("CONPTY:MARKED_PROCNAME"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
-                        return;
-                    }
-                    ProcessManager.Instance.ClearOutput();
-                    ProcessManager.Instance.AddOutput(result[0]);
+                    if (result.Length < 2) return;
+
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.ChangeProcName(result[1]);
+                }
+                else if (message.StartsWith("CONPTY:MARKED_MESSAGE"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 2) return;
+
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.AddOutput(result[1]);
+                }
+                else if (message.StartsWith("CONPTY:MARKED_FULLOUTPUT"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 2) return;
+
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.ClearOutput();
+                    TasksHelper.Instance.GetTaskFromId(result[0]).Result?.ProcessManager?.AddOutput(result[1]);
                 }
 
             }
@@ -336,7 +361,6 @@ namespace CDPI_UI.Helper
                 if (message.StartsWith("SETTINGS:AUTORUN_FALSE"))
                 {
                     SettingsManager.Instance.SetValue<bool>("SYSTEM", "autorun", false);
-
                 }
             }
             else if (message.StartsWith("UPDATE:"))
@@ -377,6 +401,12 @@ namespace CDPI_UI.Helper
                     _ = CompatibilityCheckHelper.Instance.BeginCheck();
                 }
             }
+        }
+
+        private async void ShowViewWindowForId(string id)
+        {
+            var window = await ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
+            window.SetId(id);
         }
 
         private async void ShowStoreWindow()
