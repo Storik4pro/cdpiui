@@ -53,7 +53,7 @@ namespace CDPI_UI.Views
 
         private void OfflineHelpSettingsCard_Click(object sender, RoutedEventArgs e)
         {
-
+            _ = ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
         }
 
         private void ProxySettingsCard_Click(object sender, RoutedEventArgs e)

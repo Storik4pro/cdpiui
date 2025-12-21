@@ -61,7 +61,7 @@
         <TextBlock
             l:Uids.Uid="UtilsTextBlock"
             x:Name="PageHeader"
-            Margin="20,24,20,0"
+            Margin="20,10,20,0"
             Style="{StaticResource TitleTextBlockStyle}"/>
         <ScrollViewer
             x:Name="contentSV"
@@ -72,8 +72,8 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
 
-            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
-                <controls:SettingsCard l:Uids.Uid="PseudoconsoleSettingsCard" x:Name="PseudoconsoleSettingsCard" IsClickEnabled="True" Click="PseudoconsoleSettingsCard_Click">
+            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 20">
+                <controls:SettingsCard l:Uids.Uid="PseudoconsoleSettingsCard" x:Name="PseudoconsoleSettingsCard" IsClickEnabled="True" Click="PseudoconsoleSettingsCard_Click" Visibility="Collapsed">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
@@ -113,7 +113,7 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Proxy.ico"  ShowAsMonochrome="False"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
-                <controls:SettingsCard l:Uids.Uid="OfflineHelpSettingsCard" x:Name="OfflineHelpSettingsCard" IsClickEnabled="True" IsEnabled="False" Click="OfflineHelpSettingsCard_Click">
+                <controls:SettingsCard l:Uids.Uid="OfflineHelpSettingsCard" x:Name="OfflineHelpSettingsCard" IsClickEnabled="True" IsEnabled="True" Click="OfflineHelpSettingsCard_Click">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
