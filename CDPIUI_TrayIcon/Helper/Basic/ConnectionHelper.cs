@@ -196,7 +196,7 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
-        private void RunMessageActions(string message)
+        private async Task RunMessageActions(string message)
         {
             // MessageBox.Show(message);
 
@@ -232,37 +232,45 @@ namespace CDPIUI_TrayIcon.Helper
                 if (message.StartsWith("CONPTY:START"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 2)
+                    if (result.Length < 3)
                     {
                         Console.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    _ = ProcessManager.Instance.StartProcess(executable: result[0], args: result[1]);
+                    TasksHelper.Instance.CreateAndRunNewTask(result[0], result[1], result[2]);
                 }
                 else if (message.StartsWith("CONPTY:STOPSERVICE"))
                 {
-                    _ = ProcessManager.Instance.StopService();
+                    TasksHelper.Instance.StopService();
                 }
                 else if (message.StartsWith("CONPTY:STOP"))
                 {
-                    _ = ProcessManager.Instance.StopProcess();
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+
+                    _ = TasksHelper.Instance.StopTask(result[0]);
                 }
                 else if (message.StartsWith("CONPTY:RESTART"))
                 {
-                    _ = ProcessManager.Instance.RestartProcess();
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+
+                    _ = TasksHelper.Instance.RestartTask(result[0]);
                 }
                 else if (message.StartsWith("CONPTY:GETOUTPUT"))
                 {
-                    ProcessManager.Instance.SendDefaultProcessOutput();
+                    TasksHelper.Instance.SendAllTasksOutput();
                 }
                 else if (message.StartsWith("CONPTY:GETSTATE"))
                 {
-                    ProcessManager.Instance.SendState();
-                    ProcessManager.Instance.SendNowSelectedComponentName();
+                    TasksHelper.Instance.SendAllTasksState();
                 }
                 else if (message.StartsWith("CONPTY:PROCESSCHANGED"))
                 {
-                    ProcessManager.Instance.IsProcessInfoChanged = true;
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+
+                    TasksHelper.Instance.SetIsStartArgsChangedProperty(result[0], true);
                 }
             }
             else if (message.StartsWith("GOODCHECK:"))
@@ -302,6 +310,40 @@ namespace CDPIUI_TrayIcon.Helper
                 else if (message.StartsWith("SETTINGS:RELOAD"))
                 {
                     SettingsManager.Instance.Reload();
+                }
+                else if (message.StartsWith("SETTINGS:COMPONENT_READY"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Debug.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+
+                    TasksHelper.Instance.AddNewTask(result[0]);
+                    TrayIconHelper.Instance.ToggleComponentAvailability(result[0], true);
+                }
+                else if (message.StartsWith("SETTINGS:COMPONENT_SETUP_NOT_FINISHED"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Debug.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+                    TasksHelper.Instance.AddNewTask(result[0]);
+                    TrayIconHelper.Instance.ToggleComponentAvailability(result[0], false);
+                }
+                else if (message.StartsWith("SETTINGS:COMPONENT_NOT_INSTALLED"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Debug.WriteLine($"ERR, {message} => args exception");
+                        return;
+                    }
+
+                    _ = TasksHelper.Instance.StopAndRemoveTaskAsync(result[0]);
                 }
             }
             else if (message.StartsWith("UPDATE:"))
@@ -349,27 +391,30 @@ namespace CDPIUI_TrayIcon.Helper
                 if (message.StartsWith("PROXY:INIT"))
                 {
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
+                    if (result.Length < 2)
                     {
                         Console.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    ProcessManager.Instance.InitProxy(result[0]);
+                    TasksHelper.Instance.InitProxyOnTask(result[0], result[1]);
                 }
                 else if (message.StartsWith("PROXY:SETUP"))
                 {
                     
                     var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 3)
+                    if (result.Length < 4)
                     {
                         Debug.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    ProcessManager.Instance.StartProxy(result[0], result[1], result[2]);
+                    TasksHelper.Instance.EnableProxyOnTask(result[0], result[1], result[2], result[3]);
                 }
                 else if (message.StartsWith("PROXY:CLEAN"))
                 {
-                    ProcessManager.Instance.CleanProxy();
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+
+                    TasksHelper.Instance.CleanProxyOnTask(result[0]);
                 }
             }
             else if (message.StartsWith("NOTIFY:"))
