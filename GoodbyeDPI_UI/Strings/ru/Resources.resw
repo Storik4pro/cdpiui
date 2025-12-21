@@ -1373,4 +1373,65 @@
   <data name="SimilarItemInstallingContentDialog.Title" xml:space="preserve">
     <value>С этим элементом также устанавливают</value>
   </data>
+  <data name="ViewOutputIconButton" xml:space="preserve">
+    <value>Показать вывод</value>
+  </data>
+  <data name="SettingsIconButton" xml:space="preserve">
+    <value>Настроить</value>
+  </data>
+  <data name="ComponentStatusSetupRequired" xml:space="preserve">
+    <value>Запуск невозможен — требуется настройка.
+Убедитесь, что вы выбрали пресет запуска для этого компонента</value>
+  </data>
+  <data name="ComponentStatusStopped" xml:space="preserve">
+    <value>Компонент остановлен </value>
+  </data>
+  <data name="ComponentStatusStarted" xml:space="preserve">
+    <value>Компонент запущен и работает без ошибок</value>
+  </data>
+  <data name="ComponentStatusExceptionHappens" xml:space="preserve">
+    <value>Компонент остановлен из-за ошибки</value>
+  </data>
+  <data name="WidgetPlaceholderTextBlock.Text" xml:space="preserve">
+    <value>Вы ещё не добавили ни одного виджета в быстрый доступ</value>
+  </data>
+  <data name="WelcomeToProgramTextBlock.Text" xml:space="preserve">
+    <value>Добро пожаловать в CDPI UI!</value>
+  </data>
+  <data name="ApplicationSetupHelperTextBlock.Text" xml:space="preserve">
+    <value>Помощник настройки приложения</value>
+  </data>
+  <data name="GetNewComponentsFromStoreTextBlock.Text" xml:space="preserve">
+    <value>Получите новые компоненты из Магазина</value>
+  </data>
+  <data name="QuickAccessTextBlock.Text" xml:space="preserve">
+    <value>Быстрый доступ</value>
+  </data>
+  <data name="OpenStoreWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Управляйте установленными элементами</value>
+  </data>
+  <data name="OpenHelpWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Открыть справку</value>
+  </data>
+  <data name="OpenHelpWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Найдите ответ на свой вопрос без подключения к Интернету</value>
+  </data>
+  <data name="AskCommunityWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Задать вопрос</value>
+  </data>
+  <data name="AskCommunityWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Спросите что-нибудь у сообщества CDPI UI</value>
+  </data>
+  <data name="ReportABugWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Что-то работает не так, как надо? Расскажите об этом!</value>
+  </data>
+  <data name="AutorunCheckBox.Content" xml:space="preserve">
+    <value>Запускать автоматически</value>
+  </data>
+  <data name="AutorunBadgeGrid.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Этот компонент будет запускаться автоматически с этим ПК</value>
+  </data>
+  <data name="NowViewOutputFromComponent" xml:space="preserve">
+    <value>Сейчас показан вывод {0}</value>
+  </data>
 </root>

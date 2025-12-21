@@ -1370,4 +1370,65 @@ What you want to do next?</value>
   <data name="SimilarItemInstallingContentDialog.Title" xml:space="preserve">
     <value>With this item also installing</value>
   </data>
+  <data name="ViewOutputIconButton" xml:space="preserve">
+    <value>View output</value>
+  </data>
+  <data name="SettingsIconButton" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="ComponentStatusSetupRequired" xml:space="preserve">
+    <value>Startup is impossible — Setup required.
+Make sure you select startup config for this component</value>
+  </data>
+  <data name="ComponentStatusStopped" xml:space="preserve">
+    <value>The component is currently stopped</value>
+  </data>
+  <data name="ComponentStatusStarted" xml:space="preserve">
+    <value>Component is started and working without errors</value>
+  </data>
+  <data name="ComponentStatusExceptionHappens" xml:space="preserve">
+    <value>Component stopped because something went wrong</value>
+  </data>
+  <data name="WidgetPlaceholderTextBlock.Text" xml:space="preserve">
+    <value>You don't add any widgets to quick view yet</value>
+  </data>
+  <data name="WelcomeToProgramTextBlock.Text" xml:space="preserve">
+    <value>Welcome to CDPI UI!</value>
+  </data>
+  <data name="ApplicationSetupHelperTextBlock.Text" xml:space="preserve">
+    <value>Application setup helper</value>
+  </data>
+  <data name="GetNewComponentsFromStoreTextBlock.Text" xml:space="preserve">
+    <value>Get new components from Store</value>
+  </data>
+  <data name="QuickAccessTextBlock.Text" xml:space="preserve">
+    <value>Quick access</value>
+  </data>
+  <data name="OpenStoreWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Find more Configs and Add-Ons. Manage installed items.</value>
+  </data>
+  <data name="OpenHelpWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Open Help</value>
+  </data>
+  <data name="OpenHelpWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Find an answer for your question without Network connection</value>
+  </data>
+  <data name="AskCommunityWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Ask a community</value>
+  </data>
+  <data name="AskCommunityWidgetTipTextBlock.Text" xml:space="preserve">
+    <value>Ask something in CDPI UI community</value>
+  </data>
+  <data name="ReportABugWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Something isn't work as planned? Tell about it developers</value>
+  </data>
+  <data name="AutorunCheckBox.Content" xml:space="preserve">
+    <value>Startup automatically </value>
+  </data>
+  <data name="AutorunBadgeGrid.ToolTipService.ToolTip" xml:space="preserve">
+    <value>This component starting up with your PC</value>
+  </data>
+  <data name="NowViewOutputFromComponent" xml:space="preserve">
+    <value>Now showing {0} output</value>
+  </data>
 </root>
