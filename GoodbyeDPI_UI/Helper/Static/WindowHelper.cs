@@ -56,6 +56,7 @@ namespace CDPI_UI.Helper
             { nameof(CreateConfigHelperWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
+            { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
         };
         // positionType, Width, Height
         private static Dictionary<WindowResizeOptions, Tuple<WindowPositionVariants, int, int>> WindowsResizeParams = new()
@@ -233,8 +234,7 @@ namespace CDPI_UI.Helper
 
         public static float GetScaleFactor(Window window)
         {
-            Debug.WriteLine(window.GetDpiForWindow());
-            return window.GetDpiForWindow()/96;
+            return (float)window.GetDpiForWindow()/96;
         }
 
         #region Win32 interop
