@@ -1284,7 +1284,8 @@ namespace CDPI_UI.Helper
 
         public void RemoveItem(string itemId)
         {
-            _ = ProcessManager.Instance.StopService();
+            _ = ProcessManager.StopService();
+            _ = TasksHelper.Instance.StopTask(itemId);
             var item = DatabaseHelper.Instance.GetItemById(itemId);
             
             try
