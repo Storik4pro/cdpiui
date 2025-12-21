@@ -62,7 +62,7 @@
         <TextBlock
             l:Uids.Uid="AboutPageTextBlock"
             x:Name="PageHeader"
-            Margin="20,24,20,10"
+            Margin="20,10,20,0"
             Style="{StaticResource TitleTextBlockStyle}"
             TextWrapping="NoWrap"/>
         <ScrollViewer
@@ -73,7 +73,7 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel x:Name="MainPanel" Margin="0 0 0 20">
+            <StackPanel x:Name="MainPanel" Margin="0 10 0 20">
                 <controls:SettingsCard>
                     <controls:SettingsCard.Resources>
                         <x:Double x:Key="SettingsCardWrapThreshold">700</x:Double>
