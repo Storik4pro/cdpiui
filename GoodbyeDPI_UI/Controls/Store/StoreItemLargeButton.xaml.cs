@@ -1,3 +1,4 @@
+using CDPI_UI.Helper.Static;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -25,7 +26,6 @@ public sealed partial class StoreItemLargeButton : UserControl
     private TranslateTransform _translate;
     private Button _button;
     private Rectangle _bottomRect;
-    private Brush _origBrush;
     private Vector3 shadowVector = new Vector3(0, 0, 20);
 
     public Action<StoreItemLargeButton> Click;
@@ -40,8 +40,6 @@ public sealed partial class StoreItemLargeButton : UserControl
         _button = (Button)FindName("PART_Button");
         _bottomRect = (Rectangle)FindName("PART_BottomRect");
 
-        _origBrush = _bottomRect.Fill;
-
         SharedShadow.Receivers.Add(BackgroundGrid);
         this.ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
 
@@ -53,6 +51,9 @@ public sealed partial class StoreItemLargeButton : UserControl
         };
 
         imageElement = PART_Image;
+        HandleTheme();
+
+        this.ActualThemeChanged += (s, e) => HandleTheme();
     }
     private void OnButtonPointerEntered(object sender, PointerRoutedEventArgs e)
     {
@@ -60,7 +61,7 @@ public sealed partial class StoreItemLargeButton : UserControl
 
         AnimateTranslateY(-3, durationMs: 200);
 
-        _bottomRect.Fill = (Brush)Application.Current.Resources["ControlFillColorTertiaryBrush"];
+        _bottomRect.Style = (Style)Resources["BackgroudRectangleHoverStyle"];
         PART_Button.Translation += shadowVector;
     }
 
@@ -69,7 +70,7 @@ public sealed partial class StoreItemLargeButton : UserControl
         VisualStateManager.GoToState(_button, "Normal", true);
         AnimateTranslateY(0, durationMs: 200);
 
-        _bottomRect.Fill = _origBrush;
+        _bottomRect.Style = (Style)Resources["BackgroudRectangleDefaultStyle"];
         PART_Button.Translation -= shadowVector;
     }
 
@@ -173,5 +174,21 @@ public sealed partial class StoreItemLargeButton : UserControl
     private void PART_Button_Click(object sender, RoutedEventArgs e)
     {
         Click?.Invoke(this);
+    }
+
+    private void HandleTheme()
+    {
+        if (this.ActualTheme == ElementTheme.Dark)
+        {
+            AcrylicBrush.TintColor = UIHelper.HexToColorConverter("#000000");
+        }
+        else if (this.ActualTheme == ElementTheme.Light)
+        {
+            AcrylicBrush.TintColor = UIHelper.HexToColorConverter("#FFFFFF");
+        }
+        else
+        {
+            AcrylicBrush.TintColor = Application.Current.RequestedTheme == ApplicationTheme.Light ? UIHelper.HexToColorConverter("#FFFFFF") : UIHelper.HexToColorConverter("#000000");
+        }
     }
 }
