@@ -60,6 +60,8 @@ namespace CDPI_UI
 
         private ILocalizer localizer = Localizer.Get();
 
+        public string Id { get; private set; } = string.Empty;
+
         public ViewWindow()
         {
             this.InitializeComponent();
@@ -68,16 +70,11 @@ namespace CDPI_UI
             this.Closed += ViewWindow_Closed;
             TrySetMicaBackdrop(true);
 
-            ProcessManager.Instance.OutputReceived += OnProcessOutputReceived;
-
-            ProcessManager.Instance.onProcessStateChanged += ChangeProcessStatus;
-
-            ProcessManager.Instance.ErrorHappens += ErrorHappens;
-
-            ProcessManager.Instance.ProcessNameChanged += ProcessManager_ProcessNameChanged;
-
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
+
+            this.MinWidth = 484;
+            this.MinHeight = 300;
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
             {
@@ -90,23 +87,6 @@ namespace CDPI_UI
                 DefaultOutputButton.IsChecked = true;
             }
             
-
-            TrySetCurentProcess();
-
-            if (ProcessManager.Instance.isErrorHappens)
-            {
-                if (ProcessManager.Instance.LatestErrorMessage.Count >= 2)
-                {
-                    ErrorHappens(ProcessManager.Instance.LatestErrorMessage[0], ProcessManager.Instance.LatestErrorMessage[1]);
-                }
-                else
-                {
-                    ErrorHappens("UNKNOWN_ERROR", "console");
-                }
-            } else
-            {
-                ChangeIcon(ProcessManager.Instance.processState);
-            }
             OutputRichTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
             OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
 
@@ -114,18 +94,60 @@ namespace CDPI_UI
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon(@"Assets/Icons/Pseudoconsole.ico");
+        }
 
-            _ = ProcessManager.Instance.GetReady();
+        public void SetId(string id)
+        {
+            Id = id;
+            TrySetCurentProcess();
+            ConnectHandlers();
+        }
+
+        private async Task<ProcessManager> GetProcessManager()
+        {
+            ProcessManager processManager = (await TasksHelper.Instance.GetTaskFromId(Id)).ProcessManager;
+            if (processManager == null) return null;
+            return processManager;
+        }
+
+        private async void ConnectHandlers()
+        {
+            var processManager = await GetProcessManager();
+
+            processManager.OutputReceived += OnProcessOutputReceived;
+            processManager.onProcessStateChanged += ChangeProcessStatus;
+            processManager.ErrorHappens += ErrorHappens;
+            processManager.ProcessNameChanged += ProcessManager_ProcessNameChanged;
+
+            if (processManager.isErrorHappens)
+            {
+                if (processManager.LatestErrorMessage.Count >= 2)
+                {
+                    ErrorHappens(processManager.LatestErrorMessage[0], processManager.LatestErrorMessage[1]);
+                }
+                else
+                {
+                    ErrorHappens("UNKNOWN_ERROR", "console");
+                }
+                await processManager.GetReady(false);
+            }
+            else
+            {
+                ChangeIcon(processManager.processState);
+                await processManager.GetReady(true);
+            }
+
+            
         }
 
         private void TrySetCurentProcess()
         {
             try
             {
-                var item = DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                var item = DatabaseHelper.Instance.GetItemById(Id);
                 if (item != null)
                 {
-                    SelectedComponentTextBlock.Text = string.Format(localizer.GetLocalizedString("NowSelectedComponent"), item.ShortName);
+                    SelectedComponentTextBlock.Text = string.Format(localizer.GetLocalizedString("NowViewOutputFromComponent"), item.ShortName);
                 }
                 else
                 {
@@ -181,22 +203,22 @@ namespace CDPI_UI
             });
         }
 
-        private void ChangeProcessStatus(string state)
+        private async void ChangeProcessStatus(Tuple<string, bool> tuple)
         {
-            if (state == "started")
+            if (tuple.Item2)
             {
                 ClearRichTextBlock();
                 if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
                 {
-                    AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
+                    AppendToRichTextBlock((await GetProcessManager()).GetProcessOutput());
                 }
                 else
                 {
-                    AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
+                    AppendToRichTextBlock((await GetProcessManager()).GetDefaultProcessOutput());
                 }
                 ChangeIcon(true);
 
-            } else if (state == "stopped")
+            } else if (!tuple.Item2)
             {
                 ChangeIcon(false);
             }
@@ -204,16 +226,16 @@ namespace CDPI_UI
 
         private string GetProcessName()
         {
-            if (string.IsNullOrEmpty(ProcessManager.Instance.ProcessName))
+            if (string.IsNullOrEmpty(GetProcessManager().Result.ProcessName))
             {
-                var item = DatabaseHelper.Instance.GetItemById(SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
+                var item = DatabaseHelper.Instance.GetItemById(Id);
                 if (item != null)
                 {
                     return item.Executable + ".exe";
                 }
                 return string.Empty;
             }
-            return ProcessManager.Instance.ProcessName;
+            return GetProcessManager().Result.ProcessName;
         }
 
         private void ChangeIcon(bool type)
@@ -259,17 +281,19 @@ namespace CDPI_UI
             StatusMessage.Severity = InfoBarSeverity.Error;
             StatusHeader.Visibility = Visibility.Visible;
             string message = _object == "process" ? 
-                string.Format(localizer.GetLocalizedString("ProceesRaisedException"), ProcessManager.Instance.ProcessName) : localizer.GetLocalizedString("PseudoconsoleInternalError");
+                string.Format(localizer.GetLocalizedString("ProceesRaisedException"), GetProcessManager().Result.ProcessName) : localizer.GetLocalizedString("PseudoconsoleInternalError");
             StatusMessage.Message = $"{message}: {error}";
         }
 
 
-        private void ViewWindow_Closed(object sender, WindowEventArgs args)
+        private async void ViewWindow_Closed(object sender, WindowEventArgs args)
         {
-            ProcessManager.Instance.OutputReceived -= OnProcessOutputReceived;
-            ProcessManager.Instance.onProcessStateChanged -= ChangeProcessStatus;
-            ProcessManager.Instance.ErrorHappens -= ErrorHappens;
-            ProcessManager.Instance.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
+            var processManager = await GetProcessManager();
+            if (processManager == null) return;
+            processManager.OutputReceived -= OnProcessOutputReceived;
+            processManager.onProcessStateChanged -= ChangeProcessStatus;
+            processManager.ErrorHappens -= ErrorHappens;
+            processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -296,8 +320,8 @@ namespace CDPI_UI
             {
                 string filename = _dialog.FileName;
                 
-                string text = DefaultOutputButton.IsChecked ? ProcessManager.Instance.GetDefaultProcessOutput() :
-                    ProcessManager.Instance.GetProcessOutput();
+                string text = DefaultOutputButton.IsChecked ? GetProcessManager().Result.GetDefaultProcessOutput() :
+                    GetProcessManager().Result.GetProcessOutput();
                 try
                 {
                     File.WriteAllText(filename, text);
@@ -315,31 +339,31 @@ namespace CDPI_UI
 
         private async void ProcessControl_Click(object sender, RoutedEventArgs e)
         {
-            if (ProcessManager.Instance.processState)
+            if (GetProcessManager().Result.processState)
             {
-                await ProcessManager.Instance.StopProcess();
+                await GetProcessManager().Result.StopProcess();
             } else
             {
-                await ProcessManager.Instance.StartProcess();
+                await GetProcessManager().Result.StartProcess();
             }
         }
 
         private async void ProcessRestart_Click(object sender, RoutedEventArgs e)
         {
-            await ProcessManager.Instance.RestartProcess();
+            await GetProcessManager().Result.RestartProcess();
         }
 
         private void CleanOutputButton_Click(object sender, RoutedEventArgs e)
         {
             ClearRichTextBlock();
-            AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
+            AppendToRichTextBlock(GetProcessManager().Result.GetProcessOutput());
             SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", true);
         }
 
         private void DefaultOutputButton_Click(object sender, RoutedEventArgs e)
         {
             ClearRichTextBlock();
-            AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
+            AppendToRichTextBlock(GetProcessManager().Result.GetDefaultProcessOutput());
             SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", false);
         }
         private async void ShowFontSettingsDialog()
@@ -406,7 +430,7 @@ namespace CDPI_UI
             {
                 try
                 {
-                    await ProcessManager.Instance.StopService();
+                    await ProcessManager.StopService();
                 } catch (Exception ex)
                 {
                     ErrorContentDialog _dialog = new ErrorContentDialog { };
