@@ -48,6 +48,17 @@ public sealed partial class SettingTile : UserControl
             nameof(Title), typeof(string), typeof(SettingTile), new PropertyMetadata(string.Empty)
         );
 
+    public string WidgetId
+    {
+        get { return (string)GetValue(WidgetIdProperty); }
+        set { SetValue(WidgetIdProperty, value); }
+    }
+
+    public static readonly DependencyProperty WidgetIdProperty =
+        DependencyProperty.Register(
+            nameof(WidgetId), typeof(string), typeof(SettingTile), new PropertyMetadata(string.Empty)
+        );
+
     public string Description
     {
         get { return (string)GetValue(DescriptionProperty); }
@@ -99,5 +110,8 @@ public sealed partial class SettingTile : UserControl
     public static readonly DependencyProperty InnerContentProperty =
         DependencyProperty.Register(nameof(InnerContent), typeof(object), typeof(SettingTile), new PropertyMetadata(null));
 
-    
+    private void AddWidgetToHomePageMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
