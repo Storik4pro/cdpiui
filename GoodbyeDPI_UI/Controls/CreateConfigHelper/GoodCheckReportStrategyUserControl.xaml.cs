@@ -163,28 +163,29 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
         if (!isRunned)
         {
             isRunned = true;
-            ProcessManager.Instance.onProcessStateChanged += ProcessManager_onProcessStateChanged;
+            TasksHelper.Instance.TaskStateUpdated += ProcessManager_onProcessStateChanged;
 
-            await ProcessManager.Instance.StopProcess();
+            await TasksHelper.Instance.StopTask(ComponentId);
             
-            await ProcessManager.Instance.StartProcess(ComponentId, Args);
+            TasksHelper.Instance.CreateAndRunNewTask(ComponentId, Args);
 
         }
         else
         {
-            await ProcessManager.Instance.StopProcess();
+            await TasksHelper.Instance.StopTask(ComponentId);
             PlayIconButton.Checked = false;
             PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
             isRunned = false;
-            ProcessManager.Instance.onProcessStateChanged -= ProcessManager_onProcessStateChanged;
+            TasksHelper.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
         }
     }
 
-    private void ProcessManager_onProcessStateChanged(string obj)
+    private void ProcessManager_onProcessStateChanged(Tuple<string, bool> tuple)
     {
-        if (obj == "started")
+        if (tuple.Item1 != ComponentId) return;
+        if (tuple.Item2)
         {
             PlayIconButton.Checked = true;
             PlayToolTip.Content = localizer.GetLocalizedString("StopTest");
