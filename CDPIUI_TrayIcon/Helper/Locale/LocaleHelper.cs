@@ -23,12 +23,13 @@ namespace CDPIUI_TrayIcon.Helper
             { "Start", "Start" },
             { "Stop", "Stop" },
             { "Utils", "Utils" },
-            { "Pseudoconsole", "Open pseudoconsole (View process output)" },
+            { "Pseudoconsole", "View process output" },
             { "MsiInstallerHelper", "MSI installer helper" },
             { "MsiInstallerHelperErr", "Cannot install application package {0}. Error code is: {1}" },
             { "ProxySetupAsk", "Component {0} requires additional configuration before it can be used.\nClick or tap here to configure it." },
             { "CompatibilityCheckAssistant", "Compatibility check assistant" },
-            { "ConfigRequiredNewestVersionOfComponent", "One or several installed items required newest version of {0}.\nClick or tap here to check updates for {0}" }
+            { "ConfigRequiredNewestVersionOfComponent", "One or several installed items required newest version of {0}.\nClick or tap here to check updates for {0}" },
+            { "Store", "Store" }
         };
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
@@ -46,12 +47,13 @@ namespace CDPIUI_TrayIcon.Helper
             { "Start", "Запустить" },
             { "Stop", "Остановить" },
             { "Utils", "Утилиты" },
-            { "Pseudoconsole", "Открыть псевдоконсоль (Просмотр вывода процесса)" },
+            { "Pseudoconsole", "Показать вывода процесса" },
             { "MsiInstallerHelper", "Помощник настройки MSI" },
             { "MsiInstallerHelperErr", "Не удалось установить пакет приложения {0}. Код ошибки: {1}" },
             { "ProxySetupAsk", "Компонент {0} требует дополнительной настройки перед началом работы.\nНажмите или коснитесь здесь, чтобы настроить его." },
             { "CompatibilityCheckAssistant", "Помощник проверки совместимости" },
-            { "ConfigRequiredNewestVersionOfComponent", "Один или несколько установленных элементов требуют более новую версию {0} для корректной работы.\nНажмите или коснитесь здесь, чтобы проверить наличие обновлений для {0}" }
+            { "ConfigRequiredNewestVersionOfComponent", "Один или несколько установленных элементов требуют более новую версию {0} для корректной работы.\nНажмите или коснитесь здесь, чтобы проверить наличие обновлений для {0}" },
+            { "Store", "Магазин" }
         };
 
         public static string GetLocaleString(string key)
