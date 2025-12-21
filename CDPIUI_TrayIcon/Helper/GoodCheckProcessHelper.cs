@@ -44,7 +44,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async Task<bool> StartAsync(string executable, string args, string operationId)
         {
-            await ProcessManager.Instance.StopProcess();
+            TasksHelper.Instance.StopAllTasks();
 
             _cancellationTokenSource = new();
             _cancellationToken = _cancellationTokenSource.Token;
