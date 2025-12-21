@@ -56,11 +56,12 @@ namespace CDPI_UI.Helper
                 StoreStateChanged?.Invoke(true);
             }
         }
-
+        /*
         public static bool IsComponentProcessRunned()
         {
             return ProcessManager.Instance.processState;
         }
+        */
 
         public static bool IsGoodCheckRunned()
         {
