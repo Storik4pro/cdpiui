@@ -12,6 +12,8 @@ namespace CDPI_UI.Helper.Items
 
         private List<ComponentHelper> Components = new List<ComponentHelper>();
 
+        public Action InitRequested;
+
         private static ComponentItemsLoaderHelper _instance;
         private static readonly object _lock = new();
         public static ComponentItemsLoaderHelper Instance
@@ -45,6 +47,7 @@ namespace CDPI_UI.Helper.Items
                 ComponentHelper componentHelper = new(item.Id);
                 Components.Add(componentHelper);
             }
+            InitRequested?.Invoke();
         }
 
         public List<ComponentHelper> GetComponentHelpers()
