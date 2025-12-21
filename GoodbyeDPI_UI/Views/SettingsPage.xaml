@@ -61,7 +61,7 @@
         <TextBlock
             l:Uids.Uid="SettingsTextBlock"
             x:Name="PageHeader"
-            Margin="20,24,20,10"
+            Margin="20,10,20,0"
             Style="{StaticResource TitleTextBlockStyle}"
             TextWrapping="NoWrap"/>
         <ScrollViewer
@@ -73,9 +73,9 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             
-            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
+            <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 20">
                 <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                <controls:SettingsCard l:Uids.Uid="ComponentSelector">
+                <controls:SettingsCard l:Uids.Uid="ComponentSelector" Visibility="Collapsed">
                     <ComboBox x:Name="ComponentComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="AutorunButton">
