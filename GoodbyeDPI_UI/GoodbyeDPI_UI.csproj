@@ -46,6 +46,7 @@
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
     <None Remove="Controls\FileConfigInspectUserControl.xaml" />
+    <None Remove="Controls\MainPage\ComponentTileUserControl.xaml" />
     <None Remove="Controls\MainPage\QuickSettingWidget.xaml" />
     <None Remove="Controls\ProxySetup\ApplicationUserControl.xaml" />
     <None Remove="Controls\SettingTile.xaml" />
@@ -58,6 +59,7 @@
     <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
+    <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="MainPage.xaml" />
@@ -73,6 +75,7 @@
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
     <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\ModernMainPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
     <None Remove="Views\SetupProxy\MainPage.xaml" />
     <None Remove="Views\SetupProxy\ManualSetupPage.xaml" />
@@ -86,6 +89,7 @@
     <None Remove="Views\Store\LibraryPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
+    <None Remove="Windows\ModernMainWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
     <None Remove="Windows\PrepareWindow.xaml" />
     <None Remove="Windows\ProxySetupUtilWindow.xaml" />
@@ -108,6 +112,9 @@
     <Content Include="Strings\en-us\GraphicDesignerDescriptions.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Strings\en-us\Help.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Strings\en-us\Resources.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -124,6 +131,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\GraphicDesignerDescriptions.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Help.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\Resources.resw">
@@ -357,8 +367,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.0.4.0</FileVersion>
-    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
   </PropertyGroup>
 
@@ -393,6 +403,11 @@
     <PRIResource Remove="Strings\ru\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Help\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Controls\MainPage\QuickSettingWidget.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -414,9 +429,21 @@
     <Page Update="Controls\Store\StoreAskForSubItemInstallUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\MainPage\ComponentTileUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\HorizontalScrollContainer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\ModernMainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ModernMainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Windows\Messages\StoreSmallDownloadDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -480,5 +507,11 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\ru\GraphicDesignerDescriptions.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Help.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Help.resw" />
   </ItemGroup>  
 </Project>
