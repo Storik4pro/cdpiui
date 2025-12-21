@@ -74,7 +74,7 @@ namespace CDPI_UI.Views.Components
                 ComponentId = id;
             }
 
-
+            AutorunCheckBox.IsChecked = SettingsManager.Instance.GetValue<bool>(["CONFIGS", ComponentId], "usedForAutorun");
 
             LoadConfigItems();
             ComponentHelper componentHelper =
@@ -462,6 +462,11 @@ namespace CDPI_UI.Views.Components
         private async void OpenStoreButton_Click(object sender, RoutedEventArgs e)
         {
             await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+        }
+
+        private void AutorunCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue<bool>(["CONFIGS", ComponentId], "usedForAutorun", (bool)AutorunCheckBox.IsChecked);
         }
     }
 }
