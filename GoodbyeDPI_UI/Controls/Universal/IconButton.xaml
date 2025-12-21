@@ -8,8 +8,29 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <Style x:Key="TextDefaultColor" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimary}"/>
+        </Style>
+        <Style x:Key="FontIconDefaultColor" TargetType="FontIcon">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimary}"/>
+        </Style>
+        <Style x:Key="TextAccentColor" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+        </Style>
+        <Style x:Key="FontIconAccentColor" TargetType="FontIcon">
+            <Setter Property="Foreground" Value="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+        </Style>
+        <Style x:Key="TextAccentTertiaryColor" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{ThemeResource AccentTextFillColorTertiaryBrush}"/>
+        </Style>
+        <Style x:Key="FontIconAccentTertiaryColor" TargetType="FontIcon">
+            <Setter Property="Foreground" Value="{ThemeResource AccentTextFillColorTertiaryBrush}"/>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-        <Button Padding="6" Click="Button_Click" PointerEntered="Button_PointerEntered" PointerExited="Button_PointerExited">
+        <Button Padding="6" Click="Button_Click" PointerEntered="Button_PointerEntered" PointerExited="Button_PointerExited" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <Button.Resources>
                 <SolidColorBrush x:Key="ButtonBackground" Color="Transparent"/>
                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent"/>
@@ -20,7 +41,10 @@
                 <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="Transparent"/>
                 <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent"/>
             </Button.Resources>
-            <FontIcon x:Name="Icon" FontSize="16"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <FontIcon x:Name="Icon" FontSize="16"/>
+                <TextBlock x:Name="MainTextBlock" Visibility="Collapsed"/>
+            </StackPanel>
         </Button>
     </Grid>
 </UserControl>
