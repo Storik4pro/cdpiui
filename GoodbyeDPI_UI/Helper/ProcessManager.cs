@@ -21,34 +21,20 @@ namespace CDPI_UI.Helper
 {
     public class ProcessManager
     {
-        private static ProcessManager _instance;
-        private static readonly object _lock = new object();
-
-        public static ProcessManager Instance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                        _instance = new ProcessManager();
-                    return _instance;
-                }
-            }
-        }
+        public required string Id;
 
         private CancellationTokenSource _cancellationTokenSource;
 
         public event Action<string> OutputReceived;
         public event Action<string, string> ErrorHappens;
-        public event Action<string> onProcessStateChanged;
+        public event Action<Tuple<string, bool>> onProcessStateChanged;
         public event Action<string> ProcessNameChanged;
 
         public bool isErrorHappens = false;
         public List<string> LatestErrorMessage = ["", ""];
 
         public bool processState = false;
-        public string ProcessName = string.Empty;
+        public string ProcessName { get; private set; } = string.Empty;
 
         private readonly DispatcherQueue _dispatcherQueue;
 
@@ -72,21 +58,33 @@ namespace CDPI_UI.Helper
             
         };
 
-        private ProcessManager()
+        public ProcessManager()
         {
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
             _outputBuffer = new StringBuilder();
             _outputDefaultBuffer = new StringBuilder();
+
+            ProcessName = "sampleExecutableFile";
         }
 
-        public async Task GetReady()
+        public async Task GetReady(bool all = true)
         {
-            await PipeClient.Instance.SendMessage("CONPTY:GETOUTPUT");
-            await PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
+            await PipeClient.Instance.SendMessage($"CONPTY:GETOUTPUT({Id})");
+            await PipeClient.Instance.SendMessage($"CONPTY:GETSTATE({Id})");
         }
 
-        public async Task StartProcess()
+        public async Task RunActionsIfAutorunSelected()
+        {
+            bool isComponentAddedToAutorun = SettingsManager.Instance.GetValue<bool>(["CONFIGS", Id], "usedForAutorun");
+            if (isComponentAddedToAutorun)
+            {
+                await StartProcess(exitAfterActionCheck: false);
+            }
+            await Task.CompletedTask;
+        }
+
+        public async Task StartProcess(bool exitAfterActionCheck = true)
         {
             isErrorHappens = false;
             LatestErrorMessage.Clear();
@@ -95,30 +93,28 @@ namespace CDPI_UI.Helper
                 _outputBuffer.Clear();
                 _outputDefaultBuffer.Clear();
 
-                string componentId = SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed");
-
                 Items.ComponentItemsLoaderHelper.Instance.Init();
                 Items.ComponentHelper componentHelper = 
-                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId);
+                    Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(Id);
 
-                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(componentId).Executable);
+                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(Id).Executable);
 
                 var exePath = componentHelper.GetExecutablePath();
                 var workingDirectory = componentHelper.GetDirectory();
-                string args = SetupProxy(componentHelper.GetStartupParams(), componentId);
+                string args = SetupProxy(componentHelper.GetStartupParams(), Id);
 
                 Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke("started");
+                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
-                await PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
+                await PipeClient.Instance.SendMessage($"CONPTY:START({Id}$SEPARATOR{exePath}$SEPARATOR{args})");
                 string[] arguments = Environment.GetCommandLineArgs();
 
-                if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when component not setted (Pseudoconsole internal error)
+                if (arguments.Contains("--exit-after-action") && exitAfterActionCheck) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when component not setted (Pseudoconsole internal error)
             }
             catch (Exception ex)
             {
@@ -140,7 +136,7 @@ namespace CDPI_UI.Helper
                 Items.ComponentHelper componentHelper =
                     Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId);
 
-                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(componentId).Name);
+                ProcessName = Utils.FirstCharToUpper(DatabaseHelper.Instance.GetItemById(componentId).Executable);
 
                 var exePath = componentHelper.GetExecutablePath();
                 var workingDirectory = componentHelper.GetDirectory();
@@ -150,10 +146,10 @@ namespace CDPI_UI.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke("started");
+                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
-                _ = PipeClient.Instance.SendMessage($"CONPTY:START({exePath}$SEPARATOR{args})");
+                _ = PipeClient.Instance.SendMessage($"CONPTY:START({componentId}$SEPARATOR{exePath}$SEPARATOR{args})");
 
             }
             catch (Exception ex)
@@ -167,7 +163,7 @@ namespace CDPI_UI.Helper
 
         
 
-        private string ReplaceArgsForProxy(string args, string ip, string port, string componentId)
+        private static string ReplaceArgsForProxy(string args, string ip, string port, string componentId)
         {
             string finalArgs = Utils.ReplaseIp(args);
             if (componentId == "CSSIXC048")
@@ -181,7 +177,7 @@ namespace CDPI_UI.Helper
         {
             if (!StateHelper.ProxyLikeComponents.Contains(componentId))
             {
-                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                _ = PipeClient.Instance.SendMessage($"PROXY:CLEAN({Id})");
                 return args;
             }
 
@@ -197,23 +193,23 @@ namespace CDPI_UI.Helper
                     throw new AddonNotInstalledException();
                 }
 
-                _ = PipeClient.Instance.SendMessage($"PROXY:INIT({GetProxiFyrePath()})");
-                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({StateHelper.ProxySetupTypes.ProxiFyre.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
+                _ = PipeClient.Instance.SendMessage($"PROXY:INIT({Id}$SEPARATOR{GetProxiFyrePath()})");
+                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({Id}$SEPARATOR{StateHelper.ProxySetupTypes.ProxiFyre.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
                 return ReplaceArgsForProxy(args, ip, port, componentId);
             }
             else if (proxyType == StateHelper.ProxySetupTypes.AllSystem.ToString())
             {
-                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({StateHelper.ProxySetupTypes.AllSystem.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
+                _ = PipeClient.Instance.SendMessage($"PROXY:SETUP({Id}$SEPARATOR{StateHelper.ProxySetupTypes.AllSystem.ToString()}$SEPARATOR{ip}$SEPARATOR{port})");
                 return ReplaceArgsForProxy(args, ip, port, componentId);
             }
             else if (proxyType == StateHelper.ProxySetupTypes.NoActions.ToString())
             {
-                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                _ = PipeClient.Instance.SendMessage($"PROXY:CLEAN({Id})");
                 return ReplaceArgsForProxy(args, ip, port, SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
             }
             else
             {
-                _ = PipeClient.Instance.SendMessage("PROXY:CLEAN");
+                _ = PipeClient.Instance.SendMessage($"PROXY:CLEAN({Id})");
                 return args;
             }
         }
@@ -246,8 +242,8 @@ namespace CDPI_UI.Helper
             {
                 _cancellationTokenSource?.Cancel();
 
-                _ = PipeClient.Instance.SendMessage("CONPTY:STOP");
-                if (output) onProcessStateChanged?.Invoke("stopped");
+                _ = PipeClient.Instance.SendMessage($"CONPTY:STOP({Id})");
+                if (output) onProcessStateChanged?.Invoke(Tuple.Create(Id, false));
                 processState = false;
             }
             catch (Exception ex)
@@ -259,11 +255,11 @@ namespace CDPI_UI.Helper
 
         public async Task RestartProcess()
         {
-            _ = PipeClient.Instance.SendMessage("CONPTY:RESTART");
+            _ = PipeClient.Instance.SendMessage($"CONPTY:RESTART({Id})");
             await Task.CompletedTask;
         }
 
-        public async Task StopService()
+        public static async Task StopService()
         {
             _ = PipeClient.Instance.SendMessage("CONPTY:STOPSERVICE");
             await Task.CompletedTask;
@@ -302,28 +298,40 @@ namespace CDPI_UI.Helper
             Debug.WriteLine(message);
             isErrorHappens = true;
 
-            await ((App)Application.Current).SafeCreateNewWindow<ViewWindow>();
-            
-            ErrorHappens.Invoke(message, _object);
-
             LatestErrorMessage.Clear();
 
             LatestErrorMessage.Add(message);
             LatestErrorMessage.Add(_object);
 
+            var window = await ((App)Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: Id);
+            window?.SetId(Id);
+
+            processState = false;
+            onProcessStateChanged?.Invoke(Tuple.Create(Id, false));
+
+            ErrorHappens?.Invoke(message, _object);
+            
             await Task.CompletedTask;
         }
 
         public void MarkAsStarted()
         {
             processState = true;
-            onProcessStateChanged?.Invoke("started");
+            onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
         }
 
         public void MarkAsFinished()
         {
             processState = false;
-            onProcessStateChanged?.Invoke("stopped");
+            if (!isErrorHappens)
+            {
+                onProcessStateChanged?.Invoke(Tuple.Create(Id, false));
+            }
+            else
+            {
+                if (LatestErrorMessage.Count == 2)
+                    ErrorHappens?.Invoke(LatestErrorMessage[0], LatestErrorMessage[1]);
+            }
         }
         public void ChangeProcName(string name)
         {
