@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,8 +35,9 @@ namespace CDPI_UI.Helper.Items
             Init();
         }
 
-        public void Init()
+        public void Init(bool forse = true)
         {
+            if (!forse && Components.Count != 0) return;
             Components.Clear();
             List<DatabaseStoreItem> configItems = DatabaseHelper.Instance.GetItemsByType("component");
 
