@@ -31,16 +31,19 @@ namespace CDPI_UI.Helper.Static
 
             for (int i = 0; i < arguments.Length; i++)
             {
-                string[] parValPair = arguments[i].Split('=');
-                if (parValPair.Length > 1)
+                if (arguments[i].StartsWith(commmandLineParameter))
                 {
-                    return parValPair[1];
-                }
-                else
-                {
-                    if (arguments.Length >= i+1 && !arguments[i+1].StartsWith("--"))
+                    string[] parValPair = arguments[i].Split('=');
+                    if (parValPair.Length > 1)
                     {
-                        return arguments[i+1];
+                        return parValPair[1];
+                    }
+                    else
+                    {
+                        if (arguments.Length >= i + 1 && !arguments[i + 1].StartsWith("--"))
+                        {
+                            return arguments[i + 1];
+                        }
                     }
                 }
             }
