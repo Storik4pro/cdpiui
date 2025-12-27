@@ -60,6 +60,14 @@ namespace CDPIUI_TrayIcon.Helper
             useProxy = false;   
         }
 
+        public bool IsProxyEnabled()
+        {
+            if (proxyType == "AllSystem")
+                return true;
+
+            return proxiFyreHelper.processState;
+        }
+
         public async void StartProxy(string _proxyType, string ip, string port)
         {
             _ip = ip;

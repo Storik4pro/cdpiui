@@ -205,6 +205,15 @@ namespace CDPIUI_TrayIcon.Helper
         public async void EnableProxyOnTask(string id, string _proxyType, string ip, string port)
         {
             var existTask = await GetTaskFromId(id);
+
+            foreach (var task in Tasks)
+            {
+                if (existTask != task && (bool)task.ProcessManager?.IsProxyEnabled())
+                {
+                    await task.ProcessManager.StopProcess();
+                }
+            }
+            
             existTask?.ProcessManager.StartProxy(_proxyType, ip, port);
         }
 
