@@ -9,9 +9,65 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls" 
     xmlns:l="using:WinUI3Localizer">
 
-    <Grid>
+
+    <Grid x:Name="MainGrid">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ElementVisualStateGroup">
+                <VisualState x:Name="SmallVisualState">
+                    <VisualState.Setters>
+                        <Setter Target="BadgeGrid.(Grid.ColumnSpan)" Value="4" />
+                        <Setter Target="ImageGrid.(Grid.ColumnSpan)" Value="4" />
+                        <Setter Target="ControlsGrid.(Grid.ColumnSpan)" Value="4" />
+                        <Setter Target="AccentSmallRectangle.(Grid.ColumnSpan)" Value="4" />
+                        <Setter Target="BasicControlsGrid.(Grid.ColumnSpan)" Value="4" />
+
+                        <Setter Target="ComponentWidgetsGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="AdditionalFeaturesStackPanel.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MediumVisualState">
+                    <VisualState.Setters>
+                        <Setter Target="BadgeGrid.(Grid.ColumnSpan)" Value="2" />
+                        <Setter Target="ImageGrid.(Grid.ColumnSpan)" Value="2" />
+                        <Setter Target="ImageGrid.(Grid.RowSpan)" Value="3" />
+                        <Setter Target="ImageGrid.(Grid.Row)" Value="0" />
+
+                        <Setter Target="BasicControlsGrid.(Grid.ColumnSpan)" Value="4" />
+
+                        <Setter Target="ControlsGrid.(Grid.ColumnSpan)" Value="2" />
+                        <Setter Target="ControlsGrid.(Grid.Column)" Value="2" />
+                        <Setter Target="ControlsGrid.(Grid.Row)" Value="0" />
+                        <Setter Target="ControlsGrid.(Grid.RowSpan)" Value="3" />
+
+                        <Setter Target="ComponentWidgetsGrid.Visibility" Value="Collapsed" />
+                        <Setter Target="AdditionalFeaturesStackPanel.Visibility" Value="Visible" />
+
+                        <Setter Target="AccentSmallRectangle.(Grid.ColumnSpan)" Value="4" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigVisualState">
+                    <VisualState.Setters>
+                        <Setter Target="BadgeGrid.(Grid.ColumnSpan)" Value="1" />
+                        <Setter Target="ImageGrid.(Grid.ColumnSpan)" Value="1" />
+                        <Setter Target="ImageGrid.(Grid.RowSpan)" Value="3" />
+                        <Setter Target="ImageGrid.(Grid.Row)" Value="0" />
+                        <Setter Target="ControlsGrid.(Grid.ColumnSpan)" Value="3" />
+                        <Setter Target="ControlsGrid.(Grid.Column)" Value="1" />
+                        <Setter Target="ControlsGrid.(Grid.Row)" Value="0" />
+                        <Setter Target="ControlsGrid.(Grid.RowSpan)" Value="3" />
+
+                        <Setter Target="ComponentWidgetsGrid.Visibility" Value="Visible" />
+                        <Setter Target="AdditionalFeaturesStackPanel.Visibility" Value="Visible" />
+
+                        <Setter Target="AccentSmallRectangle.(Grid.ColumnSpan)" Value="4" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <Border CornerRadius="10" BorderThickness="1" Background="{ThemeResource SmokeFillColorDefaultBrush}" BorderBrush="{ThemeResource ControlStrokeColorOnAccentTertiaryBrush}"/>
         <Grid Padding="1" CornerRadius="10">
             <Grid.RowDefinitions>
@@ -19,7 +75,13 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="BadgeGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
@@ -30,7 +92,7 @@
                     <TextBlock Text="AUTO" Style="{ThemeResource BodyStrongTextBlockStyle}" FontSize="12" Margin="2 2"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid x:Name="ImageGrid" Grid.Row="1">
                 <Image x:Name="MainImage" Height="50" Width="50"/>
                 <Grid x:Name="StatusGrid" Height="30" Width="30">
                     <Grid.RenderTransform>
@@ -41,18 +103,106 @@
                     <FontIcon Glyph="&#xEA3A;" Foreground="Black" FontSize="30"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="2">
-                <Grid>
-                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10" />
+
+
+            <Grid x:Name="ControlsGrid" Grid.Row="2" CornerRadius="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="BasicControlsGrid" Grid.Row="2">
+                    <Grid>
+                        <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="0" />
+                    </Grid>
+                    <StackPanel Padding="10" VerticalAlignment="Bottom">
+                        <lcontrols:IconButton x:Name="StateToggleButton" IconGlyph="&#xF5B0;" CheckedIconGlyph="&#xF8AE;" IsButtonToggle="True" HorizontalAlignment="Stretch" ClickCommand="{Binding ToggleProcessButtonClickCommand, ElementName=MainUserControl}"/>
+                        <lcontrols:IconButton x:Name="ViewOutputIconButton" IconGlyph="&#xF78B;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewOutputClickCommand, ElementName=MainUserControl}"/>
+                        <lcontrols:IconButton x:Name="SettingsIconButton" IconGlyph="&#xE713;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewSettingsButtonClickCommand, ElementName=MainUserControl}"/>
+                        <StackPanel x:Name="AdditionalFeaturesStackPanel" Margin="0 10 0 0" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <FontIcon Glyph="&#xF4A5;" FontSize="16"/>
+                                <TextBlock l:Uids.Uid="LinkedFeaturesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            </StackPanel>
+
+                            <ListView x:Name="AdditionalFeaturesListView" ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:AvailableFeaturesItem">
+                                        <Button x:Name="AvailableFeaturesButton" Background="Transparent" BorderBrush="Transparent" 
+                                                HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6"
+                                                Tag="{x:Bind Id, Mode=OneWay}" Click="AvailableFeaturesButton_Click">
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <BitmapIcon UriSource="{x:Bind Image, Mode=OneWay}"  ShowAsMonochrome="False" Width="14"/>
+                                                <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </StackPanel>
                 </Grid>
-                <StackPanel Padding="10">
-                    <lcontrols:IconButton x:Name="StateToggleButton" IconGlyph="&#xF5B0;" CheckedIconGlyph="&#xF8AE;" IsButtonToggle="True" HorizontalAlignment="Stretch" ClickCommand="{Binding ToggleProcessButtonClickCommand, ElementName=MainUserControl}"/>
-                    <lcontrols:IconButton x:Name="ViewOutputIconButton" IconGlyph="&#xF78B;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewOutputClickCommand, ElementName=MainUserControl}"/>
-                    <lcontrols:IconButton x:Name="SettingsIconButton" IconGlyph="&#xE713;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewSettingsButtonClickCommand, ElementName=MainUserControl}"/>
-                </StackPanel>
-                <Grid>
-                    <Border x:Name="TileBackgroungBorder" CornerRadius="0" Height="5" VerticalAlignment="Bottom"/>
+                <Grid x:Name="ComponentWidgetsGrid" Grid.ColumnSpan="3" Grid.Column="1" Grid.RowSpan="3">
+                    <Grid>
+                        <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="0" />
+                    </Grid>
+                    <StackPanel Padding="10">
+                        <TextBlock l:Uids.Uid="QuickSettingsTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 0 0 10"/>
+
+                        <StackPanel x:Name="ErrorStackPanel" Visibility="Collapsed">
+                            <TextBlock l:Uids.Uid="ConfigNotReadyToDisplayQuickSettingsTextBlock" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Grid x:Name="ContentStackPanel">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock l:Uids.Uid="StartupConfigTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <ComboBox x:Name="ConfigChooseCombobox" 
+                                  MinWidth="400"
+                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged"
+                                  Height="47"
+                                  Margin="0 0 0 10">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="local:ComboboxItem">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding name}"/>
+                                                <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" l:Uids.Uid="AvailableConfigSettingsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <TextBlock Grid.Row="2" x:Name="ConfigSettingsLoadFailureTextBlock" l:Uids.Uid="ConfigSettingsLoadFailureTextBlock" TextWrapping="Wrap"/>
+
+                            <ListView x:Name="ConfigSettingsListView"
+                                      ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}"
+                                      Grid.Row="2">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ConfigSettingsItem">
+                                        <controls:SettingsCard Header="{x:Bind DisplayName, Mode=OneWay}" Padding="10 0" MinHeight="50">
+                                            <controls:SettingsCard.Resources>
+                                                <x:Double x:Key="SettingsCardWrapThreshold">100</x:Double>
+                                                <x:Double x:Key="SettingsCardWrapNoIconThreshold">200</x:Double>
+                                            </controls:SettingsCard.Resources>
+                                            <ToggleSwitch x:Name="ConfigSettingToggleSwitch" IsOn="{x:Bind Value, Mode=OneWay}" Tag="{x:Bind Id, Mode=OneWay}" Toggled="ConfigSettingToggleSwitch_Toggled"/>
+                                        </controls:SettingsCard>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            
+                        </Grid>
+                    </StackPanel>
+                    
                 </Grid>
+            </Grid>
+
+            <Grid x:Name="AccentSmallRectangle" Grid.Row="2">
+                <Border x:Name="TileBackgroungBorder" CornerRadius="0" Height="7" VerticalAlignment="Bottom"/>
             </Grid>
         </Grid>
     </Grid>
