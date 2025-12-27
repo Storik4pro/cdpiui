@@ -88,6 +88,9 @@
                 <controls:SettingsCard l:Uids.Uid="LanguageSelector">
                     <ComboBox x:Name="LanguageComboBox" Width="Auto" DisplayMemberPath="DisplayName"/>
                 </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="MainGridColumnSelector">
+                    <ComboBox x:Name="MainGridColumnSelector" Width="Auto" DisplayMemberPath="DisplayName"/>
+                </controls:SettingsCard>
                 <controls:SettingsExpander l:Uids.Uid="PersonalizationSettingsExpander">
                     <controls:SettingsExpander.Items>
                         <controls:SettingsCard l:Uids.Uid="ThemeSelector">
