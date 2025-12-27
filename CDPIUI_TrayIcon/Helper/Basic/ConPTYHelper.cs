@@ -215,7 +215,6 @@ namespace CDPIUI_TrayIcon.Helper
                                 break; 
                             }
                         }
-                        if (flag) break;
 
                         if (!string.IsNullOrEmpty(Preffix) && !string.IsNullOrEmpty(_output))
                         {
@@ -230,6 +229,8 @@ namespace CDPIUI_TrayIcon.Helper
                         _outputDefaultBuffer.Append(_output);
 
                         OutputAdded?.Invoke(_output);
+
+                        if (flag) break;
                     }
                 }
 
