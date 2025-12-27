@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -108,7 +109,7 @@ namespace CDPI_UI
 
             if (!arguments.Contains("--create-no-window"))
             {
-                if (arguments.Contains("--show-pseudoconsole"))
+                if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
                 {
                     string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
                     var window = await SafeCreateNewWindow<ViewWindow>();
@@ -145,7 +146,8 @@ namespace CDPI_UI
             {
                 TasksHelper.Instance.RunAllPreferredActions();
             }
-            if (arguments.Contains("--get-startup-params"))
+            
+            if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--get-startup-params")))
             {
                 string _id = Utils.GetValueFromCommmandLineParameter("--get-startup-params");
                 TasksHelper.Instance.CreateAndRunNewTask(_id);
@@ -240,7 +242,7 @@ namespace CDPI_UI
                         if (((ViewWindow)_win).Id == id)
                         {
                             _win.Activate();
-                            return null;
+                            return (TWindow)_win;
                         }
                     }
                 }
@@ -293,16 +295,13 @@ namespace CDPI_UI
 
             UpdateThemeForWindow(window, CurrentTheme);
 
-            if (!isUnsafe)
-            {
-
-                if (!OpenWindows.Contains(window))
+            if (!OpenWindows.Contains(window))
                     OpenWindows.Add(window);
 
             
-                window.Closed -= Window_ClosedHandler;
-                window.Closed += Window_ClosedHandler;
-            }
+            window.Closed -= Window_ClosedHandler;
+            window.Closed += Window_ClosedHandler;
+            
 
             // Looks pretty bad for weak PC
             // window.SizeChanged -= Window_SizeChanged;
