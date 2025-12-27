@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
@@ -35,6 +36,7 @@ namespace CDPI_UI
     /// </summary>
     public sealed partial class ModernMainWindow : WindowEx
     {
+        private ILocalizer localizer = Localizer.Get();
         public ModernMainWindow()
         {
             InitializeComponent();
@@ -68,6 +70,20 @@ namespace CDPI_UI
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon(@"Assets/favicon.ico");
+
+            if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
+            {
+                ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
+                SettingsManager.Instance.SetValue("AD", "welcomeToPreview", true);
+            }
+        }
+
+
+        private async void ShowDialog(string message, string title)
+        {
+            var dlg = new MessageDialog(message, title);
+            InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(this));
+            await dlg.ShowAsync();
         }
 
         private long LastTimestamp = 0;
