@@ -369,7 +369,7 @@ namespace CDPI_UI
         private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
         bool TrySetMicaBackdrop(bool useMicaAlt)
         {
-            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported())
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && System.Environment.OSVersion.Version.Build >= 22000)
             {
                 Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
                 micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
