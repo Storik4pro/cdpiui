@@ -40,6 +40,8 @@ namespace CDPI_UI.Helper
             AddNewTask("CSSIXC048");
 
             Items.ComponentItemsLoaderHelper.Instance.InitRequested += SendTasksData;
+            StoreHelper.Instance.ItemActionsStopped += (id) => RequestComponentItemsInit();
+            StoreHelper.Instance.ItemRemoved += (id) => RequestComponentItemsInit();
         }
 
         public List<TaskModel> Tasks { get; private set; } = [];
