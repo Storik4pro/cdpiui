@@ -241,7 +241,7 @@ namespace CDPI_UI.Helper
                 switch (message)
                 {
                     case "WINDOW:SHOW_MAIN":
-                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<MainWindow>();
+                        _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ModernMainWindow>();
                         break;
                     case "WINDOW:SHOW_PSEUDOCONSOLE":
                         _ = ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
