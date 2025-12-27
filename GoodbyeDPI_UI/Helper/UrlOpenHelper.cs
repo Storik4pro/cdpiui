@@ -34,5 +34,23 @@ namespace CDPI_UI.Helper
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://t.me/storik4dev"));
         }
+        public static async void LaunchComponentForumUrl(string componentId)
+        {
+            switch (componentId)
+            {
+                case "CSZTBN012":
+                    _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://ntc.party/c/community-software/zapret-antidpi/20"));
+                    break;
+                case "CSGIVS036":
+                    _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://ntc.party/c/community-software/goodbyedpi/8"));
+                    break;
+                case "CSBIHA024":
+                    _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://ntc.party/c/community-software/byedpi/39"));
+                    break;
+                case "CSSIXC048":
+                    break;
+
+            }
+        }
     }
 }
