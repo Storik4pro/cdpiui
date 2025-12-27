@@ -70,9 +70,15 @@
                                                                      ImageUrl="{x:Bind ImageSource, Mode=OneWay}" />
                             </DataTemplate>
                         </GridView.ItemTemplate>
+                        <GridView.ItemContainerStyle>
+                            <Style TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}">
+                                <Setter Property="Margin" Value="0, 0, 0, 0"/>
+                            </Style>
+                        </GridView.ItemContainerStyle>
+
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="10"/>
+                                <StackPanel x:Name="PanelTemplateStackPanel" Orientation="Horizontal" Spacing="{Binding Spacing}"/>
                             </ItemsPanelTemplate>
                         </GridView.ItemsPanel>
                     </GridView>
