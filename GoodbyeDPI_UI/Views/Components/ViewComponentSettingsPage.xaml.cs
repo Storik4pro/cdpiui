@@ -283,6 +283,7 @@ namespace CDPI_UI.Views.Components
 
                     ShowAnim = false;
                     InitSettingsTiles();
+                    if (TasksHelper.Instance.IsTaskRunned(ComponentId).Result) _ = TasksHelper.Instance.RestartTask(ComponentId);
                     break;
                 case ActionIds.FullButtonElementClicked:
                     ButtonClick(contentDefinition.ClickId);
@@ -369,12 +370,16 @@ namespace CDPI_UI.Views.Components
             ApplySavedSelection();
         }
 
-        private void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ConfigChooseCombobox.SelectedItem is ComboboxItem sel)
             {
+                string oldCfg = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configFile");
+                string oldId = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configId");
                 SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", sel.file_name);
                 SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.packId);
+
+                if ((oldCfg != sel.file_name || oldId != sel.packId) && await TasksHelper.Instance.IsTaskRunned(ComponentId)) await TasksHelper.Instance.RestartTask(ComponentId);
             }
             ShowAnim = true;
             InitSettingsTiles();
