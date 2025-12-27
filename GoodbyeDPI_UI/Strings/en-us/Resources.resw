@@ -1431,4 +1431,65 @@ Make sure you select startup config for this component</value>
   <data name="NowViewOutputFromComponent" xml:space="preserve">
     <value>Now showing {0} output</value>
   </data>
+  <data name="QuickSettingsTextBlock.Text" xml:space="preserve">
+    <value>Quick settings </value>
+  </data>
+  <data name="ConfigNotReadyToDisplayQuickSettingsTextBlock.Text" xml:space="preserve">
+    <value>Firstly create or download config for that component</value>
+  </data>
+  <data name="StartupConfigTextBlock.Text" xml:space="preserve">
+    <value>Startup config</value>
+  </data>
+  <data name="AvailableConfigSettingsTextBlock.Text" xml:space="preserve">
+    <value>Available config settings</value>
+  </data>
+  <data name="ConfigSettingsLoadFailureTextBlock.Text" xml:space="preserve">
+    <value>There is no easy settings available in selected config.</value>
+  </data>
+  <data name="LinkedFeaturesTextBlock.Text" xml:space="preserve">
+    <value>Linked features</value>
+  </data>
+  <data name="SetupProxy" xml:space="preserve">
+    <value>Setup proxy</value>
+  </data>
+  <data name="AutoSelectConfig" xml:space="preserve">
+    <value>Config auto selection</value>
+  </data>
+  <data name="CreateConfig" xml:space="preserve">
+    <value>Create new config</value>
+  </data>
+  <data name="ExploreNewConfigs" xml:space="preserve">
+    <value>Find new config</value>
+  </data>
+  <data name="VisitForum" xml:space="preserve">
+    <value>Visit forum</value>
+  </data>
+  <data name="MainGridColumnSelector.Header" xml:space="preserve">
+    <value>Tiles size on main page</value>
+  </data>
+  <data name="MainGridColumnSelector.Description" xml:space="preserve">
+    <value>The preferred size of component tiles on the home page. Depending on the value, the tiles will display different amounts of information.</value>
+  </data>
+  <data name="MainPageGridColumnsCountAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="MainPageGridColumnsCountOne" xml:space="preserve">
+    <value>Big </value>
+  </data>
+  <data name="MainPageGridColumnsCountTwo" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="MainPageGridColumnsCountFour" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="PreviewVersion" xml:space="preserve">
+    <value>CDPI UI : Preview </value>
+  </data>
+  <data name="PreviewVersionDescription" xml:space="preserve">
+    <value>Welcome to CDPI UI Version Preview!
+
+Some features is not available at the moment. Keep in mind — this application still under development.
+
+Some features may work not as planned — don't worry. Just say about it to developers. It will be fixed as soon as possible.</value>
+  </data>
 </root>
