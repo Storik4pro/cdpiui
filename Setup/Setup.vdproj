@@ -21,13 +21,37 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0C88336118AD40999F7AB8FDA03EF246"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_0C95E532417847FAA0E14642F97DC98D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
+        "MsmKey" = "8:_0CBF147B009D4058AD1487FCC998FC78"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_0FDD3C6AC50F4DE095E3819BAE0A8154"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1C6889DE3B9B42DE809865B13CDEB4B6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1CC98BEDDE194184A1CAB2ACB4E63171"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,8 +69,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_36D074951E27436594DE6D51214B78F8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3B6987073C519E9F6664E756AAEAF90E"
         "OwnerKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3D7A1DB7CB0B469CA28460CFD9E81C74"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,6 +100,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4746CF694D164BF5A7E96449EEA89284"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4E254E5699434D16B9F972D0F6BAEE0B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -93,19 +135,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7F03ABA54FFB47078ADC5C539BC880B2"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_AC10388BC4F8602A87F74A413BC0F21B"
         "OwnerKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AF6F2DA83574403EBEBE6DF6A10399B2"
+        "MsmKey" = "8:_AD4F2B5087EA45C8BE3D295081152259"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BADF1CAF30E743148018C972412920AE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -129,7 +171,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D912F0F1383840E8A1A8BE4208441FC9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DE19DBD909EE403AAF8883C01792D827"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E15BD3EAC5854D23B76988EB56EEBB19"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -165,7 +219,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F004ED05F4C94937B4748E149F5AB8E8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F85E33BAE71B438DB2D67634EAE1B071"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F8AC13A351894EDA94A327F134268573"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -336,12 +402,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C88336118AD40999F7AB8FDA03EF246"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\GoodCheck.png"
+            "TargetName" = "8:GoodCheck.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0C95E532417847FAA0E14642F97DC98D"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\SplashScreen.scale-200.png"
             "TargetName" = "8:SplashScreen.scale-200.png"
             "Tag" = "8:"
             "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CBF147B009D4058AD1487FCC998FC78"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Edit.ico"
+            "TargetName" = "8:Edit.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -376,12 +482,72 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1C6889DE3B9B42DE809865B13CDEB4B6"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Edit-68x68.png"
+            "TargetName" = "8:Edit-68x68.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1CC98BEDDE194184A1CAB2ACB4E63171"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Pseudoconsole.png"
+            "TargetName" = "8:Pseudoconsole.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3399A50A02B94BF8BA3D7695E165D5AC"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\favicon.ico"
             "TargetName" = "8:favicon.ico"
             "Tag" = "8:"
             "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_36D074951E27436594DE6D51214B78F8"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\github.png"
+            "TargetName" = "8:github.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -425,6 +591,26 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3D7A1DB7CB0B469CA28460CFD9E81C74"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\GoodCheck.ico"
+            "TargetName" = "8:GoodCheck.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4065B8EE2CBB4425B78A93C6FE375673"
@@ -476,6 +662,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E254E5699434D16B9F972D0F6BAEE0B"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Store.png"
+            "TargetName" = "8:Store.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_592B4E966BB64A8BBBE0839D99477F73"
@@ -569,26 +775,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F03ABA54FFB47078ADC5C539BC880B2"
-            {
-            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Icons\\Store.png"
-            "TargetName" = "8:Store.png"
-            "Tag" = "8:"
-            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_AC10388BC4F8602A87F74A413BC0F21B"
             {
             "AssemblyRegister" = "3:1"
@@ -620,10 +806,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AF6F2DA83574403EBEBE6DF6A10399B2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AD4F2B5087EA45C8BE3D295081152259"
             {
-            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Icons\\DragReorder.png"
-            "TargetName" = "8:DragReorder.png"
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Edit.png"
+            "TargetName" = "8:Edit.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BADF1CAF30E743148018C972412920AE"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Pseudoconsole.ico"
+            "TargetName" = "8:Pseudoconsole.ico"
             "Tag" = "8:"
             "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
@@ -691,12 +897,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D912F0F1383840E8A1A8BE4208441FC9"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Proxy.ico"
+            "TargetName" = "8:Proxy.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DE19DBD909EE403AAF8883C01792D827"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Square150x150Logo.scale-200.png"
             "TargetName" = "8:Square150x150Logo.scale-200.png"
             "Tag" = "8:"
             "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E15BD3EAC5854D23B76988EB56EEBB19"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\OpenInNewWindow.png"
+            "TargetName" = "8:OpenInNewWindow.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -791,12 +1037,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F004ED05F4C94937B4748E149F5AB8E8"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\DragReorder.png"
+            "TargetName" = "8:DragReorder.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F85E33BAE71B438DB2D67634EAE1B071"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\empty.png"
             "TargetName" = "8:empty.png"
             "Tag" = "8:"
             "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F8AC13A351894EDA94A327F134268573"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Help.ico"
+            "TargetName" = "8:Help.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -986,15 +1272,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDPI UI"
-        "ProductCode" = "8:{46526001-0328-43A5-908E-F3576E2C83ED}"
-        "PackageCode" = "8:{8D326113-2057-42C2-8F55-BD060DFA0AA8}"
+        "ProductCode" = "8:{FA2402C0-D0A0-4735-B725-BEED5FF989AE}"
+        "PackageCode" = "8:{3A15D110-442B-4961-8F1C-05437DC83587}"
         "UpgradeCode" = "8:{AB14590E-0D10-416F-9A0E-07E63074B603}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.0.4"
+        "ProductVersion" = "8:0.1.1"
         "Manufacturer" = "8:Storik4"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/Storik4pro/cdpiui/issues"
