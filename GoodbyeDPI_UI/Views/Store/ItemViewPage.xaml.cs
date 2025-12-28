@@ -440,7 +440,7 @@ namespace CDPI_UI.Views.Store
             }
             else
             {
-                MainWindow window = await ((App)Application.Current).SafeCreateNewWindow<MainWindow>();
+                ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
 
                 window.NavView_Navigate(typeof(ViewComponentSettingsPage), _storeId, new DrillInNavigationTransitionInfo());
             }

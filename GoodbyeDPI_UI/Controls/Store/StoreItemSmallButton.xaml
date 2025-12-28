@@ -20,6 +20,12 @@
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultSolidBrush}"/>
             <Setter Property="Background" Value="Transparent"/>
         </Style>
+        <Style x:Key="BackgroudRectangleDefaultStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+        </Style>
+        <Style x:Key="BackgroudRectangleHoverStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid x:Name="PART_ShadowHost" RenderTransformOrigin="0.5,0.5">
@@ -42,7 +48,7 @@
                 Click="PART_Button_Click">
             <Button.Content>
                 <Grid>
-                    <Rectangle x:Name="PART_BottomRect" Fill="{ThemeResource SubtleFillColorSecondaryBrush}"
+                    <Rectangle x:Name="PART_BottomRect" Style="{StaticResource BackgroudRectangleDefaultStyle}"
                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     <Grid Padding="15">
                         <Grid.ColumnDefinitions>

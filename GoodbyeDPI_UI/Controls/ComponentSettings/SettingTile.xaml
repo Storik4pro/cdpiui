@@ -12,11 +12,25 @@
     <Grid CornerRadius="10" Margin="0 0 0 0" VerticalAlignment="Top">
         <Border CornerRadius="10" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1"/>
         <StackPanel Padding="1" Spacing="0">
-            <StackPanel Padding="20" Spacing="10">
-                <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left" Visibility="Collapsed"/>
-                <TextBlock x:Name="TitleTextBlock" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
-                <TextBlock x:Name="DescriptionTextBlock" Text="{x:Bind Description}" TextWrapping="Wrap" Visibility="Collapsed"/>
-            </StackPanel>
+            <Grid>
+                <StackPanel Padding="20" Spacing="10">
+                    <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                    <TextBlock x:Name="TitleTextBlock" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                    <TextBlock x:Name="DescriptionTextBlock" Text="{x:Bind Description}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                </StackPanel>
+                <Button x:Name="MoreActionsButton" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Margin="0 20 20 0" Visibility="Collapsed">
+                    <FontIcon Glyph="&#xE712;" FontSize="16"/>
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem x:Name="AddWidgetToHomePageMenuItem" Text="Add widget to home page" Click="AddWidgetToHomePageMenuItem_Click">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon x:Name="AddWidgetFontIcon" Glyph="&#xE718;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </Grid>
             <Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{ThemeResource CardStrokeColorDefaultSolidBrush}" VerticalAlignment="Top"/>
             <ScrollViewer VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch"
                       MaxHeight="250">

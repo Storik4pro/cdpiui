@@ -559,10 +559,12 @@ public sealed partial class CreateNewConfigPage : Page
     }
 
     private bool isRunned = false;
+    private string curRunId = string.Empty;
 
-    private void Instance_onProcessStateChanged(string state)
+    private void Instance_onProcessStateChanged(Tuple<string, bool> tuple)
     {
-        if (state == "started")
+        if (tuple.Item1 != curRunId) return;
+        if (tuple.Item2)
         {
             TestButtonGlyph.Glyph = "\uE71A";
             TestButtonText.Text = localizer.GetLocalizedString("StopTest");
@@ -575,27 +577,29 @@ public sealed partial class CreateNewConfigPage : Page
             isRunned = false;
         }
     }
-
+    
     private async void TestButton_Click(object sender, RoutedEventArgs e)
     {
         if (!isRunned)
         {
             isRunned = true;
-            ProcessManager.Instance.onProcessStateChanged += Instance_onProcessStateChanged;
+            TasksHelper.Instance.TaskStateUpdated += Instance_onProcessStateChanged;
 
-            await ProcessManager.Instance.StopProcess();
-            ComponentModel model = ComponentChooseComboBox.SelectedItem as ComponentModel;
-            ConvertDesignerLikeSettingsToString();
-            await ProcessManager.Instance.StartProcess(model.Id, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig(0)));
             
+            ComponentModel model = ComponentChooseComboBox.SelectedItem as ComponentModel;
+            curRunId = model.Id;
+            await TasksHelper.Instance.StopTask(curRunId);
+            ConvertDesignerLikeSettingsToString();
+            TasksHelper.Instance.CreateAndRunNewTask(curRunId, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig(0)));
         }
         else
         {
-            await ProcessManager.Instance.StopProcess();
+            await TasksHelper.Instance.StopTask(curRunId);
             TestButtonGlyph.Glyph = "\uE768";
             TestButtonText.Text = localizer.GetLocalizedString("TestThis");
             isRunned = false;
-            ProcessManager.Instance.onProcessStateChanged -= Instance_onProcessStateChanged;
+            TasksHelper.Instance.TaskStateUpdated -= Instance_onProcessStateChanged;
+            curRunId = string.Empty;
         }
     }
 

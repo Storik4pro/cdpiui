@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window
+<ex:WindowEx
+    xmlns:ex="using:WinUIEx"
     x:Class="CDPI_UI.OfflineHelpWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,21 +9,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d"
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
     xmlns:l="using:WinUI3Localizer">
 
-    <Window.SystemBackdrop>
+    <ex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
-    </Window.SystemBackdrop>
+    </ex:WindowEx.SystemBackdrop>
 
     <Grid>
+        <Grid.Resources>
+            <Thickness x:Key="NavigationViewContentMargin">0,43,0,0</Thickness>
+            <Thickness x:Key="NavigationViewMinimalContentMargin">0,43,0,0</Thickness>
+            <Thickness x:Key="NavigationViewHeaderMargin">0,0,0,0</Thickness>
+        </Grid.Resources>
         <Grid x:Name="AppTitleBar"
               Canvas.ZIndex="1"
               Height="48"
               IsHitTestVisible="True"
               VerticalAlignment="Top"
-              Margin="8, 0, 0, 0">
+              Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="48"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -74,8 +81,31 @@
             </Grid>
             
         </Grid>
-        <Grid Margin="0,43,0,0">
-            <TextBlock Text="Help is not available at the moment." Style="{ThemeResource HeaderTextBlockStyle}"/>
+        <Grid Margin="0,0,0,0" Padding="0">
+            <NavigationView x:Name="HelpNavigationView" IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+                            Canvas.ZIndex="0" SelectionChanged="HelpNavigationView_SelectionChanged"
+                            IsTitleBarAutoPaddingEnabled="False">
+                
+                <NavigationView.FooterMenuItems>
+                    <NavigationViewItem Content="About" Tag="AboutHelp">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE946;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.FooterMenuItems>
+                <ScrollViewer x:Name="ContentGrid" Grid.Column="1" Padding="20 0 20 0">
+                    <controls:MarkdownTextBlock 
+                        Margin="0 20" x:Name="MarkdownTextBlock" 
+                        Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                        UseAutoLinks="True"
+                        UseEmphasisExtras="True"
+                        UseListExtras="True"
+                        UsePipeTables="True"
+                        UseTaskLists="True"/>
+                </ScrollViewer>
+            </NavigationView>
+             
+            
         </Grid>
     </Grid>
-</Window>
+</ex:WindowEx>

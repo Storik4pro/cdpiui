@@ -19,6 +19,12 @@
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultSolidBrush}"/>
             <Setter Property="Background" Value="Transparent"/>
         </Style>
+        <Style x:Key="BackgroudRectangleDefaultStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+        </Style>
+        <Style x:Key="BackgroudRectangleHoverStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+        </Style>
     </UserControl.Resources>
     <Grid x:Name="PART_ShadowHost" RenderTransformOrigin="0.5,0.5">
         <Grid.RenderTransform>
@@ -52,14 +58,15 @@
                         </Rectangle>
                         <Rectangle>
                             <Rectangle.Fill>
-                                <media:AcrylicBrush TintColor="Black" TintOpacity="0.7"/>
+                                <media:AcrylicBrush x:Name="AcrylicBrush" TintOpacity="0.7">
+                                </media:AcrylicBrush>
                             </Rectangle.Fill>
                         </Rectangle>
                         <Image x:Name="PART_Image" Source="{x:Bind CardImageSource}" Width="70" Height="70"/>
                     </Grid>
 
                     <Rectangle x:Name="PART_BottomRect"
-                               Grid.Row="1" Fill="{ThemeResource SubtleFillColorSecondaryBrush}"
+                               Grid.Row="1" Style="{StaticResource BackgroudRectangleDefaultStyle}"
                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>

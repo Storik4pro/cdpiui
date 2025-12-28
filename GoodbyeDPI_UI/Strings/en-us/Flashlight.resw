@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BeginApplicationSetupTipTextBlock.Text" xml:space="preserve">
+    <value>Don't know where to start? Not a problem! Visit following resources to learn more about this application</value>
+  </data>
   <data name="ByeDPIModeHelpTextBlock.Text" xml:space="preserve">
     <value>This group will only be active if one of the events from the previous one has occurred.
 Possible events:
@@ -144,7 +147,7 @@ Possible events:
     <value>ssl error</value>
   </data>
   <data name="TipTextBlock.Text" xml:space="preserve">
-    <value>Flashlight tip</value>
+    <value>Flashlight Tip</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Flashlight tips+tricks</value>

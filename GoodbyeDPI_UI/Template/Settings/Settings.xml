@@ -2,6 +2,7 @@
 <Settings>
 	<Group Name="APPEARANCE">
 		<Setting Key="Theme" Type="string" Value="Dark" />
+    <Setting Key="mainGridColumnsCount" Type="int" Value="-1"/>
 	</Group>
 	<Group Name="SYSTEM">
 		<Setting Key="autorun" Type="bool" Value="false" />

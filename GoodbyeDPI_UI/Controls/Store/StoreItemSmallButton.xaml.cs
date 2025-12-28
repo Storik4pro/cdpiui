@@ -29,7 +29,6 @@ public sealed partial class StoreItemSmallButton : UserControl
     private TranslateTransform _translate;
     private Button _button;
     private Rectangle _bottomRect;
-    private Brush _origBrush;
     private Vector3 shadowVector = new Vector3(0, 0, 20);
 
     public Action<StoreItemSmallButton> Click;
@@ -44,8 +43,6 @@ public sealed partial class StoreItemSmallButton : UserControl
         _translate = (TranslateTransform)this.FindName("PART_Translate");
         _button = (Button)FindName("PART_Button");
         _bottomRect = (Rectangle)FindName("PART_BottomRect");
-
-        _origBrush = _bottomRect.Fill;
 
         SharedShadow.Receivers.Add(BackgroundGrid);
         this.ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
@@ -65,7 +62,7 @@ public sealed partial class StoreItemSmallButton : UserControl
 
         AnimateTranslateY(-3, durationMs: 200);
 
-        _bottomRect.Fill = (Brush)Application.Current.Resources["ControlFillColorTertiaryBrush"];
+        _bottomRect.Style = (Style)Resources["BackgroudRectangleHoverStyle"];
         PART_Button.Translation += shadowVector;
     }
 
@@ -74,7 +71,7 @@ public sealed partial class StoreItemSmallButton : UserControl
         VisualStateManager.GoToState(_button, "Normal", true);
         AnimateTranslateY(0, durationMs: 200);
 
-        _bottomRect.Fill = _origBrush;
+        _bottomRect.Style = (Style)Resources["BackgroudRectangleDefaultStyle"];
         PART_Button.Translation -= shadowVector;
     }
 

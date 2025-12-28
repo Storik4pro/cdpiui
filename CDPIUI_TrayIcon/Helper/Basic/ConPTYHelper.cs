@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -59,6 +60,8 @@ namespace CDPIUI_TrayIcon.Helper
                 {
                     ProcessStateChanged?.Invoke(isRunned);
                     CurrentState = isRunned;
+                    processState = CurrentState;
+                    Debug.WriteLine(processState);
                 }
             }
         }
@@ -78,9 +81,11 @@ namespace CDPIUI_TrayIcon.Helper
             return false;
         }
 
+        private readonly SemaphoreSlim _processLock = new SemaphoreSlim(1, 1);
+
         public async void RunProcess(string exePath, string args, string workingDirectory)
         {
-            
+            await _processLock.WaitAsync();
             try
             {
                 _outputDefaultBuffer.Clear();
@@ -91,7 +96,7 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = true;
                 ChangeProcessState(true);
 
-                await Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory ?? "", token));
+                _ = Task.Run(() => RunProcessWithConPTY(exePath, args, workingDirectory ?? "", token));
             }
             catch (Exception ex)
             {
@@ -101,11 +106,13 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = false;
                 ChangeProcessState(false);
             }
-
+            _processLock.Release();
         }
 
-        public void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token)
+        public async void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token)
         {
+            await _processLock.WaitAsync();
+
             IntPtr pseudoConsoleHandle = IntPtr.Zero;
             IntPtr hInputRead = IntPtr.Zero;
             IntPtr hInputWrite = IntPtr.Zero;
@@ -190,18 +197,22 @@ namespace CDPIUI_TrayIcon.Helper
                     byte[] buffer = new byte[4096];
                     int bytesRead;
 
-                    while (!token.IsCancellationRequested && (bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+                    while (!token.IsCancellationRequested)
                     {
+                        bytesRead = await reader.ReadAsync(buffer, 0, buffer.Length, cancellationToken: token);
+                        if (bytesRead <= 0) break;
+
                         string _output = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
+                        bool flag = false;
                         foreach (var errorMapping in errorMappings)
                         {
                             if (_output.IndexOf(errorMapping.Key, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 ShowErrorMessage(errorMapping.Value);
                                 StopProcessAfterDelay();
-                                break;
-
+                                flag = true;
+                                break; 
                             }
                         }
 
@@ -218,14 +229,20 @@ namespace CDPIUI_TrayIcon.Helper
                         _outputDefaultBuffer.Append(_output);
 
                         OutputAdded?.Invoke(_output);
+
+                        if (flag) break;
                     }
                 }
+
+                TerminateProcess(pi.hProcess, 0);
 
                 WaitForSingleObject(pi.hProcess, INFINITE);
 
                 CloseHandle(pi.hProcess);
-
-                SendStopMessage();
+            }
+            catch (OperationCanceledException ex)
+            {
+                // pass
             }
             catch (Exception ex)
             {
@@ -252,15 +269,19 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = false;
                 ChangeProcessState(processState);
                 _processInfo = default;
+
+                _processLock.Release();
             }
         }
 
         public async Task StopProcess(bool output = true)
         {
+            _cancellationTokenSource?.Cancel();
+
+            await _processLock.WaitAsync();
+            
             try
             {
-                _cancellationTokenSource?.Cancel();
-
                 if (_processInfo.hProcess != IntPtr.Zero)
                 {
                     TerminateProcess(_processInfo.hProcess, 0);
@@ -290,7 +311,7 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = false;
                 ChangeProcessState(processState);
             }
-            await Task.CompletedTask;
+            _processLock.Release();
         }
 
         private async void StopProcessAfterDelay()

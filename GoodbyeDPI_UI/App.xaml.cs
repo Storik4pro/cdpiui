@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -104,15 +105,23 @@ namespace CDPI_UI
             await PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
             await PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
 
+            TasksHelper.Instance.RequestComponentItemsInit();
+
             if (!arguments.Contains("--create-no-window"))
             {
-                if (arguments.Contains("--show-pseudoconsole"))
+                if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
                 {
-                    await SafeCreateNewWindow<ViewWindow>();
+                    string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
+                    var window = await SafeCreateNewWindow<ViewWindow>();
+                    window.SetId(id);
                 }
                 else if (arguments.Contains("--show-proxy-setup"))
                 {
                     await SafeCreateNewWindow<ProxySetupUtilWindow>();
+                }
+                else if (arguments.Contains("--show-store"))
+                {
+                    StoreWindow window = await SafeCreateNewWindow<StoreWindow>();
                 }
                 else if (arguments.Contains("--show-begin-store-update-check"))
                 {
@@ -121,7 +130,7 @@ namespace CDPI_UI
                 }
                 else
                 {
-                    await SafeCreateNewWindow<MainWindow>();
+                    await SafeCreateNewWindow<ModernMainWindow>();
                 }
 
                 if (arguments.Contains("--show-update-page"))
@@ -133,9 +142,15 @@ namespace CDPI_UI
             {
                 await CompatibilityCheckHelper.Instance.BeginCheck();
             }
-            if (arguments.Contains("--get-startup-params"))
+            if (arguments.Contains("--get-all-startup-insructions"))
             {
-                await ProcessManager.Instance.StartProcess();
+                TasksHelper.Instance.RunAllPreferredActions();
+            }
+            
+            if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--get-startup-params")))
+            {
+                string _id = Utils.GetValueFromCommmandLineParameter("--get-startup-params");
+                TasksHelper.Instance.CreateAndRunNewTask(_id);
             }
             if (arguments.Contains("--check-program-updates"))
             {
@@ -211,7 +226,37 @@ namespace CDPI_UI
                 OpenWindows.Remove(viewWindow);
             }
         }
+        public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : Window, new()
+        {
+            var findWindows = OpenWindows.OfType<TWindow>().ToList();
+            int findWindowCount = findWindows.Count;
 
+            var activeFindWindow = OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
+
+            foreach (Window _win in findWindows)
+            {
+                if (typeof(TWindow) == typeof(ViewWindow))
+                { 
+                    if (_win.GetType() == typeof(ViewWindow))
+                    {
+                        if (((ViewWindow)_win).Id == id)
+                        {
+                            _win.Activate();
+                            return (TWindow)_win;
+                        }
+                    }
+                }
+            }
+
+            var newViewWindow = new TWindow();
+            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
+            if (activate) newViewWindow.Activate();
+
+            RegisterWindow(newViewWindow, isUnsafe:true);
+            await Task.CompletedTask;
+
+            return newViewWindow;
+        }
         public async Task<TWindow> SafeCreateNewWindow<TWindow>(bool activate = true) where TWindow : Window, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
@@ -244,18 +289,19 @@ namespace CDPI_UI
             }
         }
 
-        private void RegisterWindow(Window window)
+        private void RegisterWindow(Window window, bool isUnsafe = false)
         {
             if (window == null) return;
 
             UpdateThemeForWindow(window, CurrentTheme);
-            
 
             if (!OpenWindows.Contains(window))
-                OpenWindows.Add(window);
+                    OpenWindows.Add(window);
 
+            
             window.Closed -= Window_ClosedHandler;
             window.Closed += Window_ClosedHandler;
+            
 
             // Looks pretty bad for weak PC
             // window.SizeChanged -= Window_SizeChanged;

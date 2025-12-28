@@ -33,7 +33,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
+                        <Setter Target="PageHeader.Margin" Value="16,10,0,0" />
                         <Setter Target="ConfigChooseCombobox.MinWidth" Value="300" />
                     </VisualState.Setters>
                 </VisualState>
@@ -62,12 +62,17 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-
-        <TextBlock
-            x:Name="PageHeader"
-            Margin="20,24,20,10"
-            Style="{StaticResource TitleTextBlockStyle}"
-            TextWrapping="NoWrap"/>
+        <Grid Margin="20,10,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                x:Name="PageHeader"
+                Style="{StaticResource TitleTextBlockStyle}"
+                TextWrapping="NoWrap"/>
+            <CheckBox x:Name="AutorunCheckBox" l:Uids.Uid="AutorunCheckBox" Grid.Column="1" VerticalAlignment="Center" Click="AutorunCheckBox_Click"/>
+        </Grid>
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -76,7 +81,7 @@
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <Grid>
+            <Grid Margin="0 0 0 10">
                 <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10" Visibility="Collapsed">
                     <controls:SettingsCard l:Uids.Uid="ConfigSettingsCard"
                                    CornerRadius="10"

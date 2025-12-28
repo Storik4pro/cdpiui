@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -58,6 +59,22 @@ public sealed partial class IconButton : UserControl
         ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.Hand);
     }
 
+    public string DisplayText
+    {
+        get { return (string)GetValue(DisplayTextroperty); }
+        set
+        {
+            SetValue(DisplayTextroperty, value);
+            MainTextBlock.Text = value;
+            MainTextBlock.Visibility = string.IsNullOrEmpty(value) ? Visibility.Collapsed : Visibility.Visible;
+        }
+    }
+
+    public static readonly DependencyProperty DisplayTextroperty =
+        DependencyProperty.Register(
+            nameof(DisplayText), typeof(string), typeof(IconButton), new PropertyMetadata(string.Empty)
+        );
+
     public string IconGlyph
     {
         get { return (string)GetValue(IconGlyphProperty); }
@@ -66,7 +83,8 @@ public sealed partial class IconButton : UserControl
             if (!Checked)
             {
                 Icon.Glyph = value;
-                Icon.Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+                Icon.Style = (Style)Resources["FontIconDefaultColor"];
+                MainTextBlock.Style = (Style)Resources["TextDefaultColor"];
             }
         }
     }
@@ -83,7 +101,7 @@ public sealed partial class IconButton : UserControl
             if (Checked)
             {
                 Icon.Glyph = value;
-                Icon.Foreground = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"];
+                Icon.Style = (Style)Resources["FontIconAccentColor"];
             }
         }
     }
@@ -109,12 +127,14 @@ public sealed partial class IconButton : UserControl
             SetValue(CheckedProperty, value);
             if (value)
             {
-                Icon.Foreground = IsPointerOnButton ? (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"] : (SolidColorBrush)Application.Current.Resources["AccentTextFillColorTertiaryBrush"];
+                Icon.Style = IsPointerOnButton ? (Style)Resources["FontIconAccentColor"] : (Style)Resources["FontIconAccentTertiaryColor"];
+                MainTextBlock.Style = IsPointerOnButton ? (Style)Resources["TextAccentColor"] : (Style)Resources["TextAccentTertiaryColor"];
                 Icon.Glyph = !string.IsNullOrEmpty(CheckedIconGlyph) ? CheckedIconGlyph : IconGlyph;
             }
             else
             {
-                Icon.Foreground = IsPointerOnButton ? (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"] : (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+                Icon.Style = IsPointerOnButton ? (Style)Resources["FontIconAccentColor"] : (Style)Resources["FontIconDefaultColor"];
+                MainTextBlock.Style = IsPointerOnButton ? (Style)Resources["TextAccentColor"] : (Style)Resources["TextDefaultColor"];
                 Icon.Glyph = IconGlyph;
             }
         }
@@ -147,7 +167,9 @@ public sealed partial class IconButton : UserControl
 
     private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
     {
-        Icon.Foreground = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorPrimaryBrush"];
+        Icon.Style = (Style)Resources["FontIconAccentColor"];
+        MainTextBlock.Style = (Style)Resources["TextAccentColor"];
+
         IsPointerOnButton = true;
     }
 
@@ -156,11 +178,14 @@ public sealed partial class IconButton : UserControl
         IsPointerOnButton = false;
         if (Checked)
         {
-            Icon.Foreground = (SolidColorBrush)Application.Current.Resources["AccentTextFillColorTertiaryBrush"];
+            Icon.Style = (Style)Resources["FontIconAccentTertiaryColor"];
+            MainTextBlock.Style = (Style)Resources["TextAccentTertiaryColor"];
         }
         else
         {
-            Icon.Foreground = (SolidColorBrush)Application.Current.Resources["TextFillColorPrimaryBrush"];
+            Icon.Style = (Style)Resources["FontIconDefaultColor"];
+            MainTextBlock.Style = (Style)Resources["TextDefaultColor"];
+            
         }
     }
 }

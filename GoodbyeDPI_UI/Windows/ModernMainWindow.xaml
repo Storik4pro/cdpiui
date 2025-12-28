@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<winex:WindowEx
+    x:Class="CDPI_UI.ModernMainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:winex="using:WinUIEx"
+    xmlns:l="using:WinUI3Localizer">
+
+    <winex:WindowEx.SystemBackdrop>
+        <MicaBackdrop />
+    </winex:WindowEx.SystemBackdrop>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="43"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="ImageAera"  Height="48" PointerPressed="ImageAera_PointerPressed">
+            <Image 
+                Grid.Column="0"
+                Source="/Assets/favicon.ico"
+                Width="16" Height="16"
+                Margin="16,16"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"/>
+            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+        </Grid>
+        <Grid x:Name="AppTitleBar"
+              Grid.Column="1"
+              Canvas.ZIndex="1"
+              Height="48"
+              IsHitTestVisible="True"
+              VerticalAlignment="Top"
+              Margin="0, 0, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Text="CDPI UI"
+                    x:Name="AppTitleTextBlock"
+                    TextWrapping="NoWrap"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Grid.Column="2" Margin="0, 0, 0, 0"/>
+                <TextBlock 
+                    l:Uids.Uid="PreviewTextBlock"
+                    x:Name="AppTitleSubTextBlock" 
+                    Grid.Column="3"
+                    TextWrapping="NoWrap"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Margin="8, 0, 0, 0"/>
+            </Grid>
+        </Grid>
+        <NavigationView x:Name="NavView"
+                        IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed"
+                        AlwaysShowHeader="True"
+                        PaneDisplayMode="Top"
+                        ExpandedModeThresholdWidth="500"
+                        SelectionFollowsFocus="Disabled"
+                        IsTabStop="False"
+                        Grid.Row="1" 
+                        Grid.ColumnSpan="2"
+                        Loaded="NavView_Loaded"
+                        ItemInvoked="NavView_ItemInvoked"
+                        BackRequested="NavView_BackRequested">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPI_UI.Views.ModernMainPage" Icon="Home"/>
+
+                <NavigationViewItem l:Uids.Uid="UtilsButton" Tag="CDPI_UI.Views.UtilsPage" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPI_UI.Views.SettingsPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" FontSize="16"  />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem l:Uids.Uid="AboutButton" Tag="CDPI_UI.Views.AboutPage">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE946;" FontSize="16" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <Frame x:Name="ContentFrame" Margin="0,0,0,0"/>
+        </NavigationView>
+        
+    </Grid>
+</winex:WindowEx>

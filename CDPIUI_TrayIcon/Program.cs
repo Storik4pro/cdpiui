@@ -62,7 +62,7 @@ class Programm
 
         if (args.Contains("--autorun"))
         {
-            _ = ProcessManager.Instance.StartProcess();
+            AskStartupActions();
             if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide")) 
                 TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("TrayHide"), "SHOW_MAIN_WINDOW");
         }
@@ -72,6 +72,14 @@ class Programm
 
         Application.Run();
         ToastNotificationManagerCompat.History.Clear();
+    }
+
+    private static async void AskStartupActions()
+    {
+        if (!await PipeServer.Instance.SendMessage("CONPTY:GET_ALL_STARTUP_STRINGS"))
+        {
+            RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --get-all-startup-insructions --exit-after-action");
+        }
     }
 
     private static void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat toastArgs)

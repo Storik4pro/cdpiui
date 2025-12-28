@@ -1,15 +1,28 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 
 namespace CDPIUI_TrayIcon.Helper
 {
 
     public class TrayIconHelper : IDisposable
     {
+        private readonly ContextMenuStrip? ContextMenu;
+
         private readonly ToolStripItem? ProcessControlItem;
 
-        private readonly ToolStripItem? PseudoconsoleItem;
-        private readonly ToolStripMenuItem? UtilsItem;
+        private readonly ToolStripMenuItem? StoreMenuItem;
+
+        private readonly Dictionary<string, Tuple<ToolStripMenuItem, ToolStripItem>> ComponentControlElements = new();
+        private readonly Dictionary<string, string> SupportedComponents = new()
+        {
+            { "CSZTBN012", "Zapret" },
+            { "CSBIHA024", "ByeDPI" },
+            { "CSGIVS036", "GoodbyeDPI" },
+            { "CSSIXC048", "SpoofDPI" },
+        };
 
         private readonly ToolStripItem? ShowAppItem;
         private readonly ToolStripItem? ExitItem;
@@ -33,54 +46,208 @@ namespace CDPIUI_TrayIcon.Helper
 
         
 
-        private static Icon NormalIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico")!);
-        private static Icon ErrorIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoError.ico")!);
-        private static Icon StoppedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStopped.ico")!);
-        private static Icon RunnedIcon = new Icon(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStarted.ico")!);
-        public TrayIconHelper() 
+        private static readonly Icon NormalIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico")!);
+        private static readonly Icon ErrorIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoError.ico")!);
+        private static readonly Icon StoppedIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStopped.ico")!);
+        private static readonly Icon RunnedIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStarted.ico")!);
+        private static readonly Icon RunnedNotAllIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStartedNotAll.ico")!);
+        public TrayIconHelper()
         {
             notifyIcon.MouseClick += NotifyIcon_Click;
             notifyIcon.Icon = NormalIcon;
             notifyIcon.Visible = true;
             notifyIcon.Text = "CDPI UI";
 
-            var contextMenu = new ContextMenuStrip();
-            contextMenu.ShowImageMargin = true;
-            contextMenu.BackColor = ColorTranslator.FromHtml("#2C2C2C");
-            contextMenu.ForeColor = Color.White;
-            contextMenu.Renderer = new ToolStripProfessionalRenderer(new LeftMenuColorTable());
+            ContextMenu = new ContextMenuStrip();
+            ContextMenu.ShowImageMargin = true;
+            ContextMenu.BackColor = ColorTranslator.FromHtml("#2C2C2C");
+            ContextMenu.ForeColor = Color.White;
+            ContextMenu.Renderer = new ToolStripProfessionalRenderer(new LeftMenuColorTable());
 
+            foreach (var pair in SupportedComponents)
+            {
+                CreateComponentItem(pair.Key, pair.Value);
+            }
 
-            ProcessControlItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("Start"), null);
-            ProcessControlItem.Click += ProcessControlItem_Click;
+            StoreMenuItem = new(LocaleHelper.GetLocaleString("Store"));
+            StoreMenuItem.Click += StoreMenuItem_Click;
 
-            contextMenu.Items.Add("-");
+            ContextMenu.Items.Add(StoreMenuItem);
 
-            UtilsItem = new ToolStripMenuItem(LocaleHelper.GetLocaleString("Utils"));
-            PseudoconsoleItem = UtilsItem.DropDownItems.Add(LocaleHelper.GetLocaleString("Pseudoconsole"));
-            PseudoconsoleItem.ForeColor = Color.White;
-            PseudoconsoleItem.Click += PseudoconsoleItem_Click;
+            ContextMenu.Items.Add("-");
 
-            contextMenu.Items.Add(UtilsItem);
-
-            contextMenu.Items.Add("-");
-
-            ShowAppItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("ShowMainWindow"), NormalIcon.ToBitmap());
+            ShowAppItem = ContextMenu.Items.Add(LocaleHelper.GetLocaleString("ShowMainWindow"), NormalIcon.ToBitmap());
             ShowAppItem.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             ShowAppItem.Click += ShowAppItem_Click;
 
-            ExitItem = contextMenu.Items.Add(LocaleHelper.GetLocaleString("Exit"), null);
+            ExitItem = ContextMenu.Items.Add(LocaleHelper.GetLocaleString("Exit"), null);
             ExitItem.Click += ExitItem_Click;
-            notifyIcon.ContextMenuStrip = contextMenu;
+            notifyIcon.ContextMenuStrip = ContextMenu;
 
-            ProcessManager.Instance.ProcessStateChanged += ProcessManager_StateChanged;
+            ContextMenu.HandleCreated += ContextMenu_HandleCreated;
+
+            TasksHelper.Instance.TaskStateUpdated += HandleTaskStateUpdate;
+            TasksHelper.Instance.TaskListUpdated += HandleTasksListUpdate;
         }
 
-        private async void PseudoconsoleItem_Click(object? sender, EventArgs e)
+        public void ToggleComponentAvailability(string id, bool state)
         {
-            if (! await PipeServer.Instance.SendMessage("WINDOW:SHOW_PSEUDOCONSOLE"))
+            ComponentControlElements.TryGetValue(id, out var item);
+            if (item != null)
             {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-pseudoconsole");
+                item.Item1.Enabled = state;
+            }
+        }
+
+        private async void StoreMenuItem_Click(object? sender, EventArgs e)
+        {
+            if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_STORE"))
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-store");
+            }
+        }
+
+        private void CreateComponentItem(string id, string displayName)
+        {
+            ToolStripMenuItem menuItem = new(displayName);
+            ToolStripItem runItem;
+
+            runItem = menuItem.DropDownItems.Add(LocaleHelper.GetLocaleString("Start"), null);
+            runItem.ForeColor = Color.White;
+            runItem.Click += (s, e) => { RunProcessById(id); };
+            var viewOutputButton = menuItem.DropDownItems.Add(LocaleHelper.GetLocaleString("Pseudoconsole"), null);
+            viewOutputButton.ForeColor = Color.White;
+            viewOutputButton.Click += (s, e) => { OpenPseudoconsole(id); };
+
+            menuItem.Visible = false;
+
+            ContextMenu?.Items.Add(menuItem);
+
+            ComponentControlElements.Add(id, Tuple.Create(menuItem, runItem));
+        }
+
+        private async void ContextMenu_HandleCreated(object? sender, EventArgs e)
+        {
+            SafeHandleListUpdate();
+            foreach (var task in TasksHelper.Instance.Tasks)
+            {
+                ChangeRunItemText(task.Id, await TasksHelper.Instance.IsTaskRunned(task.Id));
+            }
+            
+        }
+
+        private void ChangeRunItemText(string id, bool state)
+        {
+            string text = state ? LocaleHelper.GetLocaleString("Stop") : LocaleHelper.GetLocaleString("Start");
+
+            var runControlItem = ComponentControlElements.FirstOrDefault((x) => x.Key == id).Value?.Item2;
+            if (runControlItem != null)
+            {
+                runControlItem.Text = text;
+            }
+            
+        }
+
+        private void HandleTasksListUpdate()
+        {
+            if (ContextMenu.IsHandleCreated)
+            {
+                ContextMenu.Invoke(new Action(() =>
+                {
+                    SafeHandleListUpdate();
+                }));
+            }
+        }
+
+        private void SafeHandleListUpdate()
+        {
+            Debug.WriteLine(TasksHelper.Instance.Tasks.Count);
+            if (TasksHelper.Instance.Tasks.Count == 0)
+            {
+                StoreMenuItem.Visible = true;
+            }
+            else
+            {
+                StoreMenuItem.Visible = false;
+            }
+            foreach (var pair in ComponentControlElements)
+            {
+                pair.Value.Item1.Visible = false;
+            }
+            foreach (var task in TasksHelper.Instance.Tasks)
+            {
+                ComponentControlElements.TryGetValue(task.Id, out var item);
+                if (item != null)
+                {
+                    item.Item1.Visible = true;
+                }
+            }
+        }
+
+        private async void HandleTaskStateUpdate(Tuple<string, bool> taskStateUpdate)
+        {
+            if (ContextMenu.IsHandleCreated)
+            {
+                ContextMenu.Invoke(new Action(() =>
+                {
+                    ChangeRunItemText(taskStateUpdate.Item1, taskStateUpdate.Item2);
+                }));
+            }
+            
+            if (taskStateUpdate.Item2)
+            {
+                if (IsAnyTaskHasState(!taskStateUpdate.Item2))
+                {
+                    notifyIcon.Icon = RunnedNotAllIcon;
+                }
+                else
+                {
+                    notifyIcon.Icon = RunnedIcon;
+                }
+            }
+            else
+            {
+                if (IsAnyTaskHasState(!taskStateUpdate.Item2))
+                {
+                    notifyIcon.Icon = RunnedNotAllIcon;
+                }
+                else
+                {
+                    notifyIcon.Icon = StoppedIcon;
+                }
+            }
+
+            string procName = (await TasksHelper.Instance.GetTaskFromId(taskStateUpdate.Item1))?.ProcessManager.ProcessName ?? $"{taskStateUpdate.Item1}";
+
+            if (taskStateUpdate.Item2)
+            {
+                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
+                ShowMessage(procName, LocaleHelper.GetLocaleString("ProcRun"), $"OPEN_PSEUDOCONSOLE({taskStateUpdate.Item1})");
+            }
+            else
+            {
+                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
+                ShowMessage(procName, LocaleHelper.GetLocaleString("ProcStop"), $"OPEN_PSEUDOCONSOLE({taskStateUpdate.Item1})");
+            }
+        }
+
+        private static bool IsAnyTaskHasState(bool state)
+        {
+            foreach (var task in TasksHelper.Instance.Tasks)
+            {
+                if (task.ProcessManager != null)
+                {
+                    if (task.ProcessManager.GetState() == state) return true;
+                }
+            }
+            return false;
+        }
+
+        private async void OpenPseudoconsole(string id)
+        {
+            if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({id})"))
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-pseudoconsole={id}");
             }
         }
 
@@ -101,37 +268,6 @@ namespace CDPIUI_TrayIcon.Helper
         public void ToggleStartButtonEnabled(bool enabled)
         {
             if (ProcessControlItem != null) ProcessControlItem.Enabled = enabled;
-        }
-
-        private void ProcessManager_StateChanged(bool state)
-        {
-            if (ProcessControlItem != null) 
-                ProcessControlItem.Text = state ? LocaleHelper.GetLocaleString("Stop") : LocaleHelper.GetLocaleString("Start");
-
-            if (state)
-            {
-                notifyIcon.Icon = RunnedIcon;
-                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
-                ShowMessage(ProcessManager.Instance.ProcessName, LocaleHelper.GetLocaleString("ProcRun"), "OPEN_PSEUDOCONSOLE");
-            }
-            else
-            {
-                notifyIcon.Icon = StoppedIcon;
-                if (!SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState")) return;
-                ShowMessage(ProcessManager.Instance.ProcessName, LocaleHelper.GetLocaleString("ProcStop"), "OPEN_PSEUDOCONSOLE");
-            }
-        }
-
-        private void ProcessControlItem_Click(object? sender, EventArgs e)
-        {
-            if (ProcessManager.Instance.GetState())
-            {
-                _ = ProcessManager.Instance.StopProcess();
-            }
-            else
-            {
-                _ = ProcessManager.Instance.StartProcess();
-            }
         }
 
         private async void NotifyIcon_Click(object? sender, MouseEventArgs e)
@@ -177,14 +313,23 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async void HandleToastActionFromBackground(string action)
         {
+            if (action.StartsWith("OPEN_PSEUDOCONSOLE"))
+            {
+                var result = ScriptHelper.GetArgsFromString(action);
+                if (result.Length < 1)
+                {
+                    Console.WriteLine($"ERR, {action} => args exception");
+                    return;
+                }
+
+                if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({result[0]})"))
+                {
+                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-pseudoconsole={result[0]}");
+                }
+                return;
+            }
             switch (action)
             {
-                case "OPEN_PSEUDOCONSOLE":
-                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_PSEUDOCONSOLE"))
-                    {
-                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-pseudoconsole");
-                    }
-                    break;
                 case "SHOW_MAIN_WINDOW":
                     if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN"))
                     {
@@ -234,6 +379,18 @@ namespace CDPIUI_TrayIcon.Helper
             catch (Exception ex)
             {
                 Logger.Instance.CreateErrorLog(nameof(TrayIconHelper), $"ERR_UNABLE_OPEN_FILE details => {ex.Message}");
+            }
+        }
+
+        private async void RunProcessById(string id)
+        {
+            if (!await TasksHelper.Instance.IsTaskRunned(id))
+            {
+                TasksHelper.Instance.CreateAndRunNewTask(id);
+            }
+            else
+            {
+                await TasksHelper.Instance.StopTask(id);
             }
         }
 

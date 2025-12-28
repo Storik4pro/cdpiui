@@ -26,6 +26,11 @@ using static CDPI_UI.Helper.Static.UIHelper;
 
 namespace CDPI_UI.Views
 {
+    public class GridColumnsCountModel
+    {
+        public int Count { get; set; }
+        public string DisplayName { get; set; }
+    }
     public class ThemeSelectModel
     {
         public ElementTheme Id { get; set; }
@@ -39,6 +44,7 @@ namespace CDPI_UI.Views
     public sealed partial class SettingsPage : Page
     {
         private ObservableCollection<ThemeSelectModel> themes = [];
+        private ObservableCollection<GridColumnsCountModel> gridColumnModels = [];
         private ObservableCollection<LanguageSelectModel> languages = [];
         private ObservableCollection<ComboBoxModel> components = [];
 
@@ -65,6 +71,11 @@ namespace CDPI_UI.Views
             CreateLanguages();
             LanguageComboBox.SelectedItem = languages.FirstOrDefault(x => string.Equals(x.Id, localizer.GetCurrentLanguage(), StringComparison.OrdinalIgnoreCase));
             LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
+
+            MainGridColumnSelector.ItemsSource = gridColumnModels;
+            CreateGridColimnVariants();
+            MainGridColumnSelector.SelectedItem = gridColumnModels.FirstOrDefault(x => x.Count == SettingsManager.Instance.GetValue<int>("APPEARANCE", "mainGridColumnsCount"));
+            MainGridColumnSelector.SelectionChanged += MainGridColumnSelector_SelectionChanged;
 
             ProcessStateToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
@@ -145,6 +156,31 @@ namespace CDPI_UI.Views
             });
         }
 
+        private void CreateGridColimnVariants()
+        {
+            gridColumnModels.Clear();
+            gridColumnModels.Add(new()
+            {
+                Count = -1,
+                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountAuto")
+            });
+            gridColumnModels.Add(new()
+            {
+                Count = 1,
+                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountOne")
+            });
+            gridColumnModels.Add(new()
+            {
+                Count = 2,
+                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountTwo")
+            });
+            gridColumnModels.Add(new()
+            {
+                Count = 4,
+                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountFour")
+            });
+        }
+
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.Content is FrameworkElement frameworkElement)
@@ -200,6 +236,11 @@ namespace CDPI_UI.Views
         private void HideInTrayToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue<bool>("APPEARANCE", "hideToTrayOnStartup", HideInTrayToggleSwitch.IsOn);
+        }
+
+        private void MainGridColumnSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue<int>("APPEARANCE", "mainGridColumnsCount", ((GridColumnsCountModel)MainGridColumnSelector.SelectedItem).Count);
         }
     }
 }

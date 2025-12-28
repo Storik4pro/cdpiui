@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace CDPI_UI.Helper.Items
     {
 
         private List<ComponentHelper> Components = new List<ComponentHelper>();
+
+        public Action InitRequested;
 
         private static ComponentItemsLoaderHelper _instance;
         private static readonly object _lock = new();
@@ -32,8 +35,9 @@ namespace CDPI_UI.Helper.Items
             Init();
         }
 
-        public void Init()
+        public void Init(bool forse = true)
         {
+            if (!forse && Components.Count != 0) return;
             Components.Clear();
             List<DatabaseStoreItem> configItems = DatabaseHelper.Instance.GetItemsByType("component");
 
@@ -45,6 +49,7 @@ namespace CDPI_UI.Helper.Items
                 ComponentHelper componentHelper = new(item.Id);
                 Components.Add(componentHelper);
             }
+            InitRequested?.Invoke();
         }
 
         public List<ComponentHelper> GetComponentHelpers()
