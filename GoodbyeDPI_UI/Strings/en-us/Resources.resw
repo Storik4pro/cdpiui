@@ -1492,4 +1492,8 @@ Some features is not available at the moment. Keep in mind — this application 
 
 Some features may work not as planned — don't worry. Just say about it to developers. It will be fixed as soon as possible.</value>
   </data>
+  <data name="AutorunWarnTextBlock.Text" xml:space="preserve">
+    <value>You haven't added any components to startup. The app will launch without any action. 
+To fix this, go to the component settings page and select the [Startup automatically] checkbox.</value>
+  </data>
 </root>
