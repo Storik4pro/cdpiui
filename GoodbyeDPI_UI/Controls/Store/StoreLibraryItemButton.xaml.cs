@@ -137,7 +137,7 @@ namespace CDPI_UI.Controls.Store
 
         private async void ActionButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow window = await((App)Application.Current).SafeCreateNewWindow<MainWindow>();
+            ModernMainWindow window = await((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
 
             window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
         }

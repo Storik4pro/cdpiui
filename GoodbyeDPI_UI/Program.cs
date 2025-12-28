@@ -69,7 +69,7 @@ namespace CDPI_UI
                         var app = (App)Application.Current;
                         if (app != null)
                         {
-                            _ = app.SafeCreateNewWindow<MainWindow>();
+                            _ = app.SafeCreateNewWindow<ModernMainWindow>();
                         }
                     }
                     catch { }
