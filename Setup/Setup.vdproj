@@ -105,6 +105,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4919B6AF7A8A46AD8F2BB0BF3F5D53C8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4BDB0295ECBF4178AF8194BB7A5FE4B3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_4E254E5699434D16B9F972D0F6BAEE0B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -124,6 +136,30 @@
         "Entry"
         {
         "MsmKey" = "8:_6A180804C0734041AC878F0469DD0873"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6DE32BF18B03411AA5C43D2ECFE94789"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E2CA40E3C394A05AE98605199244D33"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6FDD405350C94CBE8DA605FB422FED2C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_712C8DC606AA4A7C95C08428FDEB4D2C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -161,6 +197,12 @@
         {
         "MsmKey" = "8:_C1D55763614E38F505115C3042F86608"
         "OwnerKey" = "8:_E89FD5EB301E4E4CA1C3174312479825"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C929AC911D0E47A48BB1380ABDEA6DC7"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -225,7 +267,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F19085AFB7914219847F7090EAC1024A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F84A88B1E2A443FD91B773567502E578"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F85E33BAE71B438DB2D67634EAE1B071"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F88105BC9D584CEDA8EAD7DB984052CA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -664,6 +724,46 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4919B6AF7A8A46AD8F2BB0BF3F5D53C8"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\EN\\TroubleshootingComponentExceptions\\BasicTroubleshooting.md"
+            "TargetName" = "8:BasicTroubleshooting.md"
+            "Tag" = "8:"
+            "Folder" = "8:_9B9B3DBEDE3D46D699FBBD6CA71EEEB9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4BDB0295ECBF4178AF8194BB7A5FE4B3"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\RU\\GettingStarted\\LearnMoreAboutUI.md"
+            "TargetName" = "8:LearnMoreAboutUI.md"
+            "Tag" = "8:"
+            "Folder" = "8:_B493490C919A4A328DD1201C34A299C3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E254E5699434D16B9F972D0F6BAEE0B"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Store.png"
@@ -730,6 +830,86 @@
             "TargetName" = "8:Wide310x150Logo.scale-200.png"
             "Tag" = "8:"
             "Folder" = "8:_F3CBC072127B4A25AB87F2BE17DC351F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6DE32BF18B03411AA5C43D2ECFE94789"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\RU\\GettingStarted\\AddingCustomSiteListsToConfig.md"
+            "TargetName" = "8:AddingCustomSiteListsToConfig.md"
+            "Tag" = "8:"
+            "Folder" = "8:_B493490C919A4A328DD1201C34A299C3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E2CA40E3C394A05AE98605199244D33"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\RU\\WelcomeToHelp.md"
+            "TargetName" = "8:WelcomeToHelp.md"
+            "Tag" = "8:"
+            "Folder" = "8:_0BE1F575CA4D4B85A423FB91A9B938BE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6FDD405350C94CBE8DA605FB422FED2C"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\RU\\TroubleshootingComponentExceptions\\BasicTroubleshooting.md"
+            "TargetName" = "8:BasicTroubleshooting.md"
+            "Tag" = "8:"
+            "Folder" = "8:_FE1AF9CAA6C94FF4B7F3DBD8B81ECD8C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_712C8DC606AA4A7C95C08428FDEB4D2C"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\EN\\GettingStarted\\AddingCustomSiteListsToConfig.md"
+            "TargetName" = "8:AddingCustomSiteListsToConfig.md"
+            "Tag" = "8:"
+            "Folder" = "8:_2659E83AEE474353A915F019BED22862"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -875,6 +1055,26 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C929AC911D0E47A48BB1380ABDEA6DC7"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\EN\\WelcomeToHelp.md"
+            "TargetName" = "8:WelcomeToHelp.md"
+            "Tag" = "8:"
+            "Folder" = "8:_2D354F3FFC024F3BA521D2B4B4AA03A6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9DE44AD06F54EA78B8E5B884FE1F3DE"
@@ -1057,12 +1257,72 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F19085AFB7914219847F7090EAC1024A"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\RU\\GettingStarted\\FirstSteps.md"
+            "TargetName" = "8:FirstSteps.md"
+            "Tag" = "8:"
+            "Folder" = "8:_B493490C919A4A328DD1201C34A299C3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F84A88B1E2A443FD91B773567502E578"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\EN\\GettingStarted\\FirstSteps.md"
+            "TargetName" = "8:FirstSteps.md"
+            "Tag" = "8:"
+            "Folder" = "8:_2659E83AEE474353A915F019BED22862"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F85E33BAE71B438DB2D67634EAE1B071"
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\\\Store\\empty.png"
             "TargetName" = "8:empty.png"
             "Tag" = "8:"
             "Folder" = "8:_998E6C3C9F174D3CAD6788CC678D0617"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F88105BC9D584CEDA8EAD7DB984052CA"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Help\\\\EN\\GettingStarted\\LearnMoreAboutUI.md"
+            "TargetName" = "8:LearnMoreAboutUI.md"
+            "Tag" = "8:"
+            "Folder" = "8:_2659E83AEE474353A915F019BED22862"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1133,6 +1393,83 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_4C26F01BD28243E78FBD064E387B88EC"
+                    {
+                    "Name" = "8:Help"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_7E4C200ED4D345BEB39D74231C7F8DD6"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_0BE1F575CA4D4B85A423FB91A9B938BE"
+                            {
+                            "Name" = "8:RU"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_7D176AA0BF084EF8B7D2B9AB478C37F7"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_B493490C919A4A328DD1201C34A299C3"
+                                    {
+                                    "Name" = "8:GettingStarted"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_206BCC0BE3C24AB6B8395F58304BDCAC"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_FE1AF9CAA6C94FF4B7F3DBD8B81ECD8C"
+                                    {
+                                    "Name" = "8:TroubleshootingComponentExceptions"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_967AA2CD117747E38181E12085B81C29"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_2D354F3FFC024F3BA521D2B4B4AA03A6"
+                            {
+                            "Name" = "8:EN"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_3C3B7943F4644F158A336984B201D799"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_2659E83AEE474353A915F019BED22862"
+                                    {
+                                    "Name" = "8:GettingStarted"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_3E792C29B46B442BB4973C0916B2F2F3"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_9B9B3DBEDE3D46D699FBBD6CA71EEEB9"
+                                    {
+                                    "Name" = "8:TroubleshootingComponentExceptions"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_3209EB94F1B841EE92AB382DD8C2B638"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_F3CBC072127B4A25AB87F2BE17DC351F"
                     {
                     "Name" = "8:Assets"

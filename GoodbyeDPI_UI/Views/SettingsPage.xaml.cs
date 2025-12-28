@@ -54,6 +54,7 @@ namespace CDPI_UI.Views
             InitializeComponent();
 
             AutorunToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun");
+            CheckAutorun(SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun"));
             SettingsManager.Instance.PropertyChanged += SettingsManager_PropertyChanged;
 
             ComponentComboBox.ItemsSource = components;
@@ -88,6 +89,7 @@ namespace CDPI_UI.Views
         private void SettingsManager_PropertyChanged(string propertyName)
         {
             AutorunToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun");
+            CheckAutorun(SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun"));
         }
 
         private void AutorunToggleSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -102,6 +104,26 @@ namespace CDPI_UI.Views
                 {
                     AutoStartManager.RemoveFromAutorun();
                 }
+            }
+        }
+
+        private void CheckAutorun(bool value)
+        {
+            if (value)
+            {
+                AutorunWarn.Visibility = Visibility.Visible;
+                foreach (var id in StateHelper.Instance.ComponentIdPairs.Keys)
+                {
+                    if (SettingsManager.Instance.GetValue<bool>(["CONFIGS", id], "usedForAutorun"))
+                    {
+                        AutorunWarn.Visibility = Visibility.Collapsed;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                AutorunWarn.Visibility = Visibility.Collapsed;
             }
         }
 

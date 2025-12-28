@@ -31,6 +31,14 @@ namespace CDPI_UI.Helper
 
 
                 SettingsManager.Instance.SetValue<bool>("SYSTEM", "autorun", false);
+
+                foreach (var id in StateHelper.Instance.ComponentIdPairs.Keys)
+                {
+                    if (SettingsManager.Instance.GetValue<bool>(["CONFIGS", id], "usedForAutorun"))
+                    {
+                        SettingsManager.Instance.SetValue<bool>(["CONFIGS", id], "usedForAutorun", false);
+                    }
+                }
             }
             catch (Exception ex)
             {

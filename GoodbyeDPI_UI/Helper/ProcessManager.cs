@@ -77,6 +77,11 @@ namespace CDPI_UI.Helper
         public async Task RunActionsIfAutorunSelected()
         {
             bool isComponentAddedToAutorun = SettingsManager.Instance.GetValue<bool>(["CONFIGS", Id], "usedForAutorun");
+            if (!DatabaseHelper.Instance.IsItemInstalled(Id))
+            {
+                SettingsManager.Instance.SetValue(["CONFIGS", Id], "usedForAutorun", false);
+                return;
+            }
             if (isComponentAddedToAutorun)
             {
                 await StartProcess(exitAfterActionCheck: false);
