@@ -472,6 +472,7 @@ namespace CDPI_UI.Views.Components
         private void AutorunCheckBox_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue<bool>(["CONFIGS", ComponentId], "usedForAutorun", (bool)AutorunCheckBox.IsChecked);
+            if ((bool)AutorunCheckBox.IsChecked) AutoStartManager.AddToAutorun();
         }
     }
 }
