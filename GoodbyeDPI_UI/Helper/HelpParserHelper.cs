@@ -29,7 +29,8 @@ namespace CDPI_UI.Helper
         private static Dictionary<string, string> HelpIconGlyphsPairs = new()
         {
             { "WelcomeToHelp", "\uE734" },
-            { "GettingStarted", "\uEB9D" }
+            { "GettingStarted", "\uEB9D" },
+            { "TroubleshootingComponentExceptions", "\uEBE8" }
         };
 
         private static string GetGlyphForId(string id)

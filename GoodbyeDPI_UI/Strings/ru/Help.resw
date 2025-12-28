@@ -117,8 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutTemplate" xml:space="preserve">
+    <value># О средстве: Локальная справка
+
+Локальная справка приложения CDPI UI. Позволяет получить локальный доступ к сведениям. размещенным на [storik4pro.github.io/cdpiui/wiki](https://storik4pro.github.io/cdpiui/wiki). Не обновляется автоматически.
+
+#### Составители справки:
+- Storik4
+
+#### Внесите свой вклад!
+Создайте статью для справки! Чтобы узнать больше посетите ресурс [storik4pro.github.io/cdpiui/wiki/community](https://storik4pro.github.io/cdpiui/wiki/community)
+
+Для отображения справки используется `CommunityToolkit.WinUI.Controls.MarkdownTextBlock`</value>
+  </data>
   <data name="AddingCustomSiteListsToConfig" xml:space="preserve">
     <value>Добавление собственных адресов в список для обхода</value>
+  </data>
+  <data name="BasicTroubleshooting" xml:space="preserve">
+    <value>Общие ошибки</value>
   </data>
   <data name="FirstSteps" xml:space="preserve">
     <value>Первые шаги</value>
@@ -135,6 +151,9 @@
 К сожалению мы не можем найти страницу, которую вы запросили. Убедитесь,что у приложения есть права доступа "read" и связанные со справкой файлы не повреждены.
 
 *Cannot GET: /Help{0}*</value>
+  </data>
+  <data name="TroubleshootingComponentExceptions" xml:space="preserve">
+    <value>Исправление ошибок компонентов</value>
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
     <value>Добро пожаловать в сравку</value>

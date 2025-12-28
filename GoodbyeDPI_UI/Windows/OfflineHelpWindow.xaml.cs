@@ -203,6 +203,10 @@ namespace CDPI_UI
             {
                 MarkdownTextBlock.Text = Utils.LoadAllTextFromFile(tag);
             }
+            else if (tag == "AboutHelp")
+            {
+                MarkdownTextBlock.Text = localizer.GetLocalizedString("/Help/AboutTemplate");
+            }
         }
     }
 }

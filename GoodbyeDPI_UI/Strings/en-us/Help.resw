@@ -117,8 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AboutTemplate" xml:space="preserve">
+    <value># About: Local Help
+
+Local help for the CDPI UI application. Allows local access to information hosted at [storik4pro.github.io/cdpiui/wiki](https://storik4pro.github.io/cdpiui/wiki). It is not updated automatically.
+
+#### Help authors:
+- Storik4
+
+#### Contribute!
+Create a help article! For more information, visit [storik4pro.github.io/cdpiui/wiki/community](https://storik4pro.github.io/cdpiui/wiki/community)
+
+Help is displayed using `CommunityToolkit.WinUI.Controls.MarkdownTextBlock`</value>
+  </data>
   <data name="AddingCustomSiteListsToConfig" xml:space="preserve">
     <value>Add custom site to list for bypass</value>
+  </data>
+  <data name="BasicTroubleshooting" xml:space="preserve">
+    <value>Basic</value>
   </data>
   <data name="FirstSteps" xml:space="preserve">
     <value>First steps</value>
@@ -135,6 +151,9 @@
 Unfortunately we can't find page your looking for. Please, make sure program has "read" access on installed directory and help files not damaged.
 
 *Cannot GET: /Help{0}*</value>
+  </data>
+  <data name="TroubleshootingComponentExceptions" xml:space="preserve">
+    <value>Troubleshooting component exceptions</value>
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
     <value>Welcome to help</value>
