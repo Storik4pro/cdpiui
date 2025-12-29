@@ -79,10 +79,10 @@ namespace CDPI_UI.Helper
 
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
 
-            if (width == 0 && height == 0)
-            {
-                WindowsResizeParams.TryGetValue(resizeOptions, out Tuple<WindowPositionVariants, int, int> value);
+            WindowsResizeParams.TryGetValue(resizeOptions, out Tuple<WindowPositionVariants, int, int> value);
 
+            if ((width == 0 && height == 0) || width < value.Item2 || height < value.Item3)
+            {
                 if (value == null) return;
 
                 width = value.Item2;
