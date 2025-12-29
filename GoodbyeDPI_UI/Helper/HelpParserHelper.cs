@@ -48,7 +48,7 @@ namespace CDPI_UI.Helper
         public static List<HelpChapterItem> GetHelpItemsForLanguage(string language)
         {
             List <HelpChapterItem> helpItems = [];
-            string path =  Path.Combine(StateHelper.GetDataDirectory(), "Help", language);
+            string path =  Path.Combine(StateHelper.Instance.workDirectory, "Help", language);
 
             if (!Directory.Exists(path))
             {
