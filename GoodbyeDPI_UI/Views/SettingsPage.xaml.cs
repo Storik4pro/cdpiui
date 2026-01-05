@@ -1,4 +1,6 @@
+using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.Static;
 using CDPI_UI.Properties;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -84,6 +86,18 @@ namespace CDPI_UI.Views
             StoreUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
 
             HideInTrayToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup");
+
+            UpdateTextFileOpenSettings();
+        }
+
+        private void UpdateTextFileOpenSettings()
+        {
+            int mode = SettingsManager.Instance.GetValue<int>("FILEOPENACTIONS", "mode");
+            string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
+            OpenComponentSiteListToEditCard.Description =
+                string.Format(localizer.GetLocalizedString(
+                    "OpenComponentSiteListToEditCardDescription"),
+                    mode == (int)TextFileOpenModes.UserChoose ? Utils.FirstCharToUpper(Path.GetFileNameWithoutExtension(appPath)) : localizer.GetLocalizedString("FollowSystem"));
         }
 
         private void SettingsManager_PropertyChanged(string propertyName)
@@ -263,6 +277,16 @@ namespace CDPI_UI.Views
         private void MainGridColumnSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SettingsManager.Instance.SetValue<int>("APPEARANCE", "mainGridColumnsCount", ((GridColumnsCountModel)MainGridColumnSelector.SelectedItem).Count);
+        }
+
+        private async void OpenComponentSiteListToEditCard_Click(object sender, RoutedEventArgs e)
+        {
+            EditSitelistAskApplicationContentDialog editSitelistAskApplicationContentDialog = new()
+            {
+                XamlRoot = this.XamlRoot
+            };
+            await editSitelistAskApplicationContentDialog.ShowAsync();
+            UpdateTextFileOpenSettings();
         }
     }
 }
