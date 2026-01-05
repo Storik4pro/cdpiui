@@ -76,6 +76,23 @@ namespace CDPI_UI.Helper
                 return (T)(object)default(T);
             }
         }
+        public T GetValueOrDefault<T>(string group, string key, XElement xElement = null, T defaultValue = default)
+        {
+            if (xElement == null) xElement = _xDocument.Root;
+            var settingElement = xElement
+                .Elements("Group")
+                .FirstOrDefault(g => g.Attribute("Name")?.Value == group)?
+                .Elements("Setting")
+                .FirstOrDefault(s => s.Attribute("Key")?.Value == key);
+
+            if (settingElement == null)
+            {
+                SetValue(group, key, defaultValue);
+                Debug.WriteLine($"Setting '{key}' in group '{group}' not found.");
+                return defaultValue;
+            }
+            else return GetValue<T>(group, key, xElement);
+        }
         public T GetValue<T>(string group, string key, XElement xElement = null, bool raiseExceptionIfNotExits = false)
         {
             if (xElement == null) xElement = _xDocument.Root;
