@@ -35,6 +35,7 @@ namespace CDPIUI_TrayIcon.Helper
             { "unknown option", "PARAMETER_ERROR" },
             { "hostlists load failed", "HOSTLIST_LOAD_ERROR" },
             { "must specify port filter", "PORT_FILTER_ERROR" },
+            { "must specify port or/and partial raw filter", "PORT_FILTER_WRONG_VALUE_ERROR" },
             { "ERROR:", "UNKNOWN_ERROR" },
             { "Component not installed correctly", "COMPONENT_INSTALL_ERROR" },
             { "error", "UNKNOWN_ERROR" },
@@ -229,7 +230,7 @@ namespace CDPIUI_TrayIcon.Helper
                         _outputDefaultBuffer.Append(_output);
 
                         OutputAdded?.Invoke(_output);
-
+                        
                         if (flag) break;
                     }
                 }
@@ -322,9 +323,10 @@ namespace CDPIUI_TrayIcon.Helper
 
         private void SendStopMessage(string output = "Process will be stopped by user")
         {
-            _outputDefaultBuffer.Append($"\n[PSEUDOCONSOLE] {output}");
+            string preffix = string.IsNullOrEmpty(Preffix) ? "" : $" [{Preffix}]";
+            _outputDefaultBuffer.Append($"\n[PSEUDOCONSOLE]{preffix} {output}");
 
-            ProcessExited?.Invoke($"\n[PSEUDOCONSOLE] {output}");
+            ProcessExited?.Invoke($"\n[PSEUDOCONSOLE]{preffix} {output}");
         }
 
         private void ShowErrorMessage(string message, string _object = "process")
