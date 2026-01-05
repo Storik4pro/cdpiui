@@ -66,7 +66,7 @@ public sealed partial class SettingTile : UserControl
             SetValue(DescriptionProperty, value); 
             if (!string.IsNullOrEmpty(value))
             {
-                DescriptionTextBlock.Visibility = Visibility.Visible;
+                DescriptionTextBlock.Visibility = Visibility.Collapsed;
             }
             else
             {
