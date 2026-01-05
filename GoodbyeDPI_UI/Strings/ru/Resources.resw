@@ -219,10 +219,10 @@
     <value>Создание нового пресета. Редактирование набора настроек. Импортирование пресета из .bat файла</value>
   </data>
   <data name="CreateConfigHelperSettingsCard.Header" xml:space="preserve">
-    <value>Универсальный помощник создания и редактирования наборов настроек</value>
+    <value>Помощник создания и редактирования пресетов</value>
   </data>
   <data name="CreateConfigHelperTitleTextBlock.Text" xml:space="preserve">
-    <value>Универсальный помощник создания и редактирования наборов настроек</value>
+    <value>Помощник создания и редактирования пресетов</value>
   </data>
   <data name="CreateConfigHelperWindowTitle" xml:space="preserve">
     <value>Помощник создания пресетов</value>
@@ -1498,5 +1498,116 @@
   <data name="AutorunWarnTextBlock.Text" xml:space="preserve">
     <value>Вы не добавили ни один компонент в автозапуск. Приложение будет запущено без дополнительных действий. 
 Чтобы исправить это перейдите на страницу настройки компонента и переключите флажок [Запускать автоматически] в положение включено.</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="ViewAppliedFlagsForSiteList" xml:space="preserve">
+    <value>Показать применяемые флаги запуска</value>
+  </data>
+  <data name="EditMenuItem.Title" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="SearchMenuItem.Text" xml:space="preserve">
+    <value>Найти</value>
+  </data>
+  <data name="SearchAndReplaceMenuItem.Text" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ReplaceControlButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переключить видимость параметров замены</value>
+  </data>
+  <data name="FindTextBox.PlaceholderText" xml:space="preserve">
+    <value>Найти</value>
+  </data>
+  <data name="ReplaceTextBox.PlaceholderText" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="SearchDownButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Вперед</value>
+  </data>
+  <data name="SearchTopButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="SearchCloseButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Закрыть окно "Найти и Заменить"</value>
+  </data>
+  <data name="AdditionalSettingsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Дополнительные настройки</value>
+  </data>
+  <data name="MatchCaseMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Учитывать регистр</value>
+  </data>
+  <data name="WholeWorldMenuFlyoutItem.Text" xml:space="preserve">
+    <value>Слово целиком</value>
+  </data>
+  <data name="ReplaceButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ReplaceAllButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Заменить все</value>
+  </data>
+  <data name="DefaultEditorBackgroundStyleMenuItem.Text" xml:space="preserve">
+    <value>Фон редактора</value>
+  </data>
+  <data name="DefaultBackgroundMenuItem.Text" xml:space="preserve">
+    <value>Идеально черный</value>
+  </data>
+  <data name="MicaBackgroundMenuItem.Text" xml:space="preserve">
+    <value>Классическое размытие мика</value>
+  </data>
+  <data name="MicaAltMenuItem.Text" xml:space="preserve">
+    <value>Альтернативное размытие мика </value>
+  </data>
+  <data name="MicaSmokeMenuItem.Text" xml:space="preserve">
+    <value>Затемненное размытие мика</value>
+  </data>
+  <data name="ZoomInMenuItem.Text" xml:space="preserve">
+    <value>Увеличить масштаб</value>
+  </data>
+  <data name="ZoomOutMenuItem.Text" xml:space="preserve">
+    <value>Уменьшить масштаб</value>
+  </data>
+  <data name="ZoomReturnMenuItem.Text" xml:space="preserve">
+    <value>Восстановить масштаб по умолчанию</value>
+  </data>
+  <data name="OpenListsConfigDirectory.Text" xml:space="preserve">
+    <value>Открыть расположение списков сайтов этого пресета</value>
+  </data>
+  <data name="OpenBinsConfigDirectory.Text" xml:space="preserve">
+    <value>Открыть расположение BIN-файлов этого пресета</value>
+  </data>
+  <data name="EditSitelistAskContentDialog.Title" xml:space="preserve">
+    <value>С помощью чего следует открыть этот файл?</value>
+  </data>
+  <data name="EditSitelistAskContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="UseSystemDefaultApplication.Text" xml:space="preserve">
+    <value>Следовать параметрам системы</value>
+  </data>
+  <data name="SelectApplicationManually.Text" xml:space="preserve">
+    <value>Выбрать приложение на этом ПК</value>
+  </data>
+  <data name="FileDialogChooseExecutable" xml:space="preserve">
+    <value>Выберите исполняемый файл приложения</value>
+  </data>
+  <data name="FileDialogChooseExecutableFilter" xml:space="preserve">
+    <value>Приложения на архитектуре WIN32</value>
+  </data>
+  <data name="DoNotAskAgainCheckBox.Content" xml:space="preserve">
+    <value>Запомнить мой выбор</value>
+  </data>
+  <data name="ActionsTextBlock.Text" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="OpenComponentSiteListToEditCard.Header" xml:space="preserve">
+    <value>Приложение для изменения списков сайтов компонента</value>
+  </data>
+  <data name="OpenComponentSiteListToEditCardDescription" xml:space="preserve">
+    <value>Сейчас используется "{0}"</value>
+  </data>
+  <data name="FollowSystem" xml:space="preserve">
+    <value>системный выбор</value>
   </data>
 </root>

@@ -127,13 +127,19 @@
     <value>Ip set</value>
   </data>
   <data name="SetupConfig" xml:space="preserve">
-    <value>Setup config for yourself</value>
+    <value>Toggles on these parameters allow standard users to easily customize the preset.
+
+The author of this preset added the ability to switch operating modes "on the fly" without manually editing the launch string. Switching automatically restarts the component.
+
+For advanced users: To add a similar switch to this widget, you need to configure a conditional variable on the preset creation page (see the "Advanced Presets" help section).</value>
   </data>
   <data name="UsedSiteLists" xml:space="preserve">
     <value>Site lists </value>
   </data>
   <data name="UsedSiteListsTip" xml:space="preserve">
-    <value>List of used site lists for this config</value>
+    <value>Editing these lists will allow you to configure the websites for which blocking should be bypassed.
+
+For example, if you add the website "ya.ru," the blocking will be bypassed for it.</value>
   </data>
   <data name="SiteList" xml:space="preserve">
     <value>Site list</value>
@@ -142,16 +148,18 @@
     <value>Advanced settings</value>
   </data>
   <data name="AdvancedSettingsTip" xml:space="preserve">
-    <value>Create your own config manually, select parameters automatically or edit existing config</value>
+    <value>Links to these sections can help advanced users fine-tune their presets.
+
+Preset customization includes automatically selecting component launch settings to access the required website(s), modifying an existing preset, and creating a new preset from scratch. Preset creation and modification are performed using the [Easy&amp;Quick config create utility] utility.</value>
   </data>
   <data name="CreateNewConfig" xml:space="preserve">
     <value>Create new config</value>
   </data>
   <data name="EditConfig" xml:space="preserve">
-    <value>Edit existing config</value>
+    <value>Edit that config</value>
   </data>
   <data name="SelectAutomatically" xml:space="preserve">
-    <value>Select startup parameters automatically</value>
+    <value>Select config automatically</value>
   </data>
   <data name="Features" xml:space="preserve">
     <value>Features</value>
@@ -170,5 +178,13 @@
   </data>
   <data name="NowUsedComponentError" xml:space="preserve">
     <value>Component not selected</value>
+  </data>
+  <data name="UsedExcludedSiteLists" xml:space="preserve">
+    <value>Excluded site lists</value>
+  </data>
+  <data name="UsedExcludedSiteListsTip" xml:space="preserve">
+    <value>Editing these lists will allow you to configure exceptions.
+
+For example, if you add the website "ya.ru" to the exceptions, block bypass will not apply to it.</value>
   </data>
 </root>
