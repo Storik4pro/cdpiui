@@ -145,6 +145,7 @@ namespace CDPI_UI.Helper
 
                 var exePath = componentHelper.GetExecutablePath();
                 var workingDirectory = componentHelper.GetDirectory();
+                args = SetupProxy(args, Id);
 
                 Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
