@@ -10,7 +10,7 @@
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="AppBar" Height="36"/>
             <RowDefinition x:Name="FuncBar" Height="36"/>
@@ -18,6 +18,16 @@
             <RowDefinition x:Name="View" Height="*"/>
             <RowDefinition x:Name="StatusBar" Height="28"/>
         </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style x:Key="ContentFrameDefaultStyle" TargetType="Frame">
+                <Setter Property="Background" Value="{ThemeResource SolidBackgroundFillColorTertiaryBrush}"/>
+            </Style>
+            <Style x:Key="ContentFrameTransparentStyle" TargetType="Frame">
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+        </Grid.Resources>
+        
         <Grid x:Name="AppTitleBar"
             Canvas.ZIndex="1"
             Grid.Row="0"
@@ -115,20 +125,50 @@
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
                     </MenuBarItem>
-                    <MenuBarItem Title="Edit" Visibility="Collapsed">
-                        <MenuFlyoutSubItem Text="Add sitelist to field">
-                            <MenuFlyoutSeparator/>
-                            <MenuFlyoutItem Text="Open new sitelist..."/>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Add ipset to field">
-                            <MenuFlyoutSeparator/>
-                            <MenuFlyoutItem Text="Open new ipset..."/>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Add custom variable to field">
-                            
-                        </MenuFlyoutSubItem>
-                        
+
+                    <MenuBarItem l:Uids.Uid="EditMenuItem" x:Name="EditMenuItem" Visibility="Collapsed">
+                        <MenuFlyoutItem x:Name="Search" l:Uids.Uid="SearchMenuItem" Click="Search_Click" Icon="Find">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="F"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="SearchAndReplace" l:Uids.Uid="SearchAndReplaceMenuItem" Click="SearchAndReplace_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="H"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
                     </MenuBarItem>
+                    <MenuBarItem l:Uids.Uid="ViewMenuItem" x:Name="ViewMenuItem" Visibility="Collapsed">
+                        <MenuFlyoutSubItem l:Uids.Uid="DefaultEditorBackgroundStyleMenuItem">
+                            <RadioMenuFlyoutItem l:Uids.Uid="DefaultBackgroundMenuItem" GroupName="Background" x:Name="DefaultBackgroundMenuItem" Click="EditorBackgroundMenuItem_Click"/>
+                            <RadioMenuFlyoutItem l:Uids.Uid="MicaBackgroundMenuItem" GroupName="Background" x:Name="MicaBackgroundMenuItem" Click="EditorBackgroundMenuItem_Click"/>
+                            <RadioMenuFlyoutItem l:Uids.Uid="MicaAltMenuItem" GroupName="Background" x:Name="MicaAltMenuItem" Click="EditorBackgroundMenuItem_Click"/>
+                            <RadioMenuFlyoutItem l:Uids.Uid="MicaSmokeMenuItem" GroupName="Background" x:Name="MicaSmokeMenuItem" Click="EditorBackgroundMenuItem_Click"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem l:Uids.Uid="ZoomInMenuItem" x:Name="ZoomInMenuItem" Click="ZoomInMenuItem_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="Add"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8A3;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem l:Uids.Uid="ZoomOutMenuItem" x:Name="ZoomOutMenuItem" Click="ZoomOutMenuItem_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="Subtract"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE71F;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem l:Uids.Uid="ZoomReturnMenuItem" x:Name="ZoomReturnMenuItem" Click="ZoomReturnMenuItem_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+                    
                     <MenuBarItem l:Uids.Uid="StoreMenuBarItem">
                         <MenuFlyoutItem x:Name="ComponentsStore" l:Uids.Uid="StoreOpenComponentsMenuItem" Click="ComponentsStore_Click"/>
                         <MenuFlyoutItem x:Name="AddOnsStore" l:Uids.Uid="StoreOpenAddOnsMenuItem" Click="AddOnsStore_Click"/>
@@ -163,7 +203,6 @@
 
         </Grid>
         <Frame x:Name="ContentFrame" 
-               Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}" 
                Grid.Row="3"
                Navigating="ContentFrame_Navigating">
             
