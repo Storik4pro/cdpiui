@@ -1209,6 +1209,7 @@ namespace CDPI_UI.Helper
 
         public async void CheckUpdates()
         {
+            // TODO: Fix 'rcXX' version
             if (IsNowUpdatesChecked) return;
             IsNowUpdatesChecked = true;
             UpdatesAvailableList.Clear();
