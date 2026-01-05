@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Xml.Linq;
 using Windows.Devices.Power;
@@ -68,7 +69,7 @@ namespace CDPI_UI.Helper.Items
     }
     public class ConfigHelper
     {
-        private const string BatStartRegex = @"start\s+(?:"".*?"" )?"".*?""\s+((/min+\s+"".*?"")|(\S*))\s*\^?$";
+        private const string BatStartRegex = @"start\s+(?:"".*?"")?"".*?""\s+(((?:/min){0,1}\s+"".*?"")|(\S*))?(.*)\^?$";
         private const string VarInVarRegex = @"!(.*?)!";
         private const string VarInCommaRegex = @"%(.*?)%";
 
@@ -151,8 +152,10 @@ namespace CDPI_UI.Helper.Items
                     Logger.Instance.CreateWarningLog(nameof(ConfigHelper), $"Error happens: {ex}");
                 }
             }
+            ConfigItem[] array = [.. configItems];
+            Array.Sort<ConfigItem>(array, new Utils.LogicalComparer());
 
-            return configItems;
+            return [.. array];
         }
 
         public void Init()
@@ -459,18 +462,9 @@ namespace CDPI_UI.Helper.Items
             return configItem != null ? configItem.toggle_lists:[];
         }
 
-        public List<SiteListItem> GetSiteListItems(string filename, string packId, bool unique = true, bool ignoreNull = false)
+        public List<SiteListItem> GetExcludedSiteListItems(string filename, string packId, bool unique = true, bool ignoreNull = false)
         {
-            string localItemFolder = GetItemFolderFromPackId(packId);
-
-            string startupString = GetStartupParameters(filename, packId);
-            Logger.Instance.CreateDebugLog(nameof(ConfigHelper), $"{startupString}");
-
-            var windows = startupString
-                .Split(new[] { "--new" }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(w => w.Trim())
-                .Where(w => w.Length > 0)
-                .ToList();
+            GetAllWindowsInConfig(filename, packId, out var localItemFolder, out var windows);
 
             var results = new List<SiteListItem>();
             var seenNames = new HashSet<string>();
@@ -478,9 +472,104 @@ namespace CDPI_UI.Helper.Items
             foreach (var window in windows)
             {
                 string prettyWindow = string.Empty;
-                prettyWindow = window.Replace(localItemFolder, "");
+                prettyWindow = Regex.Replace(window.Replace(localItemFolder, ""), @"("")(/.*?\\)(.*?"")", m => m.Groups[1].Value + m.Groups[3].Value);
 
-                var tokenPattern = @"(?<=\s|^)(?:""[^""]*""|[^ ]+)+";
+                var tokenPattern = @"(?<=\s|^)(?:(?:(?:--|/)[^\s]*=""[^""]*"")|""[^""]*""|[^ ]+)+";
+                var tokens = Regex.Matches(window, tokenPattern)
+                                  .Cast<Match>()
+                                  .Select(m => m.Value.Trim('"'))
+                                  .ToList();
+
+
+
+                bool found = false;
+                for (int i = 0; i < tokens.Count; i++)
+                {
+                    string param = tokens[i];
+                    string name = null, type = null;
+
+                    if (param.StartsWith("--hostlist-exclude="))
+                    {
+                        name = param.Substring("--hostlist-exclude=".Length);
+                        type = "SiteList";
+                    }
+                    else if (param.StartsWith("--ipset-exclude="))
+                    {
+                        name = param.Substring("--ipset-exclude=".Length);
+                        type = "IpList";
+                    }
+                    else if ((param == "--hostlist-exclude" || param == "--ipset-exclude")
+                             && i + 1 < tokens.Count)
+                    {
+                        name = tokens[i + 1];
+                        type = param == "--hostlist-exclude"
+                                   ? "SiteList"
+                                   : "IpList";
+                        i++;
+                    }
+
+                    if (name != null)
+                    {
+
+                        if (unique && seenNames.Contains(name))
+                        {
+                            var item = results.FirstOrDefault(x => string.Equals(x.Name, Path.GetFileName(name), StringComparison.Ordinal));
+
+                            if (item != null)
+                            {
+                                item.ApplyParams.Add(window);
+                                item.PrettyApplyParams.Add(prettyWindow);
+                            }
+                            found = true;
+                            break;
+                        }
+
+                        seenNames.Add(name);
+
+                        var before = string.Join(" ", tokens.Take(i - (param.Contains('=') ? 0 : 1)));
+                        var after = string.Join(" ", tokens.Skip(i + 1));
+
+                        results.Add(new SiteListItem
+                        {
+                            Name = Path.GetFileName(name),
+                            Type = type,
+                            FilePath = name.Replace("\"", ""),
+                            ApplyParams = [window],
+                            PrettyApplyParams = [prettyWindow]
+                        });
+
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found && !ignoreNull)
+                {
+                    results.Add(new SiteListItem
+                    {
+                        Name = "",
+                        Type = "NULL",
+                        FilePath = "",
+                        ApplyParams = [window],
+                        PrettyApplyParams = [prettyWindow]
+                    });
+                }
+            }
+            return results;
+        }
+
+        public List<SiteListItem> GetSiteListItems(string filename, string packId, bool unique = true, bool ignoreNull = false)
+        {
+            GetAllWindowsInConfig(filename, packId, out var localItemFolder, out var windows);
+
+            var results = new List<SiteListItem>();
+            var seenNames = new HashSet<string>();
+
+            foreach (var window in windows)
+            {
+                string prettyWindow = string.Empty;
+                prettyWindow = Regex.Replace(window.Replace(localItemFolder, ""), @"("")(/.*?\\)(.*?"")", m => m.Groups[1].Value + m.Groups[3].Value);
+
+                var tokenPattern = @"(?<=\s|^)(?:(?:(?:--|/)[^\s]*=""[^""]*"")|""[^""]*""|[^ ]+)+";
                 var tokens = Regex.Matches(window, tokenPattern)
                                   .Cast<Match>()
                                   .Select(m => m.Value.Trim('"'))
@@ -568,6 +657,19 @@ namespace CDPI_UI.Helper.Items
                 }
             }
             return results;
+        }
+
+        private void GetAllWindowsInConfig(string filename, string packId, out string localItemFolder, out List<string> windows)
+        {
+            localItemFolder = GetItemFolderFromPackId(packId);
+            string startupString = GetStartupParameters(filename, packId);
+            Logger.Instance.CreateDebugLog(nameof(ConfigHelper), $"{startupString}");
+
+            windows = startupString
+                .Split(new[] { "--new" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(w => w.Trim())
+                .Where(w => w.Length > 0)
+                .ToList();
         }
 
         public static string GetItemFolderFromPackId(string packId)
@@ -704,7 +806,7 @@ namespace CDPI_UI.Helper.Items
                     Match match = Regex.Match(line, BatStartRegex);
                     if (match.Success)
                     {
-                        comma = match.Groups[1].Value.Trim().Replace('^', ' ');
+                        comma = match.Groups[4].Value.Trim().Replace('^', ' ');
                         Logger.Instance.CreateDebugLog(nameof(ConfigHelper), $"Found start line {comma}");
                     }
                     continue;
