@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using CDPI_UI.Controls.Dialogs.ComponentSettings;
+using CDPI_UI.Helper.Items;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -23,6 +26,16 @@ namespace CDPI_UI.Helper.Static
         static Utils()
         {
 
+        }
+
+        public class LogicalComparer : IComparer<ConfigItem>
+        {
+            public int Compare(ConfigItem x, ConfigItem y)
+            {
+                return StrCmpLogicalW(x.name.Normalize(), y.name.Normalize());
+            }
+            [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+            private static extern int StrCmpLogicalW(string s1, string s2);
         }
 
         public static string GetValueFromCommmandLineParameter(string commmandLineParameter)
@@ -119,6 +132,34 @@ namespace CDPI_UI.Helper.Static
             "" => throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input)),
             _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
         };
+
+        public static void OpenFolderInExplorer(string dir)
+        {
+            try
+            {
+                Process.Start("explorer.exe", $"\"{dir.Replace("/", "\\")}\"");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot open path \"{dir}\" Because exception happens: {ex}");
+            }
+        }
+
+        public static void RunApp(string executable, string arguments)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo(executable, arguments)
+                {
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot open application '{executable}' with arguments '{arguments}', because exception happens: {ex.Message}");
+            }
+        }
 
         public static void OpenFileInDefaultApp(string filePath)
         {
