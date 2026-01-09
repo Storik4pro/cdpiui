@@ -57,6 +57,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_253F38882C334C66940CFC3767AF598C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_293D2CAAC21145B999F3DCF01182BD4E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -566,6 +572,26 @@
             {
             "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\\\Pseudoconsole.png"
             "TargetName" = "8:Pseudoconsole.png"
+            "Tag" = "8:"
+            "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_253F38882C334C66940CFC3767AF598C"
+            {
+            "SourcePath" = "8:..\\GoodbyeDPI_UI\\Assets\\Icons\\Troubleshooting.ico"
+            "TargetName" = "8:Troubleshooting.ico"
             "Tag" = "8:"
             "Folder" = "8:_5CC704D913EE4C7EBE34B88709CF4ED7"
             "Condition" = "8:"
@@ -1609,15 +1635,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CDPI UI"
-        "ProductCode" = "8:{B1B783FF-4494-4EC3-A997-99A60F673C1A}"
-        "PackageCode" = "8:{F55F4EF0-C260-4DF9-9604-47F2EB357F1B}"
+        "ProductCode" = "8:{18FE96F6-65E3-40C7-9222-16EA3CC47C76}"
+        "PackageCode" = "8:{853514D4-2782-4F27-AD4F-72ED1C6E1EFF}"
         "UpgradeCode" = "8:{AB14590E-0D10-416F-9A0E-07E63074B603}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.1.2"
+        "ProductVersion" = "8:0.1.3"
         "Manufacturer" = "8:Storik4"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/Storik4pro/cdpiui/issues"
