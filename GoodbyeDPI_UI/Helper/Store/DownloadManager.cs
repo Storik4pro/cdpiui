@@ -266,17 +266,18 @@ namespace CDPI_UI.Helper
         private void HandleError(Exception ex)
         {
             StageChanged?.Invoke("ErrorHappens");
-            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr);
+            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr, out int? statusCode);
             var code = codeObj.ToString();
+            string _statusCode = statusCode != null ? $"_{statusCode}" : ""; 
             Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
             if (hr != null)
             {
                 string hrHex = $"0x{hr.Value:X8}";
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code} ({hrHex})", $"{ex}"));
+                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode} ({hrHex})", $"{ex}"));
             }
             else
             {
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}", $"{ex}"));
+                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode}", $"{ex}"));
             }
         }
         public void Dispose()
