@@ -23,9 +23,23 @@
                         <Setter Target="BigCategoryTextBlock.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="WideState">
+                <VisualState x:Name="SmallState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ActionButton.Visibility" Value="Visible" />
+                        <Setter Target="CategoryTextBlock.Visibility" Value="Visible" />
+                        <Setter Target="BigActionButton.Visibility" Value="Collapsed" />
+                        <Setter Target="BigCategoryTextBlock.Visibility" Value="Collapsed" />
+                        <Setter Target="CategoryTextBlock.MinWidth" Value="80" />
+                        <Setter Target="CategoryTextBlock.Width" Value="80" />
+                        
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="ActionButton.Visibility" Value="Visible" />
@@ -50,6 +64,7 @@
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -72,11 +87,14 @@
                         <TextBlock Text="{x:Bind Developer, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextWrapping="NoWrap"/>
                     </StackPanel>
                     <StackPanel Grid.Column="3" VerticalAlignment="Center">
-                        <TextBlock x:Name="CategoryTextBlock" Text="{x:Bind Category, Mode=OneWay}" MinWidth="150"  />
+                        <TextBlock x:Name="CategoryTextBlock" Text="{x:Bind Category, Mode=OneWay}" MinWidth="150" TextWrapping="Wrap"  />
                     </StackPanel>
-                    <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                    <StackPanel Grid.Column="4" VerticalAlignment="Center">
+                        <TextBlock x:Name="VersionTextBlock" MinWidth="50"  />
+                    </StackPanel>
+                    <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
                         <Button l:Uids.Uid="SetupButton" x:Name="ActionButton" MinWidth="125" Click="ActionButton_Click"/>
-                        <Button Padding="6" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" ToolTipService.ToolTip="More">
+                        <Button l:Uids.Uid="ViewMoreActionsButton" Padding="6" VerticalAlignment="Stretch" Background="Transparent" BorderBrush="Transparent">
                             <FontIcon Glyph="&#xE712;" FontSize="16"/>
                             <Button.Flyout>
                                 <MenuFlyout>
@@ -103,10 +121,10 @@
                             </Button.Flyout>
                         </Button>
                     </StackPanel>
-                    <Button l:Uids.Uid="SetupButton" x:Name="BigActionButton" Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="5" Margin="0 5" Visibility="Collapsed" Click="ActionButton_Click"/>
-                    <TextBlock x:Name="BigCategoryTextBlock" Grid.Row="2" Grid.ColumnSpan="5" Text="{x:Bind Category, Mode=OneWay}" Visibility="Collapsed"/>
+                    <Button l:Uids.Uid="SetupButton" x:Name="BigActionButton" Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="6" Margin="0 5" Visibility="Collapsed" Click="ActionButton_Click"/>
+                    <TextBlock x:Name="BigCategoryTextBlock" Grid.Row="2" Grid.ColumnSpan="6" Text="{x:Bind Category, Mode=OneWay}" Visibility="Collapsed"/>
                 </Grid>
-                <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" Grid.Row="3" Grid.ColumnSpan="5" VerticalAlignment="Bottom" CornerRadius="0" Visibility="Collapsed"/>
+                <ProgressBar x:Name="ProgressBar" IsIndeterminate="True" Grid.Row="3" Grid.ColumnSpan="6" VerticalAlignment="Bottom" CornerRadius="0" Visibility="Collapsed"/>
             </Grid>
         </Button>
     </Grid>
