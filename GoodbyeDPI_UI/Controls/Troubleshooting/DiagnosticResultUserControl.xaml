@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.Controls.Troubleshooting.DiagnosticResultUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Troubleshooting"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:conv="using:CDPI_UI.Converters"
+    xmlns:l="using:WinUI3Localizer">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Rectangle x:Name="SignalRectangle" Fill="{ThemeResource SystemFillColorCriticalBackgroundBrush}" Visibility="{x:Bind IsHighlighted, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
+        <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Visibility="{x:Bind ShowTopRectangle, Converter={StaticResource BoolToVis}, Mode=OneWay}" Height="1" VerticalAlignment="Top"/>
+        <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Height="1" VerticalAlignment="Bottom"/>
+        <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Width="1" HorizontalAlignment="Left"/>
+        <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Width="1" HorizontalAlignment="Right"/>
+        
+        <Grid Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="11"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="11"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph, Mode=OneWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Rectangle Grid.Column="1" Width="1" Margin="0 0 5 0" Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+            <TextBlock Grid.Column="2" Text="{x:Bind DisplayText, Mode=OneWay}" VerticalAlignment="Center"/>
+            <Rectangle Grid.Column="3" Width="1" Margin="5 0" Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+            <Grid x:Name="StateGrid" Grid.Column="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="105"/>
+                    <ColumnDefinition Width="11"/>
+                    <ColumnDefinition Width="105"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{x:Bind CurrentStateText, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Rectangle Grid.Column="1" Width="1" Margin="5 0" Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+                <TextBlock Grid.Column="2" Text="{x:Bind TargetStateText, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+            <Rectangle Grid.Column="5" Width="1" Margin="5 0" Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}"/>
+            <StackPanel Orientation="Horizontal" Visibility="{x:Bind ShowActionButtons, Converter={StaticResource BoolToVis}, Mode=OneWay}" Grid.Column="6" Spacing="11">
+                <HyperlinkButton x:Name="GetHelpHyperlinkButton" l:Uids.Uid="/Troubleshooting/DiagnosticHelpButton" Padding="5 0" Visibility="{x:Bind IsHelpAvailable, Converter={StaticResource BoolToVis}, Mode=OneWay}" Click="GetHelpHyperlinkButton_Click">
+                    <FlyoutBase.AttachedFlyout>
+                        <Flyout Placement="Left">
+                            <StackPanel MaxWidth="300">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <FontIcon Glyph="&#xE754;" FontSize="16"/>
+                                    <TextBlock l:Uids.Uid="/Flashlight/ExplainTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                </StackPanel>
+                                <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Height="1" Margin="0 2 0 5"/>
+                                <TextBlock Text="{x:Bind HelpText, Mode=OneWay}" TextWrapping="Wrap"/>
+                                <HyperlinkButton x:Name="NetHelpAskButton" l:Uids.Uid="/Flashlight/NetHelpAskButton" Padding="5 0" Click="NetHelpAskButton_Click"/>
+                            </StackPanel>
+                        </Flyout>
+                    </FlyoutBase.AttachedFlyout>
+                </HyperlinkButton>
+                <HyperlinkButton x:Name="FixHyperlinkButton" l:Uids.Uid="/Troubleshooting/FixButton" Padding="5 0" Visibility="{x:Bind IsFixAvailable, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
+            </StackPanel>
+            <TextBlock x:Name="ActionAeraTextBlock"  Grid.Column="6" Text="{x:Bind ActionAeraText, Mode=OneWay}" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>
