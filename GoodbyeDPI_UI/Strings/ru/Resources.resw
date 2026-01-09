@@ -1610,4 +1610,49 @@
   <data name="FollowSystem" xml:space="preserve">
     <value>системный выбор</value>
   </data>
+  <data name="TroubleshootingWindowTitle" xml:space="preserve">
+    <value>Поиск и устранение неполадок</value>
+  </data>
+  <data name="TroubleshootinSettingsCard.Header" xml:space="preserve">
+    <value>Поиск и устранение неполадок</value>
+  </data>
+  <data name="TroubleshootingTitleTextBlock.Text" xml:space="preserve">
+    <value>Поиск и устранение неполадок</value>
+  </data>
+  <data name="TroubleshootingMainPageTitleTextBlock.Text" xml:space="preserve">
+    <value>Что работает не так, как запланировано?</value>
+  </data>
+  <data name="NotOneConfigDoesWorkCard.Header" xml:space="preserve">
+    <value>Ни один пресет не позволяет получить доступ к необходимым сайтам</value>
+  </data>
+  <data name="MyProblemNotInListCard.Header" xml:space="preserve">
+    <value>Моей проблемы нет в списке</value>
+  </data>
+  <data name="ComponentDoesNotRunCard.Header" xml:space="preserve">
+    <value>Компонент постоянно вылетает с ошибкой</value>
+  </data>
+  <data name="StoreCannotLoadCard.Header" xml:space="preserve">
+    <value>Я не могу открыть Магазин или скачать элемент из него</value>
+  </data>
+  <data name="ApplicationCannotDownloadUpdateCard.Header" xml:space="preserve">
+    <value>Приложение не может проверить/скачать обновления</value>
+  </data>
+  <data name="TroubleshootingWorkingTitle.Text" xml:space="preserve">
+    <value>Диагностика</value>
+  </data>
+  <data name="TroubleshootingWaitTextBlock.Text" xml:space="preserve">
+    <value>Производится диагностика вашей системы. Окно командной строки может мерцать в процессе.</value>
+  </data>
+  <data name="FixTextBlock.Text" xml:space="preserve">
+    <value>Исправление</value>
+  </data>
+  <data name="FixTipTextBlock.Text" xml:space="preserve">
+    <value>Ведется работа над устранением неполадок</value>
+  </data>
+  <data name="UpdateNowButton.Content" xml:space="preserve">
+    <value>Обновить сейчас</value>
+  </data>
+  <data name="VersionNotesTextBlock.Text" xml:space="preserve">
+    <value>Заметки к выпуску</value>
+  </data>
 </root>

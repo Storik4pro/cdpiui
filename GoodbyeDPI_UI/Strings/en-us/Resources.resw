@@ -1607,4 +1607,49 @@ To fix this, go to the component settings page and select the [Startup automatic
   <data name="FollowSystem" xml:space="preserve">
     <value>system choose</value>
   </data>
+  <data name="TroubleshootingWindowTitle" xml:space="preserve">
+    <value>Troubleshooting</value>
+  </data>
+  <data name="TroubleshootinSettingsCard.Header" xml:space="preserve">
+    <value>Troubleshooting</value>
+  </data>
+  <data name="TroubleshootingTitleTextBlock.Text" xml:space="preserve">
+    <value>Troubleshooting</value>
+  </data>
+  <data name="TroubleshootingMainPageTitleTextBlock.Text" xml:space="preserve">
+    <value>What does not work as planned?</value>
+  </data>
+  <data name="NotOneConfigDoesWorkCard.Header" xml:space="preserve">
+    <value>All configs not work to me</value>
+  </data>
+  <data name="MyProblemNotInListCard.Header" xml:space="preserve">
+    <value>My problem is not on the list</value>
+  </data>
+  <data name="ComponentDoesNotRunCard.Header" xml:space="preserve">
+    <value>Component constantly crashes with an error</value>
+  </data>
+  <data name="StoreCannotLoadCard.Header" xml:space="preserve">
+    <value>I cannot open or download items from Store </value>
+  </data>
+  <data name="ApplicationCannotDownloadUpdateCard.Header" xml:space="preserve">
+    <value>Application cannot download/check for updates</value>
+  </data>
+  <data name="TroubleshootingWorkingTitle.Text" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="TroubleshootingWaitTextBlock.Text" xml:space="preserve">
+    <value>The command prompt window may flicker during the process.</value>
+  </data>
+  <data name="FixTextBlock.Text" xml:space="preserve">
+    <value>Fixing</value>
+  </data>
+  <data name="FixTipTextBlock.Text" xml:space="preserve">
+    <value>Working is currently underway on fixing your problems</value>
+  </data>
+  <data name="UpdateNowButton.Content" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="VersionNotesTextBlock.Text" xml:space="preserve">
+    <value>Version notes</value>
+  </data>
 </root>
