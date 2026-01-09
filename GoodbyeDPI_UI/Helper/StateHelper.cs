@@ -87,6 +87,7 @@ namespace CDPI_UI.Helper
         private StateHelper()
         {
             FileTypes.Add("archive", ".zip");
+            FileTypes.Add("configPack", ".cdpiconfigpack");
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
             FileTypes.Add("msi", ".msi");
