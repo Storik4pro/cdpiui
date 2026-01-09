@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.Troubleshooting.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views.Troubleshooting"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock l:Uids.Uid="TroubleshootingMainPageTitleTextBlock" Style="{ThemeResource TitleTextBlockStyle}" Margin="20 0"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="5" Margin="20 10 20 10">
+                <controls:SettingsCard l:Uids.Uid="NotOneConfigDoesWorkCard" x:Name="NotOneConfigDoesWorkCard" IsClickEnabled="True" Click="NotOneConfigDoesWorkCard_Click"/>
+                <controls:SettingsCard l:Uids.Uid="ComponentDoesNotRunCard" x:Name="ComponentDoesNotRunCard" IsClickEnabled="True" Click="ComponentDoesNotRunCard_Click"/>
+                <controls:SettingsCard l:Uids.Uid="StoreCannotLoadCard" x:Name="StoreCannotLoadCard" IsClickEnabled="True" Click="StoreCannotLoadCard_Click" Visibility="Collapsed"/>
+                <controls:SettingsCard l:Uids.Uid="ApplicationCannotDownloadUpdateCard" x:Name="ApplicationCannotDownloadUpdateCard" IsClickEnabled="True" Click="ApplicationCannotDownloadUpdateCard_Click" Visibility="Collapsed"/>
+                <controls:SettingsCard l:Uids.Uid="MyProblemNotInListCard" x:Name="MyProblemNotInListCard" IsClickEnabled="True" Click="MyProblemNotInListCard_Click"/>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid x:Name="ActionButtonsGrid" Grid.Row="2">
+            <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+
+            <Grid Padding="20">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE897;" FontSize="16"/>
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="10"  HorizontalAlignment="Right">
+                    <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
