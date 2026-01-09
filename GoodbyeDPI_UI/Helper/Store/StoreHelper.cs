@@ -154,6 +154,7 @@ namespace CDPI_UI.Helper
             public bool CleanDirectoryBeforeInstalling { get; } = false;
             public string Status { get; set; } = "WAIT";
             public string DownloadStage { get; set; } = string.Empty;
+            public string ErrorCode { get; set; } = string.Empty;
 
             public QueueItem(string itemId, string operationId, string version = null, bool cleanDirectoryBeforeInstalling = false)
             {
@@ -166,6 +167,9 @@ namespace CDPI_UI.Helper
         }
         private readonly Queue<QueueItem> _queue = new();
         private readonly object _queueLock = new();
+
+        private readonly List<QueueItem> FailedToInstallItems = new();
+        private readonly object _FailedToInstallItemsLock = new();
 
         private QueueItem CurrentDownloadingItem;
 
@@ -209,6 +213,7 @@ namespace CDPI_UI.Helper
         public event Action<string> ItemRemoved;
 
         public event Action QueueUpdated;
+        public event Action ErrorListUpdated;
 
         public bool IsNowUpdatesChecked { get; private set; } = false;
         public bool IsExceptonHappensWhileCheckingUpdates {  get; private set; } = false;
@@ -600,8 +605,39 @@ namespace CDPI_UI.Helper
 
         // Queue
 
+        private void AddItemToDownloadFailureList(string itemId, string operationId, string version, string errorCode)
+        {
+            lock (_FailedToInstallItemsLock)
+            {
+                var extstItem = FailedToInstallItems.FirstOrDefault(x => x.ItemId == itemId);
+                if (extstItem != null) FailedToInstallItems.Remove(extstItem);
+                FailedToInstallItems.Add(new(itemId, operationId, version, false)
+                {
+                    ErrorCode = errorCode
+                });
+            }
+            ErrorListUpdated?.Invoke();
+        }
+        public void RemoveItemFromDownloadFailureList(string itemId)
+        {
+            lock (_FailedToInstallItemsLock)
+            {
+                var extstItem = FailedToInstallItems.FirstOrDefault(x => x.ItemId == itemId);
+                if (extstItem != null)
+                {
+                    FailedToInstallItems.Remove(extstItem);
+                    ErrorListUpdated?.Invoke();
+                }
+            }
+        }
+        public List<QueueItem> GetFailedToInstallItems()
+        {
+            return FailedToInstallItems;
+        }
+
         public void AddItemToQueue(string itemId, string version, bool cleanDirectoryBeforeInstalling = false)
         {
+            RemoveItemFromDownloadFailureList(itemId);
             if (GetOperationIdFromItemId(itemId) != null) return;
 
             var opId = Guid.NewGuid().ToString();
@@ -769,6 +805,7 @@ namespace CDPI_UI.Helper
             {
                 string errorCode = data.Item1;
                 string errorMessage = data.Item2;
+                AddItemToDownloadFailureList(GetItemIdFromOperationId(operationId), operationId, null, errorCode);
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(operationId, errorCode));
             };
         }
@@ -954,6 +991,7 @@ namespace CDPI_UI.Helper
             if (item == null)
             {
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Item not found exception happens.");
+                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, "ERR_ITEM_NOT_FOUND");
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, "ERR_ITEM_NOT_FOUND"));
                 return;
             }
@@ -981,7 +1019,9 @@ namespace CDPI_UI.Helper
             }
             catch (Exception ex)
             {
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
+                string err = HandleException(ex);
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, err));
+                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, err);
                 return;
             }
 
@@ -1013,6 +1053,7 @@ namespace CDPI_UI.Helper
             if (errorLink != null)
             {
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, errorLink.errorCode));
+                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{errorLink.errorCode} exception happens.");
                 return;
             }
@@ -1022,11 +1063,13 @@ namespace CDPI_UI.Helper
                 if (downloadUrl == "ERR_TOO_MANY_VARIANTS")
                 {
                     ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
+                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
                     Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens."); // TODO: Fix
                 }
                 else
                 {
                     ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
+                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
                     Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{downloadUrl} exception happens.");
                 }
                 return;
@@ -1045,7 +1088,7 @@ namespace CDPI_UI.Helper
                     bool result = await DownloadManager.DownloadAndExtractAsync(
                         link.link,
                         itemFolder,
-                        extractArchive: link.type == "archive",
+                        extractArchive: link.type == "archive" || link.type == "configPack",
                         extractSkipFiletypes: [],
                         extractRootFolder: link.archive_root_folder,
                         executableFileName: link.target_executable_file,
@@ -1071,7 +1114,7 @@ namespace CDPI_UI.Helper
                 bool result = await DownloadManager.DownloadAndExtractAsync(
                     downloadUrl,
                     itemFolder,
-                    extractArchive: item.filetype == "archive",
+                    extractArchive: item.filetype == "archive" || item.filetype == "configPack",
                     extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
                     extractRootFolder: item.archive_root_folder,
                     executableFileName: item.target_executable_file,
@@ -1139,6 +1182,7 @@ namespace CDPI_UI.Helper
             {
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
+                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
             }
         }
 
@@ -1200,7 +1244,9 @@ namespace CDPI_UI.Helper
             }
             catch (Exception ex)
             {
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create(operationId, HandleException(ex)));
+                string err = HandleException(ex);
+                AddItemToDownloadFailureList(GetItemIdFromOperationId(operationId), operationId, null, err);
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(operationId, err));
                 return false;
             }
 
