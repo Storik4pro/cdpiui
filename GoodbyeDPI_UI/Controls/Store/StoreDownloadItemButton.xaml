@@ -84,7 +84,7 @@
                             <FontIcon Glyph="{x:Bind ActionGlyph, Mode=OneWay}" FontSize="16"/>
                         </Button>
                         <Grid x:Name="UpdateGrid">
-                            <Button x:Name="UpdateButton" Content="Update now" Style="{ThemeResource AccentButtonStyle}" Visibility="Collapsed" Click="UpdateButton_Click"/>
+                            <Button x:Name="UpdateButton" l:Uids.Uid="UpdateNowButton" Style="{ThemeResource AccentButtonStyle}" Visibility="Collapsed" Click="UpdateButton_Click"/>
                         </Grid>
                     </StackPanel>
                     <StackPanel x:Name="StatusStackPanel" Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="5" Margin="0 5 0 2" Spacing="10">
@@ -95,10 +95,10 @@
                         <TextBlock x:Name="ErrorTextBlock" Visibility="Visible" IsTextSelectionEnabled="True"/>
                     </StackPanel>
                     <Grid x:Name="BigUpdateGrid" Grid.Row="2" Grid.ColumnSpan="6">
-                        <Button x:Name="BigUpdateButton" Content="Update now" Style="{ThemeResource AccentButtonStyle}" Visibility="Visible"  HorizontalAlignment="Stretch" Margin="0 5" Click="UpdateButton_Click"/>
+                        <Button x:Name="BigUpdateButton" l:Uids.Uid="UpdateNowButton" Style="{ThemeResource AccentButtonStyle}" Visibility="Visible"  HorizontalAlignment="Stretch" Margin="0 5" Click="UpdateButton_Click"/>
                     </Grid>
                     <StackPanel x:Name="DescriptionStackPanel" Grid.Row="3" Grid.ColumnSpan="5" Margin="70 0 0 10" Spacing="5" Visibility="Collapsed">
-                        <TextBlock Text="Version notes" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 0 0 5"/>
+                        <TextBlock l:Uids.Uid="VersionNotesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 0 0 5"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
