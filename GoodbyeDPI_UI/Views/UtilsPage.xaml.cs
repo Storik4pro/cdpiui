@@ -60,5 +60,10 @@ namespace CDPI_UI.Views
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<ProxySetupUtilWindow>();
         }
+
+        private void TroubleshootinSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<TroubleshootingWindow>();
+        }
     }
 }
