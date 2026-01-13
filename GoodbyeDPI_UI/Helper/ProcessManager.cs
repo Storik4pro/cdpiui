@@ -108,6 +108,11 @@ namespace CDPI_UI.Helper
                 var workingDirectory = componentHelper.GetDirectory();
                 string args = SetupProxy(componentHelper.GetStartupParams(), Id);
 
+                if (StateHelper.Instance.ComponentIdPairs.TryGetValue(Id, out var component))
+                {
+                    if (component == "NoDPI") args = args.Replace("--quiet", "") + "--quiet";
+                }
+
                 Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -147,6 +152,11 @@ namespace CDPI_UI.Helper
                 var workingDirectory = componentHelper.GetDirectory();
                 args = SetupProxy(args, Id);
 
+                if (StateHelper.Instance.ComponentIdPairs.TryGetValue(Id, out var component))
+                {
+                    if (component == "NoDPI") args = args.Replace("--quiet", "") + "--quiet";
+                }
+
                 Logger.Instance.CreateDebugLog(nameof(ProcessManager), $"Args is {args}");
 
                 _cancellationTokenSource = new CancellationTokenSource();
@@ -174,6 +184,8 @@ namespace CDPI_UI.Helper
             string finalArgs = Utils.ReplaseIp(args);
             if (componentId == "CSSIXC048")
                 finalArgs = $"-addr={ip} -port={port} " + finalArgs;
+            else if (componentId == "CSNIG9025")
+                finalArgs = $"--host={ip} --port={port} " + finalArgs;
             else
                 finalArgs = $"--ip={ip} --port={port} " + finalArgs;
             return finalArgs;
