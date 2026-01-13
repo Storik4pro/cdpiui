@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:tcontrols="using:CDPI_UI.Controls.CreateConfigHelper"
     xmlns:lcontrol="using:CDPI_UI"
     xmlns:textcontrolbox="using:TextControlBoxNS"
     xmlns:ucontrols="using:CDPI_UI.Controls.Universal"
@@ -81,20 +82,19 @@
                 </SelectorBar>
                 <Grid x:Name="GUIDesignerGrid" Visibility="Collapsed" Padding="10 0 20 0" MinWidth="400" Grid.Row="1">
                     <ScrollViewer Padding="0 0 15 10">
-                        <StackPanel Spacing="5">
-                            <ListView x:Name="GUIDesignerListView" SelectionMode="None" Padding="0"
-                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                        <StackPanel Spacing="2">
+                            <ListView x:Name="GUIDesignerExclusiveListView" SelectionMode="None" Padding="0"
+                                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="local:GraphicDesignerSettingItemModel">
-                                        <lcontrol:ComponentSettingUserControl 
-                                    Guid="{x:Bind Guid, Mode=OneWay}"
-                                    DisplayName="{x:Bind DisplayName, Mode=OneWay}"
-                                    Description="{x:Bind Description, Mode=OneWay}"
-                                    EnableTextInput="{x:Bind EnableTextInput, Mode=OneWay}"
-                                    TextValue="{x:Bind Value, Mode=OneWay}"
-                                    IsSettingChecked="{x:Bind IsChecked, Mode=OneWay}"
-                                    ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
-                                    ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
+                                    <DataTemplate x:DataType="local:GraphicDesignerExclusiveSettingItemModel">
+                                        <tcontrols:ComponentSettingsExclusiveGroupUserControl 
+                                            Guid="{x:Bind Guid, Mode=OneWay}"
+                                            DisplayName="{x:Bind DisplayName, Mode=OneWay}"
+                                            SelectedItemGuid="{x:Bind SelectedItemGuid, Mode=OneWay}"
+                                            AvailableVariants="{x:Bind Items, Mode=OneWay}"
+                                            NowSelectedGuidChangedCommand="{Binding DataContext.GraphicDesignerSelectedGuidChangedCommand, ElementName=RootPage}"
+                                            ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
+                                            ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                                 <ListView.ItemsPanel>
@@ -103,7 +103,30 @@
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
                             </ListView>
-                            <StackPanel x:Name="AdditionalSettingsPanel" Visibility="Collapsed">
+                            <ListView x:Name="GUIDesignerListView" SelectionMode="None" Padding="0"
+                                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:GraphicDesignerSettingItemModel">
+                                        <lcontrol:ComponentSettingUserControl 
+                                            Guid="{x:Bind Guid, Mode=OneWay}"
+                                            DisplayName="{x:Bind DisplayName, Mode=OneWay}"
+                                            Description="{x:Bind Description, Mode=OneWay}"
+                                            EnableTextInput="{x:Bind EnableTextInput, Mode=OneWay}"
+                                            TextValue="{x:Bind Value, Mode=OneWay}"
+                                            Type="{x:Bind Type, Mode=OneWay}"
+                                            AvailableEnumValues="{x:Bind AvailableEnumValues, Mode=OneWay}"
+                                            IsSettingChecked="{x:Bind IsChecked, Mode=OneWay}"
+                                            ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
+                                            ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="2"/>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                            <StackPanel x:Name="AdditionalSettingsPanel" Visibility="Collapsed" Margin="0 5 0 0">
                                 <TextBlock l:Uids.Uid="AdditionalSettingsTitle" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                 <TextBox x:Name="AdditionalSettingsTextBox"/>
                             </StackPanel>

@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -66,7 +67,50 @@ public partial class GraphicDesignerSettingItemModel : INotifyPropertyChanged
     public string Guid { get; set; }
     public string DisplayName { get; set; }
     public string Description { get; set; }
+    public string Type { get; set; }
+    public List<EnumModel> AvailableEnumValues { get; set; }
     public bool EnableTextInput { get; set; }
+    public string _value = "";
+    public string Value {
+        get => _value;
+        set => SetField(ref _value, value);
+    }
+
+    private bool isChecked = false;
+    public bool IsChecked
+    {
+        get => isChecked;
+        set => SetField(ref isChecked, value);
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+}
+public partial class GraphicDesignerExclusiveSettingItemModel : INotifyPropertyChanged
+{
+    public string Guid { get; set; }
+    public string DisplayName { get; set; }
+
+    private string _selectedItemGuid = "";
+    public string SelectedItemGuid 
+    {
+        get => _selectedItemGuid;
+        set => SetField(ref _selectedItemGuid, value);
+    }
+    public ObservableCollection<GraphicDesignerSettingItemModel> Items { get; set; }
+
     public string _value = "";
     public string Value {
         get => _value;
@@ -106,7 +150,7 @@ public enum AskAutoFillMode
 
 public sealed partial class CreateNewConfigPage : Page
 {
-    private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036"];
+    private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036", "CSNIG9025"];
     
     private class ComponentModel
     {
@@ -123,7 +167,9 @@ public sealed partial class CreateNewConfigPage : Page
 
     public ICommand GraphicDesignerTextValueChangedCommand { get; }
     public ICommand GraphicDesignerBoolValueToggledCommand { get; }
+    public ICommand GraphicDesignerSelectedGuidChangedCommand { get; }
     public ObservableCollection<GraphicDesignerSettingItemModel> DesignerSettingItemModels { get; } = [];
+    public ObservableCollection<GraphicDesignerExclusiveSettingItemModel> DesignerExclusiveSettingItemModels { get; } = [];
 
     private object navigationParameter;
 
@@ -145,8 +191,10 @@ public sealed partial class CreateNewConfigPage : Page
 
         GraphicDesignerTextValueChangedCommand = new RelayCommand(p => HandleGraphicDesignerTextValueChanged((Tuple<string, string>)p));
         GraphicDesignerBoolValueToggledCommand = new RelayCommand(p => HandleGraphicDesignerBoolValueToggled((Tuple<string, bool>)p));
+        GraphicDesignerSelectedGuidChangedCommand = new RelayCommand(p => HandleGraphicDesignerSelectedGuidChanged((Tuple<string, string>)p));
 
         GUIDesignerListView.ItemsSource = DesignerSettingItemModels;
+        GUIDesignerExclusiveListView.ItemsSource = DesignerExclusiveSettingItemModels;
 
         CheckHighlight();
 
@@ -962,15 +1010,27 @@ public sealed partial class CreateNewConfigPage : Page
     private void LoadDesigner()
     {
         if (ComponentChooseComboBox.SelectedItem == null) return;
-        if (StateHelper.Instance.FindKeyByValue("GoodbyeDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+        string id = ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id;
+        if (StateHelper.Instance.FindKeyByValue("GoodbyeDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
         {
-            GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(DesignerSettingItemModels);
+            GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
             NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("GoodbyeDPI");
         }
-        else if (StateHelper.Instance.FindKeyByValue("SpoofDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("SpoofDPI"))
+        else if (StateHelper.Instance.FindKeyByValue("SpoofDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("SpoofDPI"))
         {
-            GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(DesignerSettingItemModels);
+            GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
             NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("SpoofDPI");
+        }
+        else if (StateHelper.Instance.FindKeyByValue("NoDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("NoDPI"))
+        {
+            string dir = DatabaseHelper.Instance.GetItemById(id)?.Directory?? string.Empty;
+            string xmlFile = Path.Combine(dir, "edannotationfile.xml");
+            if (File.Exists(xmlFile))
+            {
+                GraphicDesignerHelper.XML_LoadDesignerConfig(xmlFile, "nodpi", DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
+                NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("NoDPI");
+            }
+            
         }
     }
 
@@ -983,7 +1043,16 @@ public sealed partial class CreateNewConfigPage : Page
         if (item != null)
         {
             item.Value = value;
-            Debug.WriteLine(item.Value);
+        }
+        else
+        {
+
+            item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Items.FirstOrDefault(y => y.Guid == guid) != null)?.Items.FirstOrDefault(y => y.Guid == guid);
+            
+            if (item != null)
+            {
+                item.Value = value;
+            }
         }
     }
 
@@ -996,16 +1065,34 @@ public sealed partial class CreateNewConfigPage : Page
         var item = DesignerSettingItemModels.FirstOrDefault(x => x.Guid == guid);
         if (item != null)
         {
-            Debug.WriteLine(_value);
             item.IsChecked = _value;
-            
+        }
+        else
+        {
+            item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Items.FirstOrDefault(y => y.Guid == guid) != null)?.Items.FirstOrDefault(y => y.Guid == guid);
+            if (item != null)
+            {
+                item.IsChecked = _value;
+            }
+        }
+    }
+
+    private void HandleGraphicDesignerSelectedGuidChanged(Tuple<string, string> tuple)
+    {
+        string guid = tuple.Item1;
+        string selGuid = tuple.Item2;
+        var item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Guid == guid);
+        if (item != null)
+        {
+            Debug.WriteLine(selGuid);
+            item.SelectedItemGuid = selGuid;
         }
     }
 
     private void ConvertStringToDesignerLikeSettings()
     {
         StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
-        AdditionalSettingsTextBox.Text = GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(DesignerSettingItemModels, StartupStringTextBox.Text);
+        AdditionalSettingsTextBox.Text = GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(DesignerSettingItemModels, DesignerExclusiveSettingItemModels, StartupStringTextBox.Text);
     }
     private void ConvertDesignerLikeSettingsToString()
     {
@@ -1014,7 +1101,7 @@ public sealed partial class CreateNewConfigPage : Page
             return;
         }
 
-        StartupStringTextBox.Text = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(DesignerSettingItemModels, AdditionalSettingsTextBox.Text);
+        StartupStringTextBox.Text = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(DesignerSettingItemModels, DesignerExclusiveSettingItemModels, AdditionalSettingsTextBox.Text);
         StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
     }
 
