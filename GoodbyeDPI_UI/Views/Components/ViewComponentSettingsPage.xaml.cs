@@ -323,7 +323,7 @@ namespace CDPI_UI.Views.Components
                     }
                     else
                     {
-                        OpenFile(contentDefinition.EditFilePath);
+                        Utils.OpenFile(contentDefinition.EditFilePath);
                     }
                     break;
                 case ActionIds.SwitchToggled:
@@ -339,19 +339,6 @@ namespace CDPI_UI.Views.Components
                     ButtonClick(contentDefinition.ClickId);
                     break;
 
-            }
-        }
-        private void OpenFile(string file)
-        {
-            int openMode = SettingsManager.Instance.GetValue<int>("FILEOPENACTIONS", "mode");
-            string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
-            if (openMode == (int)TextFileOpenModes.UserChoose && File.Exists(appPath))
-            {
-                Utils.RunApp(appPath, $"\"{file}\"");
-            }
-            else
-            {
-                Utils.OpenFileInDefaultApp(file);
             }
         }
         private async void ShowEditAskDialog(string file)
