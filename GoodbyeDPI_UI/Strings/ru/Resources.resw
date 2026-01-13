@@ -1655,4 +1655,16 @@
   <data name="VersionNotesTextBlock.Text" xml:space="preserve">
     <value>Заметки к выпуску</value>
   </data>
+  <data name="ExclusiveGroupTextBlock.Text" xml:space="preserve">
+    <value>Взаимоисключающая группа</value>
+  </data>
+  <data name="RemoveFileButton.ToolTipService.Tooltip" xml:space="preserve">
+    <value>Удалить файл</value>
+  </data>
+  <data name="SelectFileText.Text" xml:space="preserve">
+    <value>Выбрать файл</value>
+  </data>
+  <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить этот файл в приложении по умолчанию</value>
+  </data>
 </root>

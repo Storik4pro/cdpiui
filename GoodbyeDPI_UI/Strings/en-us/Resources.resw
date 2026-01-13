@@ -1652,4 +1652,16 @@ To fix this, go to the component settings page and select the [Startup automatic
   <data name="VersionNotesTextBlock.Text" xml:space="preserve">
     <value>Version notes</value>
   </data>
+  <data name="ExclusiveGroupTextBlock.Text" xml:space="preserve">
+    <value>Exclusive group</value>
+  </data>
+  <data name="RemoveFileButton.ToolTipService.Tooltip" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
+  <data name="SelectFileText.Text" xml:space="preserve">
+    <value>Select file</value>
+  </data>
+  <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit this file in default app</value>
+  </data>
 </root>
