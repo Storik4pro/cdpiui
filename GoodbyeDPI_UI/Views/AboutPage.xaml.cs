@@ -189,7 +189,7 @@ namespace CDPI_UI.Views
 
         private void SetCurrentVersion(string version)
         {
-            CurrentVersionTextBlock.Text = string.Format(localizer.GetLocalizedString("CurrentVersion"), version);
+            CurrentVersionTextBlock.Text = string.Format(localizer.GetLocalizedString("CurrentVersion"), version) + (Utils.IsApplicationBuildAsMsi ? " MSI-BUILD" : " PORTABLE-BUILD");
         }
         private void SetServerVersion(string version)
         {

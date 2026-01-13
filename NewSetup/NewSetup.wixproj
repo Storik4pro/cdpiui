@@ -1,0 +1,43 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <!-- If MSIProductVersion not passed in, try to get it from TFBuild Environments (XAML Builds)-->
+    <MSIProductVersion Condition=" '$(MSIProductVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Match($(TF_BUILD_BUILDNUMBER), "\d+.\d+.\d+.\d+"))</MSIProductVersion>
+    <!-- If MSIProductVersion still not known, try to get it from TFBuild Environments (V.Next Builds)-->
+    <MSIProductVersion Condition=" '$(MSIProductVersion)' == '' ">$([System.Text.RegularExpressions.Regex]::Match($(BUILD_BUILDNUMBER), "\d+.\d+.\d+.\d+"))</MSIProductVersion>
+    <!-- If MSIProductVersion still not known, default to lowerbound 0.0.1 for developer builds.-->
+    <MSIProductVersion Condition=" '$(MSIProductVersion)' == '' ">0.2.0</MSIProductVersion>
+    <!-- The following allows one cert to be referenced from the certificate store for self-signing in localbuilds and another cert to be passed in during official builds. -->
+    <AppxCertificateThumbprint Condition=" '$(AppxCertificateThumbprint)' == '' ">
+    </AppxCertificateThumbprint>
+    <AppxTimestampUrl Condition=" '$(AppxTimestampUrl)' == '' ">
+    </AppxTimestampUrl>
+    <MsixCertificateThumbprint Condition=" '$(MsixCertificateThumbprint)' == '' ">
+    </MsixCertificateThumbprint>
+    <MsixTimestampUrl Condition=" '$(MsixTimestampUrl)' == '' ">
+    </MsixTimestampUrl>
+    <OutputName>NewSetup</OutputName>
+    <OutputType>Package</OutputType>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <SuppressIces>ICE64</SuppressIces>
+    <DefineConstants>Debug;MSIProductVersion=$(MSIProductVersion)</DefineConstants>
+    <WixVariables>WixUIBannerBmp=Resources\Banner.jpg;WixUIDialogBmp=Resources\Dialog.jpg;WixUILicenseRtf=Resources\EULA.rtf</WixVariables>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <SuppressIces>ICE64</SuppressIces>
+    <DefineConstants>MSIProductVersion=$(MSIProductVersion)</DefineConstants>
+    <WixVariables>WixUIBannerBmp=Resources\Banner.jpg;WixUIDialogBmp=Resources\Dialog.jpg;WixUILicenseRtf=Resources\EULA.rtf</WixVariables>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Resources\Banner.jpg" />
+    <Content Include="Resources\Dialog.jpg" />
+    <Content Include="Resources\Icon.ico" />
+    <Content Include="Resources\EULA.rtf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Iis.wixext" Version="6.0.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="6.0.2" />
+    <PackageReference Include="WixToolset.NetFx.wixext" Version="6.0.2" />
+  </ItemGroup>
+</Project>

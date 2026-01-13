@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- 
+  MSIProductVersion is defined in NewSetup.wixproj as 0.0.1 for local desktop builds.  
+  You should pass in the MSBuild Property 'MSIProductVersion' to override it during an automated build.
+  See http://msdn.microsoft.com/en-us/library/windows/desktop/aa370859%28v=vs.85%29.aspx for information on allowable values.
+  
+  The Product@Id attribute (ProductCode Property) will be a random GUID for each build.  This is to support "Major Upgrades" where each install 
+  is a seamless uninstall/reinstall.
+  -->
+  <Package Name="CDPI UI" Language="0" Version="$(var.MSIProductVersion)" Manufacturer="Storik4" UpgradeCode="{AB14590E-0D10-416F-9A0E-07E63074B603}">
+    <SummaryInformation />
+    <MediaTemplate EmbedCab="yes" />
+    <!-- Major Upgrade Rule to disallow downgrades -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <!-- Uncomment below two lines to require .NET 4.8 or Later to install -->
+    <!-- <PropertyRef Id="WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" /> -->
+    <!-- <Launch Condition="Installed OR WIX_IS_NETFRAMEWORK_48_OR_LATER_INSTALLED" Message="[ProductName] requires .NET Framework 4.8 or later." /> -->
+    <Icon Id="Icon.ico" SourceFile="Resources\Icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="Icon.ico"></Property>
+    <Property Id="DISABLEADVTSHORTCUTS" Value="0"></Property>
+
+    <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+    <Property Id="InstallPrivileges" Value="elevated" />
+    <Property Id="AdminImage" Value="yes" />
+
+    <UIRef Id="UI" />
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="CompanyFolder" Name="Storik4">
+        <Directory Id="INSTALLLOCATION" Name="CDPI UI" />
+      </Directory>
+    </StandardDirectory>
+    <Feature Id="NewSetup" Title="CDPI UI" Description="Installs all the files needed for CDPI UI" Level="1" AllowAdvertise="no" ConfigurableDirectory="INSTALLLOCATION">
+      <ComponentGroupRef Id="NewSetupFiles" />
+    </Feature>
+    <CustomAction Id="LaunchApp" Directory="INSTALLLOCATION" ExeCommand="[SystemFolder]cmd.exe /C start CDPIUI.exe" Return="asyncNoWait" />
+    <InstallExecuteSequence>
+      <Custom Action="LaunchApp" After="InstallFinalize" Condition="NOT REMOVE" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>
