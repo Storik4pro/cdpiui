@@ -34,14 +34,23 @@ namespace CDPI_UI.Helper
 
         private TasksHelper()
         {
-            AddNewTask("CSZTBN012");
-            AddNewTask("CSGIVS036");
-            AddNewTask("CSBIHA024");
-            AddNewTask("CSSIXC048");
+            UpdateTaskList();
 
             Items.ComponentItemsLoaderHelper.Instance.InitRequested += SendTasksData;
             StoreHelper.Instance.ItemActionsStopped += (id) => RequestComponentItemsInit();
             StoreHelper.Instance.ItemRemoved += (id) => RequestComponentItemsInit();
+        }
+
+        public void UpdateTaskList()
+        {
+            var _tasks = Tasks;
+            StopAllTasks();
+            foreach (var item in DatabaseHelper.Instance.GetItemsByType("component"))
+            {
+                AddNewTask(item.Id);
+                if (_tasks.FirstOrDefault(x => x.Id == item.Id)?.ProcessManager?.processState ?? false)
+                    CreateAndRunNewTask(item.Id);
+            }
         }
 
         public List<TaskModel> Tasks { get; private set; } = [];
@@ -59,7 +68,7 @@ namespace CDPI_UI.Helper
         public async Task SendTaskData(string id)
         {
             var task = await GetTaskFromId(id);
-            if (DatabaseHelper.Instance.IsItemInstalled(task.Id))
+            if (task != null && DatabaseHelper.Instance.IsItemInstalled(task.Id))
             {
                 Items.ComponentHelper componentHelper =
                     Items.ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(task.Id);
