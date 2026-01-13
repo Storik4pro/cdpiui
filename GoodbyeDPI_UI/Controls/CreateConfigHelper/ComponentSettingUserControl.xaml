@@ -6,10 +6,11 @@
     xmlns:local="using:CDPI_UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
-    <Grid>
-        <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="5" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}" BorderThickness="1"/>
+    <Grid Background="{ThemeResource GalleryBackgroundBrush}" CornerRadius="5">
+        <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" CornerRadius="5" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"/>
         <Grid Padding="10 5" Height="55">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -20,11 +21,47 @@
             <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center"/>
             <TextBlock Text="{x:Bind Description, Mode=OneWay}" Grid.Column="2" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
             <StackPanel Orientation="Horizontal" Grid.Column="3" VerticalAlignment="Center">
-                <CheckBox Padding="10 0 0 0" x:Name="MainCheckBox" Checked="MainCheckBox_Checked" Unchecked="MainCheckBox_Unchecked">
-                    <TextBox x:Name="MainTextBox" Width="200" VerticalAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=MainCheckBox}" TextChanged="TextBox_TextChanged"/>
+                <CheckBox Padding="10 0 0 0" x:Name="MainCheckBox" Checked="MainCheckBox_Checked" Unchecked="MainCheckBox_Unchecked" Visibility="Collapsed">
+                    <Grid>
+                        <TextBox x:Name="MainTextBox" Width="200" VerticalAlignment="Center" IsEnabled="{Binding IsChecked, ElementName=MainCheckBox}" TextChanged="TextBox_TextChanged"/>
+
+                        <Grid x:Name="FilePathStackPanel" Width="200">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="SelectFileButton" Click="SelectFileButton_Click" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" IsEnabled="{Binding IsChecked, ElementName=MainCheckBox}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <FontIcon Glyph="&#xE8E5;" FontSize="16"/>
+                                    <TextBlock l:Uids.Uid="SelectFileText" x:Name="SelectFileText"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button l:Uids.Uid="ViewSelectedFileButton" x:Name="ViewSelectedFileButton" Click="ViewSelectedFileButton_Click" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon Glyph="&#xE70F;" FontSize="16"/>
+                                    <TextBlock Grid.Column="2" x:Name="SelectedFileText"/>
+                                </Grid>
+                            </Button>
+                            <Button l:Uids.Uid="RemoveFileButton" x:Name="RemoveFileButton" Click="RemoveFileButton_Click" Grid.Column="2" Padding="6" Height="32" Width="32">
+                                <FontIcon Glyph="&#xE711;" FontSize="16"/>
+                            </Button>
+                        </Grid>
+                    </Grid>
+
                 </CheckBox>
-                <ToggleSwitch x:Name="MainToggleSwitch" OnContent="" OffContent="" Toggled="MainToggleSwitch_Toggled" MinWidth="0" Width="40"/>
+                <ToggleSwitch x:Name="MainToggleSwitch" OnContent="" OffContent="" Toggled="MainToggleSwitch_Toggled" MinWidth="0" Width="40" Visibility="Collapsed"/>
+                <ComboBox x:Name="EnumPropertyComboBox" ItemsSource="{x:Bind AvailableEnumValues, Mode=OneWay}" DisplayMemberPath="DisplayName" SelectionChanged="EnumPropertyComboBox_SelectionChanged" Width="200" Visibility="Collapsed"/>
+                
             </StackPanel>
+            
         </Grid>
     </Grid>
 </UserControl>
