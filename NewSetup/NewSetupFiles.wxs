@@ -1,0 +1,745 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?define ComponentRules="OneToOne"?>
+  <!-- SourceDir instructs IsWiX the location of the directory that contains files for this wix library -->
+  <?define SourceDir="..\GoodbyeDPI_UI\bin\ARM64\Release\net8.0-windows10.0.22621.0\publish"?>
+  <Fragment>
+    <ComponentGroup Id="NewSetupFiles">
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\AK.Toolkit.WinUI3.RichTextBlockExtensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Ad">
+        <File Source="$(var.SourceDir)\Assets\Ad\EasyConvertFromBatAd.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\favicon.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\DragReorder.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Edit-68x68.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Edit.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Edit.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\github.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\GoodCheck.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\GoodCheck.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Help.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\OpenInNewWindow.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Proxy.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Pseudoconsole.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Pseudoconsole.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Store.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Troubleshooting.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\LockScreenLogo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\SplashScreen.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\Square150x150Logo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\Square44x44Logo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\Square44x44Logo.targetsize-24_altform-unplated.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\byedpi.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\empty.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\goodbyedpi.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\spoofdpi.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\StoreLogo.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Wallpaper\Kislovodsk">
+        <File Source="$(var.SourceDir)\Assets\Wallpaper\Kislovodsk\1.jpeg" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
+        <File Source="$(var.SourceDir)\Assets\Wide310x150Logo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI_TrayIcon.exe" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.deps.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.exe" KeyPath="yes">
+          <Shortcut Id="scDF15AB8DBDE02B13172C6C48362FA537" Name="CDPI UI" Directory="ProgramMenuFolder" Advertise="yes" Description="CDPI UI Application shortcut" />
+          <Shortcut Id="sc24258E37998A672CD76DCF8DFF1718FE" Name="CDPI UI" Directory="DesktopFolder" Advertise="yes" Description="CDPI UI Application shortcut" />
+        </File>
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.runtimeconfig.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Collections.Pooled.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.Common.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.Labs.WinUI.Shimmer.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.Labs.WinUI.TokenView.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Animations.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Behaviors.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.HeaderedControls.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.MarkdownTextBlock.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.Primitives.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.Segmented.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.SettingsControls.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.Sizers.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.TokenView.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Converters.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Extensions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Helpers.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Triggers.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.UI.Animations.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CoreMessagingXP.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\dcompi.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\dwmcorei.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\DwmSceneI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\DWriteCore.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\e_sqlite3.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
+        <File Source="$(var.SourceDir)\en-us\Microsoft.ui.xaml.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
+        <File Source="$(var.SourceDir)\en-us\Microsoft.UI.Xaml.Phone.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\EN\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\EN\GettingStarted\FirstSteps.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\EN\GettingStarted\LearnMoreAboutUI.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\TroubleshootingComponentExceptions">
+        <File Source="$(var.SourceDir)\Help\EN\TroubleshootingComponentExceptions\BasicTroubleshooting.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN">
+        <File Source="$(var.SourceDir)\Help\EN\WelcomeToHelp.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\RU\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\RU\GettingStarted\FirstSteps.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\GettingStarted">
+        <File Source="$(var.SourceDir)\Help\RU\GettingStarted\LearnMoreAboutUI.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\TroubleshootingComponentExceptions">
+        <File Source="$(var.SourceDir)\Help\RU\TroubleshootingComponentExceptions\BasicTroubleshooting.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU">
+        <File Source="$(var.SourceDir)\Help\RU\WelcomeToHelp.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\HtmlAgilityPack.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\INIFileParser.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Markdig.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\marshal.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Data.Sqlite.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.DirectManipulation.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Extensions.Logging.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Foundation.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Canvas.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Canvas.Interop.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Display.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Imaging.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Imaging.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Imaging.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.ImagingInternal.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.Internal.Imaging.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Graphics.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.IdentityModel.Abstractions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.IdentityModel.Logging.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.IdentityModel.Tokens.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.InputStateManager.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.InteractiveExperiences.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Internal.FrameworkUdk.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Security.Authentication.OAuth.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Security.Authentication.OAuth.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Composition.OSSupport.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Input.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.pri" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Text.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Windowing.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Windowing.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml.Controls.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml.Controls.pri" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.ui.xaml.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml.Internal.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml.Phone.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.ui.xaml.resources.19h1.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.ui.xaml.resources.common.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Microsoft.UI.Xaml\Assets">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml\Assets\map.html" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Microsoft.UI.Xaml\Assets">
+        <File Source="$(var.SourceDir)\Microsoft.UI.Xaml\Assets\NoiseAsset_256x256_PNG.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Web.WebView2.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Web.WebView2.Core.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.ContentModerationInternal.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.ContentSafety.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.ContentSafety.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.ContentSafety.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Foundation.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.FoundationInternal.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.GenerativeInternal.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Imaging.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Imaging.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Imaging.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Text.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Text.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.Text.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AI.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Background.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Background.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.DynamicDependency.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.DynamicDependency.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Resources.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.Resources.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.ApplicationModel.WindowsAppRuntime.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppLifecycle.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppLifecycle.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppNotifications.Builder.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppNotifications.Builder.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppNotifications.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.AppNotifications.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.BadgeNotifications.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.BadgeNotifications.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Globalization.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Internal.Vision.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Management.Deployment.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Management.Deployment.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Media.Capture.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Media.Capture.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Private.Workloads.SessionManager.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.PrivateCommon.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.PushNotifications.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.PushNotifications.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.SDK.NET.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Security.AccessControl.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Security.AccessControl.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.SemanticSearch.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Storage.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Storage.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.System.Power.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.System.Power.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.System.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.System.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Vision.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.VisionInternal.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Widgets.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Widgets.Projection.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Widgets.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Workloads.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Workloads.Resources_ec.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Workloads.Resources.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Windows.Workloads.winmd" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAPICodePack.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAppRuntime.Bootstrap.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAppRuntime.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WindowsAppRuntime.Insights.Resource.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.WinUI.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Xaml.Interactions.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Xaml.Interactivity.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\MRM.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Newtonsoft.Json.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="NpuDetect">
+        <File Source="$(var.SourceDir)\NpuDetect\NPUDetect.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\PushNotificationsLongRunningTask.ProxyStub.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\resources.pri" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\RestartAgent.exe" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\RomanNumerals.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ru-RU">
+        <File Source="$(var.SourceDir)\ru-RU\Microsoft.ui.xaml.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ru-RU">
+        <File Source="$(var.SourceDir)\ru-RU\Microsoft.UI.Xaml.Phone.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\SessionHandleIPCProxyStub.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\SQLitePCLRaw.batteries_v2.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\SQLitePCLRaw.core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\SQLitePCLRaw.provider.e_sqlite3.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Flashlight.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\GoodCheckAdditionalSettings.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\GraphicDesignerDescriptions.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Help.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Resources.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\SettingTiles.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Troubleshooting.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\UIHelper.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Flashlight.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\GoodCheckAdditionalSettings.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\GraphicDesignerDescriptions.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Help.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Resources.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\SettingTiles.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Troubleshooting.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\UIHelper.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.CodeDom.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.Diagnostics.EventLog.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.Diagnostics.EventLog.Messages.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.Management.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.ServiceProcess.ServiceController.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\System.Text.Encoding.CodePages.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Template\Settings">
+        <File Source="$(var.SourceDir)\Template\Settings\Settings.xml" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\TextControlBox.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Unidecode.NET.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WebView2Loader.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WindowsAppRuntime.DeploymentExtensions.OneCore.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WindowsAppRuntime.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WindowsAppSdk.AppxDeploymentExtensions.Desktop-EventLog-Instrumentation.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WindowsAppSdk.AppxDeploymentExtensions.Desktop.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WinRT.Runtime.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WinUI3Localizer.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WinUIEdit.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\WinUIEx.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\workloads.365.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\workloads.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\workloads.lnl.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\workloads.qnn.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\workloads.stx.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\wuceffectsi.dll" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
