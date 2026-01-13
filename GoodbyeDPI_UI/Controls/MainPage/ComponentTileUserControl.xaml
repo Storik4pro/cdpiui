@@ -115,7 +115,7 @@
                     <Grid>
                         <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="0" />
                     </Grid>
-                    <StackPanel Padding="10" VerticalAlignment="Bottom">
+                    <StackPanel Padding="10" VerticalAlignment="Top">
                         <lcontrols:IconButton x:Name="StateToggleButton" IconGlyph="&#xF5B0;" CheckedIconGlyph="&#xF8AE;" IsButtonToggle="True" HorizontalAlignment="Stretch" ClickCommand="{Binding ToggleProcessButtonClickCommand, ElementName=MainUserControl}"/>
                         <lcontrols:IconButton x:Name="ViewOutputIconButton" IconGlyph="&#xF78B;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewOutputClickCommand, ElementName=MainUserControl}"/>
                         <lcontrols:IconButton x:Name="SettingsIconButton" IconGlyph="&#xE713;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewSettingsButtonClickCommand, ElementName=MainUserControl}"/>
