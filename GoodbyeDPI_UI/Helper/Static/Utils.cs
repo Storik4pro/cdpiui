@@ -161,6 +161,20 @@ namespace CDPI_UI.Helper.Static
             }
         }
 
+        public static void OpenFile(string file)
+        {
+            int openMode = SettingsManager.Instance.GetValue<int>("FILEOPENACTIONS", "mode");
+            string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
+            if (openMode == (int)TextFileOpenModes.UserChoose && File.Exists(appPath))
+            {
+                Utils.RunApp(appPath, $"\"{file}\"");
+            }
+            else
+            {
+                Utils.OpenFileInDefaultApp(file);
+            }
+        }
+
         public static void OpenFileInDefaultApp(string filePath)
         {
             try
@@ -446,7 +460,7 @@ namespace CDPI_UI.Helper.Static
             }
         }
 
-        public static List<string> Tokens = new() { "-p", "--port", "-i", "--ip", "-addr" };
+        public static List<string> Tokens = new() { "-p", "--port", "-i", "--ip", "-addr", "--host" };
 
         public static string ReplaseIp(string args)
         {
@@ -487,6 +501,17 @@ namespace CDPI_UI.Helper.Static
             if (string.IsNullOrWhiteSpace(name))
                 return string.Empty;
             return name.Replace("dpi", "DPI", StringComparison.OrdinalIgnoreCase).FirstCharToUpper();
+        }
+
+        // https://stackoverflow.com/a/40361205
+        readonly static Uri SomeBaseUri = new Uri("https://canbeanything");
+        public static string GetFileNameFromUrl(string url)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+                uri = new Uri(SomeBaseUri, url);
+
+            return Path.GetFileName(uri.LocalPath);
         }
 
 #if SINGLEFILE
