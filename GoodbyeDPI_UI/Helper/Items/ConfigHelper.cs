@@ -588,6 +588,11 @@ namespace CDPI_UI.Helper.Items
                         name = param.Substring("--hostlist=".Length);
                         type = "SiteList";
                     }
+                    else if (param.StartsWith("--blacklist="))
+                    {
+                        name = param.Substring("--blacklist=".Length);
+                        type = "SiteList";
+                    }
                     else if (param.StartsWith("--ipset="))
                     {
                         name = param.Substring("--ipset=".Length);
@@ -598,11 +603,11 @@ namespace CDPI_UI.Helper.Items
                         name = param.Substring("--hostlist-auto=".Length);
                         type = "AutoSiteList";
                     }
-                    else if ((param == "--hostlist" || param == "--ipset" || param == "--hostlist-auto")
+                    else if ((param == "--hostlist" || param == "--ipset" || param == "--hostlist-auto" || param == "--blacklist")
                              && i + 1 < tokens.Count)
                     {
                         name = tokens[i + 1];
-                        type = param == "--hostlist"
+                        type = param == "--hostlist" || param == "--blacklist"
                                    ? "SiteList"
                                    : param == "--ipset"
                                        ? "IpList"
