@@ -216,7 +216,7 @@
     <value>Продолжение невозможно</value>
   </data>
   <data name="CreateConfigHelperSettingsCard.Description" xml:space="preserve">
-    <value>Создание нового пресета. Редактирование набора настроек. Импортирование пресета из .bat файла</value>
+    <value>Создание нового пресета. Редактирование набора настроек. Импортирование пресета из .bat-файла</value>
   </data>
   <data name="CreateConfigHelperSettingsCard.Header" xml:space="preserve">
     <value>Помощник создания и редактирования пресетов</value>
@@ -231,7 +231,7 @@
     <value>Создайте свой пресет</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Description" xml:space="preserve">
-    <value>Подбор параметров запуска для компонентов. Упрощенный сборщик пресетов.</value>
+    <value>Подбор параметров запуска для компонентов. Упрощенный сборщик пресетов</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Header" xml:space="preserve">
     <value>Автоматическая утилита создания пресета</value>
@@ -900,7 +900,7 @@
     <value>Настройка прокси завершена</value>
   </data>
   <data name="ProxySetupCompleteTipTextBlock.Text" xml:space="preserve">
-    <value>Этот способ запуска компонента-прокси был зарегистрирован. Чтобы его изменить откройте этот мастер ещё раз.
+    <value>Этот способ запуска компонента-прокси был зарегистрирован. Чтобы его изменить, откройте этот мастер ещё раз.
 
 Нажмите на кнопку "Выход", чтобы выйти из мастера.</value>
   </data>
@@ -977,7 +977,7 @@
     <value>Настроить через ProxiFyre</value>
   </data>
   <data name="SetupViaProxifyreCard.Description" xml:space="preserve">
-    <value>Поддерживает TCP и UDP подключения, применяется только к выбранным приложениям </value>
+    <value>Поддерживает TCP- и UDP-подключения, применяется только к выбранным приложениям </value>
   </data>
   <data name="SetupProxyManuallyCard.Header" xml:space="preserve">
     <value>Не осуществлять никаких действий</value>
@@ -1658,7 +1658,7 @@
   <data name="ExclusiveGroupTextBlock.Text" xml:space="preserve">
     <value>Взаимоисключающая группа</value>
   </data>
-  <data name="RemoveFileButton.ToolTipService.Tooltip" xml:space="preserve">
+  <data name="RemoveFileButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Удалить файл</value>
   </data>
   <data name="SelectFileText.Text" xml:space="preserve">
