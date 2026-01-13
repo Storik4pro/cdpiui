@@ -136,6 +136,7 @@ namespace CDPI_UI.Helper
             public string preffered_to_download_file_name;
             public string archive_root_folder;
             public string target_executable_file;
+            public string before_install_actions;
             public string after_install_actions;
             public List<string[]> dependencies;
             public string target_minversion;
@@ -1136,6 +1137,8 @@ namespace CDPI_UI.Helper
 
             try
             {
+                if (!await LaunchBeforeInstallActions(LScriptLangHelper.RunScript(item.before_install_actions), itemFolder)) return;
+
                 List<Tuple<string, string>> _dependencies = new List<Tuple<string, string>>();
 
                 foreach (string[] dependency in item.dependencies)
@@ -1184,6 +1187,34 @@ namespace CDPI_UI.Helper
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
                 AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
             }
+        }
+
+        private async Task<bool> LaunchBeforeInstallActions(string actions, string destDir)
+        {
+            if (string.IsNullOrEmpty(actions)) return true;
+            string[] _sActions = actions.Split(';');
+            foreach (var _sAction in _sActions)
+            {
+                if (_sAction.StartsWith("DOWNLOAD="))
+                {
+                    var _p = _sAction.Substring(9).Split("$SEPARATOR");
+                    if (_p.Length < 2) continue;
+                    string url = _p[0];
+                    string filename = _p[1];
+
+                    if (DownloadManager == null)
+                    {
+                        throw new NullReferenceException(nameof(DownloadManager));
+                    }
+
+                    Debug.WriteLine($"URL={url},{filename}");
+
+                    string extention = System.IO.Path.GetExtension(Utils.GetFileNameFromUrl(url));
+                    bool result = await DownloadManager.DownloadAndExtractAsync(url, destDir, extractArchive: url.EndsWith(".zip"), null, null, string.Empty, extention, false, filename);
+                    if (!result) return false;
+                }
+            }
+            return true;
         }
 
         private async Task<bool> GetPatchReadyToInstall(string filePath, string operationId)

@@ -80,7 +80,8 @@ namespace CDPI_UI.Helper
             string extractRootFolder = null,
             string executableFileName = "executableFile",
             string filetype = "",
-            bool removeAfterAction = false
+            bool removeAfterAction = false,
+            string filename = ""
         )
         {
             IsRestartNeeded = false;
@@ -125,11 +126,14 @@ namespace CDPI_UI.Helper
                         File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
                     else
                     {
-                        string exeName = GetFileNameFromUri(url);
+                        string exeName = string.IsNullOrEmpty(filename) ? GetFileNameFromUri(url) : filename;
                         if (string.IsNullOrEmpty(exeName))
                             throw new IOException();
 
-                        File.Copy(tempDestination, Path.Combine(destinationPath, exeName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
+                        string extention = StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, null);
+                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : ".tmp";
+
+                        File.Copy(tempDestination, Path.Combine(destinationPath, exeName + _fName), true);
                     }
                 }
 
