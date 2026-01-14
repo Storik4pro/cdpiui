@@ -7,7 +7,9 @@ using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Interop;
 using Windows.Web;
+using static System.Net.WebRequestMethods;
 
 namespace CDPI_UI.Helper
 {
@@ -47,6 +49,7 @@ namespace CDPI_UI.Helper
             HTTPS_TO_HTTP_ON_REDIRECTION,
             ACCESS_DENIED,
             ERROR_HTTP_HEADER_NOT_FOUND,
+            HTTP_REQUEST_EXCEPTION,
 
             // IO errors
             IO_FILE_NOT_FOUND,
@@ -55,6 +58,10 @@ namespace CDPI_UI.Helper
             IO_ACCESS_DENIED,
             IO_DISK_FULL,
             IO_GENERIC,
+            IO_FILE_USED_FOR_ANOTHER_PROCESS,
+            IO_FILE_INVALID,
+            IO_FILE_CORRUPT,
+            IO_SYSTEM_CANT_ACCESS_FILE,
 
             // Extraction errors
             EXTRACT_INVALID_ARCHIVE,
@@ -73,6 +80,11 @@ namespace CDPI_UI.Helper
         {
             public static PrettyErrorCode? MapExceptionToCode(Exception ex, out uint? rawHResult)
             {
+                return MapExceptionToCode(ex, out rawHResult, out _);
+            }
+            public static PrettyErrorCode? MapExceptionToCode(Exception ex, out uint? rawHResult, out int? statusCode)
+            {
+                statusCode = null;
                 rawHResult = null;
                 for (Exception current = ex; current != null; current = current.InnerException)
                 {
@@ -121,34 +133,51 @@ namespace CDPI_UI.Helper
                                 break;
                         }
                     }
-                    if (current is AddonNotInstalledException)
-                        return PrettyErrorCode.ADDON_NOT_INSTALLED;
-                    if (current is Msiexception)
-                        return PrettyErrorCode.MSI_INSTALL_FAILURE;
-                    if (current is UriFormatException)
-                        return PrettyErrorCode.INVALID_URI;
-                    if (current is HttpRequestException httpEx && httpEx.StatusCode.HasValue)
-                        return PrettyErrorCode.UNEXPECTED_STATUS_CODE;
-
-                    if (current is FileNotFoundException)
-                        return PrettyErrorCode.IO_FILE_NOT_FOUND;
-                    if (current is DirectoryNotFoundException)
-                        return PrettyErrorCode.IO_DIRECTORY_NOT_FOUND;
-                    if (current is PathTooLongException)
-                        return PrettyErrorCode.IO_PATH_TOO_LONG;
-                    if (current is UnauthorizedAccessException)
-                        return PrettyErrorCode.IO_ACCESS_DENIED;
+                    switch (current)
+                    {
+                        case AddonNotInstalledException:
+                                return PrettyErrorCode.ADDON_NOT_INSTALLED;
+                        case Msiexception:
+                                return PrettyErrorCode.MSI_INSTALL_FAILURE;
+                        case UriFormatException:
+                                return PrettyErrorCode.INVALID_URI;
+                        case HttpRequestException:
+                            if (current is HttpRequestException httpEx && httpEx.StatusCode.HasValue)
+                            {
+                                statusCode = (int)httpEx.StatusCode.Value;
+                                return PrettyErrorCode.UNEXPECTED_STATUS_CODE;
+                            }
+                            rawHResult = unchecked((uint)current.HResult);
+                            return PrettyErrorCode.HTTP_REQUEST_EXCEPTION;
+                        case FileNotFoundException:
+                                return PrettyErrorCode.IO_FILE_NOT_FOUND;
+                        case DirectoryNotFoundException:
+                                return PrettyErrorCode.IO_DIRECTORY_NOT_FOUND;
+                        case PathTooLongException:
+                                return PrettyErrorCode.IO_PATH_TOO_LONG;
+                        case UnauthorizedAccessException:
+                                return PrettyErrorCode.IO_ACCESS_DENIED;
+                    }
                     if (current is IOException)
                     {
                         var hrGeneric = unchecked((uint)current.HResult);
                         if (hrGeneric == 0x80070070u)
                             return PrettyErrorCode.IO_DISK_FULL;
+                        if (hrGeneric == 0x80070020)
+                            return PrettyErrorCode.IO_FILE_USED_FOR_ANOTHER_PROCESS;
+                        if (hrGeneric == 0x000003EE)
+                            return PrettyErrorCode.IO_FILE_INVALID;
+                        if (hrGeneric == 0x00000570)
+                            return PrettyErrorCode.IO_FILE_CORRUPT;
+                        if (hrGeneric == 0x00000780)
+                            return PrettyErrorCode.IO_SYSTEM_CANT_ACCESS_FILE;
+
+                        rawHResult = hrGeneric;
                         return PrettyErrorCode.IO_GENERIC;
                     }
                     if (current is InvalidDataException)
                         return PrettyErrorCode.EXTRACT_INVALID_ARCHIVE;
-                    if (current is IOException && ex.Message.Contains("corrupt", StringComparison.OrdinalIgnoreCase))
-                        return PrettyErrorCode.EXTRACT_ENTRY_CORRUPTED;
+                    
 
                     Debug.WriteLine(unchecked((uint)current.HResult));
                     if (current.HResult != 0)

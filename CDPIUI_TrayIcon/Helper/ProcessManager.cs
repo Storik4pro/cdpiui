@@ -88,13 +88,13 @@ namespace CDPIUI_TrayIcon.Helper
             await Task.CompletedTask;
         }
 
-        public void StopProxy()
+        public async Task StopProxy()
         {
             if (proxyType == "AllSystem")
                 StopSystemProxy();
 
             if (proxiFyreHelper.processState)
-                _ = proxiFyreHelper.StopProcess();
+                await proxiFyreHelper.StopProcess();
         }
         
         public async Task StartProcess()
@@ -143,8 +143,11 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async Task StopProcess(bool output = true)
         {
-            StopProxy();
-            await conPTYHelper.StopProcess(output);
+            if (conPTYHelper.processState)
+            {
+                await StopProxy();
+                await conPTYHelper.StopProcess(output);
+            }
 
             await Task.CompletedTask;
         }
@@ -219,7 +222,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public void SendDefaultProcessOutput()
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_FULLOUTPUT({Id}$SEPARATOR{conPTYHelper.GetDefaultOutput()})");
+            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_FULLOUTPUT({Id}$SEPARATOR{proxiFyreHelper.GetDefaultOutput()}\n{conPTYHelper.GetDefaultOutput()})");
         }
         public bool GetState()
         {
@@ -285,7 +288,7 @@ namespace CDPIUI_TrayIcon.Helper
         {
             _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_MESSAGE({Id}$SEPARATOR{output})");
             _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id})");
-            StopProxy();
+            _ = StopProxy();
         }
         private void SendOutput(string output)
         {
@@ -299,7 +302,7 @@ namespace CDPIUI_TrayIcon.Helper
             if (isRunned == false)
             {
                 _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id})");
-                StopProxy();
+                _ = StopProxy();
             }
         }
         private void ShowErrorMessage(Tuple<string, string> tuple)
@@ -307,7 +310,7 @@ namespace CDPIUI_TrayIcon.Helper
             string message = tuple.Item1;
             string _object = tuple.Item2;
             _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id}$SEPARATOR{message}$SEPARATOR{_object})");
-            StopProxy();
+            _ = StopProxy();
         }
 
         private void PFSendStopMessage(string output = "Process will be stopped by user")

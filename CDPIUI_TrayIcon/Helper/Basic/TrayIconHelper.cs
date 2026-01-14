@@ -22,6 +22,7 @@ namespace CDPIUI_TrayIcon.Helper
             { "CSBIHA024", "ByeDPI" },
             { "CSGIVS036", "GoodbyeDPI" },
             { "CSSIXC048", "SpoofDPI" },
+            { "CSNIG9025", "NoDPI" },
         };
 
         private readonly ToolStripItem? ShowAppItem;
@@ -47,7 +48,6 @@ namespace CDPIUI_TrayIcon.Helper
         
 
         private static readonly Icon NormalIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico")!);
-        private static readonly Icon ErrorIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoError.ico")!);
         private static readonly Icon StoppedIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStopped.ico")!);
         private static readonly Icon RunnedIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStarted.ico")!);
         private static readonly Icon RunnedNotAllIcon = new(Utils.Assembly.GetManifestResourceStream("CDPIUI_TrayIcon.Assets.trayLogoStartedNotAll.ico")!);

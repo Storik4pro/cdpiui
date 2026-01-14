@@ -59,6 +59,7 @@
                                 CardImageSource="{x:Bind ImageSource, Mode=OneWay}"
                                 CardBackgroundBrush="{x:Bind CardBackgroundBrush, Mode=OneWay}"
                                 IsUpdateLikeButton="False"
+                                IsErrorHappens="{x:Bind IsErrorHappens, Mode=OneWay}"
                                 ClickCommand="{Binding ActionCommand, ElementName=RootPage}"
                                 ClickCommandParameter="{Binding}"
                                 Margin="0 2.5"/>

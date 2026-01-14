@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    l:Uids.Uid="EditSitelistAskContentDialog"
+    x:Class="CDPI_UI.Controls.Dialogs.ComponentSettings.EditSitelistAskApplicationContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Dialogs.ComponentSettings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button x:Name="FollowSystemButton" Width="120" Height="120" Padding="6" Click="FollowSystemButton_Click" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Button.Content>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <FontIcon Glyph="&#xE770;" HorizontalAlignment="Left" />
+                        <TextBlock l:Uids.Uid="UseSystemDefaultApplication" Grid.Row="1" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button x:Name="PreviousChoiceButton" Width="120" Height="120" Padding="6" Click="PreviousChoiceButton_Click"  VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Button.Content>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ImageIcon x:Name="PreviousAppIcon" HorizontalAlignment="Left" />
+                        <TextBlock x:Name="PreviousChoiceApplication" Grid.Row="1" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+            <Button x:Name="SelectAppManuallyButton" Width="120" Height="120" Padding="6" Click="SelectAppManuallyButton_Click" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Button.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <FontIcon Glyph="&#xE7AC;" HorizontalAlignment="Left"/>
+                        <TextBlock l:Uids.Uid="SelectApplicationManually" Grid.Row="1" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    </Grid>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <CheckBox x:Name="DoNotAskAgainCheckBox" l:Uids.Uid="DoNotAskAgainCheckBox" Grid.Row="2" Click="DoNotAskAgainCheckBox_Click"/>
+    </Grid>
+</ContentDialog>

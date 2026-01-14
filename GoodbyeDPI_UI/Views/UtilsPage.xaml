@@ -105,6 +105,14 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="TroubleshootinSettingsCard" x:Name="TroubleshootinSettingsCard" IsClickEnabled="True" Click="TroubleshootinSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Troubleshooting.ico"  ShowAsMonochrome="False"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="ProxySettingsCard" x:Name="ProxySettingsCard" IsClickEnabled="True" Click="ProxySettingsCard_Click">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />

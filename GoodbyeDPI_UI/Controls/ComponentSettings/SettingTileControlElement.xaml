@@ -14,7 +14,7 @@
         <local:GlyphToFontIconConverter x:Key="GlyphToFontIconConverter"/>
     </UserControl.Resources>
 
-    <Grid MinHeight="60">
+    <Grid MinHeight="55">
         <Rectangle 
             x:Name="TopRectangle"
             Height="1" 
@@ -29,7 +29,8 @@
                                BorderBrush="Transparent"
                                Padding="{x:Bind CardPadding}"
                                IsClickEnabled="{x:Bind IsClickEnabled}"
-                               Click="SettingsCard_Click">
+                               Click="SettingsCard_Click"
+                               MinHeight="55">
             
             <controls:SettingsCard.ActionIcon>
                 <FontIcon Glyph="{x:Bind ActionIconGlyph}"/>

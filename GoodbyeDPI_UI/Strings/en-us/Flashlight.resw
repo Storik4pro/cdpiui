@@ -128,11 +128,62 @@ Possible events:
      ssl_err: No ServerHello was received in response to ClientHello or the SH contains an invalid session_id
      none : The previous group was skipped, for example due to domain or protocol restrictions</value>
   </data>
+  <data name="CheckAdGuard" xml:space="preserve">
+    <value>AdGuard services may cause problems via Discord or another services</value>
+  </data>
+  <data name="CheckAnotherComponents" xml:space="preserve">
+    <value>In one time only one bypass service (Zapret, GoodbyeDPI) may be enable. Two or more services may cause problems like downgrading Network speed or lost connection to Network</value>
+  </data>
+  <data name="CheckAnotherComponentsServices" xml:space="preserve">
+    <value>In one time only one bypass service (Zapret, GoodbyeDPI) may be enable. Two or more services may cause problems like downgrading Network speed or lost connection to Network</value>
+  </data>
+  <data name="CheckBFE" xml:space="preserve">
+    <value>Base Filtering Engine (BFE) is required to work with traffic for some components (Zapret, for example). If this service stopped component can't work normally.</value>
+  </data>
+  <data name="CheckCheckPointServices" xml:space="preserve">
+    <value>"CheckPoint" service conflicts with components like zapret. It's must be disabled in system</value>
+  </data>
+  <data name="CheckDNS" xml:space="preserve">
+    <value>Make sure you have configured secure DNS in a browser with some non-default DNS service provider</value>
+  </data>
+  <data name="CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>"Intel Connectivity Network" service conflicts with components like zapret. It's must be disabled in system</value>
+  </data>
+  <data name="CheckKiller" xml:space="preserve">
+    <value>"Killer" services conflicts with components like zapret. It's must be disabled in system</value>
+  </data>
+  <data name="CheckNetsh" xml:space="preserve">
+    <value>Utility "netsh.exe" must exist in system PATH variable. Without that file component's cannot work normally. </value>
+  </data>
+  <data name="CheckProxy" xml:space="preserve">
+    <value>To use components like Zapret or GoodbyeDPI you must disable system proxy. (It's not applied to local proxy, who not applied for all system)</value>
+  </data>
+  <data name="CheckSmartByte" xml:space="preserve">
+    <value>"SmartByte" service conflicts with components like zapret. It's must be disabled in system</value>
+  </data>
+  <data name="CheckTimestamps" xml:space="preserve">
+    <value>TCP timestamps is required to normal components work</value>
+  </data>
+  <data name="CheckVPNs" xml:space="preserve">
+    <value>All VPNs services are conflicts with components. Make sure it's disabled or removed from system</value>
+  </data>
+  <data name="CheckWinDivert" xml:space="preserve">
+    <value>"WinDivert" must be stopped during diagnostic. If it still running make sure you removed all previous services </value>
+  </data>
   <data name="DefaultTip" xml:space="preserve">
     <value>Something doesn't work or you have some questions? Maybe that articles can help you</value>
   </data>
+  <data name="ExplainTextBlock.Text" xml:space="preserve">
+    <value>Flashlight Explain</value>
+  </data>
   <data name="ImportConfigTip.Text" xml:space="preserve">
     <value>You can import .BAT and .CMD files as config files!</value>
+  </data>
+  <data name="NetHelpAskButton.Content" xml:space="preserve">
+    <value>View online help</value>
+  </data>
+  <data name="NetSearchPlaceholder" xml:space="preserve">
+    <value>https://ya.ru/search/?text=What+is+the+{0}+used+for+in+Windows?</value>
   </data>
   <data name="NONE" xml:space="preserve">
     <value>Previous group skipped</value>
@@ -155,8 +206,14 @@ Possible events:
   <data name="TitleTextBlock.Text" xml:space="preserve">
     <value>Flashlight tips+tricks</value>
   </data>
-  <data name="TORST" xml:space="preserve">
-    <value>Timeout / Connection aborted</value>
+  <data name="URL_CheckAdGuard" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/417</value>
+  </data>
+  <data name="URL_CheckNetsh" xml:space="preserve">
+    <value>https://ya.ru/search/?text=What+is+the+netsh.exe+used+for+in+Windows?</value>
+  </data>
+  <data name="URL_CheckProxy" xml:space="preserve">
+    <value>https://ya.ru/search/?text=How+to+disable+system+proxy+in+Windows</value>
   </data>
   <data name="ViewGoodCheckReportTipTextBlock.Text" xml:space="preserve">
     <value>Firstly mark worked arguments using flags in every sitelist group. Then click to "NEXT" button to create new config with selected arguments</value>
@@ -166,5 +223,26 @@ Possible events:
   </data>
   <data name="WhatDoesItMeanTextBlock.Text" xml:space="preserve">
     <value>What does it mean?</value>
+  </data>
+  <data name="TORST" xml:space="preserve">
+    <value>Timeout / Connection aborted</value>
+  </data>
+  <data name="URL_CheckKiller" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/2512#issuecomment-2821119513</value>
+  </data>
+  <data name="URL_CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>https://github.com/ValdikSS/GoodbyeDPI/issues/541#issuecomment-2661670982</value>
+  </data>
+  <data name="URL_CheckDNS" xml:space="preserve">
+    <value>https://ya.ru/search/?text=secure+dns+windows</value>
+  </data>
+  <data name="URL_CheckVPNs" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponents" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponentsServices" xml:space="preserve">
+    <value>$EMPTY</value>
   </data>
 </root>

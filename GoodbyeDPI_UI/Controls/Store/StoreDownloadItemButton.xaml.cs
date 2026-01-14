@@ -75,6 +75,8 @@ namespace CDPI_UI.Controls.Store
             _config = new MarkdownConfig();
 
             this.Loaded += StoreDownloadItemButton_Loaded;
+
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
         }
 
         private void CheckCurrentStatus()
@@ -101,6 +103,10 @@ namespace CDPI_UI.Controls.Store
             get { return (string)GetValue(StoreIdProperty); }
             set { 
                 SetValue(StoreIdProperty, value);
+                if (IsErrorHappens)
+                {
+                    ErrorActions(StoreHelper.Instance.GetFailedToInstallItems().FirstOrDefault(x => x.ItemId == StoreId)?.ErrorCode ?? string.Empty);
+                }
                 RemoveHandlers();
                 ConnectHandlers();
                 CheckCurrentStatus();
@@ -250,6 +256,26 @@ namespace CDPI_UI.Controls.Store
             DependencyProperty.Register(
                 nameof(ActionGlyph), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata("\uE894")
             );
+        public bool IsErrorHappens
+        {
+            get { return (bool)GetValue(IsErrorHappensProperty); }
+            set { 
+                SetValue(IsErrorHappensProperty, value);
+                if (value)
+                {
+                    ErrorActions(StoreHelper.Instance.GetFailedToInstallItems().FirstOrDefault(x => x.ItemId == StoreId)?.ErrorCode?? string.Empty);
+                }
+                else
+                {
+                    ClearErrorActions();
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsErrorHappensProperty =
+            DependencyProperty.Register(
+                nameof(IsErrorHappens), typeof(bool), typeof(StoreDownloadItemButton), new PropertyMetadata(false)
+            );
 
         public ImageSource CardImageSource
         {
@@ -310,6 +336,26 @@ namespace CDPI_UI.Controls.Store
             if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                 return;
 
+            ErrorActions(errorCode);
+        }
+
+        private void ClearErrorActions()
+        {
+            ErrorTextBlock.Text = "";
+            ActionGlyph = "\uE894";
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
+
+            ProgressBar.IsIndeterminate = true;
+            ProgressBar.Value = 0;
+
+            Tooltip = localizer.GetLocalizedString("Cancel");
+
+            ProgressBar.Foreground = (SolidColorBrush)Application.Current.Resources["AccentFillColorDefaultBrush"];
+            CheckCurrentStatus();
+        }
+
+        private void ErrorActions(string errorCode)
+        {
             ActionGlyph = "\uE777";
             ErrorTextBlock.Text = errorCode;
             SpeedTextBlock.Text = "";
@@ -401,6 +447,11 @@ namespace CDPI_UI.Controls.Store
                 case "ConnectingToService":
                     stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
                     ProgressBar.IsIndeterminate = true;
+                    break;
+                case "":
+                    stageHeaderText = localizer.GetLocalizedString("QueueWaiting");
+                    ProgressBar.IsIndeterminate = false;
+                    ProgressBar.Value = 0;
                     break;
                 default:
                     stageHeaderText = localizer.GetLocalizedString(state);

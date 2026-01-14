@@ -29,10 +29,12 @@
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
     <None Remove="Controls\ConditionUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
@@ -59,8 +61,10 @@
     <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
+    <None Remove="Controls\Troubleshooting\DiagnosticResultUserControl.xaml" />
     <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
+    <None Remove="Controls\Universal\SearchUserControl.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
@@ -87,15 +91,21 @@
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
     <None Remove="Views\Store\LibraryPage.xaml" />
+    <None Remove="Views\Troubleshooting\MainPage.xaml" />
+    <None Remove="Views\Troubleshooting\WorkPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
     <None Remove="Windows\ModernMainWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
     <None Remove="Windows\PrepareWindow.xaml" />
     <None Remove="Windows\ProxySetupUtilWindow.xaml" />
+    <None Remove="Windows\TroubleshootingWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\SplashScreen.scale-200.png" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
@@ -121,6 +131,9 @@
     <Content Include="Strings\en-us\SettingTiles.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Strings\en-us\Troubleshooting.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Strings\en-us\UIHelper.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -140,6 +153,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\SettingTiles.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Troubleshooting.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\UIHelper.resw">
@@ -171,6 +187,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Management" Version="9.0.9" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
     <PackageReference Include="TextControlBox.WinUI.JuliusKirsch" Version="1.3.0" />
     <PackageReference Include="Unidecode.NET" Version="2.1.0" />
@@ -214,13 +231,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controls\ComponentSettings\" />
-    <Folder Include="Controls\Dialogs\ComponentSettings\" />
     <Folder Include="Controls\GoodCheck\" />
     <Folder Include="Windows\Service\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -367,8 +383,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.1.2.0</FileVersion>
-    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
   </PropertyGroup>
 
@@ -435,9 +451,30 @@
     <Page Update="Controls\Universal\HorizontalScrollContainer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Universal\SearchUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Troubleshooting\DiagnosticResultUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Troubleshooting\WorkPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Troubleshooting\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\TroubleshootingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\ModernMainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -513,5 +550,11 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\en-us\Help.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Troubleshooting.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Troubleshooting.resw" />
   </ItemGroup>  
 </Project>

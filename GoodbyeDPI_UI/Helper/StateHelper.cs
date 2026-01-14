@@ -77,7 +77,7 @@ namespace CDPI_UI.Helper
 
         public Dictionary<string, string> ComponentIdPairs = new();
         public static List<string> GoodCheckSupportedComponents = ["CSZTBN012", "CSGIVS036", "CSBIHA024"];
-        public static List<string> ProxyLikeComponents = ["CSSIXC048", "CSBIHA024"];
+        public static List<string> ProxyLikeComponents = ["CSSIXC048", "CSBIHA024", "CSNIG9025"];
 
         public bool isCheckedComponentsUpdateComplete = false;
         public string lastComponentsUpdateError = "";
@@ -87,6 +87,7 @@ namespace CDPI_UI.Helper
         private StateHelper()
         {
             FileTypes.Add("archive", ".zip");
+            FileTypes.Add("configPack", ".cdpiconfigpack");
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
             FileTypes.Add("msi", ".msi");
@@ -106,6 +107,7 @@ namespace CDPI_UI.Helper
             ComponentIdPairs.Add("CSGIVS036", "GoodbyeDPI");
             ComponentIdPairs.Add("CSBIHA024", "ByeDPI");
             ComponentIdPairs.Add("CSSIXC048", "SpoofDPI");
+            ComponentIdPairs.Add("CSNIG9025", "NoDPI");
         }
 
         public string FindKeyByValue(string value)

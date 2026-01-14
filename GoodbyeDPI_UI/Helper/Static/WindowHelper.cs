@@ -57,6 +57,7 @@ namespace CDPI_UI.Helper
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
+            { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
         };
         // positionType, Width, Height
         private static Dictionary<WindowResizeOptions, Tuple<WindowPositionVariants, int, int>> WindowsResizeParams = new()

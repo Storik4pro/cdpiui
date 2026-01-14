@@ -91,7 +91,7 @@ namespace CDPI_UI.Views.Store
 
                 item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
 
-                if (item == null)
+                if (item == null || storeId == StateHelper.ApplicationStoreId)
                 {
                     return;
                 }
@@ -102,7 +102,7 @@ namespace CDPI_UI.Views.Store
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
                 StarCount.Text = item.stars ?? "NaN";
                 ItemCategoryButton.Content = StoreHelper.Instance.GetLocalizedStoreItemName(
-                    StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
+                    StoreHelper.Instance.GetCategoryFromStoreId(item.category_id)?.name?? string.Empty,
                     Utils.GetStoreLikeLocale()
                 );
                 SmallDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
@@ -123,7 +123,7 @@ namespace CDPI_UI.Views.Store
                     ItemActionButton.IsEnabled = IsItemSupported();
                 }
 
-                if (item.links.Count > 0)
+                if (item.links?.Count > 0)
                     CreateLinks(item.links);
                 else 
                     LinksGrid.Visibility = Visibility.Collapsed;
@@ -273,7 +273,7 @@ namespace CDPI_UI.Views.Store
                 string operationId = data.Item1;
                 string stage = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
+                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId || errorHappens)
                     return;
                 GetReadyUI();
 

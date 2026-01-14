@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
@@ -14,10 +15,12 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
@@ -183,6 +186,46 @@ namespace CDPI_UI.Views.Components
 
                 _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick));
             }
+            List<SiteListItem> excludeList = componentHelper.GetConfigHelper().GetExcludedSiteListItems(sel.file_name, sel.packId, ignoreNull: true);
+            if (excludeList.Count > 0)
+            {
+                SettingsTile sitelistTile = new()
+                {
+                    IconGlyph = "\uE7C3",
+                    Title = localizer.GetLocalizedString("/SettingTiles/UsedExcludedSiteLists"),
+                    Description = localizer.GetLocalizedString("/SettingTiles/UsedExcludedSiteListsTip")
+                };
+
+                _flag = false;
+                foreach (SiteListItem item in excludeList)
+                {
+                    if (item.Type == "NULL")
+                        continue;
+
+                    string title =
+                        localizer.GetLocalizedString($"/SettingTiles/{item.Type}") +
+                        $" {item.Name}";
+
+                    SettingsTileItem settingsTileItem = new()
+                    {
+                        Title = title,
+                        ShowTopRectangle = _flag,
+                    };
+                    settingsTileItem.Contents.Add(new SettingTileContentDefinition
+                    {
+                        ContentType = item.Type == "AutoSiteList" ? SettingTileContentType.OnlyViewButton : SettingTileContentType.EditViewButtons,
+                        EditFilePath = item.FilePath,
+                        ViewParams = item.ApplyParams,
+                        PrettyViewParams = item.PrettyApplyParams,
+                    });
+
+                    sitelistTile.Items.Add(settingsTileItem);
+
+                    _flag = true;
+                }
+
+                _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick));
+            }
 
             SettingsTile advancedTile = new()
             {
@@ -274,7 +317,14 @@ namespace CDPI_UI.Views.Components
                     _ = dialog.ShowAsync();
                     break;
                 case ActionIds.EditButtonClicked:
-                    Utils.OpenFileInDefaultApp(contentDefinition.EditFilePath);
+                    if (!SettingsManager.Instance.GetValue<bool>("FILEOPENACTIONS", "isDialogShown") || !SettingsManager.Instance.GetValueOrDefault<bool>("FILEOPENACTIONS", "doNotRemindAgain", defaultValue: true))
+                    {
+                        ShowEditAskDialog(contentDefinition.EditFilePath);
+                    }
+                    else
+                    {
+                        Utils.OpenFile(contentDefinition.EditFilePath);
+                    }
                     break;
                 case ActionIds.SwitchToggled:
                     ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
@@ -291,6 +341,17 @@ namespace CDPI_UI.Views.Components
 
             }
         }
+        private async void ShowEditAskDialog(string file)
+        {
+            EditSitelistAskApplicationContentDialog editSitelistAskApplicationContentDialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                FilePath = file
+            };
+            await editSitelistAskApplicationContentDialog.ShowAsync();
+            if (editSitelistAskApplicationContentDialog.IsSuccess)
+                SettingsManager.Instance.SetValue("FILEOPENACTIONS", "isDialogShown", true);
+        }
 
         private async void ButtonClick(string targetId)
         {
@@ -301,15 +362,19 @@ namespace CDPI_UI.Views.Components
                     window.CreateNewConfigForComponentId(ComponentId);
                     break;
                 case "CFGEDIT":
+                    ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
+                    var item = (ComboboxItem)ConfigChooseCombobox.SelectedItem;
+
                     CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-                    _window.OpenConfigEditPage();
+                    if (componentHelper != null)
+                        _window.OpenConfigEditPage(skp:false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x=> x.packId == item.packId && x.file_name == item.file_name));
                     break;
                 case "CFGGOODCHECK":
                     CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
                     gwindow.NavigateToPage<CreateViaGoodCheck>(ComponentId);
                     break;
                 case "HELPOFFLINE":
-
+                    OfflineHelpWindow offlineHelpWindow = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
                     break;
             }
         }

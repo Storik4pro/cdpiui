@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +22,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
@@ -32,6 +34,9 @@ using Windows.ApplicationModel.Chat;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+using Color = Windows.UI.Color;
+using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,7 +67,50 @@ public partial class GraphicDesignerSettingItemModel : INotifyPropertyChanged
     public string Guid { get; set; }
     public string DisplayName { get; set; }
     public string Description { get; set; }
+    public string Type { get; set; }
+    public List<EnumModel> AvailableEnumValues { get; set; }
     public bool EnableTextInput { get; set; }
+    public string _value = "";
+    public string Value {
+        get => _value;
+        set => SetField(ref _value, value);
+    }
+
+    private bool isChecked = false;
+    public bool IsChecked
+    {
+        get => isChecked;
+        set => SetField(ref isChecked, value);
+    }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+}
+public partial class GraphicDesignerExclusiveSettingItemModel : INotifyPropertyChanged
+{
+    public string Guid { get; set; }
+    public string DisplayName { get; set; }
+
+    private string _selectedItemGuid = "";
+    public string SelectedItemGuid 
+    {
+        get => _selectedItemGuid;
+        set => SetField(ref _selectedItemGuid, value);
+    }
+    public ObservableCollection<GraphicDesignerSettingItemModel> Items { get; set; }
+
     public string _value = "";
     public string Value {
         get => _value;
@@ -98,31 +146,11 @@ public enum AskAutoFillMode
     Quiet
 }
 
-internal class CmdPrompt : SyntaxHighlightLanguage
-{
-    public CmdPrompt()
-    {
-        this.Name = "CMD Prompt";
-        this.Author = "Storik4";
-        this.Filter = new string[0];
-        this.Description = "Syntax highlighting for CMD";
-        this.Highlights = new SyntaxHighlights[]
-        {
-                new SyntaxHighlights("(:.*)", "#00C000", "#ffff00"),
-                new SyntaxHighlights("(\\*)", "#dd0077", "#dd0077"),
-                new SyntaxHighlights("(%.+?%)", "#dd0077", "#5fe354"),
-                new SyntaxHighlights("((--(\\w+(-)*)+)|(-(\\w+(-)*)+))(\\s|$|=)", "#888888", "#888888"),
-                new SyntaxHighlights("(--new)|(-A.*?(?:\\s|^|=))|(--auto.*?(?:\\s|^|=))", "#000000", "#ffffff"),
-                new SyntaxHighlights("\\b([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[eE]([+-]?\\d+))?\\b", "#dd00dd", "#ff6b84"),
-                new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#6e86ff"),
-        };
-    }
-}
 
 
 public sealed partial class CreateNewConfigPage : Page
 {
-    private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036"];
+    private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036", "CSNIG9025"];
     
     private class ComponentModel
     {
@@ -139,7 +167,9 @@ public sealed partial class CreateNewConfigPage : Page
 
     public ICommand GraphicDesignerTextValueChangedCommand { get; }
     public ICommand GraphicDesignerBoolValueToggledCommand { get; }
+    public ICommand GraphicDesignerSelectedGuidChangedCommand { get; }
     public ObservableCollection<GraphicDesignerSettingItemModel> DesignerSettingItemModels { get; } = [];
+    public ObservableCollection<GraphicDesignerExclusiveSettingItemModel> DesignerExclusiveSettingItemModels { get; } = [];
 
     private object navigationParameter;
 
@@ -161,15 +191,100 @@ public sealed partial class CreateNewConfigPage : Page
 
         GraphicDesignerTextValueChangedCommand = new RelayCommand(p => HandleGraphicDesignerTextValueChanged((Tuple<string, string>)p));
         GraphicDesignerBoolValueToggledCommand = new RelayCommand(p => HandleGraphicDesignerBoolValueToggled((Tuple<string, bool>)p));
+        GraphicDesignerSelectedGuidChangedCommand = new RelayCommand(p => HandleGraphicDesignerSelectedGuidChanged((Tuple<string, string>)p));
 
         GUIDesignerListView.ItemsSource = DesignerSettingItemModels;
+        GUIDesignerExclusiveListView.ItemsSource = DesignerExclusiveSettingItemModels;
 
-        StartupStringTextBox.SyntaxHighlighting = new CmdPrompt();
+        CheckHighlight();
 
         StartupStringTextBox.UseSpacesInsteadTabs = true;
         StartupStringTextBox.NumberOfSpacesForTab = 4;
 
         InitPage();
+
+        this.ActualThemeChanged += CreateNewConfigPage_ActualThemeChanged;
+        this.ProcessKeyboardAccelerators += CreateNewConfigPage_ProcessKeyboardAccelerators;
+        this.KeyDown += CreateNewConfigPage_KeyDown;
+    }
+
+    private void CreateNewConfigPage_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Escape)
+        {
+            SearchControl.Close();
+        }
+    }
+
+    private void CreateNewConfigPage_ProcessKeyboardAccelerators(UIElement sender, ProcessKeyboardAcceleratorEventArgs args)
+    {
+        if ((args.Key == Windows.System.VirtualKey.Add || args.Key.ToString() == "187") && args.Modifiers == Windows.System.VirtualKeyModifiers.Control)
+        {
+            ChangeZoom(5);
+        }
+        else if ((args.Key == Windows.System.VirtualKey.Subtract || args.Key.ToString() == "189") && args.Modifiers == Windows.System.VirtualKeyModifiers.Control)
+        {
+            ChangeZoom(-5);
+        }
+    }   
+
+    private void CreateNewConfigPage_ActualThemeChanged(FrameworkElement sender, object args)
+    {
+        if (MainGrid.Style == (Style)Resources["BlackStyle"] || MainGrid.Style == (Style)Resources["MicaSmokeStyle"])
+        {
+            CheckHighlight(ElementTheme.Dark);
+        }
+        else
+        {
+            CheckHighlight(ElementTheme.Default);
+        }
+    }
+
+    private void CheckHighlight(ElementTheme elementTheme)
+    {
+        if (elementTheme == ElementTheme.Light || (elementTheme == ElementTheme.Default && ((App)Application.Current).CurrentTheme == ElementTheme.Light))
+        {
+            StartupStringTextBox.SyntaxHighlighting = new LightDefaultHighlighter();
+            StartupStringTextBox.Design = new TextControlBoxDesign(
+                new SolidColorBrush(Color.FromArgb(0, 255, 255, 255)),
+                Color.FromArgb(255, 50, 50, 50),
+                Color.FromArgb(100, 0, 100, 255),
+                Color.FromArgb(255, 0, 0, 0),
+                Color.FromArgb(50, 200, 200, 200),
+                Color.FromArgb(255, 180, 180, 180),
+                Color.FromArgb(0, 0, 0, 0),
+                Color.FromArgb(100, 200, 120, 0)
+                );
+        }
+        else
+        {
+            StartupStringTextBox.SyntaxHighlighting = new DarkDefaultHighlighter();
+            StartupStringTextBox.Design = new TextControlBoxDesign(
+                new SolidColorBrush(Color.FromArgb(0, 30, 30, 30)),
+                Color.FromArgb(255, 255, 255, 255),
+                Color.FromArgb(100, 0, 100, 255),
+                Color.FromArgb(255, 255, 255, 255),
+                Color.FromArgb(50, 100, 100, 100),
+                Color.FromArgb(255, 100, 100, 100),
+                Color.FromArgb(0, 0, 0, 0),
+                Color.FromArgb(100, 160, 80, 0)
+                );
+        }
+    }
+    private void CheckHighlight()
+    {
+        CheckHighlight(MainGrid.RequestedTheme);
+    }
+
+    public void OpenSearch()
+    {
+        if (IsSearchAvailable())
+            SearchControl.ShowSearch(StartupStringTextBox);
+    }
+    public void OpenSearchAndReplace()
+    {
+        if (IsSearchAvailable())
+            SearchControl.ShowReplace(StartupStringTextBox);
     }
 
     private void CreateNewConfigPage_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -207,6 +322,14 @@ public sealed partial class CreateNewConfigPage : Page
         AuditSaveAvailable();
         navigationParameter = null;
         this.Loaded -= CreateNewConfigPage_Loaded;
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+        this.KeyDown -= CreateNewConfigPage_KeyDown;
+        this.ProcessKeyboardAccelerators -= CreateNewConfigPage_ProcessKeyboardAccelerators;
+        this.ActualThemeChanged -= CreateNewConfigPage_ActualThemeChanged;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -436,7 +559,7 @@ public sealed partial class CreateNewConfigPage : Page
     {
         bool state = IsSaveAvailable();
         SaveConfigButton.IsEnabled = state;
-        TestButton.IsEnabled = state;
+        TestButtonText.IsEnabled = state;
     }
 
     private bool IsVarAddAvailable()
@@ -549,7 +672,7 @@ public sealed partial class CreateNewConfigPage : Page
             variables = vars,
             commaVars = Variables.ToDictionary(v => v.Name, v => v.Value),
             availableCommaVarsValues = Variables.Where(v => v.AvailableValues != null).Select(v => v.AvailableValues).ToList(),
-            startup_string = StartupStringTextBox.Text.Replace("\n", " ")
+            startup_string = GetNormalText(StartupStringTextBox.Text).Replace("\n", " ")
         };
         foreach (var _v in configItem.commaVars)
         {
@@ -659,6 +782,13 @@ public sealed partial class CreateNewConfigPage : Page
         AuditSaveAvailable();
     }
 
+    private bool IsSearchAvailable()
+    {
+        if (DesignerSupportedComponentIds.Contains(((ComponentModel)ComponentChooseComboBox.SelectedItem)?.Id ?? ""))
+            return MainPivot.SelectedItem == DefaultDesigner;
+        else return true;
+    }
+
     private void CheckViewType()
     {
         if (ComponentChooseComboBox.SelectedItem == null)
@@ -683,8 +813,7 @@ public sealed partial class CreateNewConfigPage : Page
             HandleSelectionChange(true);
             DefaultDesigner.IsSelected = true;
             MainPivot.Visibility = Visibility.Collapsed;
-        }
-        
+        }        
     }
 
     private void DisplayNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -769,39 +898,106 @@ public sealed partial class CreateNewConfigPage : Page
         isOpened = !isOpened;
     }
 
+    private string ListDirectory = string.Empty;
+    private string BinDirectory = string.Empty;
+
+    private string GetNormalText(string text)
+    {
+        return text.Replace("list://", ListDirectory).Replace("bin://", BinDirectory);
+    }
+    private string GetPrettyLookText(string text)
+    {
+        try
+        {
+            ListDirectory = Regex.Match(text, @"""(\$GETCURRENTDIR\(\)/List.*?\\).*?""\s").Groups[1].Value;
+            BinDirectory = Regex.Match(text, @"""(\$GETCURRENTDIR\(\)/Bin.*?\\).*?""\s").Groups[1].Value;
+
+            CheckFolderOpenButtonsVisibility();
+
+            return text.Replace(ListDirectory, "list://").Replace(BinDirectory, "bin://");
+        }
+        catch
+        {
+            return text;
+        }
+    }
+
     private void AddWrap()
     {
         if (ConfigItem != null)
         {
             StartupStringTextBox.Text = ConfigItem.startup_string.Replace(" --new", "\n--new");
-            StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" -A", "\n-A");
-            StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" --auto", "\n--auto");
+            StartupStringTextBox.ReplaceAll(" -A", "\n-A", true, true);
+            StartupStringTextBox.ReplaceAll(" --auto", "\n--auto", true, true);
+            StartupStringTextBox.Text = GetPrettyLookText(StartupStringTextBox.Text);
+            StartupStringTextBox.SetCursorPosition(0, 0);
         }
     }
     private void AddWrap(string startupString)
     {
         StartupStringTextBox.Text = startupString.Replace(" --new", "\n--new");
-        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" -A", "\n-A");
-        StartupStringTextBox.Text = StartupStringTextBox.Text.Replace(" --auto", "\n--auto");
+        StartupStringTextBox.ReplaceAll(" -A", "\n-A", true, true);
+        StartupStringTextBox.ReplaceAll(" --auto", "\n--auto", true, true);
+        StartupStringTextBox.Text = GetPrettyLookText(StartupStringTextBox.Text);
+        StartupStringTextBox.SetCursorPosition(0, 0);
     }
 
     private void HandleSelectionChange(bool showDefaultOnly = false)
     {
+        ChangeBackground();
         if (MainPivot.SelectedItem == DefaultDesigner || showDefaultOnly)
         {
-            MainGrid.Background = UIHelper.HexToSolidColorBrushConverter("#000000");
             StartupStringTextBox.Visibility = Visibility.Visible;
             GUIDesignerGrid.Visibility = Visibility.Collapsed;
             if (!showDefaultOnly) ConvertDesignerLikeSettingsToString();
         }
         else
         {
-            MainGrid.Background = UIHelper.HexToSolidColorBrushConverter("#282828");
             StartupStringTextBox.Visibility = Visibility.Collapsed;
             GUIDesignerGrid.Visibility = Visibility.Visible;
             LoadDesigner();
             ConvertStringToDesignerLikeSettings();
+            SearchControl.Close();
         }
+    }
+
+    public void ChangeZoom(int zoom)
+    {
+        if (zoom == 0) StartupStringTextBox.ZoomFactor = 100;
+        else StartupStringTextBox.ZoomFactor += zoom;
+    }
+
+    public void ChangeBackground(bool showDefaultOnly = false)
+    {
+        Style style;
+        string background = SettingsManager.Instance.GetValue<string>("APPEARANCE", "configEditorBackground");
+        if (MainPivot.SelectedItem == DefaultDesigner || showDefaultOnly || MainPivot.SelectedItem == null)
+        {
+            style = background switch
+            {
+                "MicaSmoke" => (Style)Resources["MicaSmokeStyle"],
+                "Mica" => (Style)Resources["MicaStyle"],
+                "MicaTransparent" => (Style)Resources["TransparentStyle"],
+                _ => (Style)Resources["BlackStyle"],
+            };
+        }
+        else
+        {
+            style = (Style)Resources["GrayStyle"];
+        }
+
+        if (style == (Style)Resources["BlackStyle"] || style == (Style)Resources["MicaSmokeStyle"])
+        {
+            CheckHighlight(ElementTheme.Dark);
+        }
+        else
+        {
+            CheckHighlight(ElementTheme.Default);
+        }
+
+        
+
+        MainGrid.Style = style;
     }
 
     private void MainPivot_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
@@ -814,15 +1010,27 @@ public sealed partial class CreateNewConfigPage : Page
     private void LoadDesigner()
     {
         if (ComponentChooseComboBox.SelectedItem == null) return;
-        if (StateHelper.Instance.FindKeyByValue("GoodbyeDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+        string id = ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id;
+        if (StateHelper.Instance.FindKeyByValue("GoodbyeDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
         {
-            GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(DesignerSettingItemModels);
+            GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
             NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("GoodbyeDPI");
         }
-        else if (StateHelper.Instance.FindKeyByValue("SpoofDPI") == ((ComponentModel)ComponentChooseComboBox.SelectedItem).Id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("SpoofDPI"))
+        else if (StateHelper.Instance.FindKeyByValue("SpoofDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("SpoofDPI"))
         {
-            GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(DesignerSettingItemModels);
+            GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
             NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("SpoofDPI");
+        }
+        else if (StateHelper.Instance.FindKeyByValue("NoDPI") == id && NowConfigLoadedId != StateHelper.Instance.FindKeyByValue("NoDPI"))
+        {
+            string dir = DatabaseHelper.Instance.GetItemById(id)?.Directory?? string.Empty;
+            string xmlFile = Path.Combine(dir, "edannotationfile.xml");
+            if (File.Exists(xmlFile))
+            {
+                GraphicDesignerHelper.XML_LoadDesignerConfig(xmlFile, "nodpi", DesignerSettingItemModels, DesignerExclusiveSettingItemModels);
+                NowConfigLoadedId = StateHelper.Instance.FindKeyByValue("NoDPI");
+            }
+            
         }
     }
 
@@ -835,7 +1043,16 @@ public sealed partial class CreateNewConfigPage : Page
         if (item != null)
         {
             item.Value = value;
-            Debug.WriteLine(item.Value);
+        }
+        else
+        {
+
+            item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Items.FirstOrDefault(y => y.Guid == guid) != null)?.Items.FirstOrDefault(y => y.Guid == guid);
+            
+            if (item != null)
+            {
+                item.Value = value;
+            }
         }
     }
 
@@ -848,16 +1065,34 @@ public sealed partial class CreateNewConfigPage : Page
         var item = DesignerSettingItemModels.FirstOrDefault(x => x.Guid == guid);
         if (item != null)
         {
-            Debug.WriteLine(_value);
             item.IsChecked = _value;
-            
+        }
+        else
+        {
+            item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Items.FirstOrDefault(y => y.Guid == guid) != null)?.Items.FirstOrDefault(y => y.Guid == guid);
+            if (item != null)
+            {
+                item.IsChecked = _value;
+            }
+        }
+    }
+
+    private void HandleGraphicDesignerSelectedGuidChanged(Tuple<string, string> tuple)
+    {
+        string guid = tuple.Item1;
+        string selGuid = tuple.Item2;
+        var item = DesignerExclusiveSettingItemModels.FirstOrDefault(x => x.Guid == guid);
+        if (item != null)
+        {
+            Debug.WriteLine(selGuid);
+            item.SelectedItemGuid = selGuid;
         }
     }
 
     private void ConvertStringToDesignerLikeSettings()
     {
         StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
-        AdditionalSettingsTextBox.Text = GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(DesignerSettingItemModels, StartupStringTextBox.Text);
+        AdditionalSettingsTextBox.Text = GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(DesignerSettingItemModels, DesignerExclusiveSettingItemModels, StartupStringTextBox.Text);
     }
     private void ConvertDesignerLikeSettingsToString()
     {
@@ -866,7 +1101,37 @@ public sealed partial class CreateNewConfigPage : Page
             return;
         }
 
-        StartupStringTextBox.Text = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(DesignerSettingItemModels, AdditionalSettingsTextBox.Text);
+        StartupStringTextBox.Text = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(DesignerSettingItemModels, DesignerExclusiveSettingItemModels, AdditionalSettingsTextBox.Text);
         StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
+    }
+
+    private void CheckFolderOpenButtonsVisibility()
+    {
+        OpenBinsConfigDirectory.Visibility = Visibility.Collapsed;
+        OpenListsConfigDirectory.Visibility = Visibility.Collapsed;
+        if (!string.IsNullOrEmpty(ListDirectory) && ConfigItem != null)
+        {
+            OpenListsConfigDirectory.Visibility = Visibility.Visible;
+        }
+        if (!string.IsNullOrEmpty(BinDirectory) && ConfigItem != null)
+        {
+            OpenBinsConfigDirectory.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void OpenListsConfigDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        if (!string.IsNullOrEmpty(ListDirectory) && ConfigItem != null)
+        {
+            Utils.OpenFolderInExplorer(LScriptLangHelper.ExecuteScript(ListDirectory, callItemId: StateHelper.LocalUserItemsId));
+        }
+    }
+
+    private void OpenBinsConfigDirectory_Click(object sender, RoutedEventArgs e)
+    {
+        if (!string.IsNullOrEmpty(BinDirectory) && ConfigItem != null)
+        {
+            Utils.OpenFolderInExplorer(LScriptLangHelper.ExecuteScript(BinDirectory, callItemId: StateHelper.LocalUserItemsId));
+        }
     }
 }

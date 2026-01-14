@@ -117,6 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="--autoblacklist" xml:space="preserve">
+    <value>Automatic detection of blocked domains</value>
+  </data>
+  <data name="--blacklist" xml:space="preserve">
+    <value>Path to blacklist file</value>
+  </data>
+  <data name="--domain-matching" xml:space="preserve">
+    <value>Domain matching mode</value>
+  </data>
+  <data name="--fragment-method" xml:space="preserve">
+    <value>Fragmentation method</value>
+  </data>
+  <data name="--help" xml:space="preserve">
+    <value>Show help message and exit</value>
+  </data>
+  <data name="--host" xml:space="preserve">
+    <value>Proxy host</value>
+  </data>
+  <data name="--log-access" xml:space="preserve">
+    <value>Path to the access control log</value>
+  </data>
+  <data name="--log-error" xml:space="preserve">
+    <value>Path to log file for errors</value>
+  </data>
+  <data name="--no-blacklist" xml:space="preserve">
+    <value>Use fragmentation for all domains</value>
+  </data>
+  <data name="--out-host" xml:space="preserve">
+    <value>Outgoing proxy host</value>
+  </data>
+  <data name="--port" xml:space="preserve">
+    <value>Proxy port</value>
+  </data>
+  <data name="--quiet" xml:space="preserve">
+    <value>Remove UI output</value>
+  </data>
   <data name="A" xml:space="preserve">
     <value>Additional space between method and URI</value>
   </data>

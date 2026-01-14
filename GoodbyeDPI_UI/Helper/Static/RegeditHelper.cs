@@ -41,6 +41,27 @@ namespace CDPI_UI.Helper.Static
             return result;
         }
 
+        public static bool IsProxyEnabled()
+        {
+            try
+            {
+                int? isProxyEnable = new();
+                using (var key = Registry.CurrentUser.OpenSubKey(InternetSettingsKeyPath, writable: false))
+                {
+                    if (key != null)
+                    {
+                        isProxyEnable = (int?)key.GetValue("ProxyEnable", new int?());
+                    }
+                }
+                return isProxyEnable.HasValue && Convert.ToBoolean(isProxyEnable.Value);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(RegeditHelper), $"Cannot get reg value. {ex.Message}");
+                return false;
+            }
+        }
+
         public static void SaveProxySettings(string proxyServer, string proxyOverride, int proxyEnable)
         {
             if (proxyEnable != 0 && proxyEnable != 1)

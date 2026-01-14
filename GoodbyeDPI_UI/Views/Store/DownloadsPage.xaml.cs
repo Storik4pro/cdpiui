@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -37,6 +38,7 @@ namespace CDPI_UI.Views.Store
         public string ServerVersion { get; set; }
         public ImageSource ImageSource { get; set; }
         public Brush CardBackgroundBrush { get; set; }
+        public bool IsErrorHappens { get; set; } = false;
     }
     public sealed partial class DownloadsPage : Page
     {
@@ -57,6 +59,7 @@ namespace CDPI_UI.Views.Store
             UpdateCurrentDownloadsList();
             UpdateCurrentDownloadItem();
             StoreHelper.Instance.QueueUpdated += UpdateCurrentDownloadsList;
+            StoreHelper.Instance.ErrorListUpdated += UpdateCurrentDownloadsList;
             StoreHelper.Instance.NowProcessItemActions += StoreHelper_NowProcessItemActions;
             StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
 
@@ -89,6 +92,7 @@ namespace CDPI_UI.Views.Store
             base.OnNavigatedFrom(e);
 
             StoreHelper.Instance.QueueUpdated -= UpdateCurrentDownloadsList;
+            StoreHelper.Instance.ErrorListUpdated -= UpdateCurrentDownloadsList;
         }
 
         private void AuditSubHeaderVisible()
@@ -108,7 +112,7 @@ namespace CDPI_UI.Views.Store
             var item = downloads.FirstOrDefault(x => x.StoreId == obj);
             if (item != null)
             {
-                if (DatabaseHelper.Instance.IsItemInstalled(item.StoreId)) downloads.Remove(item);
+                downloads.Remove(item);
             }
             AuditSubHeaderVisible();
         }
@@ -121,7 +125,11 @@ namespace CDPI_UI.Views.Store
         private void UpdateCurrentDownloadItem()
         {
             string opId = StoreHelper.Instance.GetCurrentQueueOperationId();
-            if (downloads.FirstOrDefault(x => x.OperationId == opId) != null) return;
+            Debug.WriteLine("WTF1");
+            var curItem = downloads.FirstOrDefault(x => x.StoreId == StoreHelper.Instance.GetItemIdFromOperationId(opId));
+            if (curItem != null) downloads.Remove(curItem);
+
+            Debug.WriteLine("WTF2");
 
             var item = StoreHelper.Instance.GetItemInfoFromStoreId(StoreHelper.Instance.GetItemIdFromOperationId(opId));
 
@@ -144,6 +152,7 @@ namespace CDPI_UI.Views.Store
 
             downloadItemModel.ImageSource = image;
             downloadItemModel.CardBackgroundBrush = solidColorBrush;
+            downloadItemModel.IsErrorHappens = false;
 
             downloads.Add(downloadItemModel);
             AuditSubHeaderVisible();
@@ -151,6 +160,9 @@ namespace CDPI_UI.Views.Store
 
         private void UpdateCurrentDownloadsList()
         {
+            downloads.Clear();
+            UpdateCurrentDownloadItem();
+
             Queue<StoreHelper.QueueItem> queueItems = StoreHelper.Instance.GetQueue();
 
             List<string> opIds = [];
@@ -160,8 +172,10 @@ namespace CDPI_UI.Views.Store
             foreach (StoreHelper.QueueItem item in queueItems)
             {
                 opIds.Add(item.OperationId); 
-                Debug.WriteLine($"{item.OperationId}");
-                if (downloads.FirstOrDefault(x => x.OperationId == item.OperationId) != null) { continue; }
+                Debug.WriteLine($"{item.ItemId}");
+                var curItem = downloads.FirstOrDefault(x => x.StoreId == item.ItemId);
+                if (curItem != null && !curItem.IsErrorHappens) continue;
+                else downloads.Remove(curItem);
 
                 var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.ItemId);
 
@@ -182,6 +196,37 @@ namespace CDPI_UI.Views.Store
                 };
                 downloads.Add(downloadItem);
             }
+
+            List<StoreHelper.QueueItem> failureItems = StoreHelper.Instance.GetFailedToInstallItems();
+
+            foreach (StoreHelper.QueueItem item in failureItems)
+            {
+                opIds.Add(item.OperationId);
+                Debug.WriteLine($">>> {item.ItemId}");
+                var curItem = downloads.FirstOrDefault(x => x.StoreId == item.ItemId);
+                if (curItem != null) continue;
+
+                var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.ItemId);
+
+                string eImageSource = StoreHelper.Instance.ExecuteScript(storeItem.icon);
+                BitmapImage image = new BitmapImage(new Uri(eImageSource));
+
+                SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(storeItem.background);
+
+                DownloadItemModel downloadItem = new()
+                {
+                    StoreId = storeItem.store_id,
+                    OperationId = item.OperationId,
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
+                    Developer = storeItem.developer,
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
+                    ImageSource = image,
+                    CardBackgroundBrush = solidColorBrush,
+                    IsErrorHappens = true
+                };
+                downloads.Add(downloadItem);
+            }
+
             AuditSubHeaderVisible();
         }
 

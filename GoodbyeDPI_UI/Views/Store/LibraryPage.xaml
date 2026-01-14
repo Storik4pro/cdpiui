@@ -20,6 +20,8 @@
                     <VisualState.Setters>
                         <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
                         <Setter Target="MainStackPanel.Width" Value="auto" />
+                        <Setter Target="LibraryTextBlock.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="LibraryTextBlock.Width" Value="auto" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="WideState">
@@ -29,29 +31,39 @@
                     <VisualState.Setters>
                         <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
                         <Setter Target="MainStackPanel.Width" Value="1860" />
+                        <Setter Target="LibraryTextBlock.HorizontalAlignment" Value="Center" />
+                        <Setter Target="LibraryTextBlock.Width" Value="1860" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <ScrollViewer Padding="20">
-            <StackPanel x:Name="MainStackPanel">
-                <TextBlock l:Uids.Uid="LibraryTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
-                <ListView x:Name="ItemsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+
+        <Grid Padding="0 0" HorizontalAlignment="Stretch">
+            <ListView x:Name="ItemsListView" Grid.Row="1" SelectionMode="None" Padding="0"
                           ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="local:LibraryItemModel">
-                            <lcontrols:StoreLibraryItemButton 
+                <ListView.Header>
+                    <TextBlock x:Name="LibraryTextBlock" l:Uids.Uid="LibraryTextBlock" Grid.Row="0" Margin="20 20 20 5" Style="{ThemeResource TitleTextBlockStyle}"/>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:LibraryItemModel">
+                        <lcontrols:StoreLibraryItemButton 
                                 StoreId="{x:Bind StoreId, Mode=OneWay}"
                                 Title="{x:Bind Title, Mode=OneWay}"
                                 Developer="{x:Bind Developer, Mode=OneWay}"
                                 Category="{x:Bind Category, Mode=OneWay}"
                                 CardImageSource="{x:Bind ImageSource, Mode=OneWay}"
-                                CardBackgroundBrush="{x:Bind CardBackgroundBrush, Mode=OneWay}"
-                                Margin="0 2.5"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-        </ScrollViewer>
+                                CardBackgroundBrush="{x:Bind CardBackgroundBrush, Mode=OneWay}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Footer>
+                    <Grid Height="20"/>
+                </ListView.Footer>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel x:Name="MainStackPanel" Spacing="5" Margin="20 0"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
     </Grid>
 </Page>

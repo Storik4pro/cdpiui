@@ -10,6 +10,10 @@ namespace CDPI_UI.Helper
     {
         public static string MainRepoUrl = "https://github.com/Storik4pro/cdpiui";
         public static string LicenseUrl = "https://github.com/Storik4pro/cdpiui/blob/main/LICENSE.txt";
+        public static async void LaunchUrl(string uri)
+        {
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
+        }
         public static async void LaunchReportUrl()
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/issues"));

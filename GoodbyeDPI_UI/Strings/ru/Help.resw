@@ -120,13 +120,13 @@
   <data name="AboutTemplate" xml:space="preserve">
     <value># О средстве: Локальная справка
 
-Локальная справка приложения CDPI UI. Позволяет получить локальный доступ к сведениям. размещенным на [storik4pro.github.io/cdpiui/wiki](https://storik4pro.github.io/cdpiui/wiki). Не обновляется автоматически.
+Локальная справка приложения CDPI UI. Позволяет получить локальный доступ к сведениям, размещенным на [storik4pro.github.io/cdpiui/wiki](https://storik4pro.github.io/cdpiui/wiki). Не обновляется автоматически.
 
 #### Составители справки:
 - Storik4
 
 #### Внесите свой вклад!
-Создайте статью для справки! Чтобы узнать больше посетите ресурс [storik4pro.github.io/cdpiui/wiki/community](https://storik4pro.github.io/cdpiui/wiki/community)
+Создайте статью для справки! Чтобы узнать больше, посетите ресурс [storik4pro.github.io/cdpiui/wiki/community](https://storik4pro.github.io/cdpiui/wiki/community)
 
 Для отображения справки используется `CommunityToolkit.WinUI.Controls.MarkdownTextBlock`</value>
   </data>
@@ -156,6 +156,6 @@
     <value>Исправление ошибок компонентов</value>
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
-    <value>Добро пожаловать в сравку</value>
+    <value>Добро пожаловать в справку</value>
   </data>
 </root>

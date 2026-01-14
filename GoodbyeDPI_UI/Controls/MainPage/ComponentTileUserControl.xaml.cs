@@ -101,6 +101,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         { "CSGIVS036", [AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs, AvailableComponentFeatures.AutoSelectConfig] },
         { "CSBIHA024", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.AutoSelectConfig, AvailableComponentFeatures.CreateConfig] },
         { "CSSIXC048", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs] },
+        { "CSNIG9025", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig] },
     };
 
 

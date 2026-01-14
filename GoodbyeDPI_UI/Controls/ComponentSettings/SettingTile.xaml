@@ -7,17 +7,39 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
 
     <Grid CornerRadius="10" Margin="0 0 0 0" VerticalAlignment="Top">
         <Border CornerRadius="10" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1"/>
         <StackPanel Padding="1" Spacing="0">
             <Grid>
-                <StackPanel Padding="20" Spacing="10">
+                <Grid Padding="15 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
                     <FontIcon x:Name="FontIcon" Glyph="{x:Bind IconGlyph}" HorizontalAlignment="Left" Visibility="Collapsed"/>
-                    <TextBlock x:Name="TitleTextBlock" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                    <TextBlock x:Name="TitleTextBlock" Grid.Column="2" Text="{x:Bind Title}" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap" Visibility="Collapsed"/>
+                    <Button x:Name="HelpButton" Grid.Column="4" Padding="6" Background="Transparent" BorderBrush="Transparent">
+                        <ToolTipService.ToolTip>
+                            <TextBlock l:Uids.Uid="/Flashlight/WhatDoesItMeanTextBlock"/>
+                        </ToolTipService.ToolTip>
+                        <FontIcon Glyph="&#xE9CE;" FontSize="16"/>
+                        <Button.Flyout>
+                            <Flyout Placement="Left">
+                                <StackPanel MaxWidth="400">
+                                    <TextBlock l:Uids.Uid="/Flashlight/WhatDoesItMeanTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
                     <TextBlock x:Name="DescriptionTextBlock" Text="{x:Bind Description}" TextWrapping="Wrap" Visibility="Collapsed"/>
-                </StackPanel>
+                </Grid>
                 <Button x:Name="MoreActionsButton" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Margin="0 20 20 0" Visibility="Collapsed">
                     <FontIcon Glyph="&#xE712;" FontSize="16"/>
                     <Button.Flyout>

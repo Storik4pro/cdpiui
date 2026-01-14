@@ -286,32 +286,44 @@ namespace CDPI_UI.Helper.LScript
             return Tuple.Create(varName, conditionVarName, trueExpr, falseExpr);
         }
 
-        public static void RunScript(string scriptString)
+        public static string RunScript(string scriptString, Dictionary<string, string> extraArgs = null)
         {
             if (string.IsNullOrEmpty(scriptString))
-                return;
+                return null;
 
-            Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
-            string scriptData = "";
+            string result = "";
 
-            if (match.Success)
+            foreach (string script in scriptString.Split(";"))
             {
-                scriptData = match.Groups[1].Value;
+                Match match = Regex.Match(script, ScriptGetArgsRegex);
+                string scriptData = "";
+
+                if (match.Success)
+                {
+                    scriptData = match.Groups[1].Value;
+                }
+
+                string[] parts = scriptData.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+                string scriptName = parts[0];
+                string[] scriptArgs = parts.Skip(1).ToArray();
+
+                switch (scriptName)
+                {
+                    case "finish_component_setup":
+                        FinishComponentSetup(scriptArgs);
+                        break;
+                    case "download_easy_designer_annotation_file":
+                        if (scriptArgs.Length < 1)
+                            break;
+                        result += $"DOWNLOAD={DownloadEasyDesignerAnnotationFile(scriptArgs[0])}$SEPARATORedannotationfile;";
+                        break;
+                    default:
+                        Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"Unknown script command: {scriptName}");
+                        break;
+                }
             }
 
-            string[] parts = scriptData.Split(", ", StringSplitOptions.RemoveEmptyEntries);
-            string scriptName = parts[0];
-            string[] scriptArgs = parts.Skip(1).ToArray();
-
-            switch (scriptName)
-            {
-                case "finish_component_setup":
-                    FinishComponentSetup(scriptArgs);
-                    break;
-                default:
-                    Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"Unknown script command: {scriptName}");
-                    break;
-            }
+            return result;
         }
 
         private static void FinishComponentSetup(string[] args)
@@ -320,13 +332,20 @@ namespace CDPI_UI.Helper.LScript
                 return;
             string componentName = args[0];
 
-            if (componentName == "byedpi" || componentName == "spoofdpi")
+            TasksHelper.Instance.UpdateTaskList();
+
+            if (componentName == "byedpi" || componentName == "spoofdpi" || componentName == "nodpi")
             {
                 if (SettingsManager.Instance.GetValue<string>("PROXY", "proxyType") == "None")
                 {
                     _ = PipeClient.Instance.SendMessage($"NOTIFY:PROXY_SETUP_REQUIRED({Utils.NormalizeComponentName(componentName)})");
                 }
             }
+        }
+
+        private static string DownloadEasyDesignerAnnotationFile(string url)
+        {
+            return url;
         }
     }
 }

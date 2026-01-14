@@ -50,6 +50,7 @@ namespace CDPI_UI
         public bool IsOperationExitAskAvailable { get; set; } = false;
 
         private bool IsDialogRequested = false;
+        private ConfigItem ConfigItemToEditRequsted = null;
 
         private ILocalizer localizer = Localizer.Get();
 
@@ -79,13 +80,15 @@ namespace CDPI_UI
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon(@"Assets/Icons/Edit.ico");
+
+            SetEditorBackgroundSettings();
         }
 
         private void Fe_Loaded(object sender, RoutedEventArgs e)
         {
             if (IsDialogRequested)
             {
-                OpenConfigEditPage(true);
+                OpenConfigEditPage(true, configItem: ConfigItemToEditRequsted);
             }
 
             if (this.Content is FrameworkElement fe)
@@ -134,11 +137,22 @@ namespace CDPI_UI
         {
             HomeItem.IsEnabled = true;
             CreateNewConfigButton.IsEnabled = true;
+            EditMenuItem.Visibility = Visibility.Collapsed;
+            ViewMenuItem.Visibility = Visibility.Collapsed;
+
+            ContentFrame.Style = (Style)MainGrid.Resources["ContentFrameDefaultStyle"];
 
             if (pageType == typeof(Views.CreateConfigHelper.MainPage))
+            {
                 HomeItem.IsEnabled = false;
+            }
             else if (pageType == typeof(CreateNewConfigPage))
+            {
                 CreateNewConfigButton.IsEnabled = false;
+                EditMenuItem.Visibility = Visibility.Visible;
+                ViewMenuItem.Visibility = Visibility.Visible;
+                ContentFrame.Style = (Style)MainGrid.Resources["ContentFrameTransparentStyle"];
+            }
         }
 
         private void ContentFrame_Navigating(object sender, NavigatingCancelEventArgs e)
@@ -203,23 +217,29 @@ namespace CDPI_UI
             }
         }
 
-        public void OpenConfigEditPage(bool skp = false)
+        public void OpenConfigEditPage(bool skp = false, ConfigItem configItem = null)
         {
             IsDialogRequested = true;
+            ConfigItemToEditRequsted = configItem;
             if (skp)
             {
                 DispatcherQueue.TryEnqueue(async () =>
                 {
-                    SelectConfigToEditContentDialog dialog = new SelectConfigToEditContentDialog()
+                    if (configItem == null)
                     {
-                        XamlRoot = this.Content.XamlRoot
-                    };
-                    await dialog.ShowAsync();
-                    if (dialog.SelectedConfigResult == SelectResult.Selected)
-                    {
-                        ConfigItem configItem = dialog.SelectedConfigItem;
-                        ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+                        SelectConfigToEditContentDialog dialog = new SelectConfigToEditContentDialog()
+                        {
+                            XamlRoot = this.Content.XamlRoot
+                        };
+                        await dialog.ShowAsync();
+                        if (dialog.SelectedConfigResult == SelectResult.Selected)
+                        {
+                            configItem = dialog.SelectedConfigItem;
+
+                        }
                     }
+
+                    ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
                 });
             }
         }
@@ -433,6 +453,90 @@ namespace CDPI_UI
         private void OnlineHelpButton_Click(object sender, RoutedEventArgs e)
         {
             UrlOpenHelper.LaunchWikiUrl();
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.Content is CreateNewConfigPage configPage) 
+            {
+                configPage.OpenSearch();
+            }
+        }
+
+        private void SearchAndReplace_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.Content is CreateNewConfigPage configPage)
+            {
+                configPage.OpenSearchAndReplace();
+            }
+        }
+
+        private void SetEditorBackgroundSettings()
+        {
+            string key = SettingsManager.Instance.GetValue<string>("APPEARANCE", "configEditorBackground");
+            switch (key)
+            {
+                case "Mica":
+                    MicaBackgroundMenuItem.IsChecked = true;
+                    break;
+                case "MicaTransparent":
+                    MicaAltMenuItem.IsChecked = true;
+                    break;
+                case "MicaSmoke":
+                    MicaBackgroundMenuItem.IsChecked = true;
+                    break;
+                default:
+                    DefaultBackgroundMenuItem.IsChecked = true;
+                    break;
+            }
+        }
+
+        private void EditorBackgroundMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string key = "Black";
+            if (MicaBackgroundMenuItem.IsChecked)
+            {
+                key = "Mica";
+            }
+            else if (MicaAltMenuItem.IsChecked)
+            {
+                key = "MicaTransparent";
+            }
+            else if (MicaSmokeMenuItem.IsChecked)
+            {
+                key = "MicaSmoke";
+            }
+
+            SettingsManager.Instance.SetValue("APPEARANCE", "configEditorBackground", key);
+
+            if (ContentFrame.Content is CreateNewConfigPage configPage)
+            {
+                configPage.ChangeBackground();
+            }
+        }
+
+        private void ZoomInMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.Content is CreateNewConfigPage configPage)
+            {
+                configPage.ChangeZoom(5);
+            }
+        }
+
+        private void ZoomOutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.Content is CreateNewConfigPage configPage)
+            {
+                configPage.ChangeZoom(-5);
+            }
+        }
+
+        private void ZoomReturnMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.Content is CreateNewConfigPage configPage)
+            {
+                configPage.ChangeZoom(0);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using Padding = System.Windows.Forms.Padding;
+using Windows.System;
 using Windows.UI;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Core;
+using WinUI3Localizer;
+using Padding = System.Windows.Forms.Padding;
 
 namespace CDPI_UI.Helper.Static
 {
@@ -195,7 +198,7 @@ namespace CDPI_UI.Helper.Static
             QuickWidget
         }
 
-        private static Thickness _Padding = new Thickness(20, 10, 20, 10);
+        private static Thickness _Padding = new Thickness(15, 10, 15, 10);
 
         static public UIElement CreateSettingTile(
             SettingsTile preset, 
@@ -203,6 +206,8 @@ namespace CDPI_UI.Helper.Static
             TileType tileType = TileType.Basic,
             Thickness? padding = null)
         {
+            ILocalizer localizer = Localizer.Get();
+
             if (padding == null) padding = _Padding;
             var rootStack = new StackPanel();
 
@@ -240,12 +245,16 @@ namespace CDPI_UI.Helper.Static
                                 executeAction?.Invoke(ActionIds.EditButtonClicked, null, def);
                             };
 
+                            ToolTipService.SetToolTip(editBtn, localizer.GetLocalizedString("Edit")); 
+
                             var viewBtn = new Button { Padding = new Thickness(6) };
                             viewBtn.Content = new FontIcon { Glyph = "\uE890", FontSize = 16 };
                             viewBtn.Click += (s, e) =>
                             {
                                 executeAction?.Invoke(ActionIds.ViewButtonClicked, [list.Title], def);
                             };
+
+                            ToolTipService.SetToolTip(viewBtn, localizer.GetLocalizedString("ViewAppliedFlagsForSiteList"));
 
                             contentPanel.Children.Add(editBtn);
                             contentPanel.Children.Add(viewBtn);
@@ -412,6 +421,27 @@ namespace CDPI_UI.Helper.Static
                         tabView.TabItemsSource = null;
                         break;
                 }
+            }
+        }
+
+        // https://github.com/FrozenAssassine/Fastedit/blob/v2.9.1/Fastedit/Helper/KeyHelper.cs
+        public static bool IsKeyPressed(VirtualKey key)
+        {
+            return Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(key).HasFlag(CoreVirtualKeyStates.Down);
+        }
+
+        public static ApplicationTheme ConvertTheme(ElementTheme theme)
+        {
+            switch (theme)
+            {
+                case ElementTheme.Light: return ApplicationTheme.Light;
+                case ElementTheme.Dark: return ApplicationTheme.Dark;
+                case ElementTheme.Default:
+                    var defaultTheme = new Windows.UI.ViewManagement.UISettings();
+                    return defaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString() == "#FF000000"
+                        ? ApplicationTheme.Dark : ApplicationTheme.Light;
+
+                default: return ApplicationTheme.Light;
             }
         }
 

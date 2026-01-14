@@ -8,8 +8,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:tcontrols="using:CDPI_UI.Controls.CreateConfigHelper"
     xmlns:lcontrol="using:CDPI_UI"
     xmlns:textcontrolbox="using:TextControlBoxNS"
+    xmlns:ucontrols="using:CDPI_UI.Controls.Universal"
     xmlns:l="using:WinUI3Localizer">
 
     <Page.Resources>
@@ -45,7 +47,21 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
-
+        <Style x:Name="BlackStyle" TargetType="Grid">
+            <Setter Property="Background" Value="Black"/>
+        </Style>
+        <Style x:Name="GrayStyle" TargetType="Grid">
+            <Setter Property="Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+        </Style>
+        <Style x:Name="TransparentStyle" TargetType="Grid">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style x:Name="MicaSmokeStyle" TargetType="Grid">
+            <Setter Property="Background" Value="{ThemeResource SmokeFillColorDefaultBrush}"/>
+        </Style>
+        <Style x:Name="MicaStyle" TargetType="Grid">
+            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -53,8 +69,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition x:Name="InfoPanelDefinition" Width="350"/>
         </Grid.ColumnDefinitions>
-        
-        <Grid x:Name="MainGrid" Background="Black" RequestedTheme="Dark">
+
+        <Grid x:Name="MainGrid">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -66,20 +82,19 @@
                 </SelectorBar>
                 <Grid x:Name="GUIDesignerGrid" Visibility="Collapsed" Padding="10 0 20 0" MinWidth="400" Grid.Row="1">
                     <ScrollViewer Padding="0 0 15 10">
-                        <StackPanel Spacing="5">
-                            <ListView x:Name="GUIDesignerListView" SelectionMode="None" Padding="0"
-                              ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                        <StackPanel Spacing="2">
+                            <ListView x:Name="GUIDesignerExclusiveListView" SelectionMode="None" Padding="0"
+                                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="local:GraphicDesignerSettingItemModel">
-                                        <lcontrol:ComponentSettingUserControl 
-                                    Guid="{x:Bind Guid, Mode=OneWay}"
-                                    DisplayName="{x:Bind DisplayName, Mode=OneWay}"
-                                    Description="{x:Bind Description, Mode=OneWay}"
-                                    EnableTextInput="{x:Bind EnableTextInput, Mode=OneWay}"
-                                    TextValue="{x:Bind Value, Mode=OneWay}"
-                                    IsSettingChecked="{x:Bind IsChecked, Mode=OneWay}"
-                                    ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
-                                    ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
+                                    <DataTemplate x:DataType="local:GraphicDesignerExclusiveSettingItemModel">
+                                        <tcontrols:ComponentSettingsExclusiveGroupUserControl 
+                                            Guid="{x:Bind Guid, Mode=OneWay}"
+                                            DisplayName="{x:Bind DisplayName, Mode=OneWay}"
+                                            SelectedItemGuid="{x:Bind SelectedItemGuid, Mode=OneWay}"
+                                            AvailableVariants="{x:Bind Items, Mode=OneWay}"
+                                            NowSelectedGuidChangedCommand="{Binding DataContext.GraphicDesignerSelectedGuidChangedCommand, ElementName=RootPage}"
+                                            ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
+                                            ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                                 <ListView.ItemsPanel>
@@ -88,7 +103,30 @@
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
                             </ListView>
-                            <StackPanel x:Name="AdditionalSettingsPanel" Visibility="Collapsed">
+                            <ListView x:Name="GUIDesignerListView" SelectionMode="None" Padding="0"
+                                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:GraphicDesignerSettingItemModel">
+                                        <lcontrol:ComponentSettingUserControl 
+                                            Guid="{x:Bind Guid, Mode=OneWay}"
+                                            DisplayName="{x:Bind DisplayName, Mode=OneWay}"
+                                            Description="{x:Bind Description, Mode=OneWay}"
+                                            EnableTextInput="{x:Bind EnableTextInput, Mode=OneWay}"
+                                            TextValue="{x:Bind Value, Mode=OneWay}"
+                                            Type="{x:Bind Type, Mode=OneWay}"
+                                            AvailableEnumValues="{x:Bind AvailableEnumValues, Mode=OneWay}"
+                                            IsSettingChecked="{x:Bind IsChecked, Mode=OneWay}"
+                                            ValueChangedCommand="{Binding DataContext.GraphicDesignerTextValueChangedCommand, ElementName=RootPage}"
+                                            ToggledCommand="{Binding DataContext.GraphicDesignerBoolValueToggledCommand, ElementName=RootPage}"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="2"/>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                            <StackPanel x:Name="AdditionalSettingsPanel" Visibility="Collapsed" Margin="0 5 0 0">
                                 <TextBlock l:Uids.Uid="AdditionalSettingsTitle" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                 <TextBox x:Name="AdditionalSettingsTextBox"/>
                             </StackPanel>
@@ -107,9 +145,17 @@
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
-                <textcontrolbox:TextControlBox x:Name="StartupStringTextBox" Grid.Row="1" HorizontalAlignment="Stretch" TextChanged="StartupStringTextBox_TextChanged" MinHeight="150" VerticalAlignment="Stretch" Visibility="Collapsed"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ucontrols:SearchUserControl Grid.Row="0" Visibility="Collapsed" Margin="0,0,0,0" HorizontalAlignment="Stretch" MaxWidth="600" x:Name="SearchControl"/>
+                    <textcontrolbox:TextControlBox x:Name="StartupStringTextBox" Grid.Row="1" HorizontalAlignment="Stretch" TextChanged="StartupStringTextBox_TextChanged" MinHeight="150" VerticalAlignment="Stretch" Visibility="Collapsed"/>
+                    
+                </Grid>
             </Grid>
-            <Grid Background="#282828" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 25 0 0">
+            <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 25 0 0">
                 <Button x:Name="ExpandButton"  Padding="6"  CornerRadius="0" 
                     Background="{ThemeResource ControlAltFillColorSecondaryBrush}" BorderThickness="0" Click="ExpandButton_Click">
                     <ToolTipService.ToolTip>
@@ -119,7 +165,7 @@
                 </Button>
             </Grid>
         </Grid>
-        <Grid Width="350" HorizontalAlignment="Right" Grid.ColumnSpan="2" Background="#282828" RequestedTheme="Dark">
+        <Grid Width="350" HorizontalAlignment="Right" Grid.ColumnSpan="2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="GridTranslateTransform"/>
             </Grid.RenderTransform>
@@ -171,7 +217,7 @@
                                         <TextBlock l:Uids.Uid="OffValueTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
                                         <TextBox x:Name="OffValueTextBox" TextChanged="OffValueTextBox_TextChanged" IsSpellCheckEnabled="False"/>
                                         <TextBlock l:Uids.Uid="PreviewSampleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
-                                        <Grid>
+                                        <Grid RequestedTheme="Dark">
                                             <Border BorderBrush="{ThemeResource ControlStrongStrokeColorDefaultBrush}" Background="Black" BorderThickness="1" CornerRadius="5"/>
                                             <TextBlock x:Name="ConditionPreviewTextBlock" IsTextSelectionEnabled="True" Margin="5" TextWrapping="Wrap" FontFamily="Consolas"/>
                                         </Grid>
@@ -205,16 +251,27 @@
             </ScrollViewer>
             <Grid Grid.Row="1">
                 <Rectangle Fill="{ThemeResource SolidBackgroundFillColorBaseBrush}"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Padding="20">
-                    <Button x:Name="TestButton" Padding="6" Width="148" Click="TestButton_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <FontIcon x:Name="TestButtonGlyph" Glyph="&#xE768;" FontSize="16" />
-                                <TextBlock x:Name="TestButtonText" />
-                            </StackPanel>
-                        </Button.Content>
+                <Grid HorizontalAlignment="Stretch"  Padding="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button l:Uids.Uid="ViewMoreActionsButton" x:Name="ViewMoreButton" Padding="6" Height="33" Width="33">
+                        <FontIcon Glyph="&#xE712;" FontSize="16"/>
+                        <Button.Flyout>
+                            <MenuFlyout Placement="TopEdgeAlignedLeft">
+                                <MenuFlyoutItem x:Name="TestButtonText" Click="TestButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon x:Name="TestButtonGlyph" Glyph="&#xE768;" FontSize="16" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="OpenListsConfigDirectory" x:Name="OpenListsConfigDirectory" Click="OpenListsConfigDirectory_Click" Visibility="Collapsed"/>
+                                <MenuFlyoutItem l:Uids.Uid="OpenBinsConfigDirectory" x:Name="OpenBinsConfigDirectory" Click="OpenBinsConfigDirectory_Click" Visibility="Collapsed"/>
+                            </MenuFlyout>
+                        </Button.Flyout>
                     </Button>
-                    <Button x:Name="SaveConfigButton" Style="{ThemeResource AccentButtonStyle}" Width="148" Click="SaveConfigButton_Click">
+                    <Button x:Name="SaveConfigButton" Grid.Column="2" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch" Click="SaveConfigButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <FontIcon Glyph="&#xE74E;" FontSize="16" />
@@ -222,7 +279,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

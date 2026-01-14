@@ -80,7 +80,8 @@ namespace CDPI_UI.Helper
             string extractRootFolder = null,
             string executableFileName = "executableFile",
             string filetype = "",
-            bool removeAfterAction = false
+            bool removeAfterAction = false,
+            string filename = ""
         )
         {
             IsRestartNeeded = false;
@@ -125,11 +126,14 @@ namespace CDPI_UI.Helper
                         File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
                     else
                     {
-                        string exeName = GetFileNameFromUri(url);
+                        string exeName = string.IsNullOrEmpty(filename) ? GetFileNameFromUri(url) : filename;
                         if (string.IsNullOrEmpty(exeName))
                             throw new IOException();
 
-                        File.Copy(tempDestination, Path.Combine(destinationPath, exeName + StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, ".tmp")), true);
+                        string extention = StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, null);
+                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : ".tmp";
+
+                        File.Copy(tempDestination, Path.Combine(destinationPath, exeName + _fName), true);
                     }
                 }
 
@@ -266,17 +270,18 @@ namespace CDPI_UI.Helper
         private void HandleError(Exception ex)
         {
             StageChanged?.Invoke("ErrorHappens");
-            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr);
+            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr, out int? statusCode);
             var code = codeObj.ToString();
+            string _statusCode = statusCode != null ? $"_{statusCode}" : ""; 
             Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
             if (hr != null)
             {
                 string hrHex = $"0x{hr.Value:X8}";
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code} ({hrHex})", $"{ex}"));
+                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode} ({hrHex})", $"{ex}"));
             }
             else
             {
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}", $"{ex}"));
+                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode}", $"{ex}"));
             }
         }
         public void Dispose()

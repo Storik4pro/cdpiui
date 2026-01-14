@@ -128,11 +128,62 @@
      ssl_err : В ответ на ClientHello не пришел ServerHello или SH содержит некорректный session_id
      none    : Предыдущая группа пропущена, например из-за ограничения по доменам или протоколам</value>
   </data>
+  <data name="CheckAdGuard" xml:space="preserve">
+    <value>Службы AdGuard могут вызывать проблемы с Discord и другими сервисами</value>
+  </data>
+  <data name="CheckAnotherComponents" xml:space="preserve">
+    <value>Одновременно только один сервис (Zapret, GoodbyeDPI) может быть активен. Два или более экземпляра компонентов могут вызвать проблемы с подключением к сети Интернет или понижение скорости соединения</value>
+  </data>
+  <data name="CheckAnotherComponentsServices" xml:space="preserve">
+    <value>Одновременно только один сервис (Zapret, GoodbyeDPI) может быть активен. Два или более экземпляра компонентов могут вызвать проблемы с подключением к сети Интернет или понижение скорости соединения</value>
+  </data>
+  <data name="CheckBFE" xml:space="preserve">
+    <value>Base Filtering Engine (BFE) необходим для работы некоторых компонентов (Например, Zapret). Без этой службы компонент не сможет производить модификацию траффика и, как следствие, ни один из пресетов не будет работать.</value>
+  </data>
+  <data name="CheckCheckPointServices" xml:space="preserve">
+    <value>Служба "CheckPont" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckDNS" xml:space="preserve">
+    <value>Убедитесь, что вы настроили безопасный DNS в браузере или системе с нестандартным DNS провайдером.</value>
+  </data>
+  <data name="CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>Служба "Intel Connectivity Network" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckKiller" xml:space="preserve">
+    <value>Службы "Killer" конфликтуют с Zapret и другими компонентами. Эти службы должны быть отключены в системе</value>
+  </data>
+  <data name="CheckNetsh" xml:space="preserve">
+    <value>Утилита "netsh.exe" должна присутствовать в системной переменной PATH. В противном случае компоненты не смогут нормально работать и, как следствие, обход выполняться не будет</value>
+  </data>
+  <data name="CheckProxy" xml:space="preserve">
+    <value>Чтобы использовать такие компоненты как Zapret и GoodbyeDPI необходимо отключить системный прокси. Это не относится к локальным прокси, работающим для определенного диапазона приложений через, например, ProxiFyre</value>
+  </data>
+  <data name="CheckSmartByte" xml:space="preserve">
+    <value>Служба "SmartByte" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckTimestamps" xml:space="preserve">
+    <value>Временные метки TCP обязательны для правильной работы компонентов</value>
+  </data>
+  <data name="CheckVPNs" xml:space="preserve">
+    <value>Все VPN сервисы мешают корректной работе компонентов. Пожалуйста, убедитесь, что все подобные службы выключены или удалены из системы</value>
+  </data>
+  <data name="CheckWinDivert" xml:space="preserve">
+    <value>"WinDivert" должен быть остановлен во время диагностики. Если он все ещё запущен, то убедитесь, что все другие службы обхода были остановлены</value>
+  </data>
   <data name="DefaultTip" xml:space="preserve">
     <value>Что-то не работает или появились вопросы? Возможно, эти разделы справки могут вам помочь</value>
   </data>
+  <data name="ExplainTextBlock.Text" xml:space="preserve">
+    <value>Фонарик поясняет</value>
+  </data>
   <data name="ImportConfigTip.Text" xml:space="preserve">
     <value>Вы можете импортировать пресет из .BAT и .CMD файлов!</value>
+  </data>
+  <data name="NetHelpAskButton.Content" xml:space="preserve">
+    <value>Показать справку в Интернете</value>
+  </data>
+  <data name="NetSearchPlaceholder" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Для+чего+используется+{0}+в операционной+системе+Windows?</value>
   </data>
   <data name="NONE" xml:space="preserve">
     <value>Предыдущая группа пропущена </value>
@@ -155,8 +206,14 @@
   <data name="TitleTextBlock.Text" xml:space="preserve">
     <value>Советы от Фонарика</value>
   </data>
-  <data name="TORST" xml:space="preserve">
-    <value>Вышло время ожидания / Подключение сброшено</value>
+  <data name="URL_CheckAdGuard" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/417</value>
+  </data>
+  <data name="URL_CheckNetsh" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Для+чего+используется+netsh.exe+в операционной+системе+Windows?</value>
+  </data>
+  <data name="URL_CheckProxy" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Как+отключить+системный+прокси+в+Windows</value>
   </data>
   <data name="ViewGoodCheckReportTipTextBlock.Text" xml:space="preserve">
     <value>Для начала отметьте рабочие аргументы используя флажки для каждого списка сайтов. После этого нажмите на кнопку "Далее", чтобы выбрать самые подходящие параметры и объединить их в один пресет.</value>
@@ -166,5 +223,26 @@
   </data>
   <data name="WhatDoesItMeanTextBlock.Text" xml:space="preserve">
     <value>Что это значит?</value>
+  </data>
+  <data name="TORST" xml:space="preserve">
+    <value>Вышло время ожидания / Подключение сброшено</value>
+  </data>
+  <data name="URL_CheckKiller" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/2512#issuecomment-2821119513</value>
+  </data>
+  <data name="URL_CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>https://github.com/ValdikSS/GoodbyeDPI/issues/541#issuecomment-2661670982</value>
+  </data>
+  <data name="URL_CheckDNS" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Безопасный+DNS+windows</value>
+  </data>
+  <data name="URL_CheckVPNs" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponents" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponentsServices" xml:space="preserve">
+    <value>$EMPTY</value>
   </data>
 </root>

@@ -117,6 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="--autoblacklist" xml:space="preserve">
+    <value>Автоматическое определение заблокированных доменов</value>
+  </data>
+  <data name="--blacklist" xml:space="preserve">
+    <value>Путь до используемого списка сайтов</value>
+  </data>
+  <data name="--domain-matching" xml:space="preserve">
+    <value>Метод сопоставления доменов</value>
+  </data>
+  <data name="--fragment-method" xml:space="preserve">
+    <value>Метод фрагментации</value>
+  </data>
+  <data name="--help" xml:space="preserve">
+    <value>Показать справку и выйти</value>
+  </data>
+  <data name="--host" xml:space="preserve">
+    <value>Адрес для разворачивания прокси</value>
+  </data>
+  <data name="--log-access" xml:space="preserve">
+    <value>Путь к файлу журнала</value>
+  </data>
+  <data name="--log-error" xml:space="preserve">
+    <value>Путь к файлу журнала с ошибками</value>
+  </data>
+  <data name="--no-blacklist" xml:space="preserve">
+    <value>Применять обход ко всем подключениям без исключения</value>
+  </data>
+  <data name="--out-host" xml:space="preserve">
+    <value>Адрес исходящего прокси</value>
+  </data>
+  <data name="--port" xml:space="preserve">
+    <value>Порт для разворачивания прокси</value>
+  </data>
+  <data name="--quiet" xml:space="preserve">
+    <value>Отключить вывод дополнительной информации в консоль</value>
+  </data>
   <data name="A" xml:space="preserve">
     <value>Дополнительный пробел между методом и URL</value>
   </data>
