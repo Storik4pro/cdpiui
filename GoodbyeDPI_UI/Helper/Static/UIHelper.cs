@@ -1,4 +1,5 @@
 ﻿using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.LScript;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -344,7 +345,7 @@ namespace CDPI_UI.Helper.Static
         {
             StoreItemLargeButton storeItemLargeButton;
 
-            string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
             Windows.UI.Color color = HexToColorConverter(backgroundColor);
@@ -368,7 +369,7 @@ namespace CDPI_UI.Helper.Static
         {
             StoreItemSmallButton storeItemSmallButton;
 
-            string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
             SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(backgroundColor);
