@@ -313,8 +313,8 @@ public sealed partial class ViewOutputPage : Page
 
     }
 
-    private async void SupportButton_Click(object sender, RoutedEventArgs e)
+    private void SupportButton_Click(object sender, RoutedEventArgs e)
     {
-        _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/goodbyeDPI-UI/issues/"));
+        UrlOpenHelper.LaunchReportUrl();
     }
 }

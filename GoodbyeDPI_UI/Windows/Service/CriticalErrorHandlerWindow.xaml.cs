@@ -154,9 +154,9 @@ namespace CDPI_UI
             Process.GetCurrentProcess().Kill();
         }
 
-        private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
+        private void GetHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/issues"));
+            UrlOpenHelper.LaunchLicenseUrl();
         }
 
         private CancellationTokenSource _copyTimerCts;
@@ -168,7 +168,7 @@ namespace CDPI_UI
                 $"```\n" +
                 $"Where: {WhereTextBlock.Text}\n" +
                 $"Why: {WhyTextBlock.Text}\n" +
-                $"ErrCode: {ErrorCodeTextBlock}\n" +
+                $"ErrCode: {ErrorCodeTextBlock.Text}\n" +
                 $"EnvInfo:\n{AdditionalTextBlock.Text}\n" +
                 $"```\n" +
                 $"Endlog";
