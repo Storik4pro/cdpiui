@@ -227,12 +227,36 @@ namespace CDPI_UI.Helper
         public Action UpdateCheckStarted;
         public Action UpdateCheckStopped;
 
+        public readonly SupportedVersionControls VersionControl;
+
         private StoreHelper()
         {
-
+            if (Enum.TryParse(SettingsManager.Instance.GetValueOrDefault("STORE", "versionControlType", defaultValue: "GitHub"), true, out SupportedVersionControls versionControl))
+            {
+                VersionControl = versionControl;
+            }
+            else
+            {
+                VersionControl = SupportedVersionControls.GitHub;
+            }
         }
 
         #region Database
+        private string GetStoreUrl()
+        {
+            string gitHubRepo = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
+            string gitLabRepo = $"https://gitlab.com/{StateHelper.GitLabStoreRepo}/-/archive/main/CDPIUI-Store-main.zip";
+            return VersionControl == SupportedVersionControls.GitHub? gitHubRepo : gitLabRepo;
+        }
+        public static void ClearRepoCache()
+        {
+            string localAppData = StateHelper.GetDataDirectory();
+            string targetFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
+
+            if (Directory.Exists(targetFolder))
+                Directory.Delete(targetFolder, recursive: true);
+        }
         public async Task<bool> LoadAllStoreDatabase(bool forseSync = true)
         {
             try
@@ -250,7 +274,7 @@ namespace CDPI_UI.Helper
 
                 if ((forseSync && t.TotalDays >= 1) || !Path.Exists(targetFolder)) {
 
-                    string zipUrl = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
+                    string zipUrl = GetStoreUrl();
 
                     using HttpClient client = new HttpClient();
 
@@ -455,7 +479,7 @@ namespace CDPI_UI.Helper
                 {
                     store_id = storeId,
                     version_control = "git",
-                    version_control_link = StateHelper.ApplicationCheckUpdatesUrl,
+                    version_control_link = VersionControl == SupportedVersionControls.GitHub ? StateHelper.ApplicationCheckUpdatesUrl : StateHelper.ApplicationGitLabCheckUpdatesUrl,
                     filetype = Utils.IsApplicationBuildAsSingleFile ? "CDPIUIUpdateItem" : "UPDmsi",
                     target_executable_file = "patch",
                     developer = databaseStoreItem.Developer,
@@ -795,7 +819,7 @@ namespace CDPI_UI.Helper
             DownloadManager = null;
         }
 
-        public static async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
+        public async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
         {
             string notes;
             string tag;
@@ -927,7 +951,25 @@ namespace CDPI_UI.Helper
             return links;
         }
 
-        private static async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
+        private string GetApiUrlForVersion(string owner, string repo, string version)
+        {
+            string url = string.Empty;
+            if (VersionControl == SupportedVersionControls.GitHub)
+            {
+                url = string.IsNullOrEmpty(version)
+                    ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+                    : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
+            }
+            else if (VersionControl == SupportedVersionControls.GitLab)
+            {
+                url = string.IsNullOrEmpty(version)
+                    ? $"https://gitlab.com/api/v4/projects/{owner}%2F{repo}/releases/permalink/latest"
+                    : $"https://gitlab.com/api/v4/projects/{owner}%2F{repo}/releases/{version}";
+            }
+            return url;
+        }
+
+        private async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
         {
             Debug.WriteLine(repoUrl);
             var uri = new Uri(repoUrl);
@@ -944,11 +986,9 @@ namespace CDPI_UI.Helper
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("token", GitHubApiToken);
 
-            string apiUrl = string.IsNullOrEmpty(version)
-                ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
-                : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
+            string apiUrl = GetApiUrlForVersion(owner, repo, version);
 
-            
+
 
             var response = await client.GetAsync(apiUrl);
             Logger.Instance.CreateDebugLog(nameof(StoreHelper), version);
