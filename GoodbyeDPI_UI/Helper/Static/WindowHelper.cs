@@ -33,6 +33,7 @@ namespace CDPI_UI.Helper
             ResizeAndPositionFollowSystem,
             OnlyPositionWizard,
             Message,
+            ExtendedMessage,
             AlwaysCenter
         }
         private enum WindowPositionVariants
@@ -56,6 +57,7 @@ namespace CDPI_UI.Helper
             { nameof(CreateConfigHelperWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
+            { nameof(StoreLocalItemInstallingDialog), WindowResizeOptions.ExtendedMessage },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
         };
@@ -69,6 +71,7 @@ namespace CDPI_UI.Helper
             { WindowResizeOptions.OnlyPositionWizard, Tuple.Create(WindowPositionVariants.CenterIn, 900, 550) },
             { WindowResizeOptions.AlwaysCenter, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 400, 150) },
             { WindowResizeOptions.Message, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 700, 400) },
+            { WindowResizeOptions.ExtendedMessage, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 700, 500) },
         };
 
         public static void SetWindowSize(Window window, int width, int height)
