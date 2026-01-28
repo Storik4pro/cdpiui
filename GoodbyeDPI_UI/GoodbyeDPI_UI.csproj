@@ -44,6 +44,7 @@
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
@@ -91,9 +92,11 @@
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
     <None Remove="Views\Store\LibraryPage.xaml" />
+    <None Remove="Views\Store\SettingsPage.xaml" />
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
     <None Remove="Windows\ModernMainWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
@@ -232,7 +235,6 @@
   <ItemGroup>
     <Folder Include="Controls\ComponentSettings\" />
     <Folder Include="Controls\GoodCheck\" />
-    <Folder Include="Windows\Service\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
@@ -383,8 +385,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.2.0.0</FileVersion>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.3.1.0</FileVersion>
+    <AssemblyVersion>0.3.1.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
   </PropertyGroup>
 
@@ -463,9 +465,18 @@
     <Page Update="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Store\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\StoreLocalItemInstallingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Troubleshooting\WorkPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
