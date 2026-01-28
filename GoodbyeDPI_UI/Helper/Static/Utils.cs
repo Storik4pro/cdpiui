@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Controls.Dialogs.ComponentSettings;
+﻿using CDPI_UI.Common;
+using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper.Items;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,12 +13,14 @@ using System.IO.Compression;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unidecode.NET;
 using Windows.Devices.Printers;
 using WinUI3Localizer;
+using static CDPI_UI.Common.CertificateCheck;
 
 namespace CDPI_UI.Helper.Static
 {
@@ -330,6 +333,18 @@ namespace CDPI_UI.Helper.Static
             return string.Join("/", result);
         }
 
+        public static string CalculateSHA256(string filename)
+        {
+            using (var md5 = SHA256.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "");
+                }
+            }
+        }
+
         public static string GetStoreLikeLocale()
         {
             var localizer = WinUI3Localizer.Localizer.Get();
@@ -347,7 +362,8 @@ namespace CDPI_UI.Helper.Static
             string zipFilePath,
             string zipFolderToUnpack,
             string extractTo,
-            IEnumerable<string> filesToSkip = null
+            IEnumerable<string> filesToSkip = null,
+            bool isCatalogCheckRequired = false
         )
         {
             filesToSkip = filesToSkip ?? Enumerable.Empty<string>();
@@ -421,28 +437,31 @@ namespace CDPI_UI.Helper.Static
                     if (!Directory.Exists(destinationDir))
                         Directory.CreateDirectory(destinationDir);
 
-                    if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
-                        && File.Exists(destinationPath))
+                    if (!isCatalogCheckRequired)
                     {
-                        string destLines = File.ReadAllText(destinationPath);
-                        string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
-                        entry.ExtractToFile(tmpFile, overwrite: true);
-
-                        var stream = File.AppendText(destinationPath);
-
-                        using (stream)
+                        if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
+                            && File.Exists(destinationPath))
                         {
-                            foreach (var line in File.ReadLines(tmpFile))
+                            string destLines = File.ReadAllText(destinationPath);
+                            string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
+                            entry.ExtractToFile(tmpFile, overwrite: true);
+
+                            var stream = File.AppendText(destinationPath);
+
+                            using (stream)
                             {
-                                if (!destLines.Contains(line))
+                                foreach (var line in File.ReadLines(tmpFile))
                                 {
-                                    await stream.WriteLineAsync(line);
+                                    if (!destLines.Contains(line))
+                                    {
+                                        await stream.WriteLineAsync(line);
+                                    }
                                 }
                             }
-                        }
-                        File.Delete(tmpFile);
+                            File.Delete(tmpFile);
 
-                        continue;
+                            continue;
+                        }
                     }
 
                     if (entry.FullName.EndsWith("/"))
@@ -456,6 +475,25 @@ namespace CDPI_UI.Helper.Static
                     }
 
                     extractedFiles++;
+                }
+            }
+
+            if (isCatalogCheckRequired)
+            {
+                CatalogCheckResult catalogCheckResult = await CheckCatalog(Path.Combine(extractTo, "catalog.cat"), extractTo);
+                switch (catalogCheckResult)
+                {
+                    case CatalogCheckResult.Success:
+                        return;
+                    case CatalogCheckResult.FailureNoSignature:
+                        throw new CatalogNoSignature("Catalog file isn't signed");
+                    case CatalogCheckResult.FailureNotTrustedSignature:
+                        throw new CatalogNoSignature("Signature not trusted");
+                    case CatalogCheckResult.FailureNotValid:
+                        throw new CatalogInvalid();
+                    case CatalogCheckResult.FailureUnknown:
+                        throw new CatalogInvalid("Unknown");
+
                 }
             }
         }
