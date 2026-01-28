@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPI_UI.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,10 +10,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 using Windows.Web;
+using static CDPI_UI.Helper.ErrorsHelper;
 using static System.Net.WebRequestMethods;
 
 namespace CDPI_UI.Helper
 {
+    #region CustomExceptions
     public class AddonNotInstalledException : System.Exception
     {
         public AddonNotInstalledException() : base() { }
@@ -23,6 +26,27 @@ namespace CDPI_UI.Helper
             System.Runtime.Serialization.StreamingContext context)
         { }
     }
+    public class NewestVersionAlreadyInstalledException : System.Exception
+    {
+        public NewestVersionAlreadyInstalledException() : base() { }
+        public NewestVersionAlreadyInstalledException(string message) : base(message) { }
+        public NewestVersionAlreadyInstalledException(string message, System.Exception inner) : base(message, inner) { }
+
+        protected NewestVersionAlreadyInstalledException(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
+    public class UnknownFileFormatException : System.Exception
+    {
+        public UnknownFileFormatException() : base() { }
+        public UnknownFileFormatException(string message) : base(message) { }
+        public UnknownFileFormatException(string message, System.Exception inner) : base(message, inner) { }
+
+        protected UnknownFileFormatException(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
+    #endregion
 
     public class ErrorsHelper
     {
@@ -73,6 +97,12 @@ namespace CDPI_UI.Helper
 
             // Store
             ADDON_NOT_INSTALLED,
+            NEWEST_VERSION_INSTALLED,
+            PACK_NOT_SUPPORTED,
+
+            // CatalogCheck
+            CATALOG_SIGNATURE_CHECK_FAILURE,
+            CATALOG_INVALID,
 
             UNKNOWN,
         }
@@ -157,6 +187,14 @@ namespace CDPI_UI.Helper
                                 return PrettyErrorCode.IO_PATH_TOO_LONG;
                         case UnauthorizedAccessException:
                                 return PrettyErrorCode.IO_ACCESS_DENIED;
+                        case CatalogNoSignature:
+                            return PrettyErrorCode.CATALOG_SIGNATURE_CHECK_FAILURE;
+                        case CatalogInvalid:
+                            return PrettyErrorCode.CATALOG_INVALID;
+                        case NewestVersionAlreadyInstalledException:
+                            return PrettyErrorCode.NEWEST_VERSION_INSTALLED;
+                        case UnknownFileFormatException:
+                            return PrettyErrorCode.PACK_NOT_SUPPORTED;
                     }
                     if (current is IOException)
                     {
@@ -219,6 +257,25 @@ namespace CDPI_UI.Helper
                     return PrettyErrorCode.TIMEOUT;
                 return PrettyErrorCode.UNKNOWN;
             }
+        }
+        public static string GetPrettyErrorCode(string preffix, Exception ex)
+        {
+            string prettyErrorCode;
+
+            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr, out int? statusCode);
+            var code = codeObj.ToString();
+            string _statusCode = statusCode != null ? $"_{statusCode}" : "";
+            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
+            if (hr != null)
+            {
+                string hrHex = $"0x{hr.Value:X8}";
+                prettyErrorCode = $"{preffix}_{code}{statusCode} ({hrHex})";
+            }
+            else
+            {
+                prettyErrorCode = $"{preffix}_{code}{statusCode}";
+            }
+            return prettyErrorCode;
         }
     }
 }
