@@ -1,5 +1,6 @@
 using CDPI_UI.Controls.Dialogs.Store;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -141,13 +142,13 @@ namespace CDPI_UI.Messages
             CheckCurrentStatus();
 
             ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemName"), item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale()));
-            ItemImage.Source = new BitmapImage(new Uri(StoreHelper.Instance.ExecuteScript(item.icon)));
+            ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(item.icon)));
             DeveloperTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallDeveloperText"), item.developer);
             CategoryTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallCategoryText"), StoreHelper.Instance.GetLocalizedStoreItemName(
                     StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
                     Utils.GetStoreLikeLocale()
                 ));
-            ItemSmallDescriptionTextBlock.Text = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
+            ItemSmallDescriptionTextBlock.Text = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
 
             ToggleItemLoadingMode(false);
 
