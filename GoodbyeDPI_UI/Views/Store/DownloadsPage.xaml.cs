@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -135,7 +136,7 @@ namespace CDPI_UI.Views.Store
 
             if (item == null) return;
 
-            string eImageSource = StoreHelper.Instance.ExecuteScript(item.icon);
+            string eImageSource = LScriptLangHelper.ExecuteScript(item.icon);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
             SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(item.background);
@@ -179,7 +180,7 @@ namespace CDPI_UI.Views.Store
 
                 var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.ItemId);
 
-                string eImageSource = StoreHelper.Instance.ExecuteScript(storeItem.icon);
+                string eImageSource = LScriptLangHelper.ExecuteScript(storeItem.icon);
                 BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
                 SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(storeItem.background);
@@ -208,7 +209,7 @@ namespace CDPI_UI.Views.Store
 
                 var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.ItemId);
 
-                string eImageSource = StoreHelper.Instance.ExecuteScript(storeItem.icon);
+                string eImageSource = LScriptLangHelper.ExecuteScript(storeItem.icon);
                 BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
                 SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(storeItem.background);
@@ -237,7 +238,7 @@ namespace CDPI_UI.Views.Store
             {
                 var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.StoreId);
 
-                string eImageSource = StoreHelper.Instance.ExecuteScript(storeItem.icon);
+                string eImageSource = LScriptLangHelper.ExecuteScript(storeItem.icon);
                 BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
                 SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(storeItem.background);
