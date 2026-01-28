@@ -1658,7 +1658,7 @@
   <data name="ExclusiveGroupTextBlock.Text" xml:space="preserve">
     <value>Взаимоисключающая группа</value>
   </data>
-  <data name="RemoveFileButton.ToolTipService.ToolTip" xml:space="preserve">
+  <data name="RemoveFileButton.ToolTipService.Tooltip" xml:space="preserve">
     <value>Удалить файл</value>
   </data>
   <data name="SelectFileText.Text" xml:space="preserve">
@@ -1666,5 +1666,85 @@
   </data>
   <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Изменить этот файл в приложении по умолчанию</value>
+  </data>
+  <data name="ItemUnknownSourceWarningTextBlock.Text" xml:space="preserve">
+    <value>Этот элемент был загружен из неизвестного источника и потенциально может нанести вред вашему компьютеру. Если вы не доверяете источнику, то не устанавливайте этот элемент</value>
+  </data>
+  <data name="SatusGettingPackInfo" xml:space="preserve">
+    <value>Идет подготовка пакета</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия пакета: {0}</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Источник: {0}</value>
+  </data>
+  <data name="StoreSmallInstallItemName" xml:space="preserve">
+    <value>Установить {0}?</value>
+  </data>
+  <data name="InstallButton.Content" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="ItemAlreadyInstalledWarn" xml:space="preserve">
+    <value>Последняя версия этого элемента уже установлена. Чтобы произвести откат удалите этот элемент через Магазин вручную, после чего повторите попытку. 
+ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Header" xml:space="preserve">
+    <value>Добавить элемент из локального пакета</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Description" xml:space="preserve">
+    <value>Выберите локальный пакет для добавления в приложение. Делайте это ТОЛЬКО в том случае, если у вас нет доступа к Онлайн-Магазину и вы доверяете автору пакета</value>
+  </data>
+  <data name="SelectPackTextBlock.Text" xml:space="preserve">
+    <value>Выберите пакет</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.Title" xml:space="preserve">
+    <value>Вы уверены, что хотите продолжить?</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Все равно продолжить</value>
+  </data>
+  <data name="ItemLocalInstallingWarningTextBlock.Text" xml:space="preserve">
+    <value>Разработчик не несет ответственности за вред, который может нанести элемент установленный из неизвестного источника.
+НИ В КОЕМ СЛУЧАЕ не устанавливайте пакеты из источников, которым вы не доверяете.</value>
+  </data>
+  <data name="SelectLocalPackToInstall" xml:space="preserve">
+    <value>Выберите пакет для установки...</value>
+  </data>
+  <data name="SignedPack" xml:space="preserve">
+    <value>Подписанный пакет элемента для Магазина</value>
+  </data>
+  <data name="ConfigPack" xml:space="preserve">
+    <value>Неподписанный пакет пресетов</value>
+  </data>
+  <data name="Patch" xml:space="preserve">
+    <value>Пакет обновлений для приложения</value>
+  </data>
+  <data name="AllSupported" xml:space="preserve">
+    <value>Все поддерживаемые типы файлов</value>
+  </data>
+  <data name="VersionControlGitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="VersionControlGitLab" xml:space="preserve">
+    <value>GitLab</value>
+  </data>
+  <data name="SelectVersionControlSettingsCard.Header" xml:space="preserve">
+    <value>Средство контроля версий </value>
+  </data>
+  <data name="SelectVersionControlSettingsCardDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Изменение этого параметра повлияет на предпочитаемый сервер получения обновлений для элементов и приложения.</value>
+  </data>
+  <data name="AppRestartNeededTextBlock.Text" xml:space="preserve">
+    <value>Перезапустите приложение, чтобы это изменение вступило в силу</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Header" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
+    <value>Удаление неиспользуемых пресетов из наборов. Удаление временных файлов. Просмотр использования диска</value>
   </data>
 </root>

@@ -1664,4 +1664,85 @@ To fix this, go to the component settings page and select the [Startup automatic
   <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Edit this file in default app</value>
   </data>
+  <data name="ItemUnknownSourceWarningTextBlock.Text" xml:space="preserve">
+    <value>This item is downloaded from unknown source and can potentially harm your computer. If you do not trust the source, do not install this item.</value>
+  </data>
+  <data name="SatusGettingPackInfo" xml:space="preserve">
+    <value>Getting ready package</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Pack version: {0}</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source: {0}</value>
+  </data>
+  <data name="StoreSmallInstallItemName" xml:space="preserve">
+    <value>Install {0}?</value>
+  </data>
+  <data name="InstallButton.Content" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="ItemAlreadyInstalledWarn" xml:space="preserve">
+    <value>The latest version of this item is currently installed. To roll back the version, first uninstall that item in Store. 
+ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Header" xml:space="preserve">
+    <value>Add item from local package</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Description" xml:space="preserve">
+    <value>Select a local pack to install it. Do it ONLY if you don't have access to Online Store and you trust pack's author </value>
+  </data>
+  <data name="SelectPackTextBlock.Text" xml:space="preserve">
+    <value>Select a pack file</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.Title" xml:space="preserve">
+    <value>Are you sure you want to continue?</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Continue anyway</value>
+  </data>
+  <data name="ItemLocalInstallingWarningTextBlock.Text" xml:space="preserve">
+    <value>Disclaimer
+Installing packs from unknown source can potentially harm you computer.
+DO NOT install packs from source you don't trust.</value>
+  </data>
+  <data name="SelectLocalPackToInstall" xml:space="preserve">
+    <value>Select item package...</value>
+  </data>
+  <data name="SignedPack" xml:space="preserve">
+    <value>Signed Store item package</value>
+  </data>
+  <data name="ConfigPack" xml:space="preserve">
+    <value>Unsigned config pack</value>
+  </data>
+  <data name="Patch" xml:space="preserve">
+    <value>Application patch</value>
+  </data>
+  <data name="AllSupported" xml:space="preserve">
+    <value>All supported file extentions</value>
+  </data>
+  <data name="VersionControlGitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="VersionControlGitLab" xml:space="preserve">
+    <value>GitLab</value>
+  </data>
+  <data name="SelectVersionControlSettingsCard.Header" xml:space="preserve">
+    <value>Preferred version control type </value>
+  </data>
+  <data name="SelectVersionControlSettingsCardDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Changing this setting will affect the preferred server for receiving updates for items and applications.</value>
+  </data>
+  <data name="AppRestartNeededTextBlock.Text" xml:space="preserve">
+    <value>Please restart the application for this change to take effect.</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Header" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
+    <value>Remove unused configs from config kits. Remove temp files. View disk usage</value>
+  </data>
 </root>
