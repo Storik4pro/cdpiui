@@ -231,13 +231,13 @@ namespace CDPI_UI.Helper
 
         public async void StopAllTasks()
         {
-            await _taskOperationLock.WaitAsync();
             try
             {
                 foreach (var task in Tasks)
                 {
                     await task.ProcessManager.StopProcess();
                 }
+                await _taskOperationLock.WaitAsync();
                 Tasks.Clear();
             }
             catch { }
