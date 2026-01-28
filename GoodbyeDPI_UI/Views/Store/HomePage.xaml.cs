@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -199,7 +200,7 @@ public sealed partial class HomePage : Page
                     categoryItems.Add(
                         UIHelper.CreateLargeButton(
                             storeId:repoCategoryItem.store_id,
-                            imageSource:Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
+                            imageSource:LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
                             price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                             title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
                             backgroundColor:repoCategoryItem.background,
@@ -212,7 +213,7 @@ public sealed partial class HomePage : Page
                     categoryItems.Add(
                         UIHelper.CreateSmallButton(
                             storeId:repoCategoryItem.store_id,
-                            imageSource: Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
+                            imageSource: LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
                             price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                             title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
                             developer: repoCategoryItem.developer,
