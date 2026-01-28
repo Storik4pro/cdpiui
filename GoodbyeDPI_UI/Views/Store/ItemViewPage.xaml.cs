@@ -1,5 +1,6 @@
 using CDPI_UI.Controls.Dialogs.Store;
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views.Components;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
@@ -97,7 +98,7 @@ namespace CDPI_UI.Views.Store
                 }
 
                 ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
-                ItemImage.Source = new BitmapImage(new Uri(StoreHelper.Instance.ExecuteScript(item.icon)));
+                ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(item.icon)));
                 ItemDeveloper.Text = item.developer;
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
                 StarCount.Text = item.stars ?? "NaN";
@@ -105,10 +106,10 @@ namespace CDPI_UI.Views.Store
                     StoreHelper.Instance.GetCategoryFromStoreId(item.category_id)?.name?? string.Empty,
                     Utils.GetStoreLikeLocale()
                 );
-                SmallDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
-                ItemFullDescriptionText.Text = StoreHelper.Instance.ExecuteScript(item.description, Utils.GetStoreLikeLocale());
+                SmallDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
+                ItemFullDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.description, Utils.GetStoreLikeLocale());
                 ItemWarningAera.Visibility = item.display_warning ? Visibility.Visible : Visibility.Collapsed;
-                ItemWarningText.Text = StoreHelper.Instance.ExecuteScript(item.warning_text, Utils.GetStoreLikeLocale());
+                ItemWarningText.Text = LScriptLangHelper.ExecuteScript(item.warning_text, Utils.GetStoreLikeLocale());
 
                 if (DatabaseHelper.Instance.IsItemInstalled(storeId))
                 {
@@ -515,11 +516,11 @@ namespace CDPI_UI.Views.Store
                 {
                     Id = item.store_id,
                     Name = item.short_name,
-                    Description = StoreHelper.Instance.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale()),
+                    Description = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale()),
                     Category = StoreHelper.Instance.GetLocalizedStoreItemName(
                         StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
                         Utils.GetStoreLikeLocale()),
-                    ImageSource = StoreHelper.Instance.ExecuteScript(item.icon),
+                    ImageSource = LScriptLangHelper.ExecuteScript(item.icon),
                     Developer = item.developer
                 });
             }
