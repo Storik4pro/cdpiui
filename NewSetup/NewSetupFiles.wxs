@@ -39,6 +39,12 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Help.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Gitlab.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\VersionControl.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\OpenInNewWindow.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -79,6 +85,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\goodbyedpi.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\nodpi.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\spoofdpi.png" KeyPath="yes" />
