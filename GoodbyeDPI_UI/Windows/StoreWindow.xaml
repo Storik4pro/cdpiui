@@ -127,10 +127,17 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem l:Uids.Uid="HelpButton" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="HelpButton" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Collapsed">
 
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE9CE;" />
+                    </NavigationViewItem.Icon>
+
+                </NavigationViewItem>
+                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPI_UI.Views.Store.SettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
                     </NavigationViewItem.Icon>
 
                 </NavigationViewItem>

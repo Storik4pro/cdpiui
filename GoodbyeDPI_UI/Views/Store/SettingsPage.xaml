@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.Store.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views.Store"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="SmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1975"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
+                        <Setter Target="MainStackPanel.Width" Value="1860" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <ScrollViewer Padding="20">
+            <StackPanel x:Name="MainStackPanel" Spacing="5">
+                <Grid Margin="0 0 0 10">
+                    <TextBlock l:Uids.Uid="SettingsTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
+                </Grid>
+                <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+
+                <controls:SettingsCard l:Uids.Uid="SelectVersionControlSettingsCard">
+                    <controls:SettingsCard.Description>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock l:Uids.Uid="SelectVersionControlSettingsCardDescriptionTextBlock"/>
+                            <Grid x:Name="InfoStackPanel" Grid.Row="1" Visibility="Collapsed">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE946;" FontSize="14"/>
+                                <TextBlock Grid.Column="2" l:Uids.Uid="AppRestartNeededTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                            </Grid>
+                        </Grid>
+                    </controls:SettingsCard.Description>
+                    <ComboBox x:Name="VersionControlTypeComboBox">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:VersionControlModel">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{x:Bind DisplayImage}" Height="16"/>
+                                    <TextBlock Grid.Column="2" Text="{x:Bind DisplayName}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/VersionControl.png" ShowAsMonochrome="True"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+
+                <controls:SettingsCard x:Name="MemoryManagentSettingsCard" l:Uids.Uid="MemoryManagentSettingsCard" IsClickEnabled="True" Click="MemoryManagentSettingsCard_Click">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xEDA2;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+
+
+                <TextBlock l:Uids.Uid="ActionsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 10 0 0"/>
+                <controls:SettingsCard x:Name="ManualItemInstallation" l:Uids.Uid="ManualItemInstallationSettingsCard" IsClickEnabled="True" IsActionIconVisible="False" Click="ManualItemInstallation_Click">
+                    <Button Click="ManualItemInstallation_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <FontIcon Glyph="&#xE8E5;" FontSize="16"/>
+                            <TextBlock l:Uids.Uid="SelectPackTextBlock"/>
+                        </StackPanel>
+                    </Button>
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7B8;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
