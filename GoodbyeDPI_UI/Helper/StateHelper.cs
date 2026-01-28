@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 
 namespace CDPI_UI.Helper
 {
+    public enum SupportedVersionControls
+    {
+        GitHub,
+        GitLab
+    }
+
     internal class StateHelper
     {
         private static StateHelper _instance;
@@ -42,9 +48,12 @@ namespace CDPI_UI.Helper
             AsInConfig,
         }
 
+        
+
         // Store
 
         public const string StoreRepo = "Storik4pro/CDPIUI-Store";
+        public const string GitLabStoreRepo = "Storik4/CDPIUI-Store";
         public const string StoreDirName = "Store";
         public const string StoreItemsDirName = "Items";
         public const string StoreRepoDirName = "Repo";
@@ -67,6 +76,7 @@ namespace CDPI_UI.Helper
         // Repository
 
         public const string ApplicationCheckUpdatesUrl = "https://github.com/Storik4pro/cdpiui";
+        public const string ApplicationGitLabCheckUpdatesUrl = "https://gitlab.com/Storik4/CDPI-UI";
 
         // Template
 
@@ -88,6 +98,7 @@ namespace CDPI_UI.Helper
         {
             FileTypes.Add("archive", ".zip");
             FileTypes.Add("configPack", ".cdpiconfigpack");
+            FileTypes.Add("signedZip", ".cdpisignedpack");
             FileTypes.Add("WIN32application", ".exe");
             FileTypes.Add("CDPIUIUpdateItem", ".cdpipatch");
             FileTypes.Add("msi", ".msi");
