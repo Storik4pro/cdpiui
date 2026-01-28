@@ -11,7 +11,8 @@ namespace CDPI_UI.Helper
 {
     public class PatchRequirements
     {
-        public List<string> Requirements { get; set; }
+        public List<string> patch_urls { get; set; }
+        public string version { get; set; }
     }
     public class ApplicationUpdateHelper
     {
@@ -98,7 +99,8 @@ namespace CDPI_UI.Helper
             ErrorHappened = false;
             ErrorInfo = string.Empty;
 
-            Tuple<string, string> _data = await StoreHelper.GetLastVersionAndVersionNotes(StateHelper.ApplicationCheckUpdatesUrl);
+            Tuple<string, string> _data = await StoreHelper.Instance.GetLastVersionAndVersionNotes(
+                StoreHelper.Instance.VersionControl == SupportedVersionControls.GitHub ? StateHelper.ApplicationCheckUpdatesUrl : StateHelper.ApplicationGitLabCheckUpdatesUrl);
 
             if (_data.Item1.StartsWith("ERR_"))
             {
@@ -126,6 +128,10 @@ namespace CDPI_UI.Helper
             return IsUpdateAvailable;
         }
 
+        public void InstallApplicationUpdateFromFile(string filepath)
+        {
+            StoreHelper.Instance.AddItemToQueue(StateHelper.ApplicationStoreId, packFile: filepath);
+        }
 
     }
 }
