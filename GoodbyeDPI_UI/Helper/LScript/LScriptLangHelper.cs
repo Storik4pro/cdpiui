@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using static CDPI_UI.Helper.MsiInstallerHelper;
 
 namespace CDPI_UI.Helper.LScript
 {
@@ -39,6 +42,7 @@ namespace CDPI_UI.Helper.LScript
             Dictionary<string, bool> jparams = null
             )
         {
+            if (string.IsNullOrEmpty(scriptString)) return string.Empty;
             string executeResult = scriptString.Replace("$EMPTY", "");
             try
             {
@@ -286,7 +290,7 @@ namespace CDPI_UI.Helper.LScript
             return Tuple.Create(varName, conditionVarName, trueExpr, falseExpr);
         }
 
-        public static string RunScript(string scriptString, Dictionary<string, string> extraArgs = null)
+        public static async Task<string> RunScript(string scriptString, Dictionary<string, string> extraArgs = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(scriptString))
                 return null;
@@ -295,6 +299,8 @@ namespace CDPI_UI.Helper.LScript
 
             foreach (string script in scriptString.Split(";"))
             {
+                if (cancellationToken.IsCancellationRequested) return null;
+
                 Match match = Regex.Match(script, ScriptGetArgsRegex);
                 string scriptData = "";
 
@@ -316,6 +322,24 @@ namespace CDPI_UI.Helper.LScript
                         if (scriptArgs.Length < 1)
                             break;
                         result += $"DOWNLOAD={DownloadEasyDesignerAnnotationFile(scriptArgs[0])}$SEPARATORedannotationfile;";
+                        break;
+                    case "install_msi":
+                        if (scriptArgs.Length < 2)
+                            break;
+
+                        string path = Path.Combine(extraArgs.GetValueOrDefault("CurrentDirectory", string.Empty), scriptArgs[0]);
+                        if(bool.TryParse(scriptArgs[1], out bool removeAfterAction))
+                        {
+                            var _result = await InstallMsi(path, removeAfterAction, cancellationToken);
+                            if (_result.Item2)
+                            {
+                                // TODO: ask restart
+                            }
+                        }
+                        else
+                        {
+                            throw new Msiexception("Argument is null");
+                        }
                         break;
                     default:
                         Logger.Instance.CreateWarningLog(nameof(LScriptLangHelper), $"Unknown script command: {scriptName}");
@@ -346,6 +370,44 @@ namespace CDPI_UI.Helper.LScript
         private static string DownloadEasyDesignerAnnotationFile(string url)
         {
             return url;
+        }
+
+        private static async Task<Tuple<bool, bool>> InstallMsi(string filepath, bool removeAfterAction, CancellationToken cancellationToken)
+        {
+            bool success = true;
+            bool isRestartNeeded = false;
+
+            string msiPath = Path.Combine(filepath);
+            string msiGUID = Guid.NewGuid().ToString();
+            MsiInstallerHelper msiInstallerHelper = new(msiGUID, msiPath);
+            msiInstallerHelper.callbackAction += HandleMsiInstallerMessage;
+            MsiCallback callback = await msiInstallerHelper.Run(cancellationToken);
+            msiInstallerHelper.callbackAction -= HandleMsiInstallerMessage;
+
+            Logger.Instance.CreateDebugLog(nameof(DownloadManager), "TRY");
+
+            if (callback.State == MsiState.ExceptionHappens)
+            {
+                success = false;
+                throw new Msiexception("MSI_UNKNOWN");
+            }
+            else if (callback.State == MsiState.CompleteRestartRequest)
+            {
+                isRestartNeeded = true;
+            }
+
+            if (removeAfterAction)
+            {
+                File.Delete(msiPath);
+            }
+
+            return Tuple.Create(success, isRestartNeeded);
+            
+        }
+
+        private static void HandleMsiInstallerMessage(MsiCallback callback)
+        {
+            Logger.Instance.CreateDebugLog(nameof(LScriptLangHelper), $"MSI installing callback: {callback}");
         }
     }
 }
