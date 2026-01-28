@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Markdig.Renderers.Normalize;
 using Microsoft.UI.Xaml;
@@ -94,7 +95,7 @@ namespace CDPI_UI.Views.Store
                 _tiles.Add(
                     UIHelper.CreateLargeButton(
                         storeId: repoCategoryItem.store_id,
-                        imageSource: Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
+                        imageSource: LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
                         price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                         title: repoCategoryItem.short_name,
                         backgroundColor: repoCategoryItem.background,
