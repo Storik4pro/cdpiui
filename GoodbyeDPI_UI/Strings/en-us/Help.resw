@@ -142,6 +142,9 @@ Help is displayed using `CommunityToolkit.WinUI.Controls.MarkdownTextBlock`</val
   <data name="GettingStarted" xml:space="preserve">
     <value>Beginning</value>
   </data>
+  <data name="ItemUnsupportedWarning" xml:space="preserve">
+    <value>Unsupported items</value>
+  </data>
   <data name="LearnMoreAboutUI" xml:space="preserve">
     <value>What is CDPI UI?</value>
   </data>
@@ -157,5 +160,8 @@ Unfortunately we can't find page your looking for. Please, make sure program has
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
     <value>Welcome to help</value>
+  </data>
+  <data name="Store" xml:space="preserve">
+    <value>Components Store</value>
   </data>
 </root>

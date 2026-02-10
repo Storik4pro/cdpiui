@@ -142,6 +142,9 @@
   <data name="GettingStarted" xml:space="preserve">
     <value>Основы</value>
   </data>
+  <data name="ItemUnsupportedWarning" xml:space="preserve">
+    <value>Неподдерживаемые элементы</value>
+  </data>
   <data name="LearnMoreAboutUI" xml:space="preserve">
     <value>Что такое CDPI UI?</value>
   </data>
@@ -157,5 +160,8 @@
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
     <value>Добро пожаловать в справку</value>
+  </data>
+  <data name="Store" xml:space="preserve">
+    <value>Магазин компонентов</value>
   </data>
 </root>

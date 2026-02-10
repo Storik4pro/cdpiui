@@ -186,7 +186,7 @@
     <value>Чистый</value>
   </data>
   <data name="CleanupModeMenuItem.Text" xml:space="preserve">
-    <value>Режим отчистки вывода</value>
+    <value>Режим очистки вывода</value>
   </data>
   <data name="ClickNextToBegin.Text" xml:space="preserve">
     <value>Для продолжения нажмите кнопку "Далее"</value>
@@ -276,7 +276,7 @@
     <value>Изменить</value>
   </data>
   <data name="ElementNotExistMessage" xml:space="preserve">
-    <value>Элемент с уникальным идентификатором "{0}" не существует. Проверьте ваше Интернет-соединение, отчистите кэш магазина и повторите попытку позднее. {1}</value>
+    <value>Элемент с уникальным идентификатором "{0}" не существует. Проверьте ваше Интернет-соединение, очистите кэш магазина и повторите попытку позднее. {1}</value>
   </data>
   <data name="ElementNotExistTitle" xml:space="preserve">
     <value>Элемент не существует</value>
@@ -1746,5 +1746,146 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
     <value>Удаление неиспользуемых пресетов из наборов. Удаление временных файлов. Просмотр использования диска</value>
+  </data>
+  <data name="ItemViewAdvancedInfoButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать расширенную информацию об элементе</value>
+  </data>
+  <data name="StoreIdTextBlock.Text" xml:space="preserve">
+    <value>Уникальный идентификатор</value>
+  </data>
+  <data name="ItemAdvancedInfoFlyoutTitleTextBlock.Text" xml:space="preserve">
+    <value>Расширенная информация</value>
+  </data>
+  <data name="ItemUnsupportedWarningTextBlock.Text" xml:space="preserve">
+    <value>Этот элемент на данный момент не поддерживается. Убедитесь, что приложение обновлено до последней версии.</value>
+  </data>
+  <data name="DiskUsageTextBlock.Text" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDisplayName" xml:space="preserve">
+    <value>Внутренние файлы приложения</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDescription" xml:space="preserve">
+    <value>Эти файлы обеспечивают правильную работу приложения</value>
+  </data>
+  <data name="UsedMemory" xml:space="preserve">
+    <value>Использовано {0}</value>
+  </data>
+  <data name="FreeMemory" xml:space="preserve">
+    <value>Осталось: {0}</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDisplayName" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDescription" xml:space="preserve">
+    <value>Эти файлы содержат ваши настройки</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDisplayName" xml:space="preserve">
+    <value>Файлы журналов</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDescription" xml:space="preserve">
+    <value>Файлы предназначенные для устранения ошибок приложения</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDisplayName" xml:space="preserve">
+    <value>Временные файлы</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDescription" xml:space="preserve">
+    <value>Неиспользуемые файлы</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDisplayName" xml:space="preserve">
+    <value>Установленные элементы</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDescription" xml:space="preserve">
+    <value>Элементы, которые вы установили из Магазина</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDisplayName" xml:space="preserve">
+    <value>Кэш Магазина</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDescription" xml:space="preserve">
+    <value>Эти файлы позволяют экономить Интернет-трафик при использовании Магазина</value>
+  </data>
+  <data name="MemoryDiskName" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="MemoryUsage" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryViewApplicationFilesDetails" xml:space="preserve">
+    <value>Внутренние файлы приложения</value>
+  </data>
+  <data name="ApplicationInternalFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы необходимы для обеспечения корректной работы приложения. Они содержат динамические библиотеки (DLL), файлы локализации и др. Без них приложение работать не будет.</value>
+  </data>
+  <data name="ApplicationInternalFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Здесь вы можете посмотреть директорию установки приложения.</value>
+  </data>
+  <data name="ViewAppDirButton.Content" xml:space="preserve">
+    <value>Просмотр директории приложения</value>
+  </data>
+  <data name="ViewLogDirButton.Content" xml:space="preserve">
+    <value>Просмотр журналов</value>
+  </data>
+  <data name="LogFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Здесь вы можете изучить созданные приложением журналы</value>
+  </data>
+  <data name="LogFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Файлы предназначенные для устранения ошибок приложения. Эти файлы могут помочь вам исправить некоторые проблемы с этим приложением. Кроме того, сообщения об ошибках с прикрепленными журналами рассматриваются быстрее.</value>
+  </data>
+  <data name="MemoryViewLogsDetails" xml:space="preserve">
+    <value>Файлы журналов</value>
+  </data>
+  <data name="CleanupTextBlock.Text" xml:space="preserve">
+    <value>Очистка</value>
+  </data>
+  <data name="CleanupLogFilesTextBlock.Text" xml:space="preserve">
+    <value>Здесь можно удалить все журналы приложения для очистки места на диске.</value>
+  </data>
+  <data name="CleanupDirButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ErrorHappensWhileCleanup" xml:space="preserve">
+    <value>Что-то пошло не так, когда мы пытались выполнить очистку. Вот код ошибки, если он вам нужен: {0}</value>
+  </data>
+  <data name="MemoryViewStoreCacheFilesDetails" xml:space="preserve">
+    <value>Кэш Магазина</value>
+  </data>
+  <data name="StoreCacheFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы позволяют экономить Интернет-трафик при просмотре контента в Магазине.</value>
+  </data>
+  <data name="CleanupStoreCacheFilesTextBlock.Text" xml:space="preserve">
+    <value>Если вы очистите кэш Магазина, вся база данных будет загружена заново при следующем запуске Магазина.</value>
+  </data>
+  <data name="StoreInstalledItemsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Все элементы, которые вы установили из Магазина или других источников.</value>
+  </data>
+  <data name="SetupMenuFlyuoutItem.Text" xml:space="preserve">
+    <value>Перейти к настройкам</value>
+  </data>
+  <data name="MemoryViewInstalledItemsDetails" xml:space="preserve">
+    <value>Установленные элементы</value>
+  </data>
+  <data name="MemoryViewSettingsDetails" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="ApplicationSettingsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы содержат ваши настройки, например положения окон на рабочем столе, предпочитаемый сервер для получения обновлений и другие.</value>
+  </data>
+  <data name="ResetSettingsTextBlock.Text" xml:space="preserve">
+    <value>Удалить все настройки, затем перезапустить приложение. Установленные элементы удалены не будут.</value>
+  </data>
+  <data name="ResetButton.Content" xml:space="preserve">
+    <value>Сброс</value>
+  </data>
+  <data name="ResetSettingsAskTextBlock.Text" xml:space="preserve">
+    <value>Это действие удалит ВСЕ ваши настройки. Продолжить в любом случае?</value>
+  </data>
+  <data name="ContinueAnywayButton.Content" xml:space="preserve">
+    <value>Все равно продолжить</value>
+  </data>
+  <data name="LocalDrive" xml:space="preserve">
+    <value>Локальный диск</value>
   </data>
 </root>

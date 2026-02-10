@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Bytes" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
   <data name="BytesPs" xml:space="preserve">
     <value>bytes/s</value>
+  </data>
+  <data name="GB" xml:space="preserve">
+    <value>GB</value>
   </data>
   <data name="GBPs" xml:space="preserve">
     <value>GB/s</value>
   </data>
   <data name="Hour" xml:space="preserve">
     <value>About hour</value>
+  </data>
+  <data name="KiloBytes" xml:space="preserve">
+    <value>KB</value>
   </data>
   <data name="KiloBytesPs" xml:space="preserve">
     <value>KB/s</value>
@@ -134,6 +143,9 @@
   </data>
   <data name="LeftSmall" xml:space="preserve">
     <value>Left several seconds</value>
+  </data>
+  <data name="MegaBytes" xml:space="preserve">
+    <value>MB</value>
   </data>
   <data name="MegaBytesPs" xml:space="preserve">
     <value>MB/s</value>
@@ -149,6 +161,9 @@
   </data>
   <data name="Sec" xml:space="preserve">
     <value>Several seconds...</value>
+  </data>
+  <data name="TB" xml:space="preserve">
+    <value>TB</value>
   </data>
   <data name="TBPs" xml:space="preserve">
     <value>TB/s</value>

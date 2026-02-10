@@ -1745,4 +1745,145 @@ DO NOT install packs from source you don't trust.</value>
   <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
     <value>Remove unused configs from config kits. Remove temp files. View disk usage</value>
   </data>
+  <data name="ItemViewAdvancedInfoButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View advanced information for debugging</value>
+  </data>
+  <data name="StoreIdTextBlock.Text" xml:space="preserve">
+    <value>Store Id</value>
+  </data>
+  <data name="ItemAdvancedInfoFlyoutTitleTextBlock.Text" xml:space="preserve">
+    <value>Advanced info</value>
+  </data>
+  <data name="ItemUnsupportedWarningTextBlock.Text" xml:space="preserve">
+    <value>This item is currently unsupported. Make sure your application is up to date.</value>
+  </data>
+  <data name="DiskUsageTextBlock.Text" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDisplayName" xml:space="preserve">
+    <value>Application internal files</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDescription" xml:space="preserve">
+    <value>These files ensure the correct functioning of the application</value>
+  </data>
+  <data name="UsedMemory" xml:space="preserve">
+    <value>Used {0}</value>
+  </data>
+  <data name="FreeMemory" xml:space="preserve">
+    <value>Left: {0}</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDisplayName" xml:space="preserve">
+    <value>Application settings </value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDescription" xml:space="preserve">
+    <value>This files contains your settings</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDisplayName" xml:space="preserve">
+    <value>Application logs</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDescription" xml:space="preserve">
+    <value>Files for application debugging</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDisplayName" xml:space="preserve">
+    <value>Temporary files</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDescription" xml:space="preserve">
+    <value>Unused files</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDisplayName" xml:space="preserve">
+    <value>Installed items</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDescription" xml:space="preserve">
+    <value>Items you installed from the Store </value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDisplayName" xml:space="preserve">
+    <value>Store cache </value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDescription" xml:space="preserve">
+    <value>These files allow you to save Internet traffic</value>
+  </data>
+  <data name="MemoryDiskName" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="MemoryUsage" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryViewApplicationFilesDetails" xml:space="preserve">
+    <value>Application internal files</value>
+  </data>
+  <data name="ApplicationInternalFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>This files is required to correct application work. It's contains dynamic load libraries (DLL), localization files and other. Without this files application will not work.</value>
+  </data>
+  <data name="ApplicationInternalFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Here you can review application installation folder.</value>
+  </data>
+  <data name="ViewAppDirButton.Content" xml:space="preserve">
+    <value>View application directory</value>
+  </data>
+  <data name="ViewLogDirButton.Content" xml:space="preserve">
+    <value>View logs directory</value>
+  </data>
+  <data name="LogFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Here you can review log files</value>
+  </data>
+  <data name="LogFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Files for application debugging. These files may help you fix some issues with this app. Also, bug reports with logs are being considered faster.</value>
+  </data>
+  <data name="MemoryViewLogsDetails" xml:space="preserve">
+    <value>Application logs</value>
+  </data>
+  <data name="CleanupTextBlock.Text" xml:space="preserve">
+    <value>Cleanup</value>
+  </data>
+  <data name="CleanupLogFilesTextBlock.Text" xml:space="preserve">
+    <value>Remove all application logs for cleanup disk space.</value>
+  </data>
+  <data name="CleanupDirButton.Content" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="ErrorHappensWhileCleanup" xml:space="preserve">
+    <value>Something went wrong when we try to clean this files. Here is error code, in case you need it: {0}</value>
+  </data>
+  <data name="MemoryViewStoreCacheFilesDetails" xml:space="preserve">
+    <value>Store cache</value>
+  </data>
+  <data name="StoreCacheFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>These files allow you to save Internet traffic.</value>
+  </data>
+  <data name="CleanupStoreCacheFilesTextBlock.Text" xml:space="preserve">
+    <value>If you clean Store cache all database will be downloaded again, when you start browsing Store.</value>
+  </data>
+  <data name="StoreInstalledItemsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>All items you installed from the Store or another source. </value>
+  </data>
+  <data name="SetupMenuFlyuoutItem.Text" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="MemoryViewInstalledItemsDetails" xml:space="preserve">
+    <value>Installed items</value>
+  </data>
+  <data name="MemoryViewSettingsDetails" xml:space="preserve">
+    <value>Application settings</value>
+  </data>
+  <data name="ApplicationSettingsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>These files contains your settings like windows positions, theme, preferred version control type and etc.</value>
+  </data>
+  <data name="ResetSettingsTextBlock.Text" xml:space="preserve">
+    <value>Remove all settings, then restart application. This will not appears to items you installed. </value>
+  </data>
+  <data name="ResetButton.Content" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ResetSettingsAskTextBlock.Text" xml:space="preserve">
+    <value>This action remove ALL you settings. Continue anyway?</value>
+  </data>
+  <data name="ContinueAnywayButton.Content" xml:space="preserve">
+    <value>Continue anyway</value>
+  </data>
+  <data name="LocalDrive" xml:space="preserve">
+    <value>Local Drive</value>
+  </data>
 </root>

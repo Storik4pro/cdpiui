@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Bytes" xml:space="preserve">
+    <value>Байт</value>
+  </data>
   <data name="BytesPs" xml:space="preserve">
     <value>байт/с</value>
+  </data>
+  <data name="GB" xml:space="preserve">
+    <value>ГБ</value>
   </data>
   <data name="GBPs" xml:space="preserve">
     <value>ГБ/с</value>
   </data>
   <data name="Hour" xml:space="preserve">
     <value>Около часа</value>
+  </data>
+  <data name="KiloBytes" xml:space="preserve">
+    <value>КБ</value>
   </data>
   <data name="KiloBytesPs" xml:space="preserve">
     <value>КБ/с</value>
@@ -134,6 +143,9 @@
   </data>
   <data name="LeftSmall" xml:space="preserve">
     <value>Осталось меньше минуты</value>
+  </data>
+  <data name="MegaBytes" xml:space="preserve">
+    <value>МБ</value>
   </data>
   <data name="MegaBytesPs" xml:space="preserve">
     <value>МБ/с</value>
@@ -149,6 +161,9 @@
   </data>
   <data name="Sec" xml:space="preserve">
     <value>Считанные секунды</value>
+  </data>
+  <data name="TB" xml:space="preserve">
+    <value>ТБ</value>
   </data>
   <data name="TBPs" xml:space="preserve">
     <value>ТБ/с</value>
