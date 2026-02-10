@@ -1,12 +1,15 @@
 using CDPI_UI.Controls.Dialogs.Store;
 using CDPI_UI.Helper;
 using CDPI_UI.Messages;
+using CDPI_UI.ViewModels;
+using CDPI_UI.Views.Store.Settings;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
@@ -20,6 +23,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
 using ImageSource = Microsoft.UI.Xaml.Media.ImageSource;
@@ -51,6 +55,35 @@ namespace CDPI_UI.Views.Store
 
             VersionControlTypeComboBox.ItemsSource = VersionControlModels;
             LoadVersionControlInfo();
+
+            BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
+            CreateBreadcrumbBarNavigation();
+        }
+
+        private ObservableCollection<BreadcrumbBarModel> BreadcrumbBarModels = [];
+        public void CreateBreadcrumbBarNavigation()
+        {
+            BreadcrumbBarModels.Clear();
+            BreadcrumbBarModels.Add(new()
+            {
+                DisplayName = localizer.GetLocalizedString("Settings"),
+                Tag = this.GetType()
+            });
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            try
+            {
+                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
+                if (anim != null)
+                {
+                    anim.TryStart(NavGrid);
+                }
+            }
+            catch { }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -82,11 +115,12 @@ namespace CDPI_UI.Views.Store
             VersionControlTypeComboBox.SelectionChanged += VersionControlTypeComboBox_SelectionChanged;
         }
 
-        private void VersionControlTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void VersionControlTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             InfoStackPanel.Visibility = Visibility.Visible;
             SettingsManager.Instance.SetValue("STORE", "versionControlType", ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id.ToString());
             StoreHelper.ClearRepoCache();
+            await StoreHelper.Instance.LoadAllStoreDatabase(forseSync: true, versionControl: ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id);
         }
 
         private async void ManualItemInstallation_Click(object sender, RoutedEventArgs e)
@@ -135,9 +169,18 @@ namespace CDPI_UI.Views.Store
             }
         }
 
-        private void MemoryManagentSettingsCard_Click(object sender, RoutedEventArgs e)
+        private async void MemoryManagentSettingsCard_Click(object sender, RoutedEventArgs e)
         {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            var anim = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
 
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+            {
+                anim.Configuration = new BasicConnectedAnimationConfiguration();
+            }
+
+            window.NavigateSubPage(typeof(MemoryViewPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }
 }

@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:viewmodels="using:CDPI_UI.ViewModels">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -35,8 +36,21 @@
         </VisualStateManager.VisualStateGroups>
         <ScrollViewer Padding="20">
             <StackPanel x:Name="MainStackPanel" Spacing="5">
-                <Grid Margin="0 0 0 10">
-                    <TextBlock l:Uids.Uid="SettingsTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
+                <Grid Margin="0 0 0 10" x:Name="NavGrid">
+                    <Rectangle Fill="Transparent"/>
+                    <BreadcrumbBar x:Name="BreadcrumbBar">
+                        <BreadcrumbBar.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:BreadcrumbBarModel">
+                                <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding DisplayName}" Tag="{Binding Tag}">
+                                    <BreadcrumbBarItem.ContentTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DisplayName}" Style="{ThemeResource TitleTextBlockStyle}"/>
+                                        </DataTemplate>
+                                    </BreadcrumbBarItem.ContentTemplate>
+                                </BreadcrumbBarItem>
+                            </DataTemplate>
+                        </BreadcrumbBar.ItemTemplate>
+                    </BreadcrumbBar>
                 </Grid>
                 <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
 
@@ -75,7 +89,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                     <controls:SettingsCard.HeaderIcon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/VersionControl.png" ShowAsMonochrome="True"/>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/VersionControl.png" ShowAsMonochrome="True" MinWidth="30"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
 
