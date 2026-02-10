@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.Store.Settings;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
@@ -25,7 +26,7 @@ using WinUI3Localizer;
 
 namespace CDPI_UI.Views.Store
 {
-    public class LibraryItemModel
+    public class LibraryItemModel : IComparable
     {
         public string StoreId { get; set; }
         public string Title { get; set; }
@@ -33,6 +34,16 @@ namespace CDPI_UI.Views.Store
         public string Category { get; set; }
         public ImageSource ImageSource { get; set; }
         public Brush CardBackgroundBrush {  get; set; }
+        public double Size { get; set; }
+
+        public int CompareTo(object o)
+        {
+            LibraryItemModel a = this;
+            LibraryItemModel b = (LibraryItemModel)o;
+            if (a.Size > b.Size) return -1;
+            else if (a.Size < b.Size) return 1;
+            else return 0;
+        }
     }
 
     public sealed partial class LibraryPage : Page
