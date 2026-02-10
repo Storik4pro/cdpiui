@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI.Windowing;
@@ -30,20 +31,12 @@ namespace CDPI_UI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CriticalErrorHandlerWindow : Window
+    public sealed partial class CriticalErrorHandlerWindow : TemplateWindow
     {
-        private const int WM_GETMINMAXINFO = 0x0024;
-        private IntPtr _hwnd;
-        private WindowProc _newWndProc;
-        private IntPtr _oldWndProc;
-
         private const string WhereTemplate = "UNKNOWN";
         private const string InfoNotProvided = "This information is not provided.";
         private const string FlashlightError = "ERR_FLASHLIGHT_BUSY";
 
-
-
-        public static CriticalErrorHandlerWindow Instance { get; private set; }
 
         public CriticalErrorHandlerWindow(
             string where = WhereTemplate,
@@ -52,30 +45,17 @@ namespace CDPI_UI
             )
         {
             InitializeComponent();
-            InitializeWindow();
             ((App)Application.Current).ShowWindowModalAsync(this);
 
-            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
-            appWindowPresenter.IsResizable = false;
-            appWindowPresenter.IsMaximizable = false;
-            appWindowPresenter.IsMinimizable = false;
+            IconUri = @"Assets/Icons/Error.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = WindowMoveAera;
 
-            Instance = this;
-
-            ((App)Application.Current).OpenWindows.Add(this);
-
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-            }
-
-            ExtendsContentIntoTitleBar = true;
+            DisableResizeFeature();
 
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CriticalErrorHandlerWindow_Closed;
-
-            Helper.Static.NativeWindowHelper.ForceDisableMaximize(this);
 
             WhereTextBlock.Text = where;
             WhyTextBlock.Text = why;
@@ -93,61 +73,14 @@ namespace CDPI_UI
 
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
         {
-            ((App)Application.Current).OpenWindows.Remove(this);
             this.Closed -= CriticalErrorHandlerWindow_Closed;
             Process.GetCurrentProcess().Kill();
         }
 
         ~CriticalErrorHandlerWindow()
         {
-            ((App)Application.Current).OpenWindows.Remove(this);
             Process.GetCurrentProcess().Kill();
         }
-
-        private void InitializeWindow()
-        {
-            _hwnd = WindowNative.GetWindowHandle(this);
-            _newWndProc = new WindowProc(NewWindowProc);
-            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-        }
-        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_GETMINMAXINFO)
-            {
-                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = 484;
-                minMaxInfo.ptMinTrackSize.y = 300;
-                Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            }
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        private const int GWLP_WNDPROC = -4;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -156,7 +89,7 @@ namespace CDPI_UI
 
         private void GetHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            UrlOpenHelper.LaunchLicenseUrl();
+            UrlOpenHelper.LaunchReportUrl();
         }
 
         private CancellationTokenSource _copyTimerCts;
@@ -200,7 +133,7 @@ namespace CDPI_UI
 
         private void OpenLogFolder_Click(object sender, RoutedEventArgs e)
         {
-
+            Utils.OpenFolderInExplorer(Path.Combine(StateHelper.GetDataDirectory(), "Logs"));
         }
     }
 }
