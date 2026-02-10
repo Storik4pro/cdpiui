@@ -121,7 +121,7 @@
                         <lcontrols:IconButton x:Name="SettingsIconButton" IconGlyph="&#xE713;" HorizontalAlignment="Stretch" ClickCommand="{Binding ViewSettingsButtonClickCommand, ElementName=MainUserControl}"/>
                         <StackPanel x:Name="AdditionalFeaturesStackPanel" Margin="0 10 0 0" Spacing="2">
                             <StackPanel Orientation="Horizontal" Spacing="5">
-                                <FontIcon Glyph="&#xF4A5;" FontSize="16"/>
+                                <FontIcon x:Name="StatusFontIcon" Glyph="&#xF4A5;" FontSize="16"/>
                                 <TextBlock l:Uids.Uid="LinkedFeaturesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                             </StackPanel>
 

@@ -126,6 +126,8 @@ public sealed partial class ComponentTileUserControl : UserControl
         _comboboxItems.CollectionChanged += ComboboxItems_CollectionChanged;
         ConfigSettingsListView.ItemsSource = ConfigSettingsList;
         AdditionalFeaturesListView.ItemsSource = AvailableFeaturesList;
+
+        StatusFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
     }
 
     public void CheckVisualState()
