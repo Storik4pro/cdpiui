@@ -218,9 +218,8 @@ namespace CDPI_UI
             PipeClient.Instance.Start();
         }
 
-        public async void OpenRequestedFile()
+        public async void OpenRequestedFile(AppActivationArguments appActivationArguments)
         {
-            AppActivationArguments appActivationArguments = AppInstance.GetCurrent().GetActivatedEventArgs();
             bool result = false;
 
             if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
@@ -325,9 +324,9 @@ namespace CDPI_UI
 
                 var newViewWindow = new TWindow();
                 WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
-                if (activate) newViewWindow.Activate();
-
                 RegisterWindow(newViewWindow);
+
+                if (activate) newViewWindow.Activate();
                 await Task.CompletedTask;
 
                 return newViewWindow;
@@ -343,7 +342,7 @@ namespace CDPI_UI
             if (!OpenWindows.Contains(window))
                     OpenWindows.Add(window);
 
-            
+
             window.Closed -= Window_ClosedHandler;
             window.Closed += Window_ClosedHandler;
             
