@@ -3,6 +3,7 @@ using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Policy;
@@ -330,10 +331,24 @@ namespace CDPI_UI.Helper.LScript
                         string path = Path.Combine(extraArgs.GetValueOrDefault("CurrentDirectory", string.Empty), scriptArgs[0]);
                         if(bool.TryParse(scriptArgs[1], out bool removeAfterAction))
                         {
-                            var _result = await InstallMsi(path, removeAfterAction, cancellationToken);
-                            if (_result.Item2)
+                            Debug.WriteLine(path);
+                            if (path.EndsWith("$ALL"))
                             {
-                                // TODO: ask restart
+                                var _result = await InstallAllMsiFromPath(path.Replace("$ALL", ""), removeAfterAction, cancellationToken);
+                                if (!_result.Item1) throw new Msiexception("Install failure");
+                                if (_result.Item2)
+                                {
+                                    // TODO: ask restart
+                                }
+                            }
+                            else
+                            {
+                                var _result = await InstallMsi(path, removeAfterAction, cancellationToken);
+                                if (!_result.Item1) throw new Msiexception("Install failure");
+                                if (_result.Item2)
+                                {
+                                    // TODO: ask restart
+                                }
                             }
                         }
                         else
@@ -370,6 +385,20 @@ namespace CDPI_UI.Helper.LScript
         private static string DownloadEasyDesignerAnnotationFile(string url)
         {
             return url;
+        }
+
+        private static async Task<Tuple<bool, bool>> InstallAllMsiFromPath(string directory, bool removeAfterAction, CancellationToken cancellationToken)
+        {
+            bool requestRestart = false;
+            foreach (string filepath in Directory.EnumerateFiles(directory))
+            {
+                var result = await InstallMsi(filepath, removeAfterAction, cancellationToken);
+                if (!result.Item1) return Tuple.Create(false, false);
+
+                if (result.Item2) requestRestart = result.Item2;
+
+            }
+            return Tuple.Create(true, requestRestart);
         }
 
         private static async Task<Tuple<bool, bool>> InstallMsi(string filepath, bool removeAfterAction, CancellationToken cancellationToken)
