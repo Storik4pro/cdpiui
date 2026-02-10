@@ -66,6 +66,27 @@ namespace CDPI_UI.Helper.Static
             return string.Empty;
         }
 
+        public static string FormatSize(long sizeInBytes)
+        {
+            List<string> suffixes = [];
+
+            ILocalizer localizer = Localizer.Get();
+
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/Bytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/KiloBytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/MegaBytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/GB"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/TB"));
+
+            int order = sizeInBytes > 0
+                ? Math.Min((int)Math.Floor(Math.Log(sizeInBytes, 1024)), suffixes.Count - 1)
+                : 0;
+
+            double adjustedSize = sizeInBytes / Math.Pow(1024, order);
+
+            return $"{adjustedSize:0.#} {suffixes[order]}";
+        }
+
         public static string FormatSpeed(double speedInBytes)
         {
             List<string> suffixes = [];
@@ -358,6 +379,21 @@ namespace CDPI_UI.Helper.Static
             return "EN";
         }
 
+        public static async Task<long> GetDirectorySize(string directory)
+        {
+            long dirSize = 0;
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(directory);
+                dirSize = await Task.Run(() => dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(file => file.Length));
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(nameof(Utils), $"Unable to calculate size for \"{directory}\". {ex.Message}");
+            }
+            return dirSize;
+        }
+
         public static async Task ExtractZip(
             string zipFilePath,
             string zipFolderToUnpack,
@@ -550,6 +586,17 @@ namespace CDPI_UI.Helper.Static
                 uri = new Uri(SomeBaseUri, url);
 
             return Path.GetFileName(uri.LocalPath);
+        }
+
+        public static bool IsOsSupportedNewGlyph()
+        {
+            Debug.WriteLine(Environment.OSVersion.ToString());
+            var version1 = Environment.OSVersion.Version;
+            string v2 = "10.0.22000.194";
+
+            var version2 = new Version(v2);
+            if (version1 >= version2) return true;
+            return false;
         }
 
 #if SINGLEFILE
