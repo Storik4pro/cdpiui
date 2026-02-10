@@ -75,7 +75,7 @@ namespace CDPI_UI.Helper
 
                 try
                 {
-                    if (string.IsNullOrEmpty(componentHelper.GetStartupParams()))
+                    if (componentHelper != null && string.IsNullOrEmpty(componentHelper.GetStartupParams()))
                     {
                         await PipeClient.Instance.SendMessage($"SETTINGS:COMPONENT_SETUP_NOT_FINISHED({task.Id})");
                         return;
