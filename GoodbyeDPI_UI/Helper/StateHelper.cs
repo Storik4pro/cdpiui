@@ -13,6 +13,7 @@ namespace CDPI_UI.Helper
 {
     public enum SupportedVersionControls
     {
+        None,
         GitHub,
         GitLab
     }
