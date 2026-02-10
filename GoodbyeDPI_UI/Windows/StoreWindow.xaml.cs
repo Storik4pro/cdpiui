@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
@@ -29,13 +30,8 @@ namespace CDPI_UI;
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class StoreWindow : WindowEx
+public sealed partial class StoreWindow : TemplateWindow
 {
-    private const int WM_GETMINMAXINFO = 0x0024;
-    private IntPtr _hwnd;
-    private WindowProc _newWndProc;
-    private IntPtr _oldWndProc;
-
     public static StoreWindow Instance { get; private set; }
 
     private ILocalizer localizer = Localizer.Get();
@@ -43,29 +39,28 @@ public sealed partial class StoreWindow : WindowEx
     {
         this.InitializeComponent();
         this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
-        InitializeWindow();
+        TitleBar = WindowMoveAera;
+        TitleIcon = TitleImageRectagle;
 
         Instance = this;
 
-        ((App)Application.Current).OpenWindows.Add(this);
-
-        if (this.Content is FrameworkElement rootElement)
-        {
-            rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-        }
-
-        ExtendsContentIntoTitleBar = true;
-
         NavView.SelectedItem = NavView.MenuItems[0];
         ContentFrame.Navigate(typeof(HomePage));
+
         SetTitleBar(WindowMoveAera);
         NavView.SelectionChanged += NavView_SelectionChanged;
 
         StoreHelper.Instance.QueueUpdated += StoreHelper_QueueUpdated;
-
         StoreHelper.Instance.ItemInstallingErrorHappens += Instance_ItemInstallingErrorHappens;
 
         this.Closed += StoreWindow_Closed;
+
+        SetDownloadsFontIcon();
+    }
+
+    private void SetDownloadsFontIcon()
+    {
+        DownloadsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uEBD3" : "\uE896";
     }
 
     private void StoreHelper_QueueUpdated()
@@ -108,52 +103,6 @@ public sealed partial class StoreWindow : WindowEx
         StoreHelper.Instance.QueueUpdated -= StoreHelper_QueueUpdated;
         ((App)Application.Current).OpenWindows.Remove(this);
     }
-
-    private void InitializeWindow()
-    {
-        _hwnd = WindowNative.GetWindowHandle(this);
-        _newWndProc = new WindowProc(NewWindowProc);
-        _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-    }
-
-    private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-    private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-    {
-        if (msg == WM_GETMINMAXINFO)
-        {
-            MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-            minMaxInfo.ptMinTrackSize.x = 484;
-            minMaxInfo.ptMinTrackSize.y = 300;
-            Marshal.StructureToPtr(minMaxInfo, lParam, true);
-        }
-        return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct POINT
-    {
-        public int x;
-        public int y;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MINMAXINFO
-    {
-        public POINT ptReserved;
-        public POINT ptMaxSize;
-        public POINT ptMaxPosition;
-        public POINT ptMinTrackSize;
-        public POINT ptMaxTrackSize;
-    }
-
-    private const int GWLP_WNDPROC = -4;
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
     private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
     {
