@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ex:WindowEx
+<template:TemplateWindow
     x:Class="CDPI_UI.Messages.StoreLocalItemInstallingDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,11 +10,12 @@
     xmlns:ex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
     xmlns:labs="using:CommunityToolkit.Labs.WinUI"
-    Title="StoreLocalItemInstallingDialog">
+    Title="StoreLocalItemInstallingDialog"
+    xmlns:template="using:CDPI_UI.Default">
 
-    <ex:WindowEx.SystemBackdrop>
+    <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
-    </ex:WindowEx.SystemBackdrop>
+    </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
         <Grid x:Name="AppTitleBar"
@@ -25,27 +26,36 @@
           Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
+            <Grid x:Name="ImageAera" Height="48" Width="48" Grid.Column="1" >
+                <BitmapIcon 
+                    Grid.Column="0"
+                    UriSource="ms-appx:///Assets/Icons/Store.png"
+                    Width="16" Height="16"
+                    Margin="16,16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    ShowAsMonochrome="True"/>
+                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+            </Grid>
+
+            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/Assets/StoreLogo.png"
-                   HorizontalAlignment="Left"
-                   Width="16" Height="16"
-                   Margin="16 0 0 0" Grid.Column="1"/>
                 <TextBlock 
                 l:Uids.Uid="StoreWindowTitleTextBlock"
                 x:Name="AppTitleTextBlock"
                 TextWrapping="NoWrap"
                 Style="{StaticResource CaptionTextBlockStyle}"
                 VerticalAlignment="Center"
-                Grid.Column="2" Margin="18, 0, 0, 0"/>
+                Grid.Column="2" Margin="2, 0, 0, 0"/>
             </Grid>
         </Grid>
         <Grid x:Name="ContentFrame" Margin="0,48,0,0" Padding="20 5 20 20">
@@ -148,4 +158,4 @@
             </Grid>
         </Grid>
     </Grid>
-</ex:WindowEx>
+</template:TemplateWindow>

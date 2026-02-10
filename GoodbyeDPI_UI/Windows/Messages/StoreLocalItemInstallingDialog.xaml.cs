@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
@@ -35,7 +36,7 @@ namespace CDPI_UI.Messages
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class StoreLocalItemInstallingDialog : WindowEx
+    public sealed partial class StoreLocalItemInstallingDialog : TemplateWindow
     {
         private string StoreId = string.Empty;
         private string Name = string.Empty;
@@ -57,23 +58,13 @@ namespace CDPI_UI.Messages
             InitializeComponent();
 
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
+            IconUri = @"Assets/Icons/Pseudoconsole.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = WindowMoveAera;
 
-            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
-            appWindowPresenter.IsResizable = false;
-            appWindowPresenter.IsMaximizable = false;
-            appWindowPresenter.IsMinimizable = false;
-            
-
-            NativeWindowHelper.ForceDisableMaximize(this);
+            DisableResizeFeature();
 
             ((App)Application.Current).OpenWindows.Add(this);
-
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-            }
-
-            ExtendsContentIntoTitleBar = true;
 
             ToggleItemLoadingMode(true);
             SetLoadingState(true, localizer.GetLocalizedString("SatusGettingPackInfo"));
