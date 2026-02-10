@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
@@ -39,7 +40,7 @@ namespace CDPI_UI
         public ObservableCollection<HelpNavigationViewItem> Items { get; set; }
     }
 
-    public sealed partial class OfflineHelpWindow : WindowEx
+    public sealed partial class OfflineHelpWindow : TemplateWindow
     {
         private MarkdownConfig _config;
 
@@ -49,18 +50,17 @@ namespace CDPI_UI
             set => _config = value;
         }
 
-
         private ILocalizer localizer = Localizer.Get();
 
         public OfflineHelpWindow()
         {
             InitializeComponent();
-            SetTitleBar(WindowMoveAera);
+            
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("OfflineHelpWindowTitle"));
-            this.ExtendsContentIntoTitleBar = true;
-
-            this.MinWidth = 484;
-            this.MinHeight = 300;
+            IconUri = @"Assets/Icons/Help.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = WindowMoveAera;
+            SetTitleBar(WindowMoveAera);
 
             MarkdownConfig = new MarkdownConfig();
 
@@ -207,6 +207,18 @@ namespace CDPI_UI
             {
                 MarkdownTextBlock.Text = localizer.GetLocalizedString("/Help/AboutTemplate");
             }
+        }
+
+        private void MarkdownTextBlock_OnLinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            string url = e.Uri.OriginalString;
+            Debug.WriteLine(Uri.IsWellFormedUriString(url, UriKind.Absolute).ToString());
+            
+            if (url.StartsWith("cdpi-wiki"))
+            {
+                NavigateToPage(url.Replace("cdpi-wiki://", ""));
+            }
+            return;
         }
     }
 }

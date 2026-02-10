@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<winex:WindowEx
+<template:TemplateWindow
     x:Class="CDPI_UI.CreateConfigHelperWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:winex="using:WinUIEx"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPI_UI.Default">
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
@@ -34,19 +35,27 @@
             Height="48"
             IsHitTestVisible="True"
             VerticalAlignment="Top">
-            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="ImageAera" Height="48" Grid.Column="0" >
+                <Image 
+                    Grid.Column="0"
+                    Source="/Assets/Icons/Edit.png"
+                    Width="16" Height="16"
+                    Margin="16,16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+            </Grid>
+            <Grid Grid.Column="1" x:Name="WindowMoveAera">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="140"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="0"
-                    Source="/Assets/Icons/Edit.png"
-                    HorizontalAlignment="Left"
-                    Width="16" Height="16"
-                    Margin="16,0"/>
-                <TextBlock Grid.Column="1"
+                <TextBlock Grid.Column="0"
                     l:Uids.Uid="CreateConfigHelperTitleTextBlock"
                     x:Name="AppTitleTextBlock"
                     TextWrapping="NoWrap"
@@ -55,7 +64,7 @@
                     Margin="0, 0, 0, 0" />
                 <TextBlock l:Uids.Uid="PreviewTextBlock"
                            x:Name="AppTitleSubTextBlock" 
-                           Grid.Column="2"
+                           Grid.Column="1"
                            TextWrapping="NoWrap"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                            Style="{StaticResource CaptionTextBlockStyle}"
@@ -223,4 +232,4 @@
                 VerticalAlignment="Bottom"/>
         </Grid>
     </Grid>
-</winex:WindowEx>
+</template:TemplateWindow>

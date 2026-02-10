@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Static;
@@ -34,13 +35,8 @@ namespace CDPI_UI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CreateConfigUtilWindow : WindowEx
+    public sealed partial class CreateConfigUtilWindow : TemplateWindow
     {
-        private const int WM_GETMINMAXINFO = 0x0024;
-        private IntPtr _hwnd;
-        private WindowProc _newWndProc;
-        private IntPtr _oldWndProc;
-
         public static CreateConfigUtilWindow Instance { get; private set; }
 
         private ILocalizer localizer = Localizer.Get();
@@ -48,25 +44,14 @@ namespace CDPI_UI
         public CreateConfigUtilWindow()
         {
             InitializeComponent();
-            InitializeWindow();
 
             this.Title = localizer.GetLocalizedString("CreateConfigUtilWindowTitle");
-
-            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
-            appWindowPresenter.IsResizable = false;
-            appWindowPresenter.IsMaximizable = false;
-            appWindowPresenter.IsMinimizable = false;
-
-            NativeWindowHelper.ForceDisableMaximize(this);
+            IconUri = @"Assets/Icons/GoodCheck.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = WindowMoveAera;
+            DisableResizeFeature();
 
             Instance = this;
-
-            ((App)Application.Current).OpenWindows.Add(this);
-
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-            }
 
             ExtendsContentIntoTitleBar = true;
 
@@ -74,21 +59,9 @@ namespace CDPI_UI
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
-            this.Activated += CreateConfigUtilWindow_Activated;
-            this.AppWindow.Destroying += AppWindow_Destroying;
-
-            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
-            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.SetIcon(@"Assets/Icons/GoodCheck.ico");
         }
 
-        private void AppWindow_Destroying(AppWindow sender, object args)
-        {
-            this.Activated -= CreateConfigUtilWindow_Activated;
-        }
 
-        private void CreateConfigUtilWindow_Activated(object sender, WindowActivatedEventArgs args) { }
 
         public void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
         {
@@ -187,61 +160,5 @@ namespace CDPI_UI
                 ContentFrame.GoBack();
             }
         }
-
-        private void InitializeWindow()
-        {
-            _hwnd = WindowNative.GetWindowHandle(this);
-            _newWndProc = new WindowProc(NewWindowProc);
-            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-        }
-        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_GETMINMAXINFO)
-            {
-                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            }
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        private const int GWLP_WNDPROC = -4;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private void ApplyDarkThemeToSystemMenu()
-        {
-            SetPreferredAppMode(2);
-            FlushMenuThemes();
-        }
-
-        [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern int SetPreferredAppMode(int preferredAppMode);
-
-        [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern void FlushMenuThemes();
-
     }
 }

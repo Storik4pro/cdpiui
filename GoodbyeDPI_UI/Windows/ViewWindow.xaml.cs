@@ -38,6 +38,7 @@ using WinUI3Localizer;
 using CDPI_UI.Helper.Static;
 using WindowId = Microsoft.UI.WindowId;
 using Microsoft.UI.Windowing;
+using CDPI_UI.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -49,51 +50,37 @@ namespace CDPI_UI
     /// </summary>
 
 
-    public sealed partial class ViewWindow : WindowEx
+    public sealed partial class ViewWindow : TemplateWindow
     {
         private readonly StringBuilder _outputBuffer = new StringBuilder();
 
-        private const int WM_GETMINMAXINFO = 0x0024;
-        private IntPtr _hwnd;
-        private WindowProc _newWndProc;
-        private IntPtr _oldWndProc;
-
         private ILocalizer localizer = Localizer.Get();
-
-        public string Id { get; private set; } = string.Empty;
 
         public ViewWindow()
         {
             this.InitializeComponent();
+
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
-            InitializeWindow();
+            IconUri = @"Assets/Icons/Pseudoconsole.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = AppTitleBarContent;
             this.Closed += ViewWindow_Closed;
-            TrySetMicaBackdrop(true);
 
-            ExtendsContentIntoTitleBar = true;
+            WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
+
             SetTitleBar(AppTitleBar);
-
-            this.MinWidth = 484;
-            this.MinHeight = 300;
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
             {
-                //AppendToRichTextBlock(ProcessManager.Instance.GetProcessOutput());
                 CleanOutputButton.IsChecked = true;
             }
             else
             {
-                //AppendToRichTextBlock(ProcessManager.Instance.GetDefaultProcessOutput());
                 DefaultOutputButton.IsChecked = true;
             }
             
             OutputRichTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
             OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
-
-            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
-            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.SetIcon(@"Assets/Icons/Pseudoconsole.ico");
         }
 
         public void SetId(string id)
@@ -440,103 +427,5 @@ namespace CDPI_UI
                 }
             }
         }
-
-        private long LastTimestamp = 0;
-        private int DoubleClickTimeMS = 250;
-
-
-        private void ImageAera_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            if (milliseconds - LastTimestamp < DoubleClickTimeMS && milliseconds != 0)
-            {
-                this.Close();
-            }
-            else
-            {
-                LastTimestamp = milliseconds;
-            }
-
-            IntPtr hWnd = WindowNative.GetWindowHandle(this);
-            RECT pos;
-            GetWindowRect(hWnd, out pos);
-            IntPtr hMenu = GetSystemMenu(hWnd, false);
-            int cmd = TrackPopupMenu(hMenu, 0x100, pos.left + 10, pos.top + 40, 0, hWnd, IntPtr.Zero);
-            if (cmd > 0) SendMessage(hWnd, 0x112, (IntPtr)cmd, IntPtr.Zero);
-        }
-
-        #region WINAPI
-        private void InitializeWindow()
-        {
-            _hwnd = WindowNative.GetWindowHandle(this);
-            _newWndProc = new WindowProc(NewWindowProc);
-            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-        }
-
-        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_GETMINMAXINFO)
-            {
-                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            }
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        private const int GWLP_WNDPROC = -4;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-        bool TrySetMicaBackdrop(bool useMicaAlt)
-        {
-            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && System.Environment.OSVersion.Version.Build >= 22000)
-            {
-                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
-                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
-                this.SystemBackdrop = micaBackdrop;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        [DllImport("user32.dll")]
-        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-        [DllImport("user32.dll")]
-        static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-        [DllImport("user32.dll")]
-        static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
-           int nReserved, IntPtr hWnd, IntPtr prcRect);
-        [DllImport("user32.dll")]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
-        struct RECT { public int left, top, right, bottom; }
-
-        #endregion
-
-        
     }
 }

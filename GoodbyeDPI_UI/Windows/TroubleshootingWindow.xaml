@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<winex:WindowEx
+<template:TemplateWindow
     x:Class="CDPI_UI.TroubleshootingWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,19 +9,20 @@
     mc:Ignorable="d"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:winex="using:WinUIEx"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPI_UI.Default">
 
-    <winex:WindowEx.SystemBackdrop>
+    <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
-    </winex:WindowEx.SystemBackdrop>
+    </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
         <Grid x:Name="AppTitleBar"
-          Canvas.ZIndex="1"
-          Height="48"
-          IsHitTestVisible="True"
-          VerticalAlignment="Top"
-          Margin="0, 0, 0, 0">
+              Canvas.ZIndex="1"
+              Height="48"
+              IsHitTestVisible="True"
+              VerticalAlignment="Top"
+              Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -81,4 +82,4 @@
             </Frame.ContentTransitions>
         </Frame>
     </Grid>
-</winex:WindowEx>
+</template:TemplateWindow>

@@ -1,4 +1,5 @@
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
@@ -17,9 +18,11 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -29,6 +32,7 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using static CDPI_UI.Win32;
 using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -39,13 +43,8 @@ namespace CDPI_UI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CreateConfigHelperWindow : WindowEx
+    public sealed partial class CreateConfigHelperWindow : TemplateWindow
     {
-        private const int WM_GETMINMAXINFO = 0x0024;
-        private IntPtr _hwnd;
-        private WindowProc _newWndProc;
-        private IntPtr _oldWndProc;
-
         public static CreateConfigHelperWindow Instanse { get; private set; }
         public bool IsOperationExitAskAvailable { get; set; } = false;
 
@@ -57,15 +56,18 @@ namespace CDPI_UI
         public CreateConfigHelperWindow()
         {
             this.InitializeComponent();
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("CreateConfigHelperWindowTitle"));
-            InitializeWindow();
-            TrySetMicaBackdrop(true);
 
-            SetTitleBar(AppTitleBar);
+            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("CreateConfigHelperWindowTitle"));
+            IconUri = @"Assets/Icons/Pseudoconsole.ico";
+            TitleIcon = TitleImageRectagle;
+            TitleBar = WindowMoveAera;
+
+            WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
+
+            SetTitleBar(WindowMoveAera);
 
             Instanse = this;
 
-            this.ExtendsContentIntoTitleBar = true;
             ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
             this.Closed += CreateConfigHelperWindow_Closed;
 
@@ -73,13 +75,6 @@ namespace CDPI_UI
             {
                 fe.Loaded += Fe_Loaded;
             }
-
-
-
-            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
-            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.SetIcon(@"Assets/Icons/Edit.ico");
 
             SetEditorBackgroundSettings();
         }
@@ -339,76 +334,6 @@ namespace CDPI_UI
             CreateConfigUtilWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
             // window.NavigateToPage<CreateViaGoodCheck>();
         }
-
-        #region WINAPI
-
-        private void InitializeWindow()
-        {
-            _hwnd = WindowNative.GetWindowHandle(this);
-            _newWndProc = new WindowProc(NewWindowProc);
-            _oldWndProc = SetWindowLongPtr(_hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newWndProc));
-        }
-
-        private delegate IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private IntPtr NewWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
-        {
-            if (msg == WM_GETMINMAXINFO)
-            {
-                MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = 484;
-                minMaxInfo.ptMinTrackSize.y = 300;
-                Marshal.StructureToPtr(minMaxInfo, lParam, true);
-            }
-            return CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        }
-
-        private const int GWLP_WNDPROC = -4;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-        bool TrySetMicaBackdrop(bool useMicaAlt)
-        {
-            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && System.Environment.OSVersion.Version.Build >= 22000)
-            {
-                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
-                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
-                this.SystemBackdrop = micaBackdrop;
-
-                return true;
-            }
-
-            return false;
-        }
-
-
-
-
-
-
-
-
-        #endregion
 
         private async void ComponentsStore_Click(object sender, RoutedEventArgs e)
         {

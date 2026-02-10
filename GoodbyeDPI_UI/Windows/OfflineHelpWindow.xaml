@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ex:WindowEx
+<template:TemplateWindow
     xmlns:ex="using:WinUIEx"
     x:Class="CDPI_UI.OfflineHelpWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,11 +10,12 @@
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d"
     xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPI_UI.Default">
 
-    <ex:WindowEx.SystemBackdrop>
+    <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
-    </ex:WindowEx.SystemBackdrop>
+    </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
         <Grid.Resources>
@@ -30,6 +31,7 @@
               Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -53,23 +55,30 @@
                 </AnimatedIcon>
             </Button>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="8, 0, 0, 0">
+            <Grid x:Name="ImageAera" Height="48" Grid.Column="1" >
+                <Image 
+                    Grid.Column="0"
+                    Source="/Assets/Icons/Help.ico"
+                    Width="16" Height="16"
+                    Margin="8,16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+            </Grid>
+
+            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/Assets/Icons/Help.ico"
-                       HorizontalAlignment="Left"
-                       Width="16" Height="16"
-                       Margin="0,0" Grid.Column="1"/>
                 <TextBlock l:Uids.Uid="OfflineHelpWindowTitleTextBlock"
                                x:Name="AppTitleTextBlock"
                                TextWrapping="NoWrap"
                                Style="{StaticResource CaptionTextBlockStyle}"
                                VerticalAlignment="Center"
-                               Grid.Column="2" Margin="18, 0, 0, 0"/>
+                               Grid.Column="2" Margin="10, 0, 0, 0"/>
                 <TextBlock l:Uids.Uid="PreviewTextBlock"
                                x:Name="AppTitleSubTextBlock" 
                                Grid.Column="3"
@@ -97,15 +106,17 @@
                     <controls:MarkdownTextBlock 
                         Margin="0 20" x:Name="MarkdownTextBlock" 
                         Config="{x:Bind MarkdownConfig, Mode=OneTime}"
-                        UseAutoLinks="True"
+                        UseAutoLinks="False"
                         UseEmphasisExtras="True"
                         UseListExtras="True"
                         UsePipeTables="True"
-                        UseTaskLists="True"/>
+                        UseTaskLists="True"
+                        DisableLinks="False"
+                        OnLinkClicked="MarkdownTextBlock_OnLinkClicked"/>
                 </ScrollViewer>
             </NavigationView>
              
             
         </Grid>
     </Grid>
-</ex:WindowEx>
+</template:TemplateWindow>
