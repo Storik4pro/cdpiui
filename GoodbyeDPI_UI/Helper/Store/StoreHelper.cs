@@ -6,6 +6,7 @@ using CDPI_UI.Helper.Store;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.WindowsAppSDK.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,6 +26,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Services.Maps.LocalSearch;
 using Windows.UI.WebUI;
 using static CDPI_UI.Helper.ErrorsHelper;
@@ -59,6 +61,7 @@ namespace CDPI_UI.Helper
     public class StoreHelper
     {
         private static readonly string GitHubApiToken = Secret.GitHubToken;
+        private static readonly string GitLabApiToken = Secret.GitLabToken;
 
         private List<string> SupportedCategoryTypes = ["basic_category", "second_category"];
 
@@ -242,11 +245,11 @@ namespace CDPI_UI.Helper
         }
 
         #region Database
-        private string GetStoreUrl()
+        private string GetStoreUrl(SupportedVersionControls versionControl)
         {
             string gitHubRepo = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
             string gitLabRepo = $"https://gitlab.com/{StateHelper.GitLabStoreRepo}/-/archive/main/CDPIUI-Store-main.zip";
-            return VersionControl == SupportedVersionControls.GitHub? gitHubRepo : gitLabRepo;
+            return versionControl == SupportedVersionControls.GitHub? gitHubRepo : gitLabRepo;
         }
         public static void ClearRepoCache()
         {
@@ -257,8 +260,9 @@ namespace CDPI_UI.Helper
             if (Directory.Exists(targetFolder))
                 Directory.Delete(targetFolder, recursive: true);
         }
-        public async Task<bool> LoadAllStoreDatabase(bool forseSync = true)
+        public async Task<bool> LoadAllStoreDatabase(bool forseSync = true, SupportedVersionControls versionControl = SupportedVersionControls.None)
         {
+            SupportedVersionControls usedVersionControl = versionControl == SupportedVersionControls.None ? VersionControl : versionControl;
             try
             {
                 if (FormattedStoreDatabase != null && !forseSync)
@@ -274,13 +278,13 @@ namespace CDPI_UI.Helper
 
                 if ((forseSync && t.TotalDays >= 1) || !Path.Exists(targetFolder)) {
 
-                    string zipUrl = GetStoreUrl();
+                    string zipUrl = GetStoreUrl(usedVersionControl);
 
                     using HttpClient client = new HttpClient();
 
-                    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", "0.0.0.0"));
+                    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
                     client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", GitHubApiToken);
+                        new AuthenticationHeaderValue("Bearer", usedVersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
 
                     using HttpResponseMessage response = await client.GetAsync(zipUrl);
                     response.EnsureSuccessStatusCode();
@@ -832,7 +836,7 @@ namespace CDPI_UI.Helper
                 var root = doc.RootElement;
 
                 tag = root.GetProperty("tag_name").GetString();
-                notes = root.GetProperty("body").GetString();
+                notes = VersionControl == SupportedVersionControls.GitHub ? root.GetProperty("body").GetString() : root.GetProperty("description").GetString();
 
                 return Tuple.Create(tag, notes);
             }
@@ -854,6 +858,14 @@ namespace CDPI_UI.Helper
             public string actions;
             public string target_executable_file;
         }
+        private static string TryGetValue(JsonElement jsonElement, string key)
+        {
+            if (jsonElement.TryGetProperty(key, out var value))
+            {
+                return value.GetString();
+            }
+            return "";
+        }
         private async Task<Tuple<string, string>> GetVersionDownloadLink(
             string repoUrl, string targetFileOrFileType, string version = null, string prefferedFile = null
         )
@@ -870,13 +882,16 @@ namespace CDPI_UI.Helper
 
                 tag = root.GetProperty("tag_name").GetString();
 
-                var assets = root.GetProperty("assets").EnumerateArray();
+                var assets = (VersionControl == SupportedVersionControls.GitHub ? root.GetProperty("assets") : root.GetProperty("assets").GetProperty("links")).EnumerateArray();
                 var matches = assets
                     .Select(a => new
                     {
-                        Name = a.GetProperty("name").GetString(),
-                        Url = a.GetProperty("browser_download_url").GetString()
+                        Name = TryGetValue(a, "name"),
+                        Url = VersionControl == SupportedVersionControls.GitHub ? a.GetProperty("browser_download_url").GetString() : a.GetProperty("url").GetString()
                     })
+                    .Where(a =>
+                        !string.IsNullOrEmpty(a.Name)
+                    )
                     .Where(a =>
                         string.Equals(a.Name, targetFileOrFileType, StringComparison.OrdinalIgnoreCase)
                         || a.Name.EndsWith(StateHelper.Instance.FileTypes[targetFileOrFileType], StringComparison.OrdinalIgnoreCase)
@@ -984,7 +999,7 @@ namespace CDPI_UI.Helper
             client.DefaultRequestHeaders.UserAgent.Add(
                 new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("token", GitHubApiToken);
+                new AuthenticationHeaderValue("token", VersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
 
             string apiUrl = GetApiUrlForVersion(owner, repo, version);
 
@@ -1280,7 +1295,7 @@ namespace CDPI_UI.Helper
                     bool result = await DownloadManager.DownloadAndExtractAsync(
                         link.link,
                         itemFolder,
-                        extractArchive: link.type == "archive" || link.type == "configPack",
+                        extractArchive: link.type == "archive" || link.type == "configPack" || link.type == "signedZip",
                         extractSkipFiletypes: [],
                         extractRootFolder: link.archive_root_folder,
                         executableFileName: link.target_executable_file,
@@ -1306,8 +1321,8 @@ namespace CDPI_UI.Helper
                 bool result = await DownloadManager.DownloadAndExtractAsync(
                     downloadUrl,
                     itemFolder,
-                    extractArchive: item.filetype == "archive" || item.filetype == "configPack",
-                    extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
+                    extractArchive: item.filetype == "archive" || item.filetype == "configPack" || item.filetype == "signedZip",
+                    extractSkipFiletypes: item.filetype == "signedZip" ? [] : [".bat", ".cmd", ".vbs"],
                     extractRootFolder: item.archive_root_folder,
                     executableFileName: item.target_executable_file,
                     filetype: item.filetype
