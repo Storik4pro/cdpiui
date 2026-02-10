@@ -269,11 +269,11 @@ namespace CDPI_UI.Helper
             if (hr != null)
             {
                 string hrHex = $"0x{hr.Value:X8}";
-                prettyErrorCode = $"{preffix}_{code}{statusCode} ({hrHex})";
+                prettyErrorCode = $"{preffix}_{code}{_statusCode} ({hrHex})";
             }
             else
             {
-                prettyErrorCode = $"{preffix}_{code}{statusCode}";
+                prettyErrorCode = $"{preffix}_{code}{_statusCode}";
             }
             return prettyErrorCode;
         }
