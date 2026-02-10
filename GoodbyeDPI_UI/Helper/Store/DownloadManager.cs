@@ -98,11 +98,13 @@ namespace CDPI_UI.Helper
 
                 StageChanged?.Invoke("Downloading");
 
+                Logger.Instance.CreateDebugLog(nameof(DownloadManager), $"Uri used: {url}");
+
                 var response = await _client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     StageChanged?.Invoke("ErrorHappens");
-                    ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{response.StatusCode}", "Server Error"));
+                    ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{(int)response.StatusCode}", "Server Error"));
                     return false;
                 }
                 response.EnsureSuccessStatusCode();
