@@ -1,5 +1,6 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.LScript;
+using CDPI_UI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -59,6 +60,8 @@ public sealed partial class ModernMainPage : Page
         AddingCustomSiteListsToConfigHyperlink.Content = localizer.GetLocalizedString("/Help/AddingCustomSiteListsToConfig");
 
         this.Loaded += ModernMainPage_Loaded;
+
+        StarsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
     }
 
     private void Instance_ItemRemoved(string obj)

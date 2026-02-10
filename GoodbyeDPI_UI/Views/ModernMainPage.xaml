@@ -26,7 +26,7 @@
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <Button x:Name="ApplicationSetupHelperButton" Height="35" Click="ApplicationSetupHelperButton_Click">
                             <StackPanel Orientation="Horizontal" Spacing="10">
-                                <FontIcon Glyph="&#xF4A5;" />
+                                <FontIcon x:Name="StarsFontIcon" Glyph="&#xF4A5;" />
                                 <TextBlock l:Uids.Uid="ApplicationSetupHelperTextBlock" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
