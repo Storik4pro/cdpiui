@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using static CDPI_UI.App;
 
@@ -75,5 +76,41 @@ namespace CDPI_UI
         {
             WM_GETMINMAXINFO = 0x0024,
         }
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+        out ulong lpFreeBytesAvailable,
+        out ulong lpTotalNumberOfBytes,
+        out ulong lpTotalNumberOfFreeBytes);
+
+        public static ulong GetDiskFreeSpace(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentNullException("path");
+            }
+
+            ulong dummy = 0;
+
+            if (!GetDiskFreeSpaceEx(path, out ulong freeSpace, out dummy, out dummy))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            return freeSpace;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi")]
+        public static extern IntPtr DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
     }
 }
