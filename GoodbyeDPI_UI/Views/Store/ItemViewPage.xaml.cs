@@ -25,6 +25,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinRT.CDPIUIGenericHelpers;
 using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -32,6 +33,11 @@ using WinUI3Localizer;
 
 namespace CDPI_UI.Views.Store
 {
+    public class AdditionalItemInfoModel
+    {
+        public string DisplayName { get; set; }
+        public string DisplayValue { get; set; }
+    }
     public sealed partial class ItemViewPage : Page
     {
         private string _storeId;
@@ -55,12 +61,16 @@ namespace CDPI_UI.Views.Store
         private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
 
+        private ObservableCollection<AdditionalItemInfoModel> AdditionalItemInfoModels = [];
+
         private ILocalizer localizer = Localizer.Get();
 
         public ItemViewPage()
         {
             InitializeComponent();
             _config = new MarkdownConfig();
+
+            AdvancedInfoListView.ItemsSource = AdditionalItemInfoModels;
 
             this.Loaded += ItemViewPage_Loaded;
         }
@@ -121,7 +131,11 @@ namespace CDPI_UI.Views.Store
                 {
                     ItemActionButtonText.Text = localizer.GetLocalizedString("Install");
                     ItemMoreButton.Visibility = Visibility.Collapsed;
-                    ItemActionButton.IsEnabled = IsItemSupported();
+
+                    bool isItemSupported = IsItemSupported();
+
+                    ItemActionButton.IsEnabled = isItemSupported;
+                    ItemUnsupportedWarningGrid.Visibility = isItemSupported ? Visibility.Collapsed : Visibility.Visible;
                 }
 
                 if (item.links?.Count > 0)
@@ -131,12 +145,63 @@ namespace CDPI_UI.Views.Store
 
                 loaded = true;
 
-                
+                LoadAdvancedItemInfo();
+
+
+
             }
             else
             {
                 ItemName.Text = "Template page";
             }
+        }
+
+        private void LoadAdvancedItemInfo()
+        {
+            item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(_storeId);
+            AdditionalItemInfoModels.Clear();
+            if (item == null)
+            {
+                return;
+            }
+            AdditionalItemInfoModels.Add(new() { DisplayName = "StoreId", DisplayValue = item.store_id });
+            AdditionalItemInfoModels.Add(new() { DisplayName = "CategoryId", DisplayValue = item.category_id });
+            AdditionalItemInfoModels.Add(new() { DisplayName = "BackgroundColor", DisplayValue = item.background });
+            AdditionalItemInfoModels.Add(new() { DisplayName = "VersionControlType", DisplayValue = item.version_control });
+            if (item.version_control == "several_repos")
+            {
+                int i = 0;
+                if (item.files_to_download != null)
+                {
+                    foreach (var link in item.files_to_download)
+                    {
+                        i++;
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > Type", DisplayValue = link.type });
+
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > VersionControlType", DisplayValue = link.version_control });
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > VersionControlLink", DisplayValue = link.version_control_link });
+
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > PrefferedVersion", DisplayValue = link.preffered_version });
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > PrefferedFileName", DisplayValue = link.preffered_to_download_file_name });
+
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > DownloadLink", DisplayValue = link.download_link });
+                        AdditionalItemInfoModels.Add(new() { DisplayName = $"#{i} > ArchiveRootFolder", DisplayValue = link.archive_root_folder });
+                    }
+                }
+            }
+            else
+            {
+                AdditionalItemInfoModels.Add(new() { DisplayName = "VersionControlLink", DisplayValue = item.version_control_link });
+                AdditionalItemInfoModels.Add(new() { DisplayName = "DownloadLink", DisplayValue = item.download_link });
+                AdditionalItemInfoModels.Add(new() { DisplayName = "FileType", DisplayValue = item.filetype });
+                AdditionalItemInfoModels.Add(new() { DisplayName = "ArchiveRootFolder", DisplayValue = item.archive_root_folder });
+            }
+
+
+            AdditionalItemInfoModels.Add(new() { DisplayName = "TargetExecutableFile", DisplayValue = item.target_executable_file }); 
+
+            AdditionalItemInfoModels.Add(new() { DisplayName = "TargetMaxVer", DisplayValue = item.target_maxversion }); 
+            AdditionalItemInfoModels.Add(new() { DisplayName = "TargetMinVer", DisplayValue = item.target_minversion }); 
         }
 
         private void GetReadyUI()
@@ -564,6 +629,12 @@ namespace CDPI_UI.Views.Store
             {
 
             }
+        }
+
+        private async void LaunchItemUnsupportedHelp_Click(object sender, RoutedEventArgs e)
+        {
+            var window = await((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            window.NavigateToPage("/Store/ItemUnsupportedWarning");
         }
     }
 }
