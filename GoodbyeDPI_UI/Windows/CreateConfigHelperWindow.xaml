@@ -9,7 +9,9 @@
     mc:Ignorable="d"
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:animations="using:CommunityToolkit.WinUI.Animations">
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
@@ -77,14 +79,44 @@
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
                VerticalAlignment="Bottom">
             </Rectangle>
-
+            
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="NavigationAction" Width="auto"/>
                     <ColumnDefinition x:Name="Menu" Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition x:Name="Quick" Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
+
+                <Grid.ChildrenTransitions>
+                    <RepositionThemeTransition/>
+                </Grid.ChildrenTransitions>
+
+                <Button 
+                    x:Name="BackButton" 
+                    l:Uids.Uid="FrameGoBackButton"
+                    Grid.Column="0"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Width="32"
+                    Height="32"
+                    Padding="6"
+                    Margin="5 0 0 0"
+                    PointerEntered="BackButton_PointerEntered" 
+                    PointerExited="BackButton_PointerExited"
+                    Click="BackButton_Click"
+                    Visibility="Visible"
+                    VerticalAlignment="Bottom">
+                    <AnimatedIcon x:Name="SearchAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedBackVisualSource/>
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <SymbolIconSource Symbol="Back"/>
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
+                </Button>
+                <MenuBar Grid.Column="1" Margin="0 ,0 ,0, 0" Height="28">
                     <MenuBarItem l:Uids.Uid="FileMenuItem">
                         <MenuFlyoutItem x:Name="HomeItem" l:Uids.Uid="HomeMenuItem" Icon="Home" Click="HomeItem_Click"/>
                         <MenuFlyoutSeparator/>
@@ -104,6 +136,7 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="O"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
                         <MenuFlyoutItem x:Name="EditConfigButton" l:Uids.Uid="EditConfigMenuItem" Click="EditConfigButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE70F;" />
@@ -111,6 +144,9 @@
                             <MenuFlyoutItem.KeyboardAccelerators>
                                 <KeyboardAccelerator Modifiers="Control" Key="E"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem x:Name="EditConfigKitButton" l:Uids.Uid="EditConfigKitMenuItem" Click="EditConfigKitButton_Click">
+                            
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutSubItem l:Uids.Uid="GoodCheckConfigSelectionMenuItem">
@@ -146,6 +182,10 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="H"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
+                        <animations:Implicit.ShowAnimations>
+                            <animations:TranslationAnimation Duration="0:0:0.5" From="-20,0,0" To="0, 0, 0"/>
+                            <animations:OpacityAnimation Duration="0:0:0.25" From="0" To="1.0"/>
+                        </animations:Implicit.ShowAnimations>
                     </MenuBarItem>
                     <MenuBarItem l:Uids.Uid="ViewMenuItem" x:Name="ViewMenuItem" Visibility="Collapsed">
                         <MenuFlyoutSubItem l:Uids.Uid="DefaultEditorBackgroundStyleMenuItem">
@@ -176,6 +216,10 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
+                        <animations:Implicit.ShowAnimations>
+                            <animations:TranslationAnimation Duration="0:0:0.5" From="-20,0,0" To="0, 0, 0"/>
+                            <animations:OpacityAnimation Duration="0:0:0.25" From="0" To="1.0"/>
+                        </animations:Implicit.ShowAnimations>
                     </MenuBarItem>
                     
                     <MenuBarItem l:Uids.Uid="StoreMenuBarItem">
@@ -190,6 +234,8 @@
                         </MenuFlyoutItem>
                     </MenuBarItem>
                     <MenuBarItem l:Uids.Uid="HelpMenuItem">
+                        <MenuFlyoutItem x:Name="CurrentHelpMenuFlyoutItem" Click="CurrentHelpMenuFlyoutItem_Click"/>
+                        <MenuFlyoutSeparator/>
                         <MenuFlyoutItem l:Uids.Uid="HelpOfflineMenuItem" x:Name="OfflineHelpButton" Click="OfflineHelpButton_Click"/>
                         <MenuFlyoutItem l:Uids.Uid="HelpOnlineMenuItem"  x:Name="OnlineHelpButton" Click="OnlineHelpButton_Click">
                             <MenuFlyoutItem.Icon>
@@ -203,7 +249,7 @@
                         <MenuFlyoutItem x:Name="ReportIssueButton" l:Uids.Uid="ReportIssueMenuItem" Click="ReportIssueButton_Click"/>
                     </MenuBarItem>
                 </MenuBar>
-                <Grid Grid.Column="2" >
+                <Grid Grid.Column="3" >
                     
                 </Grid>
             </Grid>
@@ -213,7 +259,8 @@
         </Grid>
         <Frame x:Name="ContentFrame" 
                Grid.Row="3"
-               Navigating="ContentFrame_Navigating">
+               Navigating="ContentFrame_Navigating"
+               Navigated="ContentFrame_Navigated">
             
         </Frame>
         <Grid Grid.Row="4">
@@ -226,7 +273,14 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock x:Name="StatusTextBlock" l:Uids.Uid="ReadyTextBlock" Grid.Column="0" VerticalAlignment="Center"/>
+                <ProgressRing x:Name="StatusProgressRing" Height="10" Width="10"/>
+                <FontIcon x:Name="StatusProgressIcon" Glyph="&#xF13E;">
+                    <animations:Implicit.ShowAnimations>
+                        <animations:TranslationAnimation Duration="0:0:0.5" From="-20,0,0" To="0, 0, 0"/>
+                        <animations:OpacityAnimation Duration="0:0:0.25" From="0" To="1.0"/>
+                    </animations:Implicit.ShowAnimations>
+                </FontIcon>
+                <TextBlock x:Name="StatusTextBlock" Grid.Column="2" VerticalAlignment="Center"/>
             </Grid>
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
                 VerticalAlignment="Bottom"/>
