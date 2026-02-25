@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using WinRT.Interop;
 using WinUIEx;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using Application = Microsoft.UI.Xaml.Application;
 using Size = System.Windows.Size;
 
 namespace CDPI_UI.Default
@@ -127,6 +128,8 @@ namespace CDPI_UI.Default
             {
                 ApplyDarkThemeToSystemMenu();
             }
+
+            UpdateWindowMinSize();
         }
 
         public void DisableResizeFeature(bool isMinimizable = false)
@@ -233,8 +236,36 @@ namespace CDPI_UI.Default
 
         private void UpdateWindowMinSize()
         {
-            MinHeight = (int)WindowMinSize.Width;
-            MinHeight = (int)WindowMinSize.Width;
+            MinWidth = (int)WindowMinSize.Width;
+            MinHeight = (int)WindowMinSize.Height;
+        }
+
+        public static bool RemoveAndGoBackTo(Type pageType, Frame rootFrame)
+        {
+            if (rootFrame == null) return false;
+
+            var back = rootFrame.BackStack;
+            int targetIndex = -1;
+            for (int i = back.Count - 1; i >= 0; i--)
+            {
+                if (back[i].SourcePageType == pageType)
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+
+            if (targetIndex == -1) return false;
+
+            for (int i = back.Count - 1; i > targetIndex; i--)
+                back.RemoveAt(i);
+
+            if (rootFrame.CanGoBack)
+            {
+                rootFrame.GoBack();
+                return true;
+            }
+            return false;
         }
 
         #region WINAPI
