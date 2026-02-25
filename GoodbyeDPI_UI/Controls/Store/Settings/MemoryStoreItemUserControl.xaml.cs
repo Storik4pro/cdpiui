@@ -130,7 +130,7 @@ namespace CDPI_UI.Controls.Store.Settings
             DeleteButton.IsEnabled = true;
             ProgressBar.Visibility = Visibility.Collapsed;
 
-            if (databaseStoreItem.Type == "configlist")
+            if (databaseStoreItem.Type == "addon")
             {
                 SetupMenuFlyuoutItem.IsEnabled = false;
             }
@@ -164,9 +164,17 @@ namespace CDPI_UI.Controls.Store.Settings
 
         private async void SetupMenuFlyuoutItem_Click(object sender, RoutedEventArgs e)
         {
-            ModernMainWindow window = await((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-
-            window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+            DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(StoreId);
+            if (databaseStoreItem.Type == "component")
+            {
+                ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
+                window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+            }
+            else if (databaseStoreItem.Type == "configlist")
+            {
+                CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+                window.EditConfigKit(StoreId);
+            }
         }
     }
 }
