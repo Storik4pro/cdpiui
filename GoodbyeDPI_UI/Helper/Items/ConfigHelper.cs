@@ -1,12 +1,15 @@
 ﻿using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
+using CDPI_UI.DataModel;
+using CDPI_UI.Extensions;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Helper.Store;
 using Newtonsoft.Json;
-using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -122,7 +125,7 @@ namespace CDPI_UI.Helper.Items
 
                     Logger.Instance.CreateDebugLog(nameof(ConfigHelper), $"Now work at {jsonFile}");
 
-                    if (configItem.target[0] != Target)
+                    if (configItem.target[0] != Target && Target != "$ANY")
                         continue;
 
                     var result = Regex.Replace(
@@ -158,19 +161,20 @@ namespace CDPI_UI.Helper.Items
             return [.. array];
         }
 
-        public void Init()
+        public void Init(string itemId = "")
         {
             lock (_lock)
             {
                 Items.Clear();
                 ConfigLocaleHelpers.Clear();
-                List<DatabaseStoreItem> configItems = DatabaseHelper.Instance.GetItemsByType("configlist");
+                List<DatabaseStoreItem> configItems = 
+                    string.IsNullOrEmpty(itemId) ? DatabaseHelper.Instance.GetItemsByType("configlist") : [DatabaseHelper.Instance.GetItemById(itemId)];
 
                 List<DatabaseStoreItem> itemsToCheck = new List<DatabaseStoreItem>();
 
                 foreach (DatabaseStoreItem item in configItems)
                 {
-                    if (!Path.Exists(item.Directory))
+                    if (!Path.Exists(item?.Directory))
                         continue;
 
                     itemsToCheck.Add(item);
@@ -189,6 +193,32 @@ namespace CDPI_UI.Helper.Items
             lock (_lock)
             {
                 return Items;
+            }
+        }
+
+        public ConfigItem GetConfigItem(string filename, string packId)
+        {
+            lock (_lock)
+            {
+                var configItem = Items.FirstOrDefault(
+                    x => string.Equals(x.packId, packId, StringComparison.Ordinal) && string.Equals(x.file_name, filename, StringComparison.Ordinal)
+                );
+                return configItem;
+            }
+        }
+
+        public void SetConfigItem(ConfigItem newConfigItem)
+        {
+            lock (_lock)
+            {
+                var configItem = Items.FirstOrDefault(
+                    x => string.Equals(x.packId, newConfigItem.packId, StringComparison.Ordinal) && 
+                    string.Equals(x.file_name, newConfigItem.file_name, StringComparison.Ordinal)
+                );
+                if (configItem != null)
+                    Items.Remove(configItem);
+
+                Items.Add(newConfigItem);
             }
         }
 
@@ -218,6 +248,20 @@ namespace CDPI_UI.Helper.Items
             File.WriteAllText(fileName, jsonString);
 
             await Task.CompletedTask;
+        }
+
+        public static string GetDefaultLocalePath(string packId)
+        {
+            string folder = GetItemFolderFromPackId(packId);
+
+            string initFile = Path.Combine(folder, "init.json");
+
+            if (!File.Exists(initFile))
+                return string.Empty;
+
+            ConfigInitItem configInitItem = Utils.LoadJson<ConfigInitItem>(initFile);
+            string _preFilepath = configInitItem.localized_strings_directory?.GetValueOrDefault("EN", null) ?? string.Empty;
+            return string.IsNullOrEmpty(_preFilepath) ? string.Empty : Path.Combine(folder, _preFilepath);
         }
 
         public string GetLocalizedConfigVarName(string name, string packId)
@@ -367,7 +411,7 @@ namespace CDPI_UI.Helper.Items
             startupString = LScriptLangHelper.ExecuteScriptUnsafe(startupString, callItemId: packId);
             return startupString;
         }
-        private static string ReplaceCommaVariables(string startupString, Dictionary<string, string> commaVars)
+        public static string ReplaceCommaVariables(string startupString, Dictionary<string, string> commaVars)
         {
             Dictionary<string, string> vars = commaVars;
 
@@ -460,6 +504,12 @@ namespace CDPI_UI.Helper.Items
                 );
 
             return configItem != null ? configItem.toggle_lists:[];
+        }
+
+        public async Task<List<SiteListItem>> GetExcludedSiteListItemsAsync(string filename, string packId, bool unique = true, bool ignoreNull = false)
+        {
+            await Task.CompletedTask;
+            return GetExcludedSiteListItems(filename, packId, unique, ignoreNull);
         }
 
         public List<SiteListItem> GetExcludedSiteListItems(string filename, string packId, bool unique = true, bool ignoreNull = false)
@@ -555,6 +605,12 @@ namespace CDPI_UI.Helper.Items
                 }
             }
             return results;
+        }
+
+        public async Task<List<SiteListItem>> GetSiteListItemsAsync(string filename, string packId, bool unique = true, bool ignoreNull = false)
+        {
+            await Task.CompletedTask;
+            return GetSiteListItems(filename, packId, unique, ignoreNull);
         }
 
         public List<SiteListItem> GetSiteListItems(string filename, string packId, bool unique = true, bool ignoreNull = false)
@@ -909,7 +965,7 @@ namespace CDPI_UI.Helper.Items
 
             files = GetUsedFilesFromString(startupString, files);
 
-            
+
 
             if (configItem.commaVars == null)
                 return files;
@@ -1052,6 +1108,384 @@ namespace CDPI_UI.Helper.Items
             }
 
             return configItem;
+        }
+
+        public string RemoveConfig(string filename, string packId, bool removeFile)
+        {
+            string folder = GetItemFolderFromPackId(packId);
+            string packPath = Path.Combine(folder, filename);
+
+            var item = Items.FirstOrDefault(x => x.packId == packId && x.file_name == filename);
+            if (item != null) Items.Remove(item);
+
+            if (removeFile)
+            {
+                try
+                {
+                    File.Delete(packPath);
+                }
+                catch (Exception ex)
+                {
+                    return ErrorsHelper.GetPrettyErrorCode("SAVE_CFG", ex);
+                }
+            }
+            return string.Empty;
+        }
+
+        public static string GetLastEditTimeFromConfigFile(string filename, string packId)
+        {
+            string filePath = Path.Combine(GetItemFolderFromPackId(packId), filename);
+
+            try
+            {
+                DateTime lastEditTime = File.GetLastWriteTime(filePath);
+                return lastEditTime.ToString();
+            }
+            catch
+            {
+                return "01.12.1970";
+            }
+        }
+    }
+
+    public static class Autocorrector
+    {
+        public static string FindAutoCorrectPath(string filePath, ConfigItem configItem, string configPath)
+        {
+            try
+            {
+                if (string.Equals(Path.GetFileNameWithoutExtension(filePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
+                {
+                    return filePath;
+                }
+                if (configItem != null && configItem.packId != null && configItem.jparams != null)
+                {
+                    string _filePath = Helper.LScript.LScriptLangHelper.ExecuteScriptUnsafe(
+                        ConfigHelper.ReplaceVariables(
+                            filePath, 
+                            ConfigHelper.GetReadyToUseVariables(configItem.packId, configItem.variables, configItem.jparams)),
+                        callItemId: configItem.packId);
+
+                    _filePath = Helper.LScript.LScriptLangHelper.ExecuteScriptUnsafe(
+                        ConfigHelper.ReplaceCommaVariables(
+                            _filePath, 
+                            configItem.commaVars),
+                        callItemId: configItem.packId);
+
+                    if (Path.Exists(_filePath))
+                        return _filePath;
+                }
+                if (File.Exists(filePath))
+                {
+                    return filePath;
+                }
+
+                if (File.Exists(Path.Combine(Path.GetDirectoryName(configPath), filePath)))
+                {
+                    return Path.Combine(Path.GetDirectoryName(configPath), filePath);
+                }
+
+                var items = DatabaseHelper.Instance.GetItemsByType("configlist");
+                foreach (var item in items)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
+                var components = DatabaseHelper.Instance.GetItemsByType("component");
+                foreach (var item in components)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
+                var addOns = DatabaseHelper.Instance.GetItemsByType("addon");
+                foreach (var item in addOns)
+                {
+                    string itemPath = item.Directory;
+                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
+                    foreach (var file in files)
+                    {
+
+                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
+                            return file;
+                    }
+                }
+            }
+            catch
+            {
+                // pass
+            }
+            return string.Empty;
+        }
+    }
+
+    public class ConfigPackMakeHelper
+    {
+        public class ConfigPackInitModel : LocalItemInitModel
+        {
+            public List<string> toggleListAvailable { get; set; } = [];
+            public Dictionary<string, string> localized_strings_directory { get; set; } = [];
+        }
+
+        public static async Task<AsyncOperationResultModel> CreateConfigPack(ConfigPackInitModel modelTemplate, List<ConfigItem> configItems, string outputDir, bool autoImport = false)
+        {
+            List<string[]> requirements = [];
+            string tempDir = Path.Combine(StateHelper.GetDataDirectory(), "TempFiles", nameof(ConfigPackMakeHelper), Utils.GenerateNewId());
+
+            Directory.CreateDirectory(tempDir);
+
+            var copyFilesResult = await CopyUsedFilesToDirecrory(configItems, tempDir);
+            if (!(bool)copyFilesResult?.IsSuccess) return copyFilesResult;
+
+            var copyConfigsResult = await CopyConfigsToDirectory(configItems, tempDir);
+            if (!(bool)copyConfigsResult?.IsSuccess) { return copyConfigsResult; }
+
+            var locFilesCopyResult = await CopyLocFilesToDirectory(modelTemplate, configItems, tempDir);
+            if (!(bool)locFilesCopyResult?.IsSuccess) { return locFilesCopyResult; }
+
+            modelTemplate = (ConfigPackInitModel)locFilesCopyResult?.Result ?? modelTemplate;
+
+            if (copyConfigsResult.Result is List<Tuple<string, string>> reqList)
+            {
+                foreach (var req in reqList)
+                {
+                    requirements.Add([req.Item1, req.Item2]);
+                }
+            }
+
+            var model = FillInitModel(modelTemplate, requirements, tempDir);
+
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(model);
+
+            try
+            {
+                File.WriteAllText(Path.Combine(tempDir, "init.json"), jsonString);
+            }
+            catch (Exception ex)
+            {
+                return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_CREATE_I", ex), ErrorMessage = ex.Message };
+            }
+
+            if (autoImport)
+            {
+                try
+                {
+                    await Task.Run(() => Directory.Move(tempDir, outputDir));
+                    ImportToDatabase(modelTemplate, outputDir);
+                }
+                catch (Exception ex)
+                {
+                    return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_CREATE_AI", ex), ErrorMessage = ex.Message };
+                }
+                return new() { IsSuccess = true };
+            }
+
+            var createArchiveResult = await CreateArchive(tempDir, outputDir);
+            if (!(bool)createArchiveResult.IsSuccess) { return createArchiveResult; }
+
+            return new() { IsSuccess = true };
+        }
+
+        private static void ImportToDatabase(ConfigPackInitModel modelTemplate, string folder)
+        {
+            DatabaseHelper.Instance.AddOrUpdateItem(new()
+            {
+                Id = modelTemplate.StoreId,
+                Type = "configlist",
+                Directory = folder,
+                Executable = null,
+                UpdateCheckUrl = null,
+                DownloadUrl = null,
+                DownloadFileType = null,
+                VersionControlType = "local",
+                CurrentVersion = StateHelper.Instance.Version,
+                RequiredItemIds = null,
+                DependentItemIds = null,
+                IconPath = "$STATICIMAGE(Store/empty.png)",
+                Name = modelTemplate.Name,
+                ShortName = modelTemplate.ShortName,
+                Developer = modelTemplate.Developer,
+                BackgroudColor = ""
+            });
+        }
+
+        private static async Task<AsyncOperationResultModel> CreateArchive(string inputDir, string outputDir)
+        {
+            try
+            {
+                if (!Directory.Exists(outputDir))
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputDir));
+
+                if (File.Exists(outputDir)) 
+                    File.Delete(outputDir);
+
+                ZipFile.CreateFromDirectory(inputDir, outputDir, CompressionLevel.Optimal, false);
+            }
+            catch (Exception ex)
+            {
+                return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_CREATE", ex), ErrorMessage = ex.Message };
+            }
+
+            await Task.CompletedTask;
+
+            return new() { IsSuccess = true };
+        }
+
+        
+
+        private static ConfigPackInitModel FillInitModel(ConfigPackInitModel modelTemplate, List<string[]> requirements, string targetDirectory)
+        {
+            modelTemplate.Requirements ??= requirements;
+            modelTemplate.Name ??= modelTemplate.ShortName;
+
+            modelTemplate.BeforeInstallActions ??= string.Empty;
+            modelTemplate.AfterInstallActions ??= $"$RUNSCRIPT(apply_config, {modelTemplate.StoreId})";
+
+            modelTemplate.Type = "configlist";
+
+            if (!string.IsNullOrEmpty(modelTemplate.Icon)) modelTemplate.Icon = CopyIcon(modelTemplate.Icon, targetDirectory);
+
+
+            return modelTemplate;
+        }
+
+        private static string CopyIcon(string icon, string targetDirectory)
+        {
+            if (icon.StartsWith('$')) return icon;
+
+            try
+            {
+                File.Copy(icon, Path.Combine(targetDirectory, Path.GetFileName(icon)), true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(ConfigPackMakeHelper), $"Cannot copy icon {ex.Message}");
+            }
+
+            return $"$DYNAMICIMAGE({Path.GetFileName(icon)})";
+        }
+
+        private static async Task<AsyncOperationResultModel> CopyLocFilesToDirectory(ConfigPackInitModel modelTemplate, List<ConfigItem> items, string targetDirectory)
+        {
+            List<Tuple<ConfigInitItem, string>> initItems = [];
+            foreach (var item in items)
+            {
+                string dir = ConfigHelper.GetItemFolderFromPackId(item.packId);
+                string initFile = Path.Combine(dir, "init.json");
+
+                if (!File.Exists(initFile)) continue;
+
+                ConfigInitItem configInitItem = Utils.LoadJson<ConfigInitItem>(initFile);
+                var data = Tuple.Create(configInitItem, dir);
+                if (!initItems.Contains(data)) initItems.Add(data);
+            }
+
+            try
+            {
+                foreach (var item in initItems)
+                {
+                    if (item.Item1?.localized_strings_directory == null) continue;
+                    foreach (var locFile in item.Item1.localized_strings_directory)
+                    {
+                        if (!modelTemplate.localized_strings_directory.ContainsKey(locFile.Key))
+                            modelTemplate.localized_strings_directory.Add(locFile.Key, locFile.Value);
+
+                        string targetDir = Path.Combine(targetDirectory, locFile.Value);
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetDir));
+                        if (File.Exists(targetDir))
+                        {
+                            var oldLocalizationDict = Utils.LoadJson<Dictionary<string, string>>(targetDir);
+                            var newLocalizationDict = Utils.LoadJson<Dictionary<string, string>>(Path.Combine(item.Item2, locFile.Value));
+
+                            oldLocalizationDict.AddRange(newLocalizationDict);
+
+                            string jsonString = System.Text.Json.JsonSerializer.Serialize(oldLocalizationDict);
+                            File.WriteAllText(targetDir, jsonString);
+                        }
+                        else
+                        {
+                            await Utils.CopyFileAsync(Path.Combine(item.Item2, locFile.Value), targetDir);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_COPY_L", ex), ErrorMessage = ex.Message };
+            }
+
+            return new() { IsSuccess = true, Result = modelTemplate };
+        }
+
+        private static async Task<AsyncOperationResultModel> CopyConfigsToDirectory(List<ConfigItem> items, string targetDirectory)
+        {
+            List<Tuple<string, string>> requirements = [];
+            try
+            {
+                foreach (var item in items)
+                {
+                    string targetFile = Path.Combine(targetDirectory, item.file_name);
+
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(item);
+                    File.WriteAllText(targetFile, jsonString);
+
+                    if (requirements.FirstOrDefault(x => x.Item1 == item.target[0]) == null)
+                    {
+                        requirements.Add(Tuple.Create(item.target[0], item.target[1]));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_COPY_C", ex), ErrorMessage = ex.Message };
+            }
+
+            await Task.CompletedTask;
+
+            return new() { IsSuccess = true, Result = requirements };
+        }
+
+        private static async Task<AsyncOperationResultModel> CopyUsedFilesToDirecrory(List<ConfigItem> itemsToAdd, string targetDirectory)
+        {
+            List<Tuple<string, string>> usedFiles = [];
+
+            foreach (var item in itemsToAdd)
+            {
+                foreach (string file in ConfigHelper.GetUsedFilesFromConfigItem(item))
+                {
+                    Tuple<string, string> pair = Tuple.Create(item.packId, Autocorrector.FindAutoCorrectPath(file, item, LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId:item.packId)));
+                    if (!usedFiles.Contains(pair))
+                        usedFiles.Add(pair);
+                }
+            }
+
+            try
+            {
+                foreach (Tuple<string, string> idFilePair in usedFiles)
+                {
+                    if (File.Exists(idFilePair.Item2))
+                    {
+                        string dir = Path.GetRelativePath(ConfigHelper.GetItemFolderFromPackId(idFilePair.Item1), idFilePair.Item2);
+                        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(targetDirectory, dir)));
+                        await Utils.CopyFileAsync(idFilePair.Item2, Path.Combine(targetDirectory, dir));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new() { IsSuccess = false, ErrorCode = ErrorsHelper.GetPrettyErrorCode("CONFIG_PACK_COPY_F", ex), ErrorMessage = ex.Message };
+            }
+
+            return new() { IsSuccess = true };
         }
     }
 }
