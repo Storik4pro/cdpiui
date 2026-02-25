@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -180,10 +181,10 @@ namespace CDPI_UI
             foreach (string file in files)
             {
                 var _file = file.Replace("\"", "");
+                Logger.Instance.CreateDebugLog(nameof(App), $"Working on file {_file}");
+
                 if (Path.Exists(_file) && SupportedFilePaths.Contains(Path.GetExtension(_file)))
                 {
-                    Logger.Instance.CreateDebugLog(nameof(App), $"Working on file {_file}");
-
                     var window = await SafeCreateNewWindow<StoreLocalItemInstallingDialog>();
                     window.SetPackFilePath(_file);
                     return true; // Only first file will be processed.
@@ -225,7 +226,7 @@ namespace CDPI_UI
             if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
                 appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)
             {
-                string[] args = fileActivatedEventArgs.Arguments.Split(" ");
+                string[] args = GetFilesFromStringRegex().Split(fileActivatedEventArgs.Arguments);
 
                 result = await ProcessFiles(args);
             }
@@ -460,7 +461,7 @@ namespace CDPI_UI
             catch { }
         }
 
-        public Window GetCurrentWindowFromType<TWindow>() where TWindow:Window
+        public TWindow GetCurrentWindowFromType<TWindow>() where TWindow:Window
         {
             return OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
         }
@@ -801,5 +802,8 @@ namespace CDPI_UI
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_SHOWWINDOW = 0x0040;
+
+        [GeneratedRegex(@"""(.*?)\""")]
+        private static partial Regex GetFilesFromStringRegex();
     }
 }
