@@ -21,6 +21,8 @@ namespace CDPI_UI.Helper.LScript
         private const string ScriptGetArgsRegex = @"\$.*?\((.*?)\)";
         private const string Pattern = @"\$(STATICIMAGE|DYNAMICIMAGE|LOADDYNAMIC|GETCURRENTDIR|LOCALCONDITION|GETSRDIR)(?:\((.*?)\))?";
 
+        private const string ConditionPattern = "{0}==true ? {1} : {2}";
+
         public LScriptLangHelper() { }
 
         public static string GetArgumentsFromScript(string scriptString)
@@ -66,7 +68,7 @@ namespace CDPI_UI.Helper.LScript
                     }
                     else if (scriptString.StartsWith("$DYNAMICIMAGE"))
                     {
-                        executeResult = Static.Utils.DynamicPathConverter(scriptData);
+                        executeResult = Static.Utils.DynamicPathConverter(scriptData, scriptArgs);
                     }
                     else if (scriptString.StartsWith("$LOADDYNAMIC"))
                     {
@@ -148,7 +150,7 @@ namespace CDPI_UI.Helper.LScript
                                 break;
 
                             case "DYNAMICIMAGE":
-                                replacement = Static.Utils.DynamicPathConverter(scriptData);
+                                replacement = Static.Utils.DynamicPathConverter(scriptData, scriptArgs);
                                 break;
 
                             case "LOADDYNAMIC":
@@ -363,6 +365,11 @@ namespace CDPI_UI.Helper.LScript
             }
 
             return result;
+        }
+
+        public static string CreateCondition(string varName, string onValue, string offValue)
+        {
+            return string.Format(ConditionPattern, varName, onValue, offValue);
         }
 
         private static void FinishComponentSetup(string[] args)
