@@ -37,6 +37,9 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <Grid.ChildrenTransitions>
+                <RepositionThemeTransition/>
+            </Grid.ChildrenTransitions>
 
             <Button x:Name="BackButton" 
                     Grid.Column="1"
