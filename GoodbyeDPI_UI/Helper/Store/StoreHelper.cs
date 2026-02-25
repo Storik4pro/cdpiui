@@ -572,13 +572,13 @@ namespace CDPI_UI.Helper
                 if (localeHelper.LocaleName != langCode)
                 {
                     string locFilePath;
-                    if (!StoreLocalizationPaths.ContainsKey(langCode))
+                    if (!StoreLocalizationPaths.TryGetValue(langCode, out string value))
                     {
                         locFilePath = Path.Combine(localRepoFolder, StoreLocalizationPaths["EN"]);
                     }
                     else
                     {
-                        locFilePath = Path.Combine(localRepoFolder, StoreLocalizationPaths[langCode]);
+                        locFilePath = Path.Combine(localRepoFolder, value);
                     }
 
                     using (StreamReader r = new StreamReader(locFilePath))
