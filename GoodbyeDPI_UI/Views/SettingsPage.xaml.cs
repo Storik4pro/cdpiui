@@ -2,12 +2,14 @@ using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Properties;
+using CDPI_UI.Views.Store;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -287,6 +289,12 @@ namespace CDPI_UI.Views
             };
             await editSitelistAskApplicationContentDialog.ShowAsync();
             UpdateTextFileOpenSettings();
+        }
+
+        private async void OpenStoreSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.SettingsPage), null, new DrillInNavigationTransitionInfo());
         }
     }
 }
