@@ -33,6 +33,8 @@ using Unidecode.NET;
 using Windows.ApplicationModel.Chat;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
+using WinRT.Interop;
 using WinUI3Localizer;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 using Color = Windows.UI.Color;
@@ -146,6 +148,14 @@ public enum AskAutoFillMode
     Quiet
 }
 
+public enum PageOpenModes
+{
+    None,
+    EditConfigNoSave,
+    EditConfig,
+    CreateConfigFromString,
+}
+
 
 
 public sealed partial class CreateNewConfigPage : Page
@@ -177,6 +187,9 @@ public sealed partial class CreateNewConfigPage : Page
 
     private ILocalizer localizer = Localizer.Get();
 
+    public string EditItemId = string.Empty;
+    public PageOpenModes PageOpenMode = PageOpenModes.None;
+
     public CreateNewConfigPage()
     {
         InitializeComponent();
@@ -207,6 +220,8 @@ public sealed partial class CreateNewConfigPage : Page
         this.ProcessKeyboardAccelerators += CreateNewConfigPage_ProcessKeyboardAccelerators;
         this.KeyDown += CreateNewConfigPage_KeyDown;
     }
+
+    #region EventHandlers
 
     private void CreateNewConfigPage_KeyDown(object sender, KeyRoutedEventArgs e)
     {
@@ -240,35 +255,21 @@ public sealed partial class CreateNewConfigPage : Page
         }
     }
 
+    #endregion
+
+
+    #region DefaultDesigner
     private void CheckHighlight(ElementTheme elementTheme)
     {
         if (elementTheme == ElementTheme.Light || (elementTheme == ElementTheme.Default && ((App)Application.Current).CurrentTheme == ElementTheme.Light))
         {
             StartupStringTextBox.SyntaxHighlighting = new LightDefaultHighlighter();
-            StartupStringTextBox.Design = new TextControlBoxDesign(
-                new SolidColorBrush(Color.FromArgb(0, 255, 255, 255)),
-                Color.FromArgb(255, 50, 50, 50),
-                Color.FromArgb(100, 0, 100, 255),
-                Color.FromArgb(255, 0, 0, 0),
-                Color.FromArgb(50, 200, 200, 200),
-                Color.FromArgb(255, 180, 180, 180),
-                Color.FromArgb(0, 0, 0, 0),
-                Color.FromArgb(100, 200, 120, 0)
-                );
+            StartupStringTextBox.Design = TextControlBoxDesigns.DefaultLightDesign;
         }
         else
         {
             StartupStringTextBox.SyntaxHighlighting = new DarkDefaultHighlighter();
-            StartupStringTextBox.Design = new TextControlBoxDesign(
-                new SolidColorBrush(Color.FromArgb(0, 30, 30, 30)),
-                Color.FromArgb(255, 255, 255, 255),
-                Color.FromArgb(100, 0, 100, 255),
-                Color.FromArgb(255, 255, 255, 255),
-                Color.FromArgb(50, 100, 100, 100),
-                Color.FromArgb(255, 100, 100, 100),
-                Color.FromArgb(0, 0, 0, 0),
-                Color.FromArgb(100, 160, 80, 0)
-                );
+            StartupStringTextBox.Design = TextControlBoxDesigns.DefaultDarkDesign;
         }
     }
     private void CheckHighlight()
@@ -287,38 +288,11 @@ public sealed partial class CreateNewConfigPage : Page
             SearchControl.ShowReplace(StartupStringTextBox);
     }
 
-    private void CreateNewConfigPage_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        
-    }
+    #endregion
 
     private void CreateNewConfigPage_Loaded(object sender, RoutedEventArgs e)
     {
-        if (navigationParameter != null && navigationParameter is Tuple<string, ConfigItem, bool, string> tuple)
-        {
-            LoadVars(tuple.Item2);
-            
-            AskAutoFillFiles(tuple.Item2, tuple.Item4);
-        }
-        if (navigationParameter != null && navigationParameter is Tuple<string, ConfigItem> editCfgTuple)
-        {
-            if (editCfgTuple.Item2.packId != StateHelper.LocalUserItemsId)
-            {
-                AskAutoFillFiles(
-                    editCfgTuple.Item2,
-                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Quiet);
-            }
-        }
-        if (navigationParameter != null && navigationParameter is Tuple<string, string, string> createNewFromString)
-        {
-            ConfigItem = new()
-            {
-                startup_string = createNewFromString.Item2,
-            };
-            AskAutoFillFiles(
-                    ConfigItem,
-                    LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: StateHelper.LocalUserItemsId), AskAutoFillMode.Quiet);
-        }
+        if (navigationParameter != null) RunOnNavigatedToActions(navigationParameter);
         AuditSaveAvailable();
         navigationParameter = null;
         this.Loaded -= CreateNewConfigPage_Loaded;
@@ -335,7 +309,14 @@ public sealed partial class CreateNewConfigPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        if (e.Parameter is Tuple<string, ConfigItem, bool, string> tuple)
+        navigationParameter = e.Parameter;
+    }
+
+    private void RunOnNavigatedToActions(object args)
+    {
+        EditItemId = StateHelper.LocalUserItemsId;
+
+        if (args is Tuple<string, ConfigItem, bool, string> tuple)
         {
             string operationType = tuple.Item1;
             ConfigItem = tuple.Item2;
@@ -351,27 +332,29 @@ public sealed partial class CreateNewConfigPage : Page
 
             AddWrap();
 
-            navigationParameter = tuple;
+            LoadVars(tuple.Item2);
+
+            AskAutoFillFiles(tuple.Item2, tuple.Item4);
         }
-        else if (e.Parameter is Tuple<string, ConfigItem> editCfgTuple)
+        else if (args is Tuple<string, ConfigItem> editCfgTuple)
         {
             string operationType = editCfgTuple.Item1;
             ConfigItem = editCfgTuple.Item2;
 
-            navigationParameter = editCfgTuple;
+            if (ConfigItem == null) return;
+
+            PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
+            if (ConfigItem.target != null)
+            {
+                ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                    .Cast<ComponentModel>()
+                    .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+            }
+            ComponentChooseComboBox.IsEnabled = false;
 
             if (operationType == "CFGEDIT")
             {
-                PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
-                if (ConfigItem.target != null)
-                {
-                    ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
-                        .Cast<ComponentModel>()
-                        .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
-                }
-                ComponentChooseComboBox.IsEnabled = false;
-
-
+                PageOpenMode = PageOpenModes.EditConfig;
                 if (ConfigItem.packId != StateHelper.LocalUserItemsId)
                 {
                     DisplayNameTextBox.Text = $"{ConfigItem.name} ({localizer.GetLocalizedString("Edited")})";
@@ -382,31 +365,49 @@ public sealed partial class CreateNewConfigPage : Page
                     DisplayNameTextBox.Text = $"{ConfigItem.name}";
                 }
 
-                
-
-                LoadVars(ConfigItem);
-                LoadConditions(ConfigItem);
-
-                AddWrap();
+                if (editCfgTuple.Item2.packId != StateHelper.LocalUserItemsId)
+                {
+                    AskAutoFillFiles(
+                        editCfgTuple.Item2,
+                        LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Quiet);
+                }
             }
-        }
-        else if (e.Parameter is Tuple<string, string, string> createNewFromString)
-        {
-            navigationParameter = createNewFromString;
+            else if (operationType == "CFGRETURNEDITED")
+            {
+                PageOpenMode = PageOpenModes.EditConfigNoSave;
+                EditItemId = ConfigItem.packId;
 
+                DisplayNameTextBox.Text = ConfigItem.name;
+                SaveButtonText.Text = localizer.GetLocalizedString("Save");
+            }
+
+            LoadVars(ConfigItem);
+            LoadConditions(ConfigItem);
+
+            AddWrap();
+        }
+        else if (args is Tuple<string, string, string> createNewFromString)
+        {
             ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
                     .Cast<ComponentModel>()
                     .FirstOrDefault(c => c.Id == createNewFromString.Item3);
 
             if (createNewFromString.Item1 == "CFGSTRING")
             {
+                PageOpenMode = PageOpenModes.CreateConfigFromString;
                 AddWrap(createNewFromString.Item2);
             }
-        }
-        else if (e.Parameter is Tuple<string, string> createNewConfig)
-        {
-            navigationParameter = createNewConfig;
 
+            ConfigItem = new()
+            {
+                startup_string = createNewFromString.Item2,
+            };
+            AskAutoFillFiles(
+                ConfigItem,
+                LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: StateHelper.LocalUserItemsId), AskAutoFillMode.Quiet);
+        }
+        else if (args is Tuple<string, string> createNewConfig)
+        {
             ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
                     .Cast<ComponentModel>()
                     .FirstOrDefault(c => c.Id == createNewConfig.Item2);
@@ -448,9 +449,9 @@ public sealed partial class CreateNewConfigPage : Page
         ComponentHelper componentHelper = 
             ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId((ComponentChooseComboBox.SelectedItem as ComponentModel).Id);
 
+
         foreach (var variable in configItem.variables) 
         {
-            Debug.WriteLine(variable);
             var t = LScriptLangHelper.GetNameOnOffValuesFromConditionString(variable);
             if (t == null)
                 continue;
@@ -462,7 +463,7 @@ public sealed partial class CreateNewConfigPage : Page
                     Name = conditionVarName,
                     OnValue = onValue,
                     OffValue = offValue,
-                    Description = componentHelper.GetConfigHelper().GetLocalizedConfigVarName(_var, configItem.packId)
+                    Description = componentHelper?.GetConfigHelper()?.GetLocalizedConfigVarName(_var, configItem.packId) ?? string.Empty,
                 });
         }
     }
@@ -470,57 +471,55 @@ public sealed partial class CreateNewConfigPage : Page
     private void LoadVars(ConfigItem configItem)
     {
         Variables.Clear();
-        if (configItem.commaVars == null || configItem.commaVars.Count == 0)
+
+        if (configItem.variables != null)
+        {
+            foreach (var variable in configItem.variables)
+            {
+                var t = LScriptLangHelper.GetNameOnOffValuesFromConditionString(variable);
+
+                if (t == null)
+                {
+                    var spVar = variable.Split("=");
+                    Variables.Add(new()
+                    {
+                        Name = spVar[0].Replace("%", ""),
+                        Value = spVar[1]
+                    });
+                }
+            }
+        }
+
+        if (configItem.commaVars != null)
+        {
+            foreach (var commaVar in configItem.commaVars)
+            {
+                try
+                {
+                    Variables.Add(new VariableModel
+                    {
+                        Name = commaVar.Key,
+                        Value = commaVar.Value,
+                        AvailableValues = configItem.availableCommaVarsValues?.FirstOrDefault(varItem => varItem.VarName == commaVar.Key, null)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.CreateWarningLog(nameof(CreateNewConfigPage), $"{ex}");
+                }
+            }
+        }
+
+        if (Variables.Count == 0)
         {
             VariablesStackPanel.Visibility = Visibility.Collapsed;
-            return;
         }
-
-        foreach (var commaVar in configItem.commaVars)
+        else
         {
-            try
-            {
-                Variables.Add(new VariableModel
-                {
-                    Name = commaVar.Key,
-                    Value = commaVar.Value,
-                    AvailableValues = configItem.availableCommaVarsValues != null ?
-                    configItem.availableCommaVarsValues.FirstOrDefault(varItem => varItem.VarName == commaVar.Key, null) :
-                    null
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.CreateWarningLog(nameof(CreateNewConfigPage), $"{ex}");
-            }
+            VariablesStackPanel.Visibility = Visibility.Visible;
         }
-        VariablesStackPanel.Visibility = Visibility.Visible;
     }
 
-    private static bool IsBasicLetter(char c)
-    {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-    }
-
-    private bool IsNameCorrect(string text)
-    {
-        
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
-
-        bool flag = true;
-
-        foreach (char _char in text)
-        {
-            if (!IsBasicLetter(_char))
-            {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    
-    }
 
     private void InitPage()
     {
@@ -564,7 +563,7 @@ public sealed partial class CreateNewConfigPage : Page
 
     private bool IsVarAddAvailable()
     {
-        bool result = IsNameCorrect(VarNameTextBox.Text.Replace(" ", "")) &&
+        bool result = CreateConfigPageHelper.IsNameCorrect(VarNameTextBox.Text.Replace(" ", "")) &&
             !string.IsNullOrEmpty(OnValueTextBox.Text) &&
             !string.IsNullOrEmpty(OffValueTextBox.Text);
         return result;
@@ -583,7 +582,8 @@ public sealed partial class CreateNewConfigPage : Page
             ConditionPreviewTextBlock.Text = localizer.GetLocalizedString("NothingToPreview");
             return;
         }
-        ConditionPreviewTextBlock.Text = $"{VarNameTextBox.Text.Replace(" ", "")}==true ? {OnValueTextBox.Text} : {OffValueTextBox.Text}";
+        ConditionPreviewTextBlock.Text = 
+            LScriptLangHelper.CreateCondition(VarNameTextBox.Text.Replace(" ", ""), OnValueTextBox.Text, OffValueTextBox.Text);
     }
 
     private void SaveConditionButton_Click(object sender, RoutedEventArgs e)
@@ -618,13 +618,9 @@ public sealed partial class CreateNewConfigPage : Page
         {
 
             string localAppData = StateHelper.GetDataDirectory();
-            string locFile = Path.Combine(
-                localAppData,
-                StateHelper.StoreDirName,
-                StateHelper.StoreItemsDirName,
-                StateHelper.LocalUserItemsId,
-                StateHelper.LocalUserItemLocFolder,
-                "strings.json");
+            string locFile = ConfigHelper.GetDefaultLocalePath(EditItemId);
+
+            if (string.IsNullOrEmpty(locFile)) throw new FileNotFoundException("Loc file not found");
 
             if (!Directory.Exists(Path.GetDirectoryName(locFile)))
             {
@@ -651,7 +647,10 @@ public sealed partial class CreateNewConfigPage : Page
         }
         catch (Exception ex)
         {
-            // open error window
+            ShowErrorDialog(
+                string.Format(localizer.GetLocalizedString("CannotSaveConfigMessage"), ErrorsHelper.GetPrettyErrorCode("CREATE_CONFIG", ex)), 
+                localizer.GetLocalizedString("SomethingWentWrong")
+                );
             Logger.Instance.CreateWarningLog(nameof(CreateNewConfigPage), $"{ex}");
             return new(null, null);
         }
@@ -660,24 +659,20 @@ public sealed partial class CreateNewConfigPage : Page
     {
         string componentId = (ComponentChooseComboBox.SelectedItem as ComponentModel).Id;
         var (jparams, vars) = CreateVariables(secondsSinceEpoch);
-        Debug.WriteLine(jparams);
-        Debug.WriteLine(vars);
-        ConfigItem configItem = new()
-        {
-            meta = "UC:v1.0",
-            packId = StateHelper.LocalUserItemsId,
-            not_converted_name = DisplayNameTextBox.Text,
-            target = [componentId, DatabaseHelper.Instance.GetItemById(componentId).CurrentVersion],
-            jparams = jparams,
-            variables = vars,
-            commaVars = Variables.ToDictionary(v => v.Name, v => v.Value),
-            availableCommaVarsValues = Variables.Where(v => v.AvailableValues != null).Select(v => v.AvailableValues).ToList(),
-            startup_string = GetNormalText(StartupStringTextBox.Text).Replace("\n", " ")
-        };
-        foreach (var _v in configItem.commaVars)
-        {
-            Logger.Instance.CreateDebugLog(nameof(CreateNewConfigPage), $">>>{_v}");
-        }
+
+        if (jparams == null || vars == null) return null;
+
+        var configItem = CreateConfigPageHelper.CreateConfigItem(
+            StateHelper.LocalUserItemsId,
+            DisplayNameTextBox.Text,
+            componentId,
+            jparams,
+            vars,
+            Variables.ToDictionary(v => v.Name, v => v.Value),
+            Variables.Where(v => v.AvailableValues != null).Select(v => v.AvailableValues).ToList(),
+            CreateConfigPageHelper.GetNormalText(StartupStringTextBox.Text, ListDirectory, BinDirectory)
+            );
+
         return configItem;
     }
 
@@ -713,7 +708,9 @@ public sealed partial class CreateNewConfigPage : Page
             curRunId = model.Id;
             await TasksHelper.Instance.StopTask(curRunId);
             ConvertDesignerLikeSettingsToString();
-            TasksHelper.Instance.CreateAndRunNewTask(curRunId, ConfigHelper.GetStartupParametersByConfigItem(CreateConfig(0)));
+            var config = CreateConfig(0);
+            if (config != null) 
+                TasksHelper.Instance.CreateAndRunNewTask(curRunId, ConfigHelper.GetStartupParametersByConfigItem(config));
         }
         else
         {
@@ -752,6 +749,24 @@ public sealed partial class CreateNewConfigPage : Page
         int secondsSinceEpoch = (int)t.TotalSeconds;
 
         ConfigItem configItem = CreateConfig(secondsSinceEpoch);
+
+        if (configItem == null)
+        {
+            return;
+        }
+
+        configItem.file_name = ConfigItem.file_name;
+        configItem.packId = ConfigItem.packId;
+
+        if (PageOpenMode == PageOpenModes.EditConfigNoSave)
+        {
+            var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
+            if (window != null) window.IsOperationExitAskAvailable = false;
+            window?.NavigateBackWithParameter(configItem);
+            return;
+        }
+
+        if (configItem == null) return;
 
         string src;
         if (ConfigItem == null || ConfigItem.packId != StateHelper.LocalUserItemsId)
@@ -901,44 +916,31 @@ public sealed partial class CreateNewConfigPage : Page
     private string ListDirectory = string.Empty;
     private string BinDirectory = string.Empty;
 
-    private string GetNormalText(string text)
-    {
-        return text.Replace("list://", ListDirectory).Replace("bin://", BinDirectory);
-    }
     private string GetPrettyLookText(string text)
     {
-        try
-        {
-            ListDirectory = Regex.Match(text, @"""(\$GETCURRENTDIR\(\)/List.*?\\).*?""\s").Groups[1].Value;
-            BinDirectory = Regex.Match(text, @"""(\$GETCURRENTDIR\(\)/Bin.*?\\).*?""\s").Groups[1].Value;
+        var result = CreateConfigPageHelper.ApplyPrettyFilesReplacement(text);
 
-            CheckFolderOpenButtonsVisibility();
+        ListDirectory = result.ListDirectory;
+        BinDirectory = result.BinDirectory;
 
-            return text.Replace(ListDirectory, "list://").Replace(BinDirectory, "bin://");
-        }
-        catch
-        {
-            return text;
-        }
+        CheckFolderOpenButtonsVisibility();
+
+        return result.ResultText;
     }
 
     private void AddWrap()
     {
         if (ConfigItem != null)
         {
-            StartupStringTextBox.Text = ConfigItem.startup_string.Replace(" --new", "\n--new");
-            StartupStringTextBox.ReplaceAll(" -A", "\n-A", true, true);
-            StartupStringTextBox.ReplaceAll(" --auto", "\n--auto", true, true);
-            StartupStringTextBox.Text = GetPrettyLookText(StartupStringTextBox.Text);
+            string text = CreateConfigPageHelper.ApplyWrappingToString(ConfigItem.startup_string);
+            StartupStringTextBox.Text = GetPrettyLookText(text);
             StartupStringTextBox.SetCursorPosition(0, 0);
         }
     }
     private void AddWrap(string startupString)
     {
-        StartupStringTextBox.Text = startupString.Replace(" --new", "\n--new");
-        StartupStringTextBox.ReplaceAll(" -A", "\n-A", true, true);
-        StartupStringTextBox.ReplaceAll(" --auto", "\n--auto", true, true);
-        StartupStringTextBox.Text = GetPrettyLookText(StartupStringTextBox.Text);
+        string text = CreateConfigPageHelper.ApplyWrappingToString(startupString);
+        StartupStringTextBox.Text = GetPrettyLookText(text);
         StartupStringTextBox.SetCursorPosition(0, 0);
     }
 
@@ -999,6 +1001,8 @@ public sealed partial class CreateNewConfigPage : Page
 
         MainGrid.Style = style;
     }
+
+    #region GraphicDesigner
 
     private void MainPivot_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
     {
@@ -1105,6 +1109,10 @@ public sealed partial class CreateNewConfigPage : Page
         StartupStringTextBox.Text = StartupStringTextBox.Text.Replace("\n", " ");
     }
 
+    #endregion
+
+    #region OpenConfigFilesFolder
+
     private void CheckFolderOpenButtonsVisibility()
     {
         OpenBinsConfigDirectory.Visibility = Visibility.Collapsed;
@@ -1133,5 +1141,15 @@ public sealed partial class CreateNewConfigPage : Page
         {
             Utils.OpenFolderInExplorer(LScriptLangHelper.ExecuteScript(BinDirectory, callItemId: StateHelper.LocalUserItemsId));
         }
+    }
+    #endregion
+
+    private async void ShowErrorDialog(string message, string title)
+    {
+        var dlg = new MessageDialog(message, title);
+        InitializeWithWindow.Initialize(
+            dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>())
+            );
+        await dlg.ShowAsync();
     }
 }
