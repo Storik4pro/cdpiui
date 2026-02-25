@@ -164,4 +164,16 @@
   <data name="Store" xml:space="preserve">
     <value>Магазин компонентов</value>
   </data>
+  <data name="AddLocalItem" xml:space="preserve">
+    <value>Добавление локального элемента</value>
+  </data>
+  <data name="FixDatabaseLoadIssue" xml:space="preserve">
+    <value>Исправление загрузки базы данных</value>
+  </data>
+  <data name="PreferedVersionControl" xml:space="preserve">
+    <value>Средство контроля версий</value>
+  </data>
+  <data name="WelcomeToStore" xml:space="preserve">
+    <value>Добро пожаловать в Магазин </value>
+  </data>
 </root>

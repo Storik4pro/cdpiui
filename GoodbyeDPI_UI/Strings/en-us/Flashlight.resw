@@ -245,4 +245,34 @@ Possible events:
   <data name="URL_CheckAnotherComponentsServices" xml:space="preserve">
     <value>$EMPTY</value>
   </data>
+  <data name="GetHelpFor" xml:space="preserve">
+    <value>Get help for "{0}" page</value>
+  </data>
+  <data name="CreateNewConfigPage" xml:space="preserve">
+    <value>Create or edit config</value>
+  </data>
+  <data name="EditConfigKitPage" xml:space="preserve">
+    <value>Create/Edit config kit</value>
+  </data>
+  <data name="GoodCheckConfigVisualEditorPage" xml:space="preserve">
+    <value>GoodCheck config visual editor</value>
+  </data>
+  <data name="MainPage" xml:space="preserve">
+    <value>Config Helper — Main</value>
+  </data>
+  <data name="ViewGoodCheckReportPage" xml:space="preserve">
+    <value>GoodCheck report</value>
+  </data>
+  <data name="ViewGoodCheckSiteListReportPage" xml:space="preserve">
+    <value>GoodCheck site list report</value>
+  </data>
+  <data name="HowToFixThisProblem.Content" xml:space="preserve">
+    <value>How can I fix this problem?</value>
+  </data>
+  <data name="WhatIsStore.Content" xml:space="preserve">
+    <value>What is Store?</value>
+  </data>
+  <data name="AskSupport.Content" xml:space="preserve">
+    <value>Ask application support about this problem</value>
+  </data>
 </root>

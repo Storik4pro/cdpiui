@@ -245,4 +245,34 @@
   <data name="URL_CheckAnotherComponentsServices" xml:space="preserve">
     <value>$EMPTY</value>
   </data>
+  <data name="GetHelpFor" xml:space="preserve">
+    <value>Получить справку для страницы "{0}"</value>
+  </data>
+  <data name="CreateNewConfigPage" xml:space="preserve">
+    <value>Создание/Изменение пресета</value>
+  </data>
+  <data name="EditConfigKitPage" xml:space="preserve">
+    <value>Создание/Редактирование набора пресетов</value>
+  </data>
+  <data name="GoodCheckConfigVisualEditorPage" xml:space="preserve">
+    <value>Визуальный редактор GoodCheck</value>
+  </data>
+  <data name="MainPage" xml:space="preserve">
+    <value>Помощник работы с пресетами — Главная</value>
+  </data>
+  <data name="ViewGoodCheckReportPage" xml:space="preserve">
+    <value>Просмотр отчета подбора GoodCheck</value>
+  </data>
+  <data name="ViewGoodCheckSiteListReportPage" xml:space="preserve">
+    <value>Просмотр отчета подбора GoodCheck для списка сайтов</value>
+  </data>
+  <data name="HowToFixThisProblem.Content" xml:space="preserve">
+    <value>Как исправить эту ошибку?</value>
+  </data>
+  <data name="WhatIsStore.Content" xml:space="preserve">
+    <value>Зачем нужен Магазин?</value>
+  </data>
+  <data name="AskSupport.Content" xml:space="preserve">
+    <value>Связаться с поддержкой</value>
+  </data>
 </root>

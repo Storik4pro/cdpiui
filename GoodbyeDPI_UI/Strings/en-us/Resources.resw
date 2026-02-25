@@ -1886,4 +1886,122 @@ DO NOT install packs from source you don't trust.</value>
   <data name="LocalDrive" xml:space="preserve">
     <value>Local Drive</value>
   </data>
+  <data name="EditConfigKitMenuItem.Text" xml:space="preserve">
+    <value>Edit config kit</value>
+  </data>
+  <data name="UsedSiteListsText" xml:space="preserve">
+    <value>Used site lists: {0} and {1} more.</value>
+  </data>
+  <data name="UsedSiteListText" xml:space="preserve">
+    <value>Used site list: {0}.</value>
+  </data>
+  <data name="NoUsedSiteListText" xml:space="preserve">
+    <value>No site lists used.</value>
+  </data>
+  <data name="ExcludedSiteListsText" xml:space="preserve">
+    <value>Excluded site lists: {0} and {1} more.</value>
+  </data>
+  <data name="ExcludedSiteListText" xml:space="preserve">
+    <value>Excluded site list: {0}.</value>
+  </data>
+  <data name="NoExcludedSiteListText" xml:space="preserve">
+    <value>No exclude site list used.</value>
+  </data>
+  <data name="LastEditTimeText" xml:space="preserve">
+    <value>Last edit: {0}</value>
+  </data>
+  <data name="RenameButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="EditButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit config</value>
+  </data>
+  <data name="ViewUsedDirectoriesButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View used files</value>
+  </data>
+  <data name="RenameTitleTextBlock.Text" xml:space="preserve">
+    <value>Rename config</value>
+  </data>
+  <data name="ApplyRenameButton.Content" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="CannotSaveConfigMessage" xml:space="preserve">
+    <value>We can't save your config during unexpected exception. Make sure program has 'write' access for Store directory.
+Here is error code in case you need it:
+{0}</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="SaveConfigException" xml:space="preserve">
+    <value>We cannot save this kit during unexcepted exception.
+Here is error code in case you need it.
+{0}</value>
+  </data>
+  <data name="SaveConfigKitAsContentDialog.Title" xml:space="preserve">
+    <value>Save config kit as...</value>
+  </data>
+  <data name="SaveForMeSelectorBarItem.Text" xml:space="preserve">
+    <value>Save as new kit for myself</value>
+  </data>
+  <data name="SaveForDistributeSelectorBarItem.Text" xml:space="preserve">
+    <value>Save as distributed kit</value>
+  </data>
+  <data name="ImageTextBlock.Text" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="EditAccentTextBlock.Text" xml:space="preserve">
+    <value>Edit accent</value>
+  </data>
+  <data name="IdTextBlock.Text" xml:space="preserve">
+    <value>Id*</value>
+  </data>
+  <data name="GenerateNewIdButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Generate new id</value>
+  </data>
+  <data name="VersionTextBlock.Text" xml:space="preserve">
+    <value>Version*</value>
+  </data>
+  <data name="EditImageButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit image</value>
+  </data>
+  <data name="ChooseAnImage" xml:space="preserve">
+    <value>Choose an image</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.Title" xml:space="preserve">
+    <value>Edit config kit</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="FrameGoBackButton.ToolTipService.ToolTIp" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CancelTextBlock.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="LoadingConfigs" xml:space="preserve">
+    <value>Loading config list...</value>
+  </data>
+  <data name="SavingConfigKit" xml:space="preserve">
+    <value>Exporting config kit...</value>
+  </data>
+  <data name="YesButton.Content" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="SaveConfirmation.Text" xml:space="preserve">
+    <value>This action will rewrite entire config kit. Also, if you update or reinstall it from Store all changes may be lost. To keep your data safe, create new kit instead.</value>
+  </data>
+  <data name="StoreSmallUpdateItemName" xml:space="preserve">
+    <value>Update {0}?</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Header" xml:space="preserve">
+    <value>Components Store settings</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
+    <value>Memory usage. Preferred version control. Local item installing</value>
+  </data>
 </root>

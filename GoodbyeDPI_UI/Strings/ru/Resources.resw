@@ -1888,4 +1888,122 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="LocalDrive" xml:space="preserve">
     <value>Локальный диск</value>
   </data>
+  <data name="EditConfigKitMenuItem.Text" xml:space="preserve">
+    <value>Изменить набор пресетов</value>
+  </data>
+  <data name="UsedSiteListsText" xml:space="preserve">
+    <value>Используемые списки сайтов: {0} и ещё {1}.</value>
+  </data>
+  <data name="UsedSiteListText" xml:space="preserve">
+    <value>Используемый список сайтов: {0}.</value>
+  </data>
+  <data name="NoUsedSiteListText" xml:space="preserve">
+    <value>Списки сайтов не используются.</value>
+  </data>
+  <data name="ExcludedSiteListsText" xml:space="preserve">
+    <value>Списки исключений: {0} и ещё {1}.</value>
+  </data>
+  <data name="ExcludedSiteListText" xml:space="preserve">
+    <value>Список исключений: {0}.</value>
+  </data>
+  <data name="NoExcludedSiteListText" xml:space="preserve">
+    <value>Списки исключений не используются.</value>
+  </data>
+  <data name="LastEditTimeText" xml:space="preserve">
+    <value>Последнее изменение: {0}</value>
+  </data>
+  <data name="RenameButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="EditButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить пресет</value>
+  </data>
+  <data name="ViewUsedDirectoriesButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать используемые файлы</value>
+  </data>
+  <data name="RenameTitleTextBlock.Text" xml:space="preserve">
+    <value>Переименовать пресет</value>
+  </data>
+  <data name="ApplyRenameButton.Content" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="CannotSaveConfigMessage" xml:space="preserve">
+    <value>Мы не смогли сохранить этот пресет из-за неожиданного исключения. Убедитесь, что у программы есть права типа 'write' для директории Магазина.
+Ниже расположен код исключения, если он вам нужен.
+{0}</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Что-то пошло не так</value>
+  </data>
+  <data name="SaveConfigException" xml:space="preserve">
+    <value>Мы не смогли сохранить этот набор. 
+Ниже расположен код исключения, если он вам нужен.
+{0}</value>
+  </data>
+  <data name="SaveConfigKitAsContentDialog.Title" xml:space="preserve">
+    <value>Сохранить набор как...</value>
+  </data>
+  <data name="SaveForMeSelectorBarItem.Text" xml:space="preserve">
+    <value>Сохранить как новый набор для себя</value>
+  </data>
+  <data name="SaveForDistributeSelectorBarItem.Text" xml:space="preserve">
+    <value>Сохранить как распространяемый набор</value>
+  </data>
+  <data name="ImageTextBlock.Text" xml:space="preserve">
+    <value>Иконка</value>
+  </data>
+  <data name="EditAccentTextBlock.Text" xml:space="preserve">
+    <value>Акцент</value>
+  </data>
+  <data name="IdTextBlock.Text" xml:space="preserve">
+    <value>Идентификатор*</value>
+  </data>
+  <data name="GenerateNewIdButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Создать новый идентификатор</value>
+  </data>
+  <data name="VersionTextBlock.Text" xml:space="preserve">
+    <value>Версия*</value>
+  </data>
+  <data name="EditImageButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить изображение</value>
+  </data>
+  <data name="ChooseAnImage" xml:space="preserve">
+    <value>Выберите изображение</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.Title" xml:space="preserve">
+    <value>Изменить набор пресетов</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="FrameGoBackButton.ToolTipService.ToolTIp" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="CancelTextBlock.Text" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="LoadingConfigs" xml:space="preserve">
+    <value>Загрузка списка пресетов...</value>
+  </data>
+  <data name="SavingConfigKit" xml:space="preserve">
+    <value>Выполняется экспорт набора пресетов...</value>
+  </data>
+  <data name="YesButton.Content" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="SaveConfirmation.Text" xml:space="preserve">
+    <value>Это действие перезапишет весь набор пресетов. Кроме того, если вы обновите или переустановите его из Магазина, все изменения могут быть потеряны. Чтобы сохранить ваши настройки в безопасности, создайте новый набор.</value>
+  </data>
+  <data name="StoreSmallUpdateItemName" xml:space="preserve">
+    <value>Обновить {0}?</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Header" xml:space="preserve">
+    <value>Параметры Магазина компонентов</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
+    <value>Использование памяти. Предпочитаемый сервер для обновлений. Установка локального элемента</value>
+  </data>
 </root>

@@ -164,4 +164,16 @@ Unfortunately we can't find page your looking for. Please, make sure program has
   <data name="Store" xml:space="preserve">
     <value>Components Store</value>
   </data>
+  <data name="AddLocalItem" xml:space="preserve">
+    <value>Add item from local pack</value>
+  </data>
+  <data name="FixDatabaseLoadIssue" xml:space="preserve">
+    <value>Database load fix</value>
+  </data>
+  <data name="PreferedVersionControl" xml:space="preserve">
+    <value>Preferred version control</value>
+  </data>
+  <data name="WelcomeToStore" xml:space="preserve">
+    <value>Welcome to Store</value>
+  </data>
 </root>
