@@ -136,8 +136,7 @@ namespace CDPI_UI.Views.Store
 
             if (item == null) return;
 
-            string eImageSource = LScriptLangHelper.ExecuteScript(item.icon);
-            BitmapImage image = new BitmapImage(new Uri(eImageSource));
+            BitmapImage image = new(UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(item.icon)));
 
             SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(item.background);
 

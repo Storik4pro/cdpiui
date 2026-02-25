@@ -89,8 +89,7 @@ namespace CDPI_UI.Views.Store
                 string category = localizer.GetLocalizedString(item.Type);
                 category = string.IsNullOrEmpty(category) ? item.Type : category;
 
-                string eImageSource = LScriptLangHelper.ExecuteScript(item.IconPath);
-                BitmapImage image = new BitmapImage(new Uri(eImageSource));
+                BitmapImage image = new(UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(item.IconPath)));
 
                 SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(item.BackgroudColor);
 
