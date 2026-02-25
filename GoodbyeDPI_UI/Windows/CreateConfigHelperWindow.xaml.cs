@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.CreateConfigHelper;
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
 using CDPI_UI.Default;
 using CDPI_UI.Helper;
@@ -33,6 +34,7 @@ using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
 using static CDPI_UI.Win32;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -58,7 +60,7 @@ namespace CDPI_UI
             this.InitializeComponent();
 
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("CreateConfigHelperWindowTitle"));
-            IconUri = @"Assets/Icons/Pseudoconsole.ico";
+            IconUri = @"Assets/Icons/Edit.ico";
             TitleIcon = TitleImageRectagle;
             TitleBar = WindowMoveAera;
 
@@ -77,6 +79,25 @@ namespace CDPI_UI
             }
 
             SetEditorBackgroundSettings();
+
+            SetStatus();
+        }
+        private object NavigateBackParameterProperty = null;
+        public object NavigateBackParameter 
+        { 
+            get => NavigateBackParameterProperty;
+            private set => NavigateBackParameterProperty = value; 
+        }
+
+        public void NavigateBackWithParameter(object parameter)
+        {
+            NavigateBackParameter = parameter;
+            ContentFrame.GoBack();
+        }
+
+        public void ClearNavigateBackParameter()
+        {
+            NavigateBackParameter = null;
         }
 
         private void Fe_Loaded(object sender, RoutedEventArgs e)
@@ -85,6 +106,8 @@ namespace CDPI_UI
             {
                 OpenConfigEditPage(true, configItem: ConfigItemToEditRequsted);
             }
+
+            BackButton.Visibility = Visibility.Collapsed;
 
             if (this.Content is FrameworkElement fe)
             {
@@ -114,13 +137,10 @@ namespace CDPI_UI
                 ContentFrame.DispatcherQueue.TryEnqueue(() =>
                 {
                     IsOperationExitAskAvailable = false;
-                    if (e.SourcePageType == typeof(Views.CreateConfigHelper.MainPage))
+                    if (ContentFrame.CanGoBack)
                     {
-                        if (ContentFrame.CanGoBack)
-                        {
-                            RemoveAndGoBackTo(typeof(Views.CreateConfigHelper.MainPage), ContentFrame);
-                            return;
-                        }
+                        NavigateBackWithParameter(e.Parameter);
+                        return;
                     }
                     ContentFrame.Navigate(e.SourcePageType, e.Parameter, new DrillInNavigationTransitionInfo());
                     
@@ -175,32 +195,18 @@ namespace CDPI_UI
             }
         }
 
-        private bool RemoveAndGoBackTo(Type pageType, Frame rootFrame)
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            if (rootFrame == null) return false;
+            BackButton.Visibility = ContentFrame.CanGoBack ? Visibility.Visible : Visibility.Collapsed;
 
-            var back = rootFrame.BackStack;
-            int targetIndex = -1;
-            for (int i = back.Count - 1; i >= 0; i--)
-            {
-                if (back[i].SourcePageType == pageType)
-                {
-                    targetIndex = i;
-                    break;
-                }
-            }
+            UpdateCurrentHelpItem(e.SourcePageType);
 
-            if (targetIndex == -1) return false;
+            ContentFrame.ForwardStack.Clear();
+        }
 
-            for (int i = back.Count - 1; i > targetIndex; i--)
-                back.RemoveAt(i);
-
-            if (rootFrame.CanGoBack)
-            {
-                rootFrame.GoBack();
-                return true;
-            }
-            return false;
+        private void UpdateCurrentHelpItem(Type page)
+        {
+            CurrentHelpMenuFlyoutItem.Text = string.Format(localizer.GetLocalizedString("/Flashlight/GetHelpFor"), localizer.GetLocalizedString($"/Flashlight/{page.Name}"));
         }
 
         private void HomeItem_Click(object sender, RoutedEventArgs e)
@@ -462,6 +468,60 @@ namespace CDPI_UI
             {
                 configPage.ChangeZoom(0);
             }
+        }
+
+        private async void EditConfigKitButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectConfigKitToEditContentDialog dialog = new()
+            {
+                XamlRoot = this.Content.XamlRoot,
+            };
+
+            await dialog.ShowAsync();
+
+            if (!string.IsNullOrEmpty(dialog.Result))
+            {
+                ContentFrame.Navigate(typeof(EditConfigKitPage), dialog.Result, new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        public void EditConfigKit(string kitId)
+        {
+            ContentFrame.Navigate(typeof(EditConfigKitPage), kitId, new DrillInNavigationTransitionInfo());
+        }
+
+        private void BackButton_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
+        }
+
+        private void BackButton_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            AnimatedIcon.SetState(this.SearchAnimatedIcon, "Normal");
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.CanGoBack)
+            {
+                ContentFrame.GoBack();
+            }
+        }
+
+        private async void CurrentHelpMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            window.NavigateToPage($"/CreateConfigHelper/{ContentFrame.SourcePageType.Name}");
+        }
+
+        public void SetStatus(bool isWorking = false, string text = "")
+        {
+            ContentFrame.DispatcherQueue.TryEnqueue(() =>
+            {
+                StatusProgressIcon.Visibility = isWorking ? Visibility.Collapsed : Visibility.Visible;
+                StatusProgressRing.Visibility = isWorking ? Visibility.Visible : Visibility.Collapsed;
+                StatusTextBlock.Text = string.IsNullOrEmpty(text) ? localizer.GetLocalizedString("Ready") : text;
+            });
         }
     }
 }
