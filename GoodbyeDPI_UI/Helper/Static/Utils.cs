@@ -1,5 +1,6 @@
 ﻿using CDPI_UI.Common;
 using CDPI_UI.Controls.Dialogs.ComponentSettings;
+using CDPI_UI.DataModel;
 using CDPI_UI.Helper.Items;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,7 +25,7 @@ using static CDPI_UI.Common.CertificateCheck;
 
 namespace CDPI_UI.Helper.Static
 {
-    public static class Utils
+    public static partial class Utils
     {
         static Utils()
         {
@@ -130,8 +131,12 @@ namespace CDPI_UI.Helper.Static
             return $"ms-appx:///Assets/{data}";
         }
 
-        public static string DynamicPathConverter(string data)
+        public static string DynamicPathConverter(string data, string args = "")
         {
+            if (!string.IsNullOrEmpty(args))
+            {
+                return Path.Combine(args, data);
+            }
             string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName, data);
@@ -228,6 +233,13 @@ namespace CDPI_UI.Helper.Static
             {
                 return dir.Trim().TrimEnd('\\', '/');
             }
+        }
+
+        public static async Task CopyFileAsync(string sourcePath, string destinationPath)
+        {
+            using Stream source = File.OpenRead(sourcePath);
+            using Stream destination = File.Create(destinationPath);
+            await source.CopyToAsync(destination);
         }
 
         public static string CopyTxtWithUniqueName(string sourcePath, string destinationDir)
@@ -598,6 +610,24 @@ namespace CDPI_UI.Helper.Static
             if (version1 >= version2) return true;
             return false;
         }
+
+        public static bool IsVersionCorrect(string version)
+        {
+            return Version.TryParse(version, out var _);
+        }
+
+        public static bool IsIdCorrect(string id)
+        {
+            return CheckIdRegex().IsMatch(id);
+        }
+
+        public static string GenerateNewId()
+        {
+            return Guid.NewGuid().ToString().Replace("{", "").Replace("}", "");
+        }
+
+        [GeneratedRegex(@"^[a-zA-Z0-9\-]+$")]
+        private static partial Regex CheckIdRegex();
 
 #if SINGLEFILE
         public static bool IsApplicationBuildAsSingleFile = true;
