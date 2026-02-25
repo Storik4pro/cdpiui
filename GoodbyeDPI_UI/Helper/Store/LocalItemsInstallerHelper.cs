@@ -1,8 +1,10 @@
 ﻿using CDPI_UI.Common;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,6 +21,7 @@ namespace CDPI_UI.Helper.Store
         public string Version { get; set; }
         public string Name { get; set; }
         public string Icon { get; set; }
+        public string ReadyToUseIcon = null;
         public List<string[]> Requirements { get; set; }
         public string ShortName { get; set; }
         public string Color { get; set; }
@@ -59,11 +62,6 @@ namespace CDPI_UI.Helper.Store
             TempDirectory = Path.Combine(localAppData, AppTempDirectory, DownloadManagerDirectory);
         }
 
-        public async void InstallUpdate(string filepath)
-        {
-
-        }
-
         public async Task<LocalItemInitModel> ImportStoreItemPackFile(string itemPackFile)
         {
             string tempFolderName = $"{EpochTime.GetIntDate(DateTime.Now)}_ap";
@@ -84,6 +82,20 @@ namespace CDPI_UI.Helper.Store
                     return null;
                 }
                 LocalItemInitModel localItemInitModel = Utils.LoadJson<LocalItemInitModel>(initFilePath);
+
+                if (localItemInitModel.Icon.StartsWith("$DYNAMICIMAGE"))
+                {
+                    string iconUrl = LScriptLangHelper.ExecuteScript(localItemInitModel.Icon, scriptArgs: tempDestination);
+                    if (File.Exists(iconUrl))
+                    {
+                        string newIconUrl = Path.Combine(TempDirectory, $"{tempFolderName}_ICONDATA", Path.GetFileName(iconUrl));
+
+                        if (!Directory.Exists(newIconUrl)) Directory.CreateDirectory(Path.GetDirectoryName(newIconUrl));
+
+                        File.Copy(iconUrl, newIconUrl);
+                        localItemInitModel.ReadyToUseIcon = newIconUrl;
+                    }
+                }
 
                 Directory.Delete(tempDestination, recursive: true);
 
