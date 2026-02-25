@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Windows.System;
 using Windows.UI;
@@ -422,6 +423,18 @@ namespace CDPI_UI.Helper.Static
                         tabView.TabItemsSource = null;
                         break;
                 }
+            }
+        }
+
+        public static Uri GetUriFromString(string input)
+        {
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(result.LocalPath))
+            {
+                return result;
+            }
+            else
+            {
+                return new Uri("ms-appx:///Assets/Store/empty.png");
             }
         }
 
