@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -58,7 +59,7 @@ namespace CDPI_UI.Messages
             InitializeComponent();
 
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
-            IconUri = @"Assets/Icons/Pseudoconsole.ico";
+            IconUri = @"Assets/favicon.ico";
             TitleIcon = TitleImageRectagle;
             TitleBar = WindowMoveAera;
 
@@ -104,6 +105,8 @@ namespace CDPI_UI.Messages
                 StoreHelper.Instance.ItemActionsStopped -= _itemActionsStoppedHandler;
         }
 
+        
+
         public async void SetPackFilePath(string packFile)
         {
             if (!string.IsNullOrEmpty(PackFilePath)) return; // TODO: Show notification : "Only one operation..."
@@ -118,10 +121,12 @@ namespace CDPI_UI.Messages
                 if (model != null)
                 {
                     StoreId = model.StoreId;
+                    bool isInstalled = DatabaseHelper.Instance.IsItemInstalled(StoreId);
+
                     Name = model.ShortName ?? StoreHelper.Instance.GetLocalizedStoreItemName(model.Name, Utils.GetStoreLikeLocale());
 
-                    ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallInstallItemName"), Name);
-                    ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(model.Icon)));
+                    ItemNameTextBlock.Text = string.Format(isInstalled ? localizer.GetLocalizedString("StoreSmallUpdateItemName") : localizer.GetLocalizedString("StoreSmallInstallItemName"), Name);
+                    ItemImage.Source = new BitmapImage(UIHelper.GetUriFromString(model.ReadyToUseIcon ?? LScriptLangHelper.ExecuteScript(model.Icon)));
                     DeveloperTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallDeveloperText"), model.Developer);
                     CategoryTextBlock.Text = string.Format(localizer.GetLocalizedString("Source"), packFile);
                     VersionTextBlock.Text = string.Format(localizer.GetLocalizedString("Version"), model.Version);
