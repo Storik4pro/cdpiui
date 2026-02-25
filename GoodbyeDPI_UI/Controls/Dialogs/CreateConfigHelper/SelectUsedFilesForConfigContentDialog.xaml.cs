@@ -141,72 +141,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
 
         private string FindAutoCorrectPath(string filePath)
         {
-            try
-            {
-                if (string.Equals(Path.GetFileNameWithoutExtension(filePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
-                {
-                    return filePath;
-                }
-                if (ConfigItem != null && ConfigItem.packId != null && ConfigItem.jparams != null)
-                {
-                    string _filePath = Helper.LScript.LScriptLangHelper.ExecuteScriptUnsafe(
-                        ConfigHelper.ReplaceVariables(
-                            filePath, ConfigHelper.GetReadyToUseVariables(ConfigItem.packId, ConfigItem.variables, ConfigItem.jparams)),
-                        callItemId: ConfigItem.packId);
-
-                    if (Path.Exists(_filePath))
-                        return _filePath;
-                }
-                if (File.Exists(filePath))
-                {
-                    return filePath;
-                }
-                Debug.WriteLine($"{Path.Combine(ConfigPath, filePath)}");
-                if (File.Exists(Path.Combine(Path.GetDirectoryName(ConfigPath), filePath)))
-                {
-                    return Path.Combine(Path.GetDirectoryName(ConfigPath), filePath);
-                }
-
-                var items = DatabaseHelper.Instance.GetItemsByType("configlist");
-                foreach (var item in items)
-                {
-                    string itemPath = item.Directory;
-                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
-                    foreach (var file in files)
-                    {
-                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
-                            return file;
-                    }
-                }
-                var components = DatabaseHelper.Instance.GetItemsByType("component");
-                foreach (var item in components)
-                {
-                    string itemPath = item.Directory;
-                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
-                    foreach (var file in files)
-                    {
-                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
-                            return file;
-                    }
-                }
-                var addOns = DatabaseHelper.Instance.GetItemsByType("addon");
-                foreach (var item in addOns)
-                {
-                    string itemPath = item.Directory;
-                    var files = Directory.EnumerateFiles(itemPath, $"*{Path.GetExtension(filePath)}", SearchOption.AllDirectories);
-                    foreach (var file in files)
-                    {
-                        
-                        if (Path.GetFileName(filePath) == Path.GetFileName(file))
-                            return file;
-                    }
-                }
-            }
-            catch
-            {
-                // pass
-            }
-            return string.Empty;
+            return Autocorrector.FindAutoCorrectPath(filePath, ConfigItem, ConfigPath);
         }
 
         private void ChangeFilePath(Tuple<string, string> tuple)
@@ -249,6 +184,8 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                     string filepath = Regex.Replace(model.FilePath, @"%(?<name>[A-Za-z0-9_]+)%", "");
                     Logger.Instance.CreateDebugLog(nameof(SelectUsedFilesForConfigContentDialog), $"{filepath}");
 
+                    Debug.WriteLine(model.AutoCorrectFilePath);
+
                     if (!string.Equals(Path.GetFileNameWithoutExtension(model.AutoCorrectFilePath), "autohostlist", StringComparison.OrdinalIgnoreCase))
                         File.Copy(model.AutoCorrectFilePath, Path.Combine(model.ConvertDirectoryPath, Path.GetFileName(filepath)), true);
 
@@ -266,7 +203,7 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 }
                 catch (Exception ex)
                 {
-                    ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
+                    ShowDialog($"{ErrorsHelper.GetPrettyErrorCode("AUTOCORRECT", ex)}:\n" + ex.Message);
                     Result = CreateConfigResult.Canceled;
                     return;
                 }
