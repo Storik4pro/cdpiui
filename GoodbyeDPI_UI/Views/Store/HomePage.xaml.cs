@@ -449,6 +449,27 @@ public sealed partial class HomePage : Page
         return result;
     }
 
+    private void StoreLoadFixButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        OpenHelp("FixDatabaseLoadIssue");
+    }
+
+    private void WhatIsStoreButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        OpenHelp("WelcomeToStore");
+    }
+
+    private void AskSupportButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        UrlOpenHelper.LaunchReportUrl();
+    }
+
+    private async static void OpenHelp(string page)
+    {
+        var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+        window.NavigateToPage($"/Store/{page}");
+    }
+
     private void OnContainerSizeChanged(object sender, SizeChangedEventArgs e)
     {
         double totalWidth = Math.Min(
