@@ -3,6 +3,7 @@ using CDPI_UI.Helper;
 using CDPI_UI.Messages;
 using CDPI_UI.ViewModels;
 using CDPI_UI.Views.Store.Settings;
+using CDPI_UI.Views.Store.Settings.Memory;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -46,6 +47,15 @@ namespace CDPI_UI.Views.Store
 
     public sealed partial class SettingsPage : Page
     {
+        public static readonly List<Type> MemoryNavigationSupportedPages = [
+            typeof(SettingsPage),
+            typeof(MemoryViewPage),
+            typeof(MemoryViewApplicationFilesDetailsPage),
+            typeof(MemoryViewInstalledItemsDetailsPage),
+            typeof(MemoryViewLogsDetailsPage),
+            typeof(MemoryViewSettingsDetailsPage),
+            typeof(MemoryViewStoreCachePage)];
+
         private ILocalizer localizer = Localizer.Get();
 
         private readonly ObservableCollection<VersionControlModel> VersionControlModels = [];
@@ -77,11 +87,10 @@ namespace CDPI_UI.Views.Store
 
             try
             {
-                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-                if (anim != null)
-                {
-                    anim.TryStart(NavGrid);
-                }
+                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
+                anim?.TryStart(NavGrid);
+                var backanim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
+                backanim?.TryStart(NavGrid);
             }
             catch { }
         }

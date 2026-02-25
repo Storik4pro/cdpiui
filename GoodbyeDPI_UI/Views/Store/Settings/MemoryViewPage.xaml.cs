@@ -71,12 +71,15 @@ namespace CDPI_UI.Views.Store.Settings
             base.OnNavigatedFrom(e);
             try
             {
-                var animq = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("BackwardConnectedAnimation", NavGrid);
-
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+                if (SettingsPage.MemoryNavigationSupportedPages.Contains(e.SourcePageType))
                 {
-                    animq.Configuration = new BasicConnectedAnimationConfiguration();
+                    var animq = ConnectedAnimationService.GetForCurrentView()
+                    .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
+
+                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+                    {
+                        animq.Configuration = new BasicConnectedAnimationConfiguration();
+                    }
                 }
             }
             catch { }
