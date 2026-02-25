@@ -35,6 +35,11 @@ namespace CDPI_UI.Views.CreateConfigHelper
             InitializeComponent();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Frame.BackStack.Clear();
+        }
+
         private void CreateNewConfigButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(CreateNewConfigPage), null, new DrillInNavigationTransitionInfo());
