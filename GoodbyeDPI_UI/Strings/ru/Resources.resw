@@ -2006,4 +2006,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
     <value>Использование памяти. Предпочитаемый сервер для обновлений. Установка локального элемента</value>
   </data>
+  <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
+    <value>Сейчас нет доступных обновлений. Однако, они могут появится, если вы проведете ручную проверку ещё раз.</value>
+  </data>
 </root>

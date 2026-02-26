@@ -68,7 +68,7 @@
                 </ListView>
                 <TextBlock l:Uids.Uid="AvailableUpdatesTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}"/>
                 <Grid x:Name="EmptyGrid" Height="60">
-                    <TextBlock l:Uids.Uid="EmptyPageTitle" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
+                    <TextBlock l:Uids.Uid="NoUpdatesAvailableRightNowTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic"/>
                     
                 </Grid>
                 <ListView x:Name="UpdatesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"

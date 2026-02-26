@@ -2004,4 +2004,7 @@ Here is error code in case you need it.
   <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
     <value>Memory usage. Preferred version control. Local item installing</value>
   </data>
+  <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
+    <value>There is no updates available right now. You can check updates manually, if you want.</value>
+  </data>
 </root>
