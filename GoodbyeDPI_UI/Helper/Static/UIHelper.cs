@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -428,7 +429,8 @@ namespace CDPI_UI.Helper.Static
 
         public static Uri GetUriFromString(string input)
         {
-            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(result.LocalPath))
+            
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(StateHelper.Instance.workDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
             {
                 return result;
             }
