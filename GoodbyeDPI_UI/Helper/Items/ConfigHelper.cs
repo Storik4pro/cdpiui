@@ -589,7 +589,7 @@ namespace CDPI_UI.Helper.Items
                         });
 
                         found = true;
-                        break;
+                        
                     }
                 }
                 if (!found && !ignoreNull)
@@ -702,7 +702,6 @@ namespace CDPI_UI.Helper.Items
                         });
 
                         found = true;
-                        break;
                     }
                 }
                 if (!found && !ignoreNull)
