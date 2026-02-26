@@ -144,19 +144,7 @@ namespace CDPI_UI.Messages
 
                         if (!string.IsNullOrEmpty(curV) && !string.IsNullOrEmpty(iV))
                         {
-                            if (curV.Split(".").Length <= 2)
-                            {
-                                curV += ".0";
-                            }
-                            
-                            if (iV.Split(".").Length <= 2)
-                            {
-                                iV += ".0";
-                            }
-                            var currentVersion = new Version(curV.Replace("v", ""));
-                            var serverVersion = new Version(iV.Replace("v", ""));
-
-                            if (currentVersion >= serverVersion)
+                            if (Utils.CompareVersionStrings(curV, iV) >= 0)
                             {
                                 ErrorHappens(localizer.GetLocalizedString("ItemAlreadyInstalledWarn"));
                             }
