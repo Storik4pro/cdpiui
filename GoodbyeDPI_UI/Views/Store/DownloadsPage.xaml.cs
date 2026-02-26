@@ -235,6 +235,7 @@ namespace CDPI_UI.Views.Store
             updates.Clear();
             foreach (var item in StoreHelper.Instance.UpdatesAvailableList)
             {
+                if (!string.IsNullOrEmpty(StoreHelper.Instance.GetOperationIdFromItemId(item.StoreId))) continue;
                 var storeItem = StoreHelper.Instance.GetItemInfoFromStoreId(item.StoreId);
 
                 string eImageSource = LScriptLangHelper.ExecuteScript(storeItem.icon);
