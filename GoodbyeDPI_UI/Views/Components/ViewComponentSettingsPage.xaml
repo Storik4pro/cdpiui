@@ -112,7 +112,15 @@
                         </ItemsRepeater.Layout>
                     </ItemsRepeater>
                 </StackPanel>
-                <Grid x:Name="EmptyPageGrid">
+                <Grid x:Name="LoadingGrid" Margin="0 200 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ProgressRing Grid.Row="0" HorizontalAlignment="Center"/>
+                    <TextBlock  Grid.Row="1" l:Uids.Uid="WorkingOnItTextBlock" HorizontalAlignment="Center"/>
+                </Grid>
+                <Grid x:Name="EmptyPageGrid" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>

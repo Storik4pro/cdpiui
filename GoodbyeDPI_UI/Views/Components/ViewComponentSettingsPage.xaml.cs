@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -65,7 +66,8 @@ namespace CDPI_UI.Views.Components
 
             StaggeredRepeater.ItemsSource = _tiles;
 
-            DataContext = this;          
+            DataContext = this;
+            ToggleLoading(true);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -79,28 +81,40 @@ namespace CDPI_UI.Views.Components
 
             AutorunCheckBox.IsChecked = SettingsManager.Instance.GetValue<bool>(["CONFIGS", ComponentId], "usedForAutorun");
 
-            LoadConfigItems();
-            ComponentHelper componentHelper =
-                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    ComponentId);
-            if (componentHelper is null) return;
+            
 
             DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(ComponentId);
             string componentName = databaseStoreItem != null ? databaseStoreItem.ShortName : ComponentId;
 
             PageHeader.Text = string.Format(localizer.GetLocalizedString("ComponentSettingsPageHeader"), componentName);
 
-            componentHelper.ConfigListUpdated += LoadConfigItems;
-
-            InitSettingsTiles();
+            var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            Task.Run(() => InitPage(item));
         }
 
-        private void InitSettingsTiles()
+        private void InitPage(ComboboxItem item)
+        {
+            LoadConfigItems();
+            ComponentHelper componentHelper =
+                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
+                    ComponentId);
+            if (componentHelper is null) return;
+
+            componentHelper.ConfigListUpdated += LoadConfigItems;
+
+            Debug.WriteLine(">>>>Working");
+
+            InitSettingsTiles(item);
+        }
+
+        private void InitSettingsTiles(ComboboxItem sel)
         {
             bool _flag;
-            _tiles.Clear();
 
-            var sel = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                _tiles.Clear();
+            });
 
             if (sel == null)
                 return;
@@ -142,8 +156,10 @@ namespace CDPI_UI.Views.Components
 
                     _flag = true;
                 }
-
-                _tiles.Add(CreateSettingTile(variablesItem, HandleSettingTileElementClick));
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    _tiles.Add(CreateSettingTile(variablesItem, HandleSettingTileElementClick));
+                });
             }
 
             List<SiteListItem> list = componentHelper.GetConfigHelper().GetSiteListItems(sel.file_name, sel.packId, ignoreNull: true);
@@ -184,7 +200,7 @@ namespace CDPI_UI.Views.Components
                     _flag = true;
                 }
 
-                _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick));
+                DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick)); });
             }
             List<SiteListItem> excludeList = componentHelper.GetConfigHelper().GetExcludedSiteListItems(sel.file_name, sel.packId, ignoreNull: true);
             if (excludeList.Count > 0)
@@ -224,7 +240,7 @@ namespace CDPI_UI.Views.Components
                     _flag = true;
                 }
 
-                _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick));
+                DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick)); });
             }
 
             SettingsTile advancedTile = new()
@@ -276,7 +292,7 @@ namespace CDPI_UI.Views.Components
                 advancedTile.Items.Add(autoTileItem);
             }
 
-            _tiles.Add(CreateSettingTile(advancedTile, HandleSettingTileElementClick));
+            DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(advancedTile, HandleSettingTileElementClick)); });
 
             SettingsTile helpTile = new()
             {
@@ -300,7 +316,7 @@ namespace CDPI_UI.Views.Components
 
             // TODO: add dynamic help
 
-            _tiles.Add(CreateSettingTile(helpTile, HandleSettingTileElementClick));
+            DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(helpTile, HandleSettingTileElementClick)); });
         }
 
         private void HandleSettingTileElementClick(ActionIds actionId, List<string> arguments, SettingTileContentDefinition contentDefinition)
@@ -332,7 +348,8 @@ namespace CDPI_UI.Views.Components
                     componentHelper.GetConfigHelper().ChangeVariableValue(contentDefinition.FileName, contentDefinition.PackId, contentDefinition.VariableName, result);
 
                     ShowAnim = false;
-                    InitSettingsTiles();
+                    var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                    Task.Run(() => InitSettingsTiles(item));
                     if (TasksHelper.Instance.IsTaskRunned(ComponentId).Result) _ = TasksHelper.Instance.RestartTask(ComponentId);
                     break;
                 case ActionIds.FullButtonElementClicked:
@@ -392,7 +409,7 @@ namespace CDPI_UI.Views.Components
 
             List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
 
-            _comboboxItems.Clear();
+            DispatcherQueue.TryEnqueue(() => _comboboxItems.Clear());
 
             foreach (ConfigItem item in items)
             {
@@ -403,17 +420,19 @@ namespace CDPI_UI.Views.Components
                 comboboxItem.name = $"{item.name}";
                 comboboxItem.packName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName;
 
-                _comboboxItems.Add(comboboxItem);
+                DispatcherQueue.TryEnqueue(() => _comboboxItems.Add(comboboxItem));
             }
-
-            if (_comboboxItems.Count == 0)
+            DispatcherQueue.TryEnqueue(() =>
             {
-                ToggleVisibility(false);
-            }
-            else
-            {
-                ToggleVisibility(true);
-            }
+                if (_comboboxItems.Count == 0)
+                {
+                    ToggleVisibility(false);
+                }
+                else
+                {
+                    ToggleVisibility(true);
+                }
+            });
         }
 
         
@@ -445,9 +464,11 @@ namespace CDPI_UI.Views.Components
                 SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.packId);
 
                 if ((oldCfg != sel.file_name || oldId != sel.packId) && await TasksHelper.Instance.IsTaskRunned(ComponentId)) await TasksHelper.Instance.RestartTask(ComponentId);
+
+                _ = Task.Run(() => InitSettingsTiles(sel));
             }
             ShowAnim = true;
-            InitSettingsTiles();
+            
         }
 
         private void ApplySavedSelection()
@@ -511,6 +532,7 @@ namespace CDPI_UI.Views.Components
 
         private void ToggleVisibility(bool visible)
         {
+            ToggleLoading(false);
             if (!visible)
             {
                 MainPanel.Visibility = Visibility.Collapsed;
@@ -521,6 +543,11 @@ namespace CDPI_UI.Views.Components
                 MainPanel.Visibility = Visibility.Visible;
                 EmptyPageGrid.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void ToggleLoading(bool isLoading)
+        {
+            LoadingGrid.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async void CreateConfigButton_Click(object sender, RoutedEventArgs e)
