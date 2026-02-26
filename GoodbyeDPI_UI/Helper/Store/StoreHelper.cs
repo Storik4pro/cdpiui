@@ -1507,21 +1507,9 @@ namespace CDPI_UI.Helper
                 try
                 {
                     string curV = item.CurrentVersion;
-                    if (curV.Split(".").Length <= 2)
-                    {
-                        curV += ".0";
-                    }
                     string serV = versionData.Item1;
-                    if (serV.Split(".").Length <= 2)
-                    {
-                        serV += ".0";
-                    }
-                    var currentVersion = new Version(curV.Replace("v", ""));
-                    var serverVersion = new Version(serV.Replace("v", ""));
 
-                    Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"{serverVersion}, {currentVersion}");
-
-                    if (serverVersion > currentVersion)
+                    if (Utils.CompareVersionStrings(curV, serV) == -1)
                     {
                         UpdatesAvailableList.Add(new()
                         {

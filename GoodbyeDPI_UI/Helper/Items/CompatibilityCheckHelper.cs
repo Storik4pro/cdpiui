@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPI_UI.Helper.Static;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -45,21 +46,10 @@ namespace CDPI_UI.Helper.Items
                         {
                             var databaseItem = DatabaseHelper.Instance.GetItemById(config.target[0]);
 
-                            string curV = databaseItem.CurrentVersion;
-                            if (databaseItem.CurrentVersion.Split(".").Length <= 3)
-                            {
-                                curV += ".0";
-                            }
-                            string serV = config.target[1];
-                            if (config.target[1].Split(".").Length <= 3)
-                            {
-                                serV += ".0";
-                            }
+                            string requiredVersion = config.target[1];
+                            string installedVersion = databaseItem.CurrentVersion;
 
-                            Version requiredVersion = new Version(config.target[1].Replace("v", ""));
-                            Version installedVersion = new Version(databaseItem.CurrentVersion.Replace("v", ""));
-
-                            if (requiredVersion > installedVersion)
+                            if (Utils.CompareVersionStrings(requiredVersion, installedVersion) == 1)
                             {
                                 if (!outdatedComponents.Contains(config.target[0]))
                                 {

@@ -626,6 +626,29 @@ namespace CDPI_UI.Helper.Static
             return Guid.NewGuid().ToString().Replace("{", "").Replace("}", "");
         }
 
+        public static int CompareVersionStrings(string oldVersion, string newVersion)
+        {
+            if (oldVersion.StartsWith('v')) oldVersion = oldVersion[1..];
+            if (newVersion.StartsWith('v')) newVersion = newVersion[1..];
+
+            if (oldVersion.Contains("rc")) oldVersion = oldVersion.Replace("rc", "-rc");
+            if (newVersion.Contains("rc")) newVersion = newVersion.Replace("rc", "-rc");
+
+            if (Semver.SemVersion.TryParse(oldVersion, out var oldSemVersion) && Semver.SemVersion.TryParse(newVersion, out var newSemVersion))
+            {
+                return Semver.SemVersion.ComparePrecedence(oldSemVersion, newSemVersion);
+            }
+            else if (Version.TryParse(oldVersion, out var oldVerVersion) &&  Version.TryParse(newVersion,out var newVerVersion))
+            {
+                if (oldVerVersion < newVerVersion) return -1;
+                else if (oldVerVersion > newVerVersion) return 1;
+                else return 0;
+            }
+
+            Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot compare {oldVersion} and {newVersion}.");
+            return 0;
+        }
+
         [GeneratedRegex(@"^[a-zA-Z0-9\-]+$")]
         private static partial Regex CheckIdRegex();
 
