@@ -553,7 +553,6 @@ namespace CDPI_UI.Views.Store
         private async void ReinstallButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO: downloading from saved URL
-            // TODO: show warning
 
             ContentDialog dialog = new()
             {
