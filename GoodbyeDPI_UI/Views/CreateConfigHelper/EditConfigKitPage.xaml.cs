@@ -282,8 +282,7 @@ namespace CDPI_UI.Views.CreateConfigHelper
 
             if (result.Mode == SaveConfigKitAsModes.None)
             {
-                SaveAsButton.IsEnabled = true;
-                SaveButton.IsEnabled = true;
+                ToggleLoadingMode(false);
                 return;
             }
 
