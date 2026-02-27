@@ -1237,8 +1237,19 @@ namespace CDPI_UI.Helper.Items
 
         public static async Task<AsyncOperationResultModel> CreateConfigPack(ConfigPackInitModel modelTemplate, List<ConfigItem> configItems, string outputDir, bool autoImport = false)
         {
-            List<string[]> requirements = [];
             string tempDir = Path.Combine(StateHelper.GetDataDirectory(), "TempFiles", nameof(ConfigPackMakeHelper), Utils.GenerateNewId());
+
+            var workResult = await CreateConfigPack_Work(modelTemplate, configItems, outputDir, tempDir, autoImport);
+
+            RemoveTempFiles(tempDir);
+
+            return workResult;
+        }
+
+        private static async Task<AsyncOperationResultModel> CreateConfigPack_Work(ConfigPackInitModel modelTemplate, List<ConfigItem> configItems, string outputDir, string tempDir, bool autoImport = false)
+        {
+            List<string[]> requirements = [];
+            
 
             Directory.CreateDirectory(tempDir);
 
@@ -1289,6 +1300,9 @@ namespace CDPI_UI.Helper.Items
             }
 
             var createArchiveResult = await CreateArchive(tempDir, outputDir);
+
+            RemoveTempFiles(tempDir);
+
             if (!(bool)createArchiveResult.IsSuccess) { return createArchiveResult; }
 
             return new() { IsSuccess = true };
@@ -1315,6 +1329,18 @@ namespace CDPI_UI.Helper.Items
                 Developer = modelTemplate.Developer,
                 BackgroudColor = ""
             });
+        }
+
+        private static void RemoveTempFiles(string directory)
+        {
+            try
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(ConfigPackMakeHelper), $"Cannot remove temp directory during {ex.Message} exception.");
+            }
         }
 
         private static async Task<AsyncOperationResultModel> CreateArchive(string inputDir, string outputDir)
