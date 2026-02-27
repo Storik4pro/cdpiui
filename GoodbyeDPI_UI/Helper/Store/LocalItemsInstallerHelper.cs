@@ -97,6 +97,11 @@ namespace CDPI_UI.Helper.Store
                     }
                 }
 
+                if (localItemInitModel.StoreId == StateHelper.ApplicationStoreId || localItemInitModel.StoreId == StateHelper.LocalUserItemsId)
+                {
+                    throw new AccessViolationException("StoreId is protected by security policy");
+                }
+
                 Directory.Delete(tempDestination, recursive: true);
 
                 if (!isCatalogCheckRequired) localItemInitModel.ExecutableFile = null;
