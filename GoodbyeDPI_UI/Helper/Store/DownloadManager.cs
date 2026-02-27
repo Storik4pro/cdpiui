@@ -133,7 +133,7 @@ namespace CDPI_UI.Helper
                             throw new IOException();
 
                         string extention = StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, null);
-                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : ".tmp";
+                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : extention;
 
                         File.Copy(tempDestination, Path.Combine(destinationPath, exeName + _fName), true);
                     }
