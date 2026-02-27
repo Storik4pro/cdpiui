@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WinUI3Localizer;
+using Application = Microsoft.UI.Xaml.Application;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -141,9 +142,10 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
             this.Hide();
         }
 
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        private async void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Add help
+            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            window.NavigateToPage("/CreateConfigHelper/SaveConfigKitAs");
         }
 
         private void EditImageButton_Click(object sender, RoutedEventArgs e)
