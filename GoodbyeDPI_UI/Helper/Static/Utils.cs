@@ -628,6 +628,8 @@ namespace CDPI_UI.Helper.Static
 
         public static int CompareVersionStrings(string oldVersion, string newVersion)
         {
+            if (oldVersion == "%CURRENT%") return 0;
+
             if (oldVersion.StartsWith('v')) oldVersion = oldVersion[1..];
             if (newVersion.StartsWith('v')) newVersion = newVersion[1..];
 
