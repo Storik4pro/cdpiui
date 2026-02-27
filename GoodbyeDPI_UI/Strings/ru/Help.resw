@@ -142,6 +142,9 @@
   <data name="GettingStarted" xml:space="preserve">
     <value>Основы</value>
   </data>
+  <data name="ItemUnsupportedWarning" xml:space="preserve">
+    <value>Неподдерживаемые элементы</value>
+  </data>
   <data name="LearnMoreAboutUI" xml:space="preserve">
     <value>Что такое CDPI UI?</value>
   </data>
@@ -157,5 +160,26 @@
   </data>
   <data name="WelcomeToHelp" xml:space="preserve">
     <value>Добро пожаловать в справку</value>
+  </data>
+  <data name="Store" xml:space="preserve">
+    <value>Магазин компонентов</value>
+  </data>
+  <data name="AddLocalItem" xml:space="preserve">
+    <value>Добавление локального элемента</value>
+  </data>
+  <data name="FixDatabaseLoadIssue" xml:space="preserve">
+    <value>Исправление загрузки базы данных</value>
+  </data>
+  <data name="PreferedVersionControl" xml:space="preserve">
+    <value>Средство контроля версий</value>
+  </data>
+  <data name="WelcomeToStore" xml:space="preserve">
+    <value>Добро пожаловать в Магазин </value>
+  </data>
+  <data name="CreateConfigHelper" xml:space="preserve">
+    <value>Помощник создания и редактирования пресетов</value>
+  </data>
+  <data name="SaveConfigKitAs" xml:space="preserve">
+    <value>Сохранение нового набора пресетов</value>
   </data>
 </root>

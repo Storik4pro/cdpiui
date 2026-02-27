@@ -115,10 +115,15 @@ namespace CDPI_UI.Controls.Store
             ReinstallButton.IsEnabled = true;
             ProgressBar.Visibility = Visibility.Collapsed;
 
-            if (databaseStoreItem.Type == "configlist")
+            if (databaseStoreItem.Type == "addon")
             {
                 BigActionButton.IsEnabled = false;
                 ActionButton.IsEnabled = false;
+            }
+
+            if (databaseStoreItem.VersionControlType == "local")
+            {
+                ReinstallButton.IsEnabled = false;
             }
 
             if (databaseStoreItem.Id == StateHelper.LocalUserItemsId || databaseStoreItem.Id == StateHelper.ApplicationStoreId)
@@ -138,9 +143,17 @@ namespace CDPI_UI.Controls.Store
 
         private async void ActionButton_Click(object sender, RoutedEventArgs e)
         {
-            ModernMainWindow window = await((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-
-            window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+            DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(StoreId);
+            if (databaseStoreItem.Type == "component")
+            {
+                ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
+                window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+            }
+            else if (databaseStoreItem.Type == "configlist")
+            {
+                CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+                window.EditConfigKit(StoreId);
+            }
         }
 
         private void ReinstallButton_Click(object sender, RoutedEventArgs e)

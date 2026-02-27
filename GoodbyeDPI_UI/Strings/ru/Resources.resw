@@ -186,7 +186,7 @@
     <value>Чистый</value>
   </data>
   <data name="CleanupModeMenuItem.Text" xml:space="preserve">
-    <value>Режим отчистки вывода</value>
+    <value>Режим очистки вывода</value>
   </data>
   <data name="ClickNextToBegin.Text" xml:space="preserve">
     <value>Для продолжения нажмите кнопку "Далее"</value>
@@ -276,7 +276,7 @@
     <value>Изменить</value>
   </data>
   <data name="ElementNotExistMessage" xml:space="preserve">
-    <value>Элемент с уникальным идентификатором "{0}" не существует. Проверьте ваше Интернет-соединение, отчистите кэш магазина и повторите попытку позднее. {1}</value>
+    <value>Элемент с уникальным идентификатором "{0}" не существует. Проверьте ваше Интернет-соединение, очистите кэш магазина и повторите попытку позднее. {1}</value>
   </data>
   <data name="ElementNotExistTitle" xml:space="preserve">
     <value>Элемент не существует</value>
@@ -1658,7 +1658,7 @@
   <data name="ExclusiveGroupTextBlock.Text" xml:space="preserve">
     <value>Взаимоисключающая группа</value>
   </data>
-  <data name="RemoveFileButton.ToolTipService.ToolTip" xml:space="preserve">
+  <data name="RemoveFileButton.ToolTipService.Tooltip" xml:space="preserve">
     <value>Удалить файл</value>
   </data>
   <data name="SelectFileText.Text" xml:space="preserve">
@@ -1666,5 +1666,347 @@
   </data>
   <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Изменить этот файл в приложении по умолчанию</value>
+  </data>
+  <data name="ItemUnknownSourceWarningTextBlock.Text" xml:space="preserve">
+    <value>Этот элемент был загружен из неизвестного источника и потенциально может нанести вред вашему компьютеру. Если вы не доверяете источнику, то не устанавливайте этот элемент</value>
+  </data>
+  <data name="SatusGettingPackInfo" xml:space="preserve">
+    <value>Идет подготовка пакета</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия пакета: {0}</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Источник: {0}</value>
+  </data>
+  <data name="StoreSmallInstallItemName" xml:space="preserve">
+    <value>Установить {0}?</value>
+  </data>
+  <data name="InstallButton.Content" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="ItemAlreadyInstalledWarn" xml:space="preserve">
+    <value>Последняя версия этого элемента уже установлена. Чтобы произвести откат удалите этот элемент через Магазин вручную, после чего повторите попытку. 
+ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Header" xml:space="preserve">
+    <value>Добавить элемент из локального пакета</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Description" xml:space="preserve">
+    <value>Выберите локальный пакет для добавления в приложение. Делайте это ТОЛЬКО в том случае, если у вас нет доступа к Онлайн-Магазину и вы доверяете автору пакета</value>
+  </data>
+  <data name="SelectPackTextBlock.Text" xml:space="preserve">
+    <value>Выберите пакет</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.Title" xml:space="preserve">
+    <value>Вы уверены, что хотите продолжить?</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Все равно продолжить</value>
+  </data>
+  <data name="ItemLocalInstallingWarningTextBlock.Text" xml:space="preserve">
+    <value>Разработчик не несет ответственности за вред, который может нанести элемент установленный из неизвестного источника.
+НИ В КОЕМ СЛУЧАЕ не устанавливайте пакеты из источников, которым вы не доверяете.</value>
+  </data>
+  <data name="SelectLocalPackToInstall" xml:space="preserve">
+    <value>Выберите пакет для установки...</value>
+  </data>
+  <data name="SignedPack" xml:space="preserve">
+    <value>Подписанный пакет элемента для Магазина</value>
+  </data>
+  <data name="ConfigPack" xml:space="preserve">
+    <value>Неподписанный пакет пресетов</value>
+  </data>
+  <data name="Patch" xml:space="preserve">
+    <value>Пакет обновлений для приложения</value>
+  </data>
+  <data name="AllSupported" xml:space="preserve">
+    <value>Все поддерживаемые типы файлов</value>
+  </data>
+  <data name="VersionControlGitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="VersionControlGitLab" xml:space="preserve">
+    <value>GitLab</value>
+  </data>
+  <data name="SelectVersionControlSettingsCard.Header" xml:space="preserve">
+    <value>Средство контроля версий </value>
+  </data>
+  <data name="SelectVersionControlSettingsCardDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Изменение этого параметра повлияет на предпочитаемый сервер получения обновлений для элементов и приложения.</value>
+  </data>
+  <data name="AppRestartNeededTextBlock.Text" xml:space="preserve">
+    <value>Перезапустите приложение, чтобы это изменение вступило в силу</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Header" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
+    <value>Удаление неиспользуемых пресетов из наборов. Удаление временных файлов. Просмотр использования диска</value>
+  </data>
+  <data name="ItemViewAdvancedInfoButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать расширенную информацию об элементе</value>
+  </data>
+  <data name="StoreIdTextBlock.Text" xml:space="preserve">
+    <value>Уникальный идентификатор</value>
+  </data>
+  <data name="ItemAdvancedInfoFlyoutTitleTextBlock.Text" xml:space="preserve">
+    <value>Расширенная информация</value>
+  </data>
+  <data name="ItemUnsupportedWarningTextBlock.Text" xml:space="preserve">
+    <value>Этот элемент на данный момент не поддерживается. Убедитесь, что приложение обновлено до последней версии.</value>
+  </data>
+  <data name="DiskUsageTextBlock.Text" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDisplayName" xml:space="preserve">
+    <value>Внутренние файлы приложения</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDescription" xml:space="preserve">
+    <value>Эти файлы обеспечивают правильную работу приложения</value>
+  </data>
+  <data name="UsedMemory" xml:space="preserve">
+    <value>Использовано {0}</value>
+  </data>
+  <data name="FreeMemory" xml:space="preserve">
+    <value>Осталось: {0}</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDisplayName" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDescription" xml:space="preserve">
+    <value>Эти файлы содержат ваши настройки</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDisplayName" xml:space="preserve">
+    <value>Файлы журналов</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDescription" xml:space="preserve">
+    <value>Файлы предназначенные для устранения ошибок приложения</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDisplayName" xml:space="preserve">
+    <value>Временные файлы</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDescription" xml:space="preserve">
+    <value>Неиспользуемые файлы</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDisplayName" xml:space="preserve">
+    <value>Установленные элементы</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDescription" xml:space="preserve">
+    <value>Элементы, которые вы установили из Магазина</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDisplayName" xml:space="preserve">
+    <value>Кэш Магазина</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDescription" xml:space="preserve">
+    <value>Эти файлы позволяют экономить Интернет-трафик при использовании Магазина</value>
+  </data>
+  <data name="MemoryDiskName" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="MemoryUsage" xml:space="preserve">
+    <value>Использование памяти</value>
+  </data>
+  <data name="MemoryViewApplicationFilesDetails" xml:space="preserve">
+    <value>Внутренние файлы приложения</value>
+  </data>
+  <data name="ApplicationInternalFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы необходимы для обеспечения корректной работы приложения. Они содержат динамические библиотеки (DLL), файлы локализации и др. Без них приложение работать не будет.</value>
+  </data>
+  <data name="ApplicationInternalFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Здесь вы можете посмотреть директорию установки приложения.</value>
+  </data>
+  <data name="ViewAppDirButton.Content" xml:space="preserve">
+    <value>Просмотр директории приложения</value>
+  </data>
+  <data name="ViewLogDirButton.Content" xml:space="preserve">
+    <value>Просмотр журналов</value>
+  </data>
+  <data name="LogFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Здесь вы можете изучить созданные приложением журналы</value>
+  </data>
+  <data name="LogFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Файлы предназначенные для устранения ошибок приложения. Эти файлы могут помочь вам исправить некоторые проблемы с этим приложением. Кроме того, сообщения об ошибках с прикрепленными журналами рассматриваются быстрее.</value>
+  </data>
+  <data name="MemoryViewLogsDetails" xml:space="preserve">
+    <value>Файлы журналов</value>
+  </data>
+  <data name="CleanupTextBlock.Text" xml:space="preserve">
+    <value>Очистка</value>
+  </data>
+  <data name="CleanupLogFilesTextBlock.Text" xml:space="preserve">
+    <value>Здесь можно удалить все журналы приложения для очистки места на диске.</value>
+  </data>
+  <data name="CleanupDirButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ErrorHappensWhileCleanup" xml:space="preserve">
+    <value>Что-то пошло не так, когда мы пытались выполнить очистку. Вот код ошибки, если он вам нужен: {0}</value>
+  </data>
+  <data name="MemoryViewStoreCacheFilesDetails" xml:space="preserve">
+    <value>Кэш Магазина</value>
+  </data>
+  <data name="StoreCacheFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы позволяют экономить Интернет-трафик при просмотре контента в Магазине.</value>
+  </data>
+  <data name="CleanupStoreCacheFilesTextBlock.Text" xml:space="preserve">
+    <value>Если вы очистите кэш Магазина, вся база данных будет загружена заново при следующем запуске Магазина.</value>
+  </data>
+  <data name="StoreInstalledItemsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Все элементы, которые вы установили из Магазина или других источников.</value>
+  </data>
+  <data name="SetupMenuFlyuoutItem.Text" xml:space="preserve">
+    <value>Перейти к настройкам</value>
+  </data>
+  <data name="MemoryViewInstalledItemsDetails" xml:space="preserve">
+    <value>Установленные элементы</value>
+  </data>
+  <data name="MemoryViewSettingsDetails" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="ApplicationSettingsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Эти файлы содержат ваши настройки, например положения окон на рабочем столе, предпочитаемый сервер для получения обновлений и другие.</value>
+  </data>
+  <data name="ResetSettingsTextBlock.Text" xml:space="preserve">
+    <value>Удалить все настройки, затем перезапустить приложение. Установленные элементы удалены не будут.</value>
+  </data>
+  <data name="ResetButton.Content" xml:space="preserve">
+    <value>Сброс</value>
+  </data>
+  <data name="ResetSettingsAskTextBlock.Text" xml:space="preserve">
+    <value>Это действие удалит ВСЕ ваши настройки. Продолжить в любом случае?</value>
+  </data>
+  <data name="ContinueAnywayButton.Content" xml:space="preserve">
+    <value>Все равно продолжить</value>
+  </data>
+  <data name="LocalDrive" xml:space="preserve">
+    <value>Локальный диск</value>
+  </data>
+  <data name="EditConfigKitMenuItem.Text" xml:space="preserve">
+    <value>Изменить набор пресетов</value>
+  </data>
+  <data name="UsedSiteListsText" xml:space="preserve">
+    <value>Используемые списки сайтов: {0} и ещё {1}.</value>
+  </data>
+  <data name="UsedSiteListText" xml:space="preserve">
+    <value>Используемый список сайтов: {0}.</value>
+  </data>
+  <data name="NoUsedSiteListText" xml:space="preserve">
+    <value>Списки сайтов не используются.</value>
+  </data>
+  <data name="ExcludedSiteListsText" xml:space="preserve">
+    <value>Списки исключений: {0} и ещё {1}.</value>
+  </data>
+  <data name="ExcludedSiteListText" xml:space="preserve">
+    <value>Список исключений: {0}.</value>
+  </data>
+  <data name="NoExcludedSiteListText" xml:space="preserve">
+    <value>Списки исключений не используются.</value>
+  </data>
+  <data name="LastEditTimeText" xml:space="preserve">
+    <value>Последнее изменение: {0}</value>
+  </data>
+  <data name="RenameButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="EditButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить пресет</value>
+  </data>
+  <data name="ViewUsedDirectoriesButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать используемые файлы</value>
+  </data>
+  <data name="RenameTitleTextBlock.Text" xml:space="preserve">
+    <value>Переименовать пресет</value>
+  </data>
+  <data name="ApplyRenameButton.Content" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="CannotSaveConfigMessage" xml:space="preserve">
+    <value>Мы не смогли сохранить этот пресет из-за неожиданного исключения. Убедитесь, что у программы есть права типа 'write' для директории Магазина.
+Ниже расположен код исключения, если он вам нужен.
+{0}</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Что-то пошло не так</value>
+  </data>
+  <data name="SaveConfigException" xml:space="preserve">
+    <value>Мы не смогли сохранить этот набор. 
+Ниже расположен код исключения, если он вам нужен.
+{0}</value>
+  </data>
+  <data name="SaveConfigKitAsContentDialog.Title" xml:space="preserve">
+    <value>Сохранить набор как...</value>
+  </data>
+  <data name="SaveForMeSelectorBarItem.Text" xml:space="preserve">
+    <value>Сохранить как новый набор для себя</value>
+  </data>
+  <data name="SaveForDistributeSelectorBarItem.Text" xml:space="preserve">
+    <value>Сохранить как распространяемый набор</value>
+  </data>
+  <data name="ImageTextBlock.Text" xml:space="preserve">
+    <value>Иконка</value>
+  </data>
+  <data name="EditAccentTextBlock.Text" xml:space="preserve">
+    <value>Акцент</value>
+  </data>
+  <data name="IdTextBlock.Text" xml:space="preserve">
+    <value>Идентификатор*</value>
+  </data>
+  <data name="GenerateNewIdButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Создать новый идентификатор</value>
+  </data>
+  <data name="VersionTextBlock.Text" xml:space="preserve">
+    <value>Версия*</value>
+  </data>
+  <data name="EditImageButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить изображение</value>
+  </data>
+  <data name="ChooseAnImage" xml:space="preserve">
+    <value>Выберите изображение</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.Title" xml:space="preserve">
+    <value>Изменить набор пресетов</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="FrameGoBackButton.ToolTipService.ToolTIp" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="CancelTextBlock.Text" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="LoadingConfigs" xml:space="preserve">
+    <value>Загрузка списка пресетов...</value>
+  </data>
+  <data name="SavingConfigKit" xml:space="preserve">
+    <value>Выполняется экспорт набора пресетов...</value>
+  </data>
+  <data name="YesButton.Content" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="SaveConfirmation.Text" xml:space="preserve">
+    <value>Это действие перезапишет весь набор пресетов. Кроме того, если вы обновите или переустановите его из Магазина, все изменения могут быть потеряны. Чтобы сохранить ваши настройки в безопасности, создайте новый набор.</value>
+  </data>
+  <data name="StoreSmallUpdateItemName" xml:space="preserve">
+    <value>Обновить {0}?</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Header" xml:space="preserve">
+    <value>Параметры Магазина компонентов</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
+    <value>Использование памяти. Предпочитаемый сервер для обновлений. Установка локального элемента</value>
+  </data>
+  <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
+    <value>Сейчас нет доступных обновлений. Однако, они могут появится, если вы проведете ручную проверку ещё раз.</value>
   </data>
 </root>

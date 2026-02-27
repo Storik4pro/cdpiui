@@ -22,7 +22,7 @@ namespace CDPI_UI.Helper
     {
         public string Id { get; set; }
         public string DisplayName { get; set; }
-        public string Path { get; set; }
+        public string Path { get; set; } 
     }
     public class HelpParserHelper
     {
@@ -30,7 +30,9 @@ namespace CDPI_UI.Helper
         {
             { "WelcomeToHelp", "\uE734" },
             { "GettingStarted", "\uEB9D" },
-            { "TroubleshootingComponentExceptions", "\uEBE8" }
+            { "TroubleshootingComponentExceptions", "\uEBE8" },
+            { "Store", "\uE719" },
+            { "CreateConfigHelper", "\uE70F" }
         };
 
         private static string GetGlyphForId(string id)

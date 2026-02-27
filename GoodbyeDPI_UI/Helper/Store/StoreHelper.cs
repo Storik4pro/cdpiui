@@ -1,8 +1,12 @@
-﻿using CDPI_UI.Helper.Items;
+﻿using CDPI_UI.Common;
+using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Helper.Store;
+using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.WindowsAppSDK.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,6 +26,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Services.Maps.LocalSearch;
 using Windows.UI.WebUI;
 using static CDPI_UI.Helper.ErrorsHelper;
@@ -56,6 +61,7 @@ namespace CDPI_UI.Helper
     public class StoreHelper
     {
         private static readonly string GitHubApiToken = Secret.GitHubToken;
+        private static readonly string GitLabApiToken = Secret.GitLabToken;
 
         private List<string> SupportedCategoryTypes = ["basic_category", "second_category"];
 
@@ -153,16 +159,18 @@ namespace CDPI_UI.Helper
             public string ItemId { get; }
             public string Version { get; }
             public bool CleanDirectoryBeforeInstalling { get; } = false;
+            public string PackFilePath { get; } = null;
             public string Status { get; set; } = "WAIT";
             public string DownloadStage { get; set; } = string.Empty;
             public string ErrorCode { get; set; } = string.Empty;
 
-            public QueueItem(string itemId, string operationId, string version = null, bool cleanDirectoryBeforeInstalling = false)
+            public QueueItem(string itemId, string operationId, string version = null, bool cleanDirectoryBeforeInstalling = false, string packFilePath = null)
             {
                 ItemId = itemId;
                 Version = version ?? string.Empty;
                 OperationId = operationId;
                 CleanDirectoryBeforeInstalling = cleanDirectoryBeforeInstalling;
+                PackFilePath = packFilePath ?? string.Empty;
                 Logger.Instance.CreateDebugLog(nameof(QueueItem), Version);
             }
         }
@@ -222,13 +230,39 @@ namespace CDPI_UI.Helper
         public Action UpdateCheckStarted;
         public Action UpdateCheckStopped;
 
+        public readonly SupportedVersionControls VersionControl;
+
         private StoreHelper()
         {
-
+            if (Enum.TryParse(SettingsManager.Instance.GetValueOrDefault("STORE", "versionControlType", defaultValue: "GitHub"), true, out SupportedVersionControls versionControl))
+            {
+                VersionControl = versionControl;
+            }
+            else
+            {
+                VersionControl = SupportedVersionControls.GitHub;
+            }
         }
 
-        public async Task<bool> LoadAllStoreDatabase(bool forseSync = true)
+        #region Database
+        private string GetStoreUrl(SupportedVersionControls versionControl)
         {
+            string gitHubRepo = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
+            string gitLabRepo = $"https://gitlab.com/{StateHelper.GitLabStoreRepo}/-/archive/main/CDPIUI-Store-main.zip";
+            return versionControl == SupportedVersionControls.GitHub? gitHubRepo : gitLabRepo;
+        }
+        public static void ClearRepoCache()
+        {
+            string localAppData = StateHelper.GetDataDirectory();
+            string targetFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
+
+            if (Directory.Exists(targetFolder))
+                Directory.Delete(targetFolder, recursive: true);
+        }
+        public async Task<bool> LoadAllStoreDatabase(bool forseSync = true, SupportedVersionControls versionControl = SupportedVersionControls.None)
+        {
+            SupportedVersionControls usedVersionControl = versionControl == SupportedVersionControls.None ? VersionControl : versionControl;
             try
             {
                 if (FormattedStoreDatabase != null && !forseSync)
@@ -244,13 +278,13 @@ namespace CDPI_UI.Helper
 
                 if ((forseSync && t.TotalDays >= 1) || !Path.Exists(targetFolder)) {
 
-                    string zipUrl = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
+                    string zipUrl = GetStoreUrl(usedVersionControl);
 
                     using HttpClient client = new HttpClient();
 
-                    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", "0.0.0.0"));
+                    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
                     client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", GitHubApiToken);
+                        new AuthenticationHeaderValue("Bearer", usedVersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
 
                     using HttpResponseMessage response = await client.GetAsync(zipUrl);
                     response.EnsureSuccessStatusCode();
@@ -423,6 +457,59 @@ namespace CDPI_UI.Helper
             return categories;
         }
 
+        public RepoCategory GetCategoryFromStoreId(string storeId)
+        {
+            foreach (RepoCategory repoCategory in FormattedStoreDatabase)
+            {
+                if (repoCategory.store_id == storeId)
+                {
+                    return repoCategory;
+                }
+            }
+            return null;
+        }
+
+        public RepoCategoryItem GetItemInfoFromStoreId(string storeId)
+        {
+            if (storeId == StateHelper.LocalUserItemsId)
+            {
+                return null;
+            }
+
+            if (storeId == StateHelper.ApplicationStoreId)
+            {
+                DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(StateHelper.ApplicationStoreId);
+                RepoCategoryItem repoCategoryItem = new()
+                {
+                    store_id = storeId,
+                    version_control = "git",
+                    version_control_link = VersionControl == SupportedVersionControls.GitHub ? StateHelper.ApplicationCheckUpdatesUrl : StateHelper.ApplicationGitLabCheckUpdatesUrl,
+                    filetype = Utils.IsApplicationBuildAsSingleFile ? "CDPIUIUpdateItem" : "UPDmsi",
+                    target_executable_file = "patch",
+                    developer = databaseStoreItem.Developer,
+                    name = databaseStoreItem.Name,
+                    short_name = databaseStoreItem.ShortName,
+                    icon = databaseStoreItem.IconPath,
+
+
+                };
+                return repoCategoryItem;
+            }
+
+            foreach (RepoCategoryItem repoCategoryItem in ItemsList)
+            {
+                if (repoCategoryItem.store_id == storeId)
+                {
+                    return repoCategoryItem;
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region ItemHelpers
+
         public List<RepoCategoryItem> GetSimilarItemsForStoreId(string storeId)
         {
             List<string> supportedComponents = ["Zapret", "GoodbyeDPI", "ByeDPI"];
@@ -453,55 +540,22 @@ namespace CDPI_UI.Helper
             return items;
         }
 
-        public RepoCategory GetCategoryFromStoreId(string storeId)
+        public List<Tuple<string, string>> GetItemRequiredItemsById(string storeId)
         {
-            foreach (RepoCategory repoCategory in FormattedStoreDatabase)
-            {
-                if (repoCategory.store_id == storeId)
-                {
-                    return repoCategory;
-                }
-            }
-            return null;
-        }
-
-        public RepoCategoryItem GetItemInfoFromStoreId(string storeId)
-        {
-            if (storeId == StateHelper.LocalUserItemsId)
-            {
+            if (!DatabaseHelper.Instance.IsItemInstalled(storeId))
                 return null;
-            }
 
-            if (storeId == StateHelper.ApplicationStoreId)
-            {
-                DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(StateHelper.ApplicationStoreId);
-                RepoCategoryItem repoCategoryItem = new()
-                {
-                    store_id = storeId,
-                    version_control = "git",
-                    version_control_link = StateHelper.ApplicationCheckUpdatesUrl,
-                    filetype = Utils.IsApplicationBuildAsSingleFile? "CDPIUIUpdateItem" : "UPDmsi",
-                    target_executable_file = "patch",
-                    developer = databaseStoreItem.Developer,
-                    name = databaseStoreItem.Name,
-                    short_name = databaseStoreItem.ShortName,
-                    icon = databaseStoreItem.IconPath,
+            List<Tuple<string, string>> requiredItems = [];
 
+            DatabaseStoreItem item = DatabaseHelper.Instance.GetItemById(storeId);
+            requiredItems = item.RequiredItemIds;
 
-                };
-                return repoCategoryItem;
-            }
-
-            foreach (RepoCategoryItem repoCategoryItem in ItemsList)
-            {
-                if (repoCategoryItem.store_id == storeId)
-                {
-                    return repoCategoryItem;
-                }
-            }
-            return null;
+            return requiredItems;
         }
 
+        #endregion
+
+        #region Localization
         public string GetLocalizedStoreItemName(string name, string langCode)
         {
             string localizedString = $"slocale:{name}";
@@ -510,7 +564,7 @@ namespace CDPI_UI.Helper
             string localRepoFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName);
 
-            if (name.Contains(" "))
+            if (name.Contains(' '))
                 return name;
 
             try
@@ -518,13 +572,13 @@ namespace CDPI_UI.Helper
                 if (localeHelper.LocaleName != langCode)
                 {
                     string locFilePath;
-                    if (!StoreLocalizationPaths.ContainsKey(langCode))
+                    if (!StoreLocalizationPaths.TryGetValue(langCode, out string value))
                     {
                         locFilePath = Path.Combine(localRepoFolder, StoreLocalizationPaths["EN"]);
                     }
                     else
                     {
-                        locFilePath = Path.Combine(localRepoFolder, StoreLocalizationPaths[langCode]);
+                        locFilePath = Path.Combine(localRepoFolder, value);
                     }
 
                     using (StreamReader r = new StreamReader(locFilePath))
@@ -547,65 +601,11 @@ namespace CDPI_UI.Helper
 
             return localizedString;
         }
-
-        public string ExecuteScript(string scriptString, string scriptArgs = null)
-        {
-            string executeResult = scriptString;
-            try
-            {
-                if (scriptString != null && scriptString.StartsWith("$"))
-                {
-                    Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
-                    string scriptData = "";
-
-                    if (match.Success)
-                    {
-                        scriptData = match.Groups[1].Value;
-                    }
-
-                    if (scriptArgs != null)
-                        scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
-
-                    if (scriptString.StartsWith("$STATICIMAGE"))
-                    {
-                        executeResult = Static.Utils.StaticImageScript(scriptData);
-                    }
-                    else if (scriptString.StartsWith("$DYNAMICIMAGE"))
-                    {
-                        executeResult = Static.Utils.DynamicPathConverter(scriptData);
-                    }
-                    else if (scriptString.StartsWith("$LOADDYNAMIC"))
-                    {
-                        executeResult = Static.Utils.LoadAllTextFromFile(Static.Utils.DynamicPathConverter(scriptData));
-                    }
-                    Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {scriptString} execute result is {executeResult}, {scriptData}");
-                }
-            }
-            catch (Exception ex)
-            {
-                // pass
-            }
-
-            return executeResult;
-        }
-
-        public List<Tuple<string, string>> GetItemRequiredItemsById(string storeId)
-        {
-            if (!DatabaseHelper.Instance.IsItemInstalled(storeId))
-                return null;
-
-            List<Tuple<string, string>> requiredItems = [];
-
-            DatabaseStoreItem item = DatabaseHelper.Instance.GetItemById(storeId);
-            requiredItems = item.RequiredItemIds;
-
-            return requiredItems;
-        }
-
-
+        #endregion
 
         // Queue
 
+        #region ItemInstalling Failure List
         private void AddItemToDownloadFailureList(string itemId, string operationId, string version, string errorCode)
         {
             lock (_FailedToInstallItemsLock)
@@ -635,14 +635,16 @@ namespace CDPI_UI.Helper
         {
             return FailedToInstallItems;
         }
+        #endregion
 
-        public void AddItemToQueue(string itemId, string version, bool cleanDirectoryBeforeInstalling = false)
+        #region ItemInstalling Queue
+        public void AddItemToQueue(string itemId, string version = null, bool cleanDirectoryBeforeInstalling = false, string packFile = null)
         {
             RemoveItemFromDownloadFailureList(itemId);
             if (GetOperationIdFromItemId(itemId) != null) return;
 
             var opId = Guid.NewGuid().ToString();
-            var qi = new QueueItem(itemId, opId, version, cleanDirectoryBeforeInstalling);
+            var qi = new QueueItem(itemId, opId, version, cleanDirectoryBeforeInstalling, packFilePath:packFile);
 
             lock (_queueLock)
             {
@@ -745,6 +747,8 @@ namespace CDPI_UI.Helper
             }
         }
 
+        #endregion
+
         private async Task ProcessAsync(QueueItem qi)
         {
             CreateDownloadManagerAndConnectHandlers(qi.OperationId);
@@ -819,7 +823,7 @@ namespace CDPI_UI.Helper
             DownloadManager = null;
         }
 
-        public static async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
+        public async Task<Tuple<string, string>> GetLastVersionAndVersionNotes(string repoUrl)
         {
             string notes;
             string tag;
@@ -832,7 +836,7 @@ namespace CDPI_UI.Helper
                 var root = doc.RootElement;
 
                 tag = root.GetProperty("tag_name").GetString();
-                notes = root.GetProperty("body").GetString();
+                notes = VersionControl == SupportedVersionControls.GitHub ? root.GetProperty("body").GetString() : root.GetProperty("description").GetString();
 
                 return Tuple.Create(tag, notes);
             }
@@ -854,6 +858,14 @@ namespace CDPI_UI.Helper
             public string actions;
             public string target_executable_file;
         }
+        private static string TryGetValue(JsonElement jsonElement, string key)
+        {
+            if (jsonElement.TryGetProperty(key, out var value))
+            {
+                return value.GetString();
+            }
+            return "";
+        }
         private async Task<Tuple<string, string>> GetVersionDownloadLink(
             string repoUrl, string targetFileOrFileType, string version = null, string prefferedFile = null
         )
@@ -870,13 +882,16 @@ namespace CDPI_UI.Helper
 
                 tag = root.GetProperty("tag_name").GetString();
 
-                var assets = root.GetProperty("assets").EnumerateArray();
+                var assets = (VersionControl == SupportedVersionControls.GitHub ? root.GetProperty("assets") : root.GetProperty("assets").GetProperty("links")).EnumerateArray();
                 var matches = assets
                     .Select(a => new
                     {
-                        Name = a.GetProperty("name").GetString(),
-                        Url = a.GetProperty("browser_download_url").GetString()
+                        Name = TryGetValue(a, "name"),
+                        Url = VersionControl == SupportedVersionControls.GitHub ? a.GetProperty("browser_download_url").GetString() : a.GetProperty("url").GetString()
                     })
+                    .Where(a =>
+                        !string.IsNullOrEmpty(a.Name)
+                    )
                     .Where(a =>
                         string.Equals(a.Name, targetFileOrFileType, StringComparison.OrdinalIgnoreCase)
                         || a.Name.EndsWith(StateHelper.Instance.FileTypes[targetFileOrFileType], StringComparison.OrdinalIgnoreCase)
@@ -951,7 +966,25 @@ namespace CDPI_UI.Helper
             return links;
         }
 
-        private static async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
+        private string GetApiUrlForVersion(string owner, string repo, string version)
+        {
+            string url = string.Empty;
+            if (VersionControl == SupportedVersionControls.GitHub)
+            {
+                url = string.IsNullOrEmpty(version)
+                    ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+                    : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
+            }
+            else if (VersionControl == SupportedVersionControls.GitLab)
+            {
+                url = string.IsNullOrEmpty(version)
+                    ? $"https://gitlab.com/api/v4/projects/{owner}%2F{repo}/releases/permalink/latest"
+                    : $"https://gitlab.com/api/v4/projects/{owner}%2F{repo}/releases/{version}";
+            }
+            return url;
+        }
+
+        private async Task<HttpResponseMessage> GetGithubResponse(string repoUrl, string version)
         {
             Debug.WriteLine(repoUrl);
             var uri = new Uri(repoUrl);
@@ -966,13 +999,11 @@ namespace CDPI_UI.Helper
             client.DefaultRequestHeaders.UserAgent.Add(
                 new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
             client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("token", GitHubApiToken);
+                new AuthenticationHeaderValue("token", VersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
 
-            string apiUrl = string.IsNullOrEmpty(version)
-                ? $"https://api.github.com/repos/{owner}/{repo}/releases/latest"
-                : $"https://api.github.com/repos/{owner}/{repo}/releases/tags/{version}";
+            string apiUrl = GetApiUrlForVersion(owner, repo, version);
 
-            
+
 
             var response = await client.GetAsync(apiUrl);
             Logger.Instance.CreateDebugLog(nameof(StoreHelper), version);
@@ -986,16 +1017,9 @@ namespace CDPI_UI.Helper
         {
             string id = qi.ItemId;
             string version = qi.Version;
+            string packFilePath = qi.PackFilePath;
             NowProcessItemActions?.Invoke(id);
-            RepoCategoryItem item = GetItemInfoFromStoreId(id);
-
-            if (item == null)
-            {
-                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Item not found exception happens.");
-                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, "ERR_ITEM_NOT_FOUND");
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, "ERR_ITEM_NOT_FOUND"));
-                return;
-            }
+            
 
             List<Tuple<string, string>> requiredItems = [];
             if (DatabaseHelper.Instance.IsItemInstalled(id))
@@ -1005,7 +1029,7 @@ namespace CDPI_UI.Helper
 
             string localAppData = StateHelper.GetDataDirectory();
             string itemFolder = Path.Combine(
-                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, item.store_id);
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, qi.ItemId);
 
             try
             {
@@ -1022,122 +1046,120 @@ namespace CDPI_UI.Helper
             {
                 string err = HandleException(ex);
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, err));
-                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, err);
+                if (string.IsNullOrEmpty(packFilePath)) AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, err);
                 return;
             }
 
             // For testing only
             // await Task.Delay(10000);
 
-            string downloadUrl = "";
-            string tag = "";
-            string filetype = item.filetype;
-            List<DownloadLink> downloadLinks = [];
+            RepoCategoryItem item;
+            string tag;
+            string downloadUrl;
+            if (string.IsNullOrEmpty(packFilePath))
+            {
+                // Download from the Store
+                item = GetItemInfoFromStoreId(id);
 
-            if (item.version_control == "git_only_last")
-            {
-                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile: item.preffered_to_download_file_name);
-                downloadUrl = item.download_link;
-                tag = data.Item2;
-            }
-            else if (item.version_control == "git")
-            {
-                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile:item.preffered_to_download_file_name);
-                downloadUrl = data.Item1;
-                tag = data.Item2;
-            }
-            else if (item.version_control == "several_repos")
-            {
-                downloadLinks = await GetDownloadLinksAsync(item.files_to_download);
-            }
-            var errorLink = downloadLinks.FirstOrDefault(i => i.errorHappens);
-            if (errorLink != null)
-            {
-                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, errorLink.errorCode));
-                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
-                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{errorLink.errorCode} exception happens.");
-                return;
-            }
-
-            if (downloadUrl.StartsWith("ERR"))
-            {
-                if (downloadUrl == "ERR_TOO_MANY_VARIANTS")
+                if (item == null)
                 {
-                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
-                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
-                    Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens."); // TODO: Fix
+                    Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Item not found exception happens.");
+                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, "ERR_ITEM_NOT_FOUND");
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, "ERR_ITEM_NOT_FOUND"));
+                    return;
                 }
-                else
+                var result = await DownloadAndInstallItemFromOnlineStore(qi, item);
+                if (!result.Item1)
                 {
-                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
-                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
-                    Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{downloadUrl} exception happens.");
+                    return;
                 }
-                return;
-            }
-
-            qi.Status = "WORK";
-
-            if (DownloadManager == null)
-                return;
-
-            if (item.version_control == "several_repos")
-            {
-                bool restartFlag = false;
-                foreach (var link in downloadLinks)
-                {
-                    bool result = await DownloadManager.DownloadAndExtractAsync(
-                        link.link,
-                        itemFolder,
-                        extractArchive: link.type == "archive" || link.type == "configPack",
-                        extractSkipFiletypes: [],
-                        extractRootFolder: link.archive_root_folder,
-                        executableFileName: link.target_executable_file,
-                        filetype: link.type,
-                        removeAfterAction: link.actions == "remove"
-                    );
-
-                    if (DownloadManager.IsRestartNeeded)
-                    {
-                        restartFlag = true;
-                    }
-                    if (!result)
-                    {
-                        return;
-                    }
-                }
-
-                if (restartFlag) 
-                    Logger.Instance.CreateDebugLog(nameof(StoreHelper), "Restart requested");
+                tag = result.Item2;
+                downloadUrl = result.Item3;
             }
             else
             {
-                bool result = await DownloadManager.DownloadAndExtractAsync(
-                    downloadUrl,
-                    itemFolder,
-                    extractArchive: item.filetype == "archive" || item.filetype == "configPack",
-                    extractSkipFiletypes: [".bat", ".cmd", ".vbs"],
-                    extractRootFolder: item.archive_root_folder,
-                    executableFileName: item.target_executable_file,
-                    filetype: item.filetype
-                );
-                if (!result) return;
+                // Pack is allready exist - only move needed
+                try
+                {
+                    if (qi.ItemId != StateHelper.ApplicationStoreId)
+                    {
+                        if (Directory.Exists(itemFolder)) Directory.Delete(itemFolder, recursive: true);
+                        Directory.Move(packFilePath, itemFolder);
+                    }
+                    else
+                    {
+                        File.Copy(packFilePath, Path.Combine(itemFolder, "patch.cdpipatch"), overwrite:true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string err = ErrorsHelper.GetPrettyErrorCode("ERR_LOCAL_ITEM_MOVING", ex);
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, err));
+                    return;
+                }
+
+                if (qi.ItemId == StateHelper.ApplicationStoreId)
+                {
+                    item = GetItemInfoFromStoreId(qi.ItemId);
+                    tag = string.Empty;
+                    downloadUrl = null;
+                }
+                else
+                {
+                    string initFilePath = Path.Combine(itemFolder, "init.json");
+                    if (!File.Exists(initFilePath))
+                    {
+                        ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, "ERR_LOCAL_ITEM_UNSUPPORTED"));
+                        return;
+                    }
+                    LocalItemInitModel localItemInitModel = Utils.LoadJson<LocalItemInitModel>(initFilePath);
+
+                    item = new()
+                    {
+                        store_id = qi.ItemId,
+                        type = localItemInitModel.Type ?? "configlist",
+                        name = localItemInitModel.Name ?? localItemInitModel.ShortName ?? qi.ItemId,
+                        short_name = localItemInitModel.ShortName ?? qi.ItemId,
+                        target_executable_file = localItemInitModel.ExecutableFile,
+                        filetype = "localPack",
+                        version_control = "local",
+                        icon = localItemInitModel.Icon,
+                        developer = localItemInitModel.Developer,
+                        background = localItemInitModel.Color,
+                        dependencies = localItemInitModel.Requirements,
+                        before_install_actions = localItemInitModel.BeforeInstallActions,
+                        after_install_actions = localItemInitModel.AfterInstallActions,
+                    };
+                    tag = localItemInitModel.Version;
+                    downloadUrl = null;
+                }
             }
+
+
 
             if (cancellationToken.IsCancellationRequested)
                 return;
 
             if (id == StateHelper.ApplicationStoreId)
             {
-                if (!Utils.IsApplicationBuildAsSingleFile) return;
+                if (Utils.IsApplicationBuildAsMsi) return;
 
-                await GetPatchReadyToInstall(Path.Combine(itemFolder, "patch.cdpipatch"), qi.OperationId);
+                try
+                {
+
+                    await GetPatchReadyToInstall(Path.Combine(itemFolder, "patch.cdpipatch"), qi.OperationId);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
+                }
                 return;
             }
 
             try
             {
-                if (!await LaunchBeforeInstallActions(LScriptLangHelper.RunScript(item.before_install_actions), itemFolder)) return;
+                if (!await LaunchBeforeInstallActions(await LScriptLangHelper.RunScript(item.before_install_actions), itemFolder)) return;
 
                 List<Tuple<string, string>> _dependencies = new List<Tuple<string, string>>();
 
@@ -1177,16 +1199,138 @@ namespace CDPI_UI.Helper
                 }
 
                 // TODO: add RequiredItemIds to new installed item from store (foreach)
-
+                Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"Adding item {item.name}...");
                 DatabaseHelper.Instance.AddOrUpdateItem(databaseStoreItem);
-                LScriptLangHelper.RunScript(item.after_install_actions);
+
+                Dictionary<string, string> extraArgs = new()
+                {
+                    { "CurrentDirectory", itemFolder }
+                };
+
+                await LScriptLangHelper.RunScript(item.after_install_actions, extraArgs: extraArgs, cancellationToken:cancellationToken);
+
+                Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"Adding item {item.name}... COMPLETE");
+
             }
             catch (Exception ex)
             {
+                try
+                {
+                    RemoveItem(qi.ItemId);
+                }
+                catch { }
                 Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{ex} exception happens.");
                 ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, HandleException(ex)));
                 AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
             }
+        }
+
+        private async Task<Tuple<bool, string, string>> DownloadAndInstallItemFromOnlineStore(QueueItem qi, RepoCategoryItem item)
+        {
+            string id = qi.ItemId;
+            string version = qi.Version;
+            
+
+            string localAppData = StateHelper.GetDataDirectory();
+            string itemFolder = Path.Combine(
+                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, item.store_id);
+
+            string downloadUrl = "";
+            string tag = "";
+            string filetype = item.filetype;
+            List<DownloadLink> downloadLinks = [];
+
+            if (item.version_control == "git_only_last")
+            {
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile: item.preffered_to_download_file_name);
+                downloadUrl = item.download_link;
+                tag = data.Item2;
+            }
+            else if (item.version_control == "git")
+            {
+                var data = await GetVersionDownloadLink(item.version_control_link, item.filetype, version: version, prefferedFile: item.preffered_to_download_file_name);
+                downloadUrl = data.Item1;
+                tag = data.Item2;
+            }
+            else if (item.version_control == "several_repos")
+            {
+                downloadLinks = await GetDownloadLinksAsync(item.files_to_download);
+            }
+            var errorLink = downloadLinks.FirstOrDefault(i => i.errorHappens);
+            if (errorLink != null)
+            {
+                ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, errorLink.errorCode));
+                AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{errorLink.errorCode} exception happens.");
+                return Tuple.Create(false, string.Empty, string.Empty);
+            }
+
+            if (downloadUrl.StartsWith("ERR"))
+            {
+                if (downloadUrl == "ERR_TOO_MANY_VARIANTS")
+                {
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
+                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
+                    Logger.Instance.CreateWarningLog(nameof(StoreHelper), "TOO_MANY_VARIANTS exception happens."); // TODO: Fix
+                }
+                else
+                {
+                    ItemInstallingErrorHappens?.Invoke(Tuple.Create(qi.OperationId, downloadUrl));
+                    AddItemToDownloadFailureList(qi.ItemId, qi.OperationId, qi.Version, downloadUrl);
+                    Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"{downloadUrl} exception happens.");
+                }
+                return Tuple.Create(false, string.Empty, string.Empty);
+            }
+
+            qi.Status = "WORK";
+
+            if (DownloadManager == null)
+                return Tuple.Create(false, string.Empty, string.Empty);
+
+            if (item.version_control == "several_repos")
+            {
+                bool restartFlag = false;
+                foreach (var link in downloadLinks)
+                {
+                    bool result = await DownloadManager.DownloadAndExtractAsync(
+                        link.link,
+                        itemFolder,
+                        extractArchive: link.type == "archive" || link.type == "configPack" || link.type == "signedZip",
+                        extractSkipFiletypes: [],
+                        extractRootFolder: link.archive_root_folder,
+                        executableFileName: link.target_executable_file,
+                        filetype: link.type,
+                        removeAfterAction: link.actions == "remove"
+                    );
+
+                    if (DownloadManager.IsRestartNeeded)
+                    {
+                        restartFlag = true;
+                    }
+                    if (!result)
+                    {
+                        return Tuple.Create(false, string.Empty, string.Empty);
+                    }
+                }
+
+                if (restartFlag)
+                    Logger.Instance.CreateDebugLog(nameof(StoreHelper), "Restart requested");
+            }
+            else
+            {
+                bool result = await DownloadManager.DownloadAndExtractAsync(
+                    downloadUrl,
+                    itemFolder,
+                    extractArchive: item.filetype == "archive" || item.filetype == "configPack" || item.filetype == "signedZip",
+                    extractSkipFiletypes: item.filetype == "signedZip" ? [] : [".bat", ".cmd", ".vbs"],
+                    extractRootFolder: item.archive_root_folder,
+                    executableFileName: item.target_executable_file,
+                    filetype: item.filetype
+                );
+                if (!result) return Tuple.Create(false, string.Empty, string.Empty);
+            }
+
+            return Tuple.Create(true, tag, downloadUrl);
         }
 
         private async Task<bool> LaunchBeforeInstallActions(string actions, string destDir)
@@ -1229,30 +1373,74 @@ namespace CDPI_UI.Helper
             string requirementsFile = Path.Combine(makePatchFolder, "requirements.json");
             var requirements = Utils.LoadJson<PatchRequirements>(requirementsFile);
 
+            if (string.IsNullOrEmpty(requirements.version)) throw new UnknownFileFormatException();
+
+            Version curv = new(StateHelper.Instance.Version);
+            Version parthv = new(requirements.version);
+
+            if (curv >= parthv) throw new NewestVersionAlreadyInstalledException();
+
+            string mainCatalogPath = Path.Combine(makePatchFolder, "CDPIUI", "catalog.cat");
+            if (!Path.Exists(mainCatalogPath)) throw new FileNotFoundException("Catalog file not found");
+
+            if (await CertificateCheck.CheckCatalog(mainCatalogPath, Path.Combine(makePatchFolder, "CDPIUI")) != CertificateCheck.CatalogCheckResult.Success)
+            {
+                throw new CatalogInvalid();
+            }
+
             List<string> patches = [];
 
-            foreach (var requirement in requirements.Requirements)
+            try
             {
-                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                int secondsSinceEpoch = (int)t.TotalSeconds;
-                string _dir = Path.Combine(makePatchFolder, secondsSinceEpoch.ToString());
 
-                patches.Add(_dir);
-
-                bool result = await DownloadManager.DownloadAndExtractAsync(
-                    requirement,
-                    _dir,
-                    extractArchive: true,
-                    extractSkipFiletypes: [],
-                    extractRootFolder: "CDPIUI/",
-                    executableFileName: "",
-                    filetype: "archive"
-                );
-
-                if (!result)
+                foreach (var requirement in requirements.patch_urls)
                 {
-                    return false;
+                    var parts = requirement.TrimStart('/').Split("/");
+                    if (parts.Length > 2)
+                    {
+                        parts = (string[])parts.Reverse();
+                        var pver = new Version(parts[2]);
+                        if (curv >= pver) continue;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+                    int secondsSinceEpoch = (int)t.TotalSeconds;
+                    string _dir = Path.Combine(makePatchFolder, secondsSinceEpoch.ToString());
+
+                    patches.Add(_dir);
+
+                    bool result = await DownloadManager.DownloadAndExtractAsync(
+                        requirement,
+                        _dir,
+                        extractArchive: true,
+                        extractSkipFiletypes: [],
+                        extractRootFolder: "CDPIUI/",
+                        executableFileName: "",
+                        filetype: "archive"
+                    );
+
+                    if (!result)
+                    {
+                        return false;
+                    }
+
+                    string catalogPath = Path.Combine(_dir, "catalog.cat");
+                    if (!Path.Exists(catalogPath)) throw new FileNotFoundException("Catalog file not found");
+
+                    var catalogCheckResult = await CertificateCheck.CheckCatalog(catalogPath, _dir);
+                    if (catalogCheckResult != CertificateCheck.CatalogCheckResult.Success)
+                    {
+                        throw new CatalogInvalid();
+                    }
                 }
+            }
+            catch
+            {
+                return false;
             }
 
             patches.Reverse();
@@ -1319,21 +1507,9 @@ namespace CDPI_UI.Helper
                 try
                 {
                     string curV = item.CurrentVersion;
-                    if (curV.Split(".").Length <= 2)
-                    {
-                        curV += ".0";
-                    }
                     string serV = versionData.Item1;
-                    if (serV.Split(".").Length <= 2)
-                    {
-                        serV += ".0";
-                    }
-                    var currentVersion = new Version(curV.Replace("v", ""));
-                    var serverVersion = new Version(serV.Replace("v", ""));
 
-                    Logger.Instance.CreateDebugLog(nameof(StoreHelper), $"{serverVersion}, {currentVersion}");
-
-                    if (serverVersion > currentVersion)
+                    if (Utils.CompareVersionStrings(curV, serV) == -1)
                     {
                         UpdatesAvailableList.Add(new()
                         {
@@ -1381,18 +1557,8 @@ namespace CDPI_UI.Helper
 
         private static string HandleException(Exception ex)
         {
-            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr);
-            var code = codeObj.ToString();
-            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
-            if (hr != null)
-            {
-                string hrHex = $"0x{hr.Value:X8}";
-                return $"ERR_ITEM_INSTALLING_{code} ({hrHex})";
-            }
-            else
-            {
-                return $"ERR_ITEM_INSTALLING_{code}";
-            }
+            string errorCode = ErrorsHelper.GetPrettyErrorCode("ERR_ITEM_INSTALLING", ex);
+            return errorCode;
         }
     }
 }

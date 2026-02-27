@@ -1,4 +1,5 @@
 ﻿using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.LScript;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -10,7 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Windows.System;
 using Windows.UI;
@@ -344,7 +347,7 @@ namespace CDPI_UI.Helper.Static
         {
             StoreItemLargeButton storeItemLargeButton;
 
-            string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
             Windows.UI.Color color = HexToColorConverter(backgroundColor);
@@ -368,7 +371,7 @@ namespace CDPI_UI.Helper.Static
         {
             StoreItemSmallButton storeItemSmallButton;
 
-            string eImageSource = StoreHelper.Instance.ExecuteScript(imageSource);
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
             SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(backgroundColor);
@@ -421,6 +424,19 @@ namespace CDPI_UI.Helper.Static
                         tabView.TabItemsSource = null;
                         break;
                 }
+            }
+        }
+
+        public static Uri GetUriFromString(string input)
+        {
+            
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(StateHelper.Instance.workDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
+            {
+                return result;
+            }
+            else
+            {
+                return new Uri("ms-appx:///Assets/Store/empty.png");
             }
         }
 

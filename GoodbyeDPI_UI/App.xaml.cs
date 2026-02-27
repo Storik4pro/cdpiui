@@ -6,8 +6,11 @@ using CDPI_UI.DesktopWap.Helper;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Helper.Store;
+using CDPI_UI.Messages;
 using CDPI_UI.Views;
 using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -25,16 +28,20 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI;
+using WinRT;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
 using static CDPI_UI.Win32;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using WASDK = Microsoft.WindowsAppSDK;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -107,6 +114,8 @@ namespace CDPI_UI
 
             TasksHelper.Instance.RequestComponentItemsInit();
 
+            bool isFileProcessed = await ProcessFiles(arguments);
+
             if (!arguments.Contains("--create-no-window"))
             {
                 if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
@@ -130,7 +139,7 @@ namespace CDPI_UI
                 }
                 else
                 {
-                    await SafeCreateNewWindow<ModernMainWindow>();
+                    if (!isFileProcessed) await SafeCreateNewWindow<ModernMainWindow>();
                 }
 
                 if (arguments.Contains("--show-update-page"))
@@ -161,6 +170,27 @@ namespace CDPI_UI
             {
                 OpenWindows[0].Close();
             }
+            Logger.Instance.CreateDebugLog(nameof(App), $"Arguments {arguments}");
+            
+        }
+
+        private static readonly string[] SupportedFilePaths = [".cdpisignedpack", ".cdpiconfigpack"];
+
+        private async Task<bool> ProcessFiles(string[] files)
+        {
+            foreach (string file in files)
+            {
+                var _file = file.Replace("\"", "");
+                Logger.Instance.CreateDebugLog(nameof(App), $"Working on file {_file}");
+
+                if (Path.Exists(_file) && SupportedFilePaths.Contains(Path.GetExtension(_file)))
+                {
+                    var window = await SafeCreateNewWindow<StoreLocalItemInstallingDialog>();
+                    window.SetPackFilePath(_file);
+                    return true; // Only first file will be processed.
+                }
+            }
+            return false;
         }
 
         private void PipeConnected()
@@ -188,7 +218,22 @@ namespace CDPI_UI
 
             PipeClient.Instance.Start();
         }
-        
+
+        public async void OpenRequestedFile(AppActivationArguments appActivationArguments)
+        {
+            bool result = false;
+
+            if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
+                appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)
+            {
+                string[] args = GetFilesFromStringRegex().Split(fileActivatedEventArgs.Arguments);
+
+                result = await ProcessFiles(args);
+            }
+            if (!result) await SafeCreateNewWindow<ModernMainWindow>();
+        }
+
+
         public async void GetReadyFeatures()
         {
             DatabaseHelper.Instance.QuickRestore();
@@ -280,9 +325,9 @@ namespace CDPI_UI
 
                 var newViewWindow = new TWindow();
                 WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
-                if (activate) newViewWindow.Activate();
-
                 RegisterWindow(newViewWindow);
+
+                if (activate) newViewWindow.Activate();
                 await Task.CompletedTask;
 
                 return newViewWindow;
@@ -298,7 +343,7 @@ namespace CDPI_UI
             if (!OpenWindows.Contains(window))
                     OpenWindows.Add(window);
 
-            
+
             window.Closed -= Window_ClosedHandler;
             window.Closed += Window_ClosedHandler;
             
@@ -416,7 +461,7 @@ namespace CDPI_UI
             catch { }
         }
 
-        public Window GetCurrentWindowFromType<TWindow>() where TWindow:Window
+        public TWindow GetCurrentWindowFromType<TWindow>() where TWindow:Window
         {
             return OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
         }
@@ -757,5 +802,8 @@ namespace CDPI_UI
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_SHOWWINDOW = 0x0040;
+
+        [GeneratedRegex(@"""(.*?)\""")]
+        private static partial Regex GetFilesFromStringRegex();
     }
 }

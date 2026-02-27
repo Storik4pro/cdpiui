@@ -33,42 +33,43 @@
                        MaxWidth="400" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"
                        VerticalAlignment="Bottom" Margin="0, 0, 0, 20"/>
         </Grid>
-        <ScrollViewer 
+        <Grid 
             x:Name="ErrorScrollViewer"
-            Padding="40,0,20,0"
-            Margin="0, 20, 0, 0"
+            Padding="20 0 20 20"
+            Margin="0"
             IsTabStop="False"
             UseSystemFocusVisuals="False"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto"
             Visibility="Collapsed">
-            <StackPanel HorizontalAlignment="Stretch">
-                <Grid  HorizontalAlignment="Stretch" Margin="0, 0, 0, 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text=":(" Style="{ThemeResource DisplayTextBlockStyle}"/>
-                    <TextBlock l:Uids.Uid="StoreDatabaseErrorTextBlock" Style="{ThemeResource TitleTextBlockStyle}" Margin="20, 15, 0, 0"
-                               TextWrapping="Wrap" MaxLines="10" Grid.Column="1" VerticalAlignment="Center"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 0, 0, 10" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid HorizontalAlignment="Center">
+                    <BitmapIcon UriSource="ms-appx:///Assets/icons/store.png" ShowAsMonochrome="True" Width="100"/>
+                    <FontIcon Glyph="&#xF736;" Foreground="{ThemeResource SystemFillColorCautionBackgroundBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="52" Margin="-10 0 0 0"/>
+                    <FontIcon Glyph="&#xE7BA;" Foreground="{ThemeResource SystemFillColorCautionBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left"  FontSize="52" Margin="-10 0 0 0"/>
                 </Grid>
-                <TextBlock 
-                    l:Uids.Uid="StoreUnavailableTextBlock"
-                    TextWrapping="Wrap"/>
-                <Grid HorizontalAlignment="Left" Margin="0, 20, 0, 0">
-                    <Rectangle Fill="{ThemeResource CardStrokeColorDefaultBrush}" RadiusX="5" RadiusY="5"/>
-                    <StackPanel Margin="20">
-                        <TextBlock l:Uids.Uid="ErrorInformationTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                        <TextBlock x:Name="ErrorCodeText" Text="FLASHLIGHT_BUSY" IsTextSelectionEnabled="True"/>
-                        <HyperlinkButton Padding="0, 1" HorizontalAlignment="Right" Margin="0, 5, 0, 0">
-                            <HyperlinkButton.Content>
-                                <TextBlock l:Uids.Uid="ViewMoreTextBlock"/>
-                            </HyperlinkButton.Content>
-                        </HyperlinkButton>
-                    </StackPanel>
-                </Grid>
-            </StackPanel>
-        </ScrollViewer>
+                <TextBlock l:Uids.Uid="StoreDatabaseErrorTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="20, 15, 0, 0"
+                            TextWrapping="Wrap" MaxLines="10" Grid.Row="1" VerticalAlignment="Center"/>
+            </Grid>
+            <toolkit:WrapPanel Orientation="Horizontal" HorizontalSpacing="8" Grid.Row="1" HorizontalAlignment="Center">
+                <HyperlinkButton l:Uids.Uid="/Flashlight/HowToFixThisProblem" x:Name="StoreLoadFixButton" Click="StoreLoadFixButton_Click" Padding="6 0"/>
+                <Rectangle VerticalAlignment="Stretch" Fill="{ThemeResource TextFillColorPrimary}" Width="1" Margin="0 2"/>
+                <HyperlinkButton l:Uids.Uid="/Flashlight/WhatIsStore" x:Name="WhatIsStoreButton" Click="WhatIsStoreButton_Click"  Padding="6 0"/>
+                <Rectangle VerticalAlignment="Stretch" Fill="{ThemeResource TextFillColorPrimary}" Width="1" Margin="0 2"/>
+                <HyperlinkButton l:Uids.Uid="/Flashlight/AskSupport" x:Name="AskSupportButton" Click="AskSupportButton_Click" Padding="6 0"/>
+            </toolkit:WrapPanel>
+            <Grid HorizontalAlignment="Center" Margin="0, 20, 0, 0" Grid.Row="2">
+                <TextBlock x:Name="ErrorCodeText" Text="FLASHLIGHT_BUSY" IsTextSelectionEnabled="True"/>
+            </Grid>
+        </Grid>
         <ScrollViewer
             x:Name="StoreScrollViewer"
             Grid.Row="0"

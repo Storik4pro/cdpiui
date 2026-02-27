@@ -1,4 +1,5 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -199,7 +200,7 @@ public sealed partial class HomePage : Page
                     categoryItems.Add(
                         UIHelper.CreateLargeButton(
                             storeId:repoCategoryItem.store_id,
-                            imageSource:Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
+                            imageSource:LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
                             price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                             title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
                             backgroundColor:repoCategoryItem.background,
@@ -212,7 +213,7 @@ public sealed partial class HomePage : Page
                     categoryItems.Add(
                         UIHelper.CreateSmallButton(
                             storeId:repoCategoryItem.store_id,
-                            imageSource: Helper.StoreHelper.Instance.ExecuteScript(repoCategoryItem.icon),
+                            imageSource: LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
                             price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                             title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
                             developer: repoCategoryItem.developer,
@@ -446,6 +447,27 @@ public sealed partial class HomePage : Page
             }
         }
         return result;
+    }
+
+    private void StoreLoadFixButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        OpenHelp("FixDatabaseLoadIssue");
+    }
+
+    private void WhatIsStoreButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        OpenHelp("WelcomeToStore");
+    }
+
+    private void AskSupportButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        UrlOpenHelper.LaunchReportUrl();
+    }
+
+    private async static void OpenHelp(string page)
+    {
+        var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+        window.NavigateToPage($"/Store/{page}");
     }
 
     private void OnContainerSizeChanged(object sender, SizeChangedEventArgs e)

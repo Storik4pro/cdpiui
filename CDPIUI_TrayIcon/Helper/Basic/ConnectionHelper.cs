@@ -441,6 +441,15 @@ namespace CDPIUI_TrayIcon.Helper
                         string.Format(LocaleHelper.GetLocaleString("ConfigRequiredNewestVersionOfComponent"), result[0]), "OPEN_BEGIN_STORE_UPDATE_CHECK");
                 }
             }
+            else if (message.StartsWith("APPLICATION:"))
+            {
+                if (message.StartsWith("APPLICATION:HARD_RESTART"))
+                {
+                    await SendMessage("MAIN:EXIT_ALL");
+                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "");
+                    Application.Exit();
+                }
+            }
                 Debug.WriteLine("RELEASE");
 
         }

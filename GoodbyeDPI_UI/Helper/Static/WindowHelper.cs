@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Messages;
+﻿using CDPI_UI.Helper.Static;
+using CDPI_UI.Messages;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -15,6 +16,7 @@ using Windows.Graphics;
 using Windows.Storage;
 using WinRT.Interop;
 using WinUIEx;
+using static CDPI_UI.Win32;
 
 namespace CDPI_UI.Helper
 {
@@ -33,6 +35,7 @@ namespace CDPI_UI.Helper
             ResizeAndPositionFollowSystem,
             OnlyPositionWizard,
             Message,
+            ExtendedMessage,
             AlwaysCenter
         }
         private enum WindowPositionVariants
@@ -56,6 +59,7 @@ namespace CDPI_UI.Helper
             { nameof(CreateConfigHelperWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
+            { nameof(StoreLocalItemInstallingDialog), WindowResizeOptions.ExtendedMessage },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
         };
@@ -69,6 +73,7 @@ namespace CDPI_UI.Helper
             { WindowResizeOptions.OnlyPositionWizard, Tuple.Create(WindowPositionVariants.CenterIn, 900, 550) },
             { WindowResizeOptions.AlwaysCenter, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 400, 150) },
             { WindowResizeOptions.Message, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 700, 400) },
+            { WindowResizeOptions.ExtendedMessage, Tuple.Create(WindowPositionVariants.AlwaysCenterIn, 700, 500) },
         };
 
         public static void SetWindowSize(Window window, int width, int height)
@@ -236,6 +241,42 @@ namespace CDPI_UI.Helper
         public static float GetScaleFactor(Window window)
         {
             return (float)window.GetDpiForWindow()/96;
+        }
+
+        public static bool TrySetMicaBackdrop(bool useMicaAlt, Window window, FrameworkElement mainFrameElement = null)
+        {
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && System.Environment.OSVersion.Version.Build >= 22000)
+            {
+                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+                micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
+                window.SystemBackdrop = micaBackdrop;
+                if (mainFrameElement != null) mainFrameElement.Style = (Style)((App)Application.Current).Resources["TransparentGridStyle"];
+
+                return true;
+            }
+            else
+            {
+                if (mainFrameElement != null) mainFrameElement.Style = (Style)((App)Application.Current).Resources["SolidGridStyle"];
+            }
+            return false;
+        }
+
+        public static void SetWindowBorderMargin(Window window)
+        {
+            if (System.Environment.OSVersion.Version.Build >= 22000) return;
+
+            var handle = WindowNative.GetWindowHandle(window);
+            var margins = new MARGINS { cxLeftWidth = 0, cxRightWidth = 0, cyBottomHeight = 0, cyTopHeight = 2 };
+            DwmExtendFrameIntoClientArea(handle, ref margins);
+            Logger.Instance.CreateInfoLog(nameof(UIHelper), $"Custom border margin setted for {window.GetType()}");
+        }
+
+        public static void SetWindowIcon(Window window, string iconUri)
+        {
+            IntPtr handle = WindowNative.GetWindowHandle(window);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(handle);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.SetIcon(iconUri);
         }
 
         #region Win32 interop

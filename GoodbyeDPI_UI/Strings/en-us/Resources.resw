@@ -1664,4 +1664,347 @@ To fix this, go to the component settings page and select the [Startup automatic
   <data name="ViewSelectedFileButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Edit this file in default app</value>
   </data>
+  <data name="ItemUnknownSourceWarningTextBlock.Text" xml:space="preserve">
+    <value>This item is downloaded from unknown source and can potentially harm your computer. If you do not trust the source, do not install this item.</value>
+  </data>
+  <data name="SatusGettingPackInfo" xml:space="preserve">
+    <value>Getting ready package</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Pack version: {0}</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source: {0}</value>
+  </data>
+  <data name="StoreSmallInstallItemName" xml:space="preserve">
+    <value>Install {0}?</value>
+  </data>
+  <data name="InstallButton.Content" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="ItemAlreadyInstalledWarn" xml:space="preserve">
+    <value>The latest version of this item is currently installed. To roll back the version, first uninstall that item in Store. 
+ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Header" xml:space="preserve">
+    <value>Add item from local package</value>
+  </data>
+  <data name="ManualItemInstallationSettingsCard.Description" xml:space="preserve">
+    <value>Select a local pack to install it. Do it ONLY if you don't have access to Online Store and you trust pack's author </value>
+  </data>
+  <data name="SelectPackTextBlock.Text" xml:space="preserve">
+    <value>Select a pack file</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.Title" xml:space="preserve">
+    <value>Are you sure you want to continue?</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="LocalItemInstallingWarningContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Continue anyway</value>
+  </data>
+  <data name="ItemLocalInstallingWarningTextBlock.Text" xml:space="preserve">
+    <value>Disclaimer
+Installing packs from unknown source can potentially harm you computer.
+DO NOT install packs from source you don't trust.</value>
+  </data>
+  <data name="SelectLocalPackToInstall" xml:space="preserve">
+    <value>Select item package...</value>
+  </data>
+  <data name="SignedPack" xml:space="preserve">
+    <value>Signed Store item package</value>
+  </data>
+  <data name="ConfigPack" xml:space="preserve">
+    <value>Unsigned config pack</value>
+  </data>
+  <data name="Patch" xml:space="preserve">
+    <value>Application patch</value>
+  </data>
+  <data name="AllSupported" xml:space="preserve">
+    <value>All supported file extentions</value>
+  </data>
+  <data name="VersionControlGitHub" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="VersionControlGitLab" xml:space="preserve">
+    <value>GitLab</value>
+  </data>
+  <data name="SelectVersionControlSettingsCard.Header" xml:space="preserve">
+    <value>Preferred version control type </value>
+  </data>
+  <data name="SelectVersionControlSettingsCardDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Changing this setting will affect the preferred server for receiving updates for items and applications.</value>
+  </data>
+  <data name="AppRestartNeededTextBlock.Text" xml:space="preserve">
+    <value>Please restart the application for this change to take effect.</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Header" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryManagentSettingsCard.Description" xml:space="preserve">
+    <value>Remove unused configs from config kits. Remove temp files. View disk usage</value>
+  </data>
+  <data name="ItemViewAdvancedInfoButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View advanced information for debugging</value>
+  </data>
+  <data name="StoreIdTextBlock.Text" xml:space="preserve">
+    <value>Store Id</value>
+  </data>
+  <data name="ItemAdvancedInfoFlyoutTitleTextBlock.Text" xml:space="preserve">
+    <value>Advanced info</value>
+  </data>
+  <data name="ItemUnsupportedWarningTextBlock.Text" xml:space="preserve">
+    <value>This item is currently unsupported. Make sure your application is up to date.</value>
+  </data>
+  <data name="DiskUsageTextBlock.Text" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDisplayName" xml:space="preserve">
+    <value>Application internal files</value>
+  </data>
+  <data name="MemoryUsageCategoryApplicationDescription" xml:space="preserve">
+    <value>These files ensure the correct functioning of the application</value>
+  </data>
+  <data name="UsedMemory" xml:space="preserve">
+    <value>Used {0}</value>
+  </data>
+  <data name="FreeMemory" xml:space="preserve">
+    <value>Left: {0}</value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDisplayName" xml:space="preserve">
+    <value>Application settings </value>
+  </data>
+  <data name="MemoryUsageCategorySettingsDescription" xml:space="preserve">
+    <value>This files contains your settings</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDisplayName" xml:space="preserve">
+    <value>Application logs</value>
+  </data>
+  <data name="MemoryUsageCategoryLogsDescription" xml:space="preserve">
+    <value>Files for application debugging</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDisplayName" xml:space="preserve">
+    <value>Temporary files</value>
+  </data>
+  <data name="MemoryUsageCategoryTempDescription" xml:space="preserve">
+    <value>Unused files</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDisplayName" xml:space="preserve">
+    <value>Installed items</value>
+  </data>
+  <data name="MemoryUsageCategoryStoreItemsDescription" xml:space="preserve">
+    <value>Items you installed from the Store </value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDisplayName" xml:space="preserve">
+    <value>Store cache </value>
+  </data>
+  <data name="MemoryUsageCategoryStoreCacheDescription" xml:space="preserve">
+    <value>These files allow you to save Internet traffic</value>
+  </data>
+  <data name="MemoryDiskName" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="MemoryUsage" xml:space="preserve">
+    <value>Memory usage</value>
+  </data>
+  <data name="MemoryViewApplicationFilesDetails" xml:space="preserve">
+    <value>Application internal files</value>
+  </data>
+  <data name="ApplicationInternalFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>This files is required to correct application work. It's contains dynamic load libraries (DLL), localization files and other. Without this files application will not work.</value>
+  </data>
+  <data name="ApplicationInternalFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Here you can review application installation folder.</value>
+  </data>
+  <data name="ViewAppDirButton.Content" xml:space="preserve">
+    <value>View application directory</value>
+  </data>
+  <data name="ViewLogDirButton.Content" xml:space="preserve">
+    <value>View logs directory</value>
+  </data>
+  <data name="LogFilesActionsTextBlock.Text" xml:space="preserve">
+    <value>Here you can review log files</value>
+  </data>
+  <data name="LogFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Files for application debugging. These files may help you fix some issues with this app. Also, bug reports with logs are being considered faster.</value>
+  </data>
+  <data name="MemoryViewLogsDetails" xml:space="preserve">
+    <value>Application logs</value>
+  </data>
+  <data name="CleanupTextBlock.Text" xml:space="preserve">
+    <value>Cleanup</value>
+  </data>
+  <data name="CleanupLogFilesTextBlock.Text" xml:space="preserve">
+    <value>Remove all application logs for cleanup disk space.</value>
+  </data>
+  <data name="CleanupDirButton.Content" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="ErrorHappensWhileCleanup" xml:space="preserve">
+    <value>Something went wrong when we try to clean this files. Here is error code, in case you need it: {0}</value>
+  </data>
+  <data name="MemoryViewStoreCacheFilesDetails" xml:space="preserve">
+    <value>Store cache</value>
+  </data>
+  <data name="StoreCacheFilesFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>These files allow you to save Internet traffic.</value>
+  </data>
+  <data name="CleanupStoreCacheFilesTextBlock.Text" xml:space="preserve">
+    <value>If you clean Store cache all database will be downloaded again, when you start browsing Store.</value>
+  </data>
+  <data name="StoreInstalledItemsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>All items you installed from the Store or another source. </value>
+  </data>
+  <data name="SetupMenuFlyuoutItem.Text" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="MemoryViewInstalledItemsDetails" xml:space="preserve">
+    <value>Installed items</value>
+  </data>
+  <data name="MemoryViewSettingsDetails" xml:space="preserve">
+    <value>Application settings</value>
+  </data>
+  <data name="ApplicationSettingsFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>These files contains your settings like windows positions, theme, preferred version control type and etc.</value>
+  </data>
+  <data name="ResetSettingsTextBlock.Text" xml:space="preserve">
+    <value>Remove all settings, then restart application. This will not appears to items you installed. </value>
+  </data>
+  <data name="ResetButton.Content" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ResetSettingsAskTextBlock.Text" xml:space="preserve">
+    <value>This action remove ALL you settings. Continue anyway?</value>
+  </data>
+  <data name="ContinueAnywayButton.Content" xml:space="preserve">
+    <value>Continue anyway</value>
+  </data>
+  <data name="LocalDrive" xml:space="preserve">
+    <value>Local Drive</value>
+  </data>
+  <data name="EditConfigKitMenuItem.Text" xml:space="preserve">
+    <value>Edit config kit</value>
+  </data>
+  <data name="UsedSiteListsText" xml:space="preserve">
+    <value>Used site lists: {0} and {1} more.</value>
+  </data>
+  <data name="UsedSiteListText" xml:space="preserve">
+    <value>Used site list: {0}.</value>
+  </data>
+  <data name="NoUsedSiteListText" xml:space="preserve">
+    <value>No site lists used.</value>
+  </data>
+  <data name="ExcludedSiteListsText" xml:space="preserve">
+    <value>Excluded site lists: {0} and {1} more.</value>
+  </data>
+  <data name="ExcludedSiteListText" xml:space="preserve">
+    <value>Excluded site list: {0}.</value>
+  </data>
+  <data name="NoExcludedSiteListText" xml:space="preserve">
+    <value>No exclude site list used.</value>
+  </data>
+  <data name="LastEditTimeText" xml:space="preserve">
+    <value>Last edit: {0}</value>
+  </data>
+  <data name="RenameButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="EditButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit config</value>
+  </data>
+  <data name="ViewUsedDirectoriesButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View used files</value>
+  </data>
+  <data name="RenameTitleTextBlock.Text" xml:space="preserve">
+    <value>Rename config</value>
+  </data>
+  <data name="ApplyRenameButton.Content" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="CannotSaveConfigMessage" xml:space="preserve">
+    <value>We can't save your config during unexpected exception. Make sure program has 'write' access for Store directory.
+Here is error code in case you need it:
+{0}</value>
+  </data>
+  <data name="SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="SaveConfigException" xml:space="preserve">
+    <value>We cannot save this kit during unexcepted exception.
+Here is error code in case you need it.
+{0}</value>
+  </data>
+  <data name="SaveConfigKitAsContentDialog.Title" xml:space="preserve">
+    <value>Save config kit as...</value>
+  </data>
+  <data name="SaveForMeSelectorBarItem.Text" xml:space="preserve">
+    <value>Save as new kit for myself</value>
+  </data>
+  <data name="SaveForDistributeSelectorBarItem.Text" xml:space="preserve">
+    <value>Save as distributed kit</value>
+  </data>
+  <data name="ImageTextBlock.Text" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="EditAccentTextBlock.Text" xml:space="preserve">
+    <value>Edit accent</value>
+  </data>
+  <data name="IdTextBlock.Text" xml:space="preserve">
+    <value>Id*</value>
+  </data>
+  <data name="GenerateNewIdButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Generate new id</value>
+  </data>
+  <data name="VersionTextBlock.Text" xml:space="preserve">
+    <value>Version*</value>
+  </data>
+  <data name="EditImageButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit image</value>
+  </data>
+  <data name="ChooseAnImage" xml:space="preserve">
+    <value>Choose an image</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.Title" xml:space="preserve">
+    <value>Edit config kit</value>
+  </data>
+  <data name="SelectConfigKitToEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="FrameGoBackButton.ToolTipService.ToolTIp" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CancelTextBlock.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="LoadingConfigs" xml:space="preserve">
+    <value>Loading config list...</value>
+  </data>
+  <data name="SavingConfigKit" xml:space="preserve">
+    <value>Exporting config kit...</value>
+  </data>
+  <data name="YesButton.Content" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="SaveConfirmation.Text" xml:space="preserve">
+    <value>This action will rewrite entire config kit. Also, if you update or reinstall it from Store all changes may be lost. To keep your data safe, create new kit instead.</value>
+  </data>
+  <data name="StoreSmallUpdateItemName" xml:space="preserve">
+    <value>Update {0}?</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Header" xml:space="preserve">
+    <value>Components Store settings</value>
+  </data>
+  <data name="OpenStoreSettingsCard.Description" xml:space="preserve">
+    <value>Memory usage. Preferred version control. Local item installing</value>
+  </data>
+  <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
+    <value>There is no updates available right now. You can check updates manually, if you want.</value>
+  </data>
 </root>

@@ -23,27 +23,33 @@
 	<AssemblyName>CDPIUI</AssemblyName>
 	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <UserSecretsId>393d1168-0d99-4c7a-99eb-7a1fb31f2f24</UserSecretsId>
-    <Configurations>Debug;Release;SingleFileRelease;MsiRelease</Configurations>
+    <Configurations>Debug;Release;SingleFileRelease;MsiRelease;RemoteDebug</Configurations>
     <PublishTrimmed>False</PublishTrimmed>
+    <BaseOutputPath>bin</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
     <None Remove="Controls\ConditionUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\ConfigUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\RecentGoodCheckSelectionsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SaveConfigKitAsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml" />
+    <None Remove="Controls\Store\Settings\MemoryDiskUsageViewUserControl.xaml" />
     <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
@@ -57,6 +63,7 @@
     <None Remove="Controls\StoreItemLargeButton.xaml" />
     <None Remove="Controls\StoreItemLinkButton.xaml" />
     <None Remove="Controls\StoreItemSmallButton.xaml" />
+    <None Remove="Controls\Store\Settings\MemoryStoreItemUserControl.xaml" />
     <None Remove="Controls\Store\StoreAskForSubItemInstallUserControl.xaml" />
     <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
@@ -74,6 +81,7 @@
     <None Remove="Views\AboutPage.xaml" />
     <None Remove="Views\Components\ViewComponentSettingsPage.xaml" />
     <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\EditConfigKitPage.xaml" />
     <None Remove="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml" />
     <None Remove="Views\CreateConfigHelper\MainPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
@@ -91,9 +99,17 @@
     <None Remove="Views\Store\HomePage.xaml" />
     <None Remove="Views\Store\ItemViewPage.xaml" />
     <None Remove="Views\Store\LibraryPage.xaml" />
+    <None Remove="Views\Store\SettingsPage.xaml" />
+    <None Remove="Views\Store\Settings\MemoryViewPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewApplicationFilesDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewInstalledItemsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewSettingsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml" />
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
     <None Remove="Windows\ModernMainWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
@@ -186,6 +202,7 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4948" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Semver" Version="3.0.0" />
     <PackageReference Include="System.Management" Version="9.0.9" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
@@ -232,7 +249,7 @@
   <ItemGroup>
     <Folder Include="Controls\ComponentSettings\" />
     <Folder Include="Controls\GoodCheck\" />
-    <Folder Include="Windows\Service\" />
+    <Folder Include="Help\EN\Store\" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
@@ -383,9 +400,10 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.2.0.0</FileVersion>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.3.2.0</FileVersion>
+    <AssemblyVersion>0.3.2.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
 
   <!--
@@ -463,9 +481,51 @@
     <Page Update="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\Settings\MemoryStoreItemUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\ConfigUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SaveConfigKitAsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\CreateConfigHelper\EditConfigKitPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewSettingsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewInstalledItemsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewApplicationFilesDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\MemoryViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\StoreLocalItemInstallingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Troubleshooting\WorkPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -556,5 +616,5 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\ru\Troubleshooting.resw" />
-  </ItemGroup>  
+  </ItemGroup>
 </Project>

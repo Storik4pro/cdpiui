@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml.Media;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TextControlBoxNS;
+using Windows.UI;
 
 namespace CDPI_UI.Helper.CreateConfigHelper
 {
@@ -45,5 +47,29 @@ namespace CDPI_UI.Helper.CreateConfigHelper
                 new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#00C000"),
             ];
         }
+    }
+
+    public static class TextControlBoxDesigns
+    {
+        public static TextControlBoxDesign DefaultLightDesign = new(
+            background: new SolidColorBrush(Color.FromArgb(0, 255, 255, 255)),
+            textColor: Color.FromArgb(255, 50, 50, 50),
+            selectionColor: Color.FromArgb(100, 0, 100, 255),
+            cursorColor: Color.FromArgb(255, 0, 0, 0),
+            lineHighlighterColor: Color.FromArgb(50, 200, 200, 200),
+            lineNumberColor: Color.FromArgb(255, 180, 180, 180),
+            lineNumberBackground: Color.FromArgb(0, 0, 0, 0),
+            searchHighlightColor: Color.FromArgb(100, 200, 120, 0)
+            );
+        public static TextControlBoxDesign DefaultDarkDesign = new(
+            background: new SolidColorBrush(Color.FromArgb(0, 30, 30, 30)),
+            textColor: Color.FromArgb(255, 255, 255, 255),
+            selectionColor: Color.FromArgb(100, 0, 100, 255),
+            cursorColor: Color.FromArgb(255, 255, 255, 255),
+            lineHighlighterColor: Color.FromArgb(50, 100, 100, 100),
+            lineNumberColor: Color.FromArgb(255, 100, 100, 100),
+            lineNumberBackground: Color.FromArgb(0, 0, 0, 0),
+            searchHighlightColor: Color.FromArgb(100, 160, 80, 0)
+            );
     }
 }

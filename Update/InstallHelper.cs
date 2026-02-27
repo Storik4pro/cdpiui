@@ -54,7 +54,7 @@ namespace Update
         private string _archiveFilePath;
         private string _targetFolder;
         private string _targetExecutable;
-        private readonly List<string> _skipFiles = new List<string> { "Update.exe" };
+        private readonly List<string> _skipFiles = new List<string> { "Update.exe", "catalog.cat" };
         private const string UiRootPrefix = "CDPIUI/"; 
 
         public Action<InstallState> InstallationStateChanged;

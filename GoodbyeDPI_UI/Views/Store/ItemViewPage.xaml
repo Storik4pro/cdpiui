@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:models="using:CDPI_UI.Views.Store"
     xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
     xmlns:l="using:WinUI3Localizer">
 
@@ -215,7 +216,30 @@
                                 </MenuFlyoutItem>
                             </MenuFlyout>
                         </Button.Flyout>
+                    </Button>
+                    <Button l:Uids.Uid="ItemViewAdvancedInfoButton" x:Name="ItemViewAdvancedInfoButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE946;" FontSize="16" />
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <StackPanel>
+                                    <TextBlock l:Uids.Uid="ItemAdvancedInfoFlyoutTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
 
+                                    <ListView x:Name="AdvancedInfoListView">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:AdditionalItemInfoModel">
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" Width="150"/>
+                                                    <TextBlock Text="{x:Bind DisplayValue, Mode=OneWay}" IsTextSelectionEnabled="True" HorizontalAlignment="Stretch" MinWidth="150"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                </StackPanel>
+                                
+                            </Flyout>
+                        </Button.Flyout>
                     </Button>
                     <Button x:Name="ItemShareButton" Background="Transparent" 
                             BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
@@ -225,6 +249,22 @@
                         </Button.Content>
                     </Button>
                 </StackPanel>
+
+                <Grid x:Name="ItemUnsupportedWarningGrid" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE814;" />
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Grid.Column="2" l:Uids.Uid="ItemUnsupportedWarningTextBlock" TextWrapping="Wrap"/>
+                        <HyperlinkButton Padding="0" x:Name="LaunchItemUnsupportedHelp" Click="LaunchItemUnsupportedHelp_Click">
+                            <TextBlock l:Uids.Uid="GetHelpTextBlock"/>
+                        </HyperlinkButton>
+                    </StackPanel>
+                </Grid>
+                
                 <Grid x:Name="ItemWarningAera">
                     <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10"/>
                     <Grid CornerRadius="10">

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.Controls.Store.Settings.MemoryDiskUsageViewUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Store.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="DiskNameTextBlock" Text="Windows (C:)" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+        <ProgressBar x:Name="MainProgressBar" Grid.Row="2" MinHeight="10" Value="0" CornerRadius="5" Style="{StaticResource WideProgressBarStyle}"/>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="UsedMemoryTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+            <TextBlock Grid.Column="2" x:Name="FreeMemoryTextBlock" Style="{ThemeResource CaptionTextBlockStyle}"  Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+        </Grid>
+        <Grid Grid.Row="6">
+            <ListView x:Name="MemoryCategoriesListView" ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:MemoryViewItemModel">
+                        <controls:SettingsCard IsClickEnabled="{x:Bind IsClickEnabled, Mode=OneWay}" Tag="{x:Bind Category, Mode=OneWay}" Click="SettingsCard_Click" >
+                            <controls:SettingsCard.HeaderIcon>
+                                <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}" />
+                            </controls:SettingsCard.HeaderIcon>
+                            <controls:SettingsCard.Description>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="5"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{ThemeResource TextFillColorPrimary}"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind DisplayMemoryUsageText, Mode=OneWay}"/>
+                                    </Grid>
+                                    <ProgressBar Grid.Row="2" MinHeight="10" Value="{x:Bind CurrentValue, Mode=OneWay}" Maximum="{x:Bind MaxValue, Mode=OneWay}" CornerRadius="5" Style="{StaticResource WideProgressBarStyle}"/>
+                                    <TextBlock Grid.Row="3" Text="{x:Bind DisplayDescription, Mode=OneWay}"/>
+                                </Grid>
+                            </controls:SettingsCard.Description>
+                        </controls:SettingsCard>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="3"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

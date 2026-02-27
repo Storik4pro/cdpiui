@@ -141,6 +141,11 @@
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                 </controls:SettingsCard>
+                <controls:SettingsCard x:Name="OpenStoreSettingsCard" l:Uids.Uid="OpenStoreSettingsCard" IsClickEnabled="True" Click="OpenStoreSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                </controls:SettingsCard>
 
             </StackPanel>
         </ScrollViewer>

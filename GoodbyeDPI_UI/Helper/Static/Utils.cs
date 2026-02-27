@@ -1,4 +1,6 @@
-﻿using CDPI_UI.Controls.Dialogs.ComponentSettings;
+﻿using CDPI_UI.Common;
+using CDPI_UI.Controls.Dialogs.ComponentSettings;
+using CDPI_UI.DataModel;
 using CDPI_UI.Helper.Items;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,16 +14,18 @@ using System.IO.Compression;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unidecode.NET;
 using Windows.Devices.Printers;
 using WinUI3Localizer;
+using static CDPI_UI.Common.CertificateCheck;
 
 namespace CDPI_UI.Helper.Static
 {
-    public static class Utils
+    public static partial class Utils
     {
         static Utils()
         {
@@ -61,6 +65,27 @@ namespace CDPI_UI.Helper.Static
                 }
             }
             return string.Empty;
+        }
+
+        public static string FormatSize(long sizeInBytes)
+        {
+            List<string> suffixes = [];
+
+            ILocalizer localizer = Localizer.Get();
+
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/Bytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/KiloBytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/MegaBytes"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/GB"));
+            suffixes.Add(localizer.GetLocalizedString("/UIHelper/TB"));
+
+            int order = sizeInBytes > 0
+                ? Math.Min((int)Math.Floor(Math.Log(sizeInBytes, 1024)), suffixes.Count - 1)
+                : 0;
+
+            double adjustedSize = sizeInBytes / Math.Pow(1024, order);
+
+            return $"{adjustedSize:0.#} {suffixes[order]}";
         }
 
         public static string FormatSpeed(double speedInBytes)
@@ -106,8 +131,12 @@ namespace CDPI_UI.Helper.Static
             return $"ms-appx:///Assets/{data}";
         }
 
-        public static string DynamicPathConverter(string data)
+        public static string DynamicPathConverter(string data, string args = "")
         {
+            if (!string.IsNullOrEmpty(args))
+            {
+                return Path.Combine(args, data);
+            }
             string localAppData = StateHelper.GetDataDirectory();
             string targetFolder = Path.Combine(
                 localAppData, StateHelper.StoreDirName, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName, data);
@@ -204,6 +233,13 @@ namespace CDPI_UI.Helper.Static
             {
                 return dir.Trim().TrimEnd('\\', '/');
             }
+        }
+
+        public static async Task CopyFileAsync(string sourcePath, string destinationPath)
+        {
+            using Stream source = File.OpenRead(sourcePath);
+            using Stream destination = File.Create(destinationPath);
+            await source.CopyToAsync(destination);
         }
 
         public static string CopyTxtWithUniqueName(string sourcePath, string destinationDir)
@@ -330,6 +366,18 @@ namespace CDPI_UI.Helper.Static
             return string.Join("/", result);
         }
 
+        public static string CalculateSHA256(string filename)
+        {
+            using (var md5 = SHA256.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "");
+                }
+            }
+        }
+
         public static string GetStoreLikeLocale()
         {
             var localizer = WinUI3Localizer.Localizer.Get();
@@ -343,11 +391,27 @@ namespace CDPI_UI.Helper.Static
             return "EN";
         }
 
+        public static async Task<long> GetDirectorySize(string directory)
+        {
+            long dirSize = 0;
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(directory);
+                dirSize = await Task.Run(() => dirInfo.EnumerateFiles("*", SearchOption.AllDirectories).Sum(file => file.Length));
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(nameof(Utils), $"Unable to calculate size for \"{directory}\". {ex.Message}");
+            }
+            return dirSize;
+        }
+
         public static async Task ExtractZip(
             string zipFilePath,
             string zipFolderToUnpack,
             string extractTo,
-            IEnumerable<string> filesToSkip = null
+            IEnumerable<string> filesToSkip = null,
+            bool isCatalogCheckRequired = false
         )
         {
             filesToSkip = filesToSkip ?? Enumerable.Empty<string>();
@@ -421,28 +485,31 @@ namespace CDPI_UI.Helper.Static
                     if (!Directory.Exists(destinationDir))
                         Directory.CreateDirectory(destinationDir);
 
-                    if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
-                        && File.Exists(destinationPath))
+                    if (!isCatalogCheckRequired)
                     {
-                        string destLines = File.ReadAllText(destinationPath);
-                        string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
-                        entry.ExtractToFile(tmpFile, overwrite: true);
-
-                        var stream = File.AppendText(destinationPath);
-
-                        using (stream)
+                        if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
+                            && File.Exists(destinationPath))
                         {
-                            foreach (var line in File.ReadLines(tmpFile))
+                            string destLines = File.ReadAllText(destinationPath);
+                            string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
+                            entry.ExtractToFile(tmpFile, overwrite: true);
+
+                            var stream = File.AppendText(destinationPath);
+
+                            using (stream)
                             {
-                                if (!destLines.Contains(line))
+                                foreach (var line in File.ReadLines(tmpFile))
                                 {
-                                    await stream.WriteLineAsync(line);
+                                    if (!destLines.Contains(line))
+                                    {
+                                        await stream.WriteLineAsync(line);
+                                    }
                                 }
                             }
-                        }
-                        File.Delete(tmpFile);
+                            File.Delete(tmpFile);
 
-                        continue;
+                            continue;
+                        }
                     }
 
                     if (entry.FullName.EndsWith("/"))
@@ -456,6 +523,25 @@ namespace CDPI_UI.Helper.Static
                     }
 
                     extractedFiles++;
+                }
+            }
+
+            if (isCatalogCheckRequired)
+            {
+                CatalogCheckResult catalogCheckResult = await CheckCatalog(Path.Combine(extractTo, "catalog.cat"), extractTo);
+                switch (catalogCheckResult)
+                {
+                    case CatalogCheckResult.Success:
+                        return;
+                    case CatalogCheckResult.FailureNoSignature:
+                        throw new CatalogNoSignature("Catalog file isn't signed");
+                    case CatalogCheckResult.FailureNotTrustedSignature:
+                        throw new CatalogNoSignature("Signature not trusted");
+                    case CatalogCheckResult.FailureNotValid:
+                        throw new CatalogInvalid();
+                    case CatalogCheckResult.FailureUnknown:
+                        throw new CatalogInvalid("Unknown");
+
                 }
             }
         }
@@ -513,6 +599,60 @@ namespace CDPI_UI.Helper.Static
 
             return Path.GetFileName(uri.LocalPath);
         }
+
+        public static bool IsOsSupportedNewGlyph()
+        {
+            Debug.WriteLine(Environment.OSVersion.ToString());
+            var version1 = Environment.OSVersion.Version;
+            string v2 = "10.0.22000.194";
+
+            var version2 = new Version(v2);
+            if (version1 >= version2) return true;
+            return false;
+        }
+
+        public static bool IsVersionCorrect(string version)
+        {
+            return Version.TryParse(version, out var _);
+        }
+
+        public static bool IsIdCorrect(string id)
+        {
+            return CheckIdRegex().IsMatch(id);
+        }
+
+        public static string GenerateNewId()
+        {
+            return Guid.NewGuid().ToString().Replace("{", "").Replace("}", "");
+        }
+
+        public static int CompareVersionStrings(string oldVersion, string newVersion)
+        {
+            if (oldVersion == "%CURRENT%") return 0;
+
+            if (oldVersion.StartsWith('v')) oldVersion = oldVersion[1..];
+            if (newVersion.StartsWith('v')) newVersion = newVersion[1..];
+
+            if (oldVersion.Contains("rc")) oldVersion = oldVersion.Replace("rc", "-rc");
+            if (newVersion.Contains("rc")) newVersion = newVersion.Replace("rc", "-rc");
+
+            if (Semver.SemVersion.TryParse(oldVersion, out var oldSemVersion) && Semver.SemVersion.TryParse(newVersion, out var newSemVersion))
+            {
+                return Semver.SemVersion.ComparePrecedence(oldSemVersion, newSemVersion);
+            }
+            else if (Version.TryParse(oldVersion, out var oldVerVersion) &&  Version.TryParse(newVersion,out var newVerVersion))
+            {
+                if (oldVerVersion < newVerVersion) return -1;
+                else if (oldVerVersion > newVerVersion) return 1;
+                else return 0;
+            }
+
+            Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot compare {oldVersion} and {newVersion}.");
+            return 0;
+        }
+
+        [GeneratedRegex(@"^[a-zA-Z0-9\-]+$")]
+        private static partial Regex CheckIdRegex();
 
 #if SINGLEFILE
         public static bool IsApplicationBuildAsSingleFile = true;

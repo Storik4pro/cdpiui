@@ -98,11 +98,13 @@ namespace CDPI_UI.Helper
 
                 StageChanged?.Invoke("Downloading");
 
+                Logger.Instance.CreateDebugLog(nameof(DownloadManager), $"Uri used: {url}");
+
                 var response = await _client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     StageChanged?.Invoke("ErrorHappens");
-                    ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{response.StatusCode}", "Server Error"));
+                    ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{(int)response.StatusCode}", "Server Error"));
                     return false;
                 }
                 response.EnsureSuccessStatusCode();
@@ -118,7 +120,7 @@ namespace CDPI_UI.Helper
                 if (extractArchive)
                 {
                     StageChanged?.Invoke("Extracting");
-                    await Utils.ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes);
+                    await Utils.ExtractZip(tempDestination, extractRootFolder, destinationPath, extractSkipFiletypes, isCatalogCheckRequired:filetype == "signedZip");
                 }
                 else
                 {
@@ -131,7 +133,7 @@ namespace CDPI_UI.Helper
                             throw new IOException();
 
                         string extention = StateHelper.Instance.FileTypes.GetValueOrDefault(filetype, null);
-                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : ".tmp";
+                        string _fName = string.IsNullOrEmpty(extention) ? (string.IsNullOrEmpty(filetype) ? ".tmp" : $"{filetype}") : extention;
 
                         File.Copy(tempDestination, Path.Combine(destinationPath, exeName + _fName), true);
                     }
@@ -270,19 +272,8 @@ namespace CDPI_UI.Helper
         private void HandleError(Exception ex)
         {
             StageChanged?.Invoke("ErrorHappens");
-            var codeObj = ErrorHelper.MapExceptionToCode(ex, out uint? hr, out int? statusCode);
-            var code = codeObj.ToString();
-            string _statusCode = statusCode != null ? $"_{statusCode}" : ""; 
-            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {ex}");
-            if (hr != null)
-            {
-                string hrHex = $"0x{hr.Value:X8}";
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode} ({hrHex})", $"{ex}"));
-            }
-            else
-            {
-                ErrorHappens?.Invoke(Tuple.Create<string, string>($"ERR_NET_DOWNLOAD_{code}{statusCode}", $"{ex}"));
-            }
+            string errorCode = ErrorsHelper.GetPrettyErrorCode("ERR_NET_DOWNLOAD", ex);
+            ErrorHappens?.Invoke(Tuple.Create<string, string>(errorCode, $"{ex}"));
         }
         public void Dispose()
         {

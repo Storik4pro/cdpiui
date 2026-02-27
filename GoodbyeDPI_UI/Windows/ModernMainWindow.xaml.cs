@@ -1,3 +1,4 @@
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Views;
@@ -34,42 +35,23 @@ namespace CDPI_UI
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class ModernMainWindow : WindowEx
+    public sealed partial class ModernMainWindow : TemplateWindow
     {
         private ILocalizer localizer = Localizer.Get();
         public ModernMainWindow()
         {
             InitializeComponent();
-            this.ExtendsContentIntoTitleBar = true;
-
             this.Title = "CDPI UI";
+            IconUri = @"Assets/favicon.ico";
+            TitleIcon = ImageAera;
+            TitleBar = WindowMoveAera;
 
-            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
-            appWindowPresenter.IsResizable = false;
-            appWindowPresenter.IsMaximizable = false;
+            DisableResizeFeature(isMinimizable:true);
 
-            NativeWindowHelper.ForceDisableMaximize(this);
-
-            if (this.Content is FrameworkElement rootElement)
-            {
-                rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
-
-                if (((App)Application.Current).CurrentTheme == ElementTheme.Dark)
-                {
-                    ApplyDarkThemeToSystemMenu();
-                }
-            }
-
-            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(WindowMoveAera);
 
             NavView.SelectedItem = NavView.MenuItems[0];
             ContentFrame.Navigate(typeof(ModernMainPage));
-            SetTitleBar(WindowMoveAera);
-
-            IntPtr windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
-            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-            appWindow.SetIcon(@"Assets/favicon.ico");
 
             if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
             {
@@ -86,52 +68,6 @@ namespace CDPI_UI
             await dlg.ShowAsync();
         }
 
-        private long LastTimestamp = 0;
-        private int DoubleClickTimeMS = 250;
-
-
-        private void ImageAera_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            if (milliseconds - LastTimestamp < DoubleClickTimeMS && milliseconds != 0)
-            {
-                this.Close();
-            }
-            else
-            {
-                LastTimestamp = milliseconds;
-            }
-
-            IntPtr hWnd = WindowNative.GetWindowHandle(this);
-            RECT pos;
-            GetWindowRect(hWnd, out pos);
-            IntPtr hMenu = GetSystemMenu(hWnd, false);
-            int cmd = TrackPopupMenu(hMenu, 0x100, pos.left + 10, pos.top + 40, 0, hWnd, IntPtr.Zero);
-            if (cmd > 0) SendMessage(hWnd, 0x112, (IntPtr)cmd, IntPtr.Zero);
-        }
-
-        #region WINAPI
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int x;
-            public int y;
-        }
-
-        [DllImport("user32.dll")]
-        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-        [DllImport("user32.dll")]
-        static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-        [DllImport("user32.dll")]
-        static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
-           int nReserved, IntPtr hWnd, IntPtr prcRect);
-        [DllImport("user32.dll")]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
-        struct RECT { public int left, top, right, bottom; }
-
-        #endregion
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -288,21 +224,5 @@ namespace CDPI_UI
             }
 
         }
-
-        #region WINAPI
-
-        private void ApplyDarkThemeToSystemMenu()
-        {
-            SetPreferredAppMode(2);
-            FlushMenuThemes();
-        }
-
-        [DllImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern int SetPreferredAppMode(int preferredAppMode);
-
-        [DllImport("uxtheme.dll", EntryPoint = "#136", SetLastError = true, CharSet = CharSet.Unicode)]
-        private static extern void FlushMenuThemes();
-
-        #endregion
     }
 }
