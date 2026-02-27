@@ -31,7 +31,8 @@ namespace CDPI_UI.Helper
             { "WelcomeToHelp", "\uE734" },
             { "GettingStarted", "\uEB9D" },
             { "TroubleshootingComponentExceptions", "\uEBE8" },
-            { "Store", "\uE719" }
+            { "Store", "\uE719" },
+            { "CreateConfigHelper", "\uE70F" }
         };
 
         private static string GetGlyphForId(string id)

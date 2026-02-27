@@ -176,4 +176,10 @@
   <data name="WelcomeToStore" xml:space="preserve">
     <value>Добро пожаловать в Магазин </value>
   </data>
+  <data name="CreateConfigHelper" xml:space="preserve">
+    <value>Помощник создания и редактирования пресетов</value>
+  </data>
+  <data name="SaveConfigKitAs" xml:space="preserve">
+    <value>Сохранение нового набора пресетов</value>
+  </data>
 </root>
