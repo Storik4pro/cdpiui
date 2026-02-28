@@ -447,6 +447,7 @@ namespace CDPIUI_TrayIcon.Helper
                 {
                     await SendMessage("MAIN:EXIT_ALL");
                     RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "");
+                    TrayIconHelper.Instance.Dispose();
                     Application.Exit();
                 }
             }

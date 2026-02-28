@@ -53,6 +53,7 @@ namespace CDPIUI_TrayIcon.Helper
             {
                 RunHelper.Run("msiexec.exe", $"/i \"{targetFile}\" /qn+");
                 _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
+                TrayIconHelper.Instance.Dispose();
                 Application.Exit();
             }
             else
