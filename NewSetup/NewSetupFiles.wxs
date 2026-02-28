@@ -294,6 +294,9 @@
         <File Source="$(var.SourceDir)\Microsoft.Extensions.Logging.Abstractions.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Microsoft.Extensions.Primitives.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\Microsoft.Foundation.winmd" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
@@ -649,6 +652,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="ru-RU">
         <File Source="$(var.SourceDir)\ru-RU\Microsoft.UI.Xaml.Phone.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\Semver.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\SessionHandleIPCProxyStub.dll" KeyPath="yes" />
