@@ -40,7 +40,7 @@ class Programm
         {
             if (File.Exists(newUpdateFilePath))
             {
-                File.Move(newUpdateFilePath, updateFilePath);
+                File.Move(newUpdateFilePath, updateFilePath, overwrite: true);
             }
         }
         catch
