@@ -1,7 +1,12 @@
-﻿using CDPIUI_TrayIcon.Helper;
+﻿using CDPIUI_TrayIcon.Forms;
+using CDPIUI_TrayIcon.Helper;
+using CDPIUI_TrayIcon.Helper.Basic;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Resources;
+using System.Windows.Forms;
 using Windows.Foundation.Collections;
 using Application = System.Windows.Forms.Application;
 
@@ -21,11 +26,11 @@ class Programm
         PipeServer.Instance.Init();
         PipeServer.Instance.Start();
 
-        _ = TrayIconHelper.Instance;
+        
 
         if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
         {
-            Application.Run();
+            Application.Run(new TrayApplicationContext());
             return;
         }
 
@@ -48,7 +53,7 @@ class Programm
             if (args.Contains("--after-patching"))
             {
                 Logger.Instance.CreateErrorLog("Update", "Update not finished correctly");
-                TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
+                NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
             }
         }
 
@@ -57,21 +62,36 @@ class Programm
 
         if (args.Contains("--after-failed-update"))
         {
-            TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
+            NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateFailure"), "UPDATE:OPEN_LOG");
         }
 
         if (args.Contains("--autorun"))
         {
             AskStartupActions();
-            if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide")) 
-                TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("TrayHide"), "SHOW_MAIN_WINDOW");
+            if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide"))
+                NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("TrayHide"), "SHOW_MAIN_WINDOW");
         }
 
         CheckProgramUpdates();
         BeginCompatibilityCheck();
 
-        Application.Run();
+        
+
+        Application.Run(new TrayApplicationContext());
         ToastNotificationManagerCompat.History.Clear();
+    }
+
+    public class TrayApplicationContext : ApplicationContext
+    {
+        public TrayApplicationContext()
+        {
+            EmptyForm trayMenuForm = new();
+
+            trayMenuForm.AddIcon();
+            trayMenuForm.BeginIconVisibilityCheck();
+
+            NotifyHelper.Instance.Init();
+        }
     }
 
     private static async void AskStartupActions()
@@ -90,7 +110,7 @@ class Programm
 
             if (_toastArgs.TryGetValue("action", out string action))
             {
-                TrayIconHelper.Instance.HandleToastActionFromBackground(action);
+                NotifyHelper.HandleToastActionFromBackground(action);
             }
             else { }
 
