@@ -1404,7 +1404,7 @@ namespace CDPI_UI.Helper
                     }
                     else
                     {
-                        continue;
+                        continue; // TODO: Fix update process for gitlab version
                     }
 
                     TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
