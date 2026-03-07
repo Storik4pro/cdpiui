@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPIUI_TrayIcon.Helper.Basic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -187,7 +188,7 @@ namespace CDPIUI_TrayIcon.Helper
                     await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
                     Logger.Instance.CreateErrorLog(nameof(MsiInstallerHelper), $"Cannot install package {exitCode}");
 
-                    TrayIconHelper.Instance.ShowMessage(
+                    NotifyHelper.ShowMessage(
                         LocaleHelper.GetLocaleString("MsiInstallerHelper"),
                         string.Format(LocaleHelper.GetLocaleString("MsiInstallerHelperErr"), Path.GetFileNameWithoutExtension(filePath), exitCode),
                         "LOGGER:OPEN_MSI_LOG"
@@ -199,7 +200,7 @@ namespace CDPIUI_TrayIcon.Helper
                 await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
                 Logger.Instance.CreateErrorLog(nameof(MsiInstallerHelper), $"Exception while installing {filePath}: {ex}");
 
-                TrayIconHelper.Instance.ShowMessage(
+                NotifyHelper.ShowMessage(
                         LocaleHelper.GetLocaleString("MsiInstallerHelper"),
                         string.Format(LocaleHelper.GetLocaleString("MsiInstallerHelperErr"), Path.GetFileNameWithoutExtension(filePath), "ERR_UNKNOWN"),
                         "LOGGER:OPEN_MSI_LOG"
