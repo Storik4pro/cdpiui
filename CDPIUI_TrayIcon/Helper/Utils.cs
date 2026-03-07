@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPIUI_TrayIcon.Helper.Basic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +19,7 @@ namespace CDPIUI_TrayIcon.Helper
                 var procPath = Environment.ProcessPath;
                 return Path.GetDirectoryName(procPath)!;
             }
-            catch (Exception ex)
+            catch
             {
                 return "";
             }
@@ -53,13 +54,23 @@ namespace CDPIUI_TrayIcon.Helper
             {
                 RunHelper.Run("msiexec.exe", $"/i \"{targetFile}\" /qn+");
                 _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
-                TrayIconHelper.Instance.Dispose();
+                NotifyHelper.Instance.Dispose();
                 Application.Exit();
             }
             else
             {
                 RunHelper.Run(Path.Combine(GetDataDirectory(), "Update.exe"), $"--directory-to-zip \"{targetFile}\" --destination-directory \"{GetDataDirectory()}\"");
             }
+        }
+
+        public static Bitmap? GetBitmapFromResourses(string resourseKey)
+        {
+            var resource = Utils.Assembly.GetManifestResourceStream(resourseKey);
+            if (resource != null)
+            {
+                return new Bitmap(resource);
+            }
+            return null;
         }
     }
 }
