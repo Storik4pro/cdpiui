@@ -9,6 +9,8 @@ namespace CDPIUI_TrayIcon.Helper
 {
     public class Logger
     {
+        private readonly string LogLevel;
+
         private static Logger? _instance;
         private static readonly object _lock = new object();
 
@@ -29,7 +31,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public Logger()
         {
-
+            LogLevel = SettingsManager.Instance.GetValue<string>("DEBUG", "logLevel");
         }
 
         private static readonly object _logLock = new object();
@@ -81,7 +83,7 @@ namespace CDPIUI_TrayIcon.Helper
 #if DEBUG
                     string _sev = "DEBG";
 #else
-                    string _sev = SettingsManager.Instance.GetValue<string>("DEBUG", "logLevel");
+                    string _sev = LogLevel;
 #endif
                     if (_sev == "DEBG") write = true;
                     else if (_sev == "INFO" && severity != "DEBG") write = true;
