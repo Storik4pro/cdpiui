@@ -26,8 +26,6 @@ class Programm
         PipeServer.Instance.Init();
         PipeServer.Instance.Start();
 
-        
-
         if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
         {
             Application.Run(new TrayApplicationContext());
@@ -87,8 +85,7 @@ class Programm
         {
             EmptyForm trayMenuForm = new();
 
-            trayMenuForm.AddIcon();
-            trayMenuForm.BeginIconVisibilityCheck();
+            trayMenuForm.AddIcon(notify: true); // TODO: change to false
 
             NotifyHelper.Instance.Init();
         }
