@@ -1,11 +1,14 @@
 ﻿using CDPIUI_TrayIcon.Helper;
+using CDPIUI_TrayIcon.Helper.Basic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +16,7 @@ using System.Windows.Forms;
 using System.Xml;
 using static CDPIUI_TrayIcon.Forms.TrayMenuForm;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Timer = System.Windows.Forms.Timer;
 
 namespace CDPIUI_TrayIcon.Forms
 {
@@ -21,6 +25,15 @@ namespace CDPIUI_TrayIcon.Forms
     public partial class EmptyForm : Form
     {
         private static readonly Guid IconDisplayGuid = new("D6AF8980-885B-453C-908C-DD79AC1F2AB2");
+        private static StringBuilder ErrorMessage = new(
+            "Application can't create icon in system notification aera during unexpected exception. " +
+            "You can find solution of this problem on https://storik4pro.github.io/en-US/cdpiui/wiki/Other/TrayIconNotShown/ or application internal help. \n" +
+            "\tHere some additional information about this problem: \n" +
+            "\t\tApplication version: {0}\n" +
+            "\t\tOperation: {1}\n" +
+            "\t\tOperation result: {2}\n" +
+            "\t\tException code: {3}\n" +
+            "\tContact official support if this error persist.");
 
         private TrayMenuForm? TrayMenuForm;
 
@@ -34,10 +47,18 @@ namespace CDPIUI_TrayIcon.Forms
 
             HideWindow();
 
+            Application.ApplicationExit += Application_ApplicationExit;
             this.Disposed += EmptyForm_Disposed;
             this.Load += EmptyForm_Load;
 
             ConnectHandlers();
+        }
+
+        private void Application_ApplicationExit(object? sender, EventArgs e)
+        {
+            Application.ApplicationExit -= Application_ApplicationExit;
+            this.Close();
+            this.Dispose();
         }
 
         private void EmptyForm_Load(object? sender, EventArgs e)
@@ -49,6 +70,7 @@ namespace CDPIUI_TrayIcon.Forms
         {
             TasksHelper.Instance.TaskStateUpdated += HandleTaskStateUpdate;
             TasksHelper.Instance.TaskListUpdated += HandleTasksListUpdate;
+            
         }
 
         private void DisconnectHandlers()
@@ -57,47 +79,41 @@ namespace CDPIUI_TrayIcon.Forms
             TasksHelper.Instance.TaskListUpdated -= HandleTasksListUpdate;
         }
 
-        private void HandleTaskStateUpdate(Tuple<string, bool> taskStateUpdate)
+        private string GetCurrentIcon()
         {
-            if (taskStateUpdate.Item2)
+            int rt = 0;
+
+            foreach (var task in TasksHelper.Instance.Tasks)
             {
-                if (IsAnyTaskHasState(!taskStateUpdate.Item2))
+                if (task.ProcessManager.GetState())
                 {
-                    UpdateIcon("trayLogoStartedNotAll", GetNowRunnedComponentsString());
+                    rt++;
                 }
-                else
-                {
-                    UpdateIcon("trayLogoStarted", LocaleHelper.GetLocaleString("StartedAll"));
-                }
+            }
+
+            if (rt == 0)
+            {
+                return "trayLogoStopped";
+            }
+            else if (rt == TasksHelper.Instance.Tasks.Count)
+            {
+                return "trayLogoStarted";
             }
             else
             {
-                if (IsAnyTaskHasState(!taskStateUpdate.Item2))
-                {
-                    UpdateIcon("trayLogoStartedNotAll", GetNowRunnedComponentsString());
-                }
-                else
-                {
-                    UpdateIcon("trayLogoStopped", LocaleHelper.GetLocaleString("AllStopped"));
-                }
+                return "trayLogoStartedNotAll";
             }
+
+        }
+
+        private void HandleTaskStateUpdate(Tuple<string, bool> taskStateUpdate)
+        {
+            UpdateIcon(GetCurrentIcon(), GetNowRunnedComponentsString());
         }
 
         private void HandleTasksListUpdate()
         {
 
-        }
-
-        private static bool IsAnyTaskHasState(bool state)
-        {
-            foreach (var task in TasksHelper.Instance.Tasks)
-            {
-                if (task.ProcessManager != null)
-                {
-                    if (task.ProcessManager.GetState() == state) return true;
-                }
-            }
-            return false;
         }
 
         private static string GetNowRunnedComponentsString()
@@ -112,7 +128,8 @@ namespace CDPIUI_TrayIcon.Forms
                     cnt++;
                 }
             }
-            result = result[..^2];
+            result = result.Length > 2 ? result[..^2] : result;
+            if (cnt == 0) return LocaleHelper.GetLocaleString("AllStopped");
             return string.Format(cnt > 1 ? LocaleHelper.GetLocaleString("StartedNowS") : LocaleHelper.GetLocaleString("StartedNow"), result);
         }
 
@@ -127,10 +144,10 @@ namespace CDPIUI_TrayIcon.Forms
             Size = new Size(1, 1);
         }
 
-        private void ShowContextMenuAt(Point location)
+        private void ShowContextMenuAt(Point location, int vertOffset, int horOffset)
         {
             TrayMenuForm = new();
-            TrayMenuForm.ShowWindow(location);
+            TrayMenuForm.ShowWindow(location, vertOffset, horOffset);
             TrayMenuForm.Hided += HideContextMenu;
         }
 
@@ -159,43 +176,13 @@ namespace CDPIUI_TrayIcon.Forms
             return nint.Zero;
         }
 
-        public async void BeginIconVisibilityCheck()
+        private static string GetNormalToolTip(string? toolTip)
         {
-            while (CancellationTokenSource!= null && !CancellationTokenSource.IsCancellationRequested)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(10));
-                if (!TryShowIcon())
-                {
-                    BeginIconVisibilityCheck();
-                }
-                else
-                {
-                    UpdateIcon("trayLogoNormal", string.Empty);
-                    CancellationTokenSource.Cancel();
-                }
-            }
-            
-        }
-
-        public bool TryShowIcon()
-        {
-            RECT rect = GetRectIcon();
-            if (rect.top == 0 && rect.left == 0 && rect.right == 0 && rect.bottom == 0)
-            {
-                DeleteIcon();
-                AddIcon(showIcon:false);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return "CDPI UI" + (string.IsNullOrEmpty(toolTip) ? string.Empty : $"\n{toolTip}");
         }
 
         private static void UpdateIcon(string iconName, string toolTip)
         {
-            if (string.IsNullOrEmpty(toolTip)) toolTip = "CDPI UI";
-            else toolTip = $"CDPI UI\n{toolTip}";
             if (string.IsNullOrEmpty(iconName)) return;
 
             NOTIFYICONDATA data = new();
@@ -206,31 +193,44 @@ namespace CDPIUI_TrayIcon.Forms
             data.hIcon = LoadIcon(iconName);
             data.uFlags = NotifyFlags.NIF_ICON | NotifyFlags.NIF_GUID | NotifyFlags.NIF_MESSAGE | NotifyFlags.NIF_TIP |
                           NotifyFlags.NIF_SHOWTIP;
-            data.szTip = toolTip;
+            data.szTip = GetNormalToolTip(toolTip);
 
             var result = Shell_NotifyIcon(NotifyCommand.NIM_MODIFY, ref data);
 
-            Debug.WriteLine($"RESULT {result}");
         }
 
-        public void AddIcon(bool showIcon=true)
+        public void AddIcon(bool notify=false, string? iconName=null, string? toolTip = null)
         {
+            if (string.IsNullOrEmpty(iconName)) iconName = "trayLogoNormal";
+
             NOTIFYICONDATA data = new();
 
             data.cbSize = Marshal.SizeOf(data);
             data.hWnd = this.Handle;
             data.guidItem = IconDisplayGuid;
             data.uCallbackMessage = WM_MYMESSAGE;
-            if (showIcon) data.hIcon = LoadIcon("trayLogoNormal");
-            data.szTip = "CDPI UI";
+            data.hIcon = LoadIcon(iconName);
+            data.szTip = GetNormalToolTip(toolTip);
 
             data.uFlags = NotifyFlags.NIF_ICON | NotifyFlags.NIF_GUID | NotifyFlags.NIF_MESSAGE | NotifyFlags.NIF_TIP |
                           NotifyFlags.NIF_SHOWTIP;
 
-            Shell_NotifyIcon(NotifyCommand.NIM_ADD, ref data);
+            var result = Shell_NotifyIcon(NotifyCommand.NIM_ADD, ref data);
+
+            if (result == 0 && notify)
+            {
+                string error = $"0x{(uint)Marshal.GetLastWin32Error():X8}";
+                Logger.Instance.CreateErrorLog(
+                    nameof(EmptyForm), string.Format(ErrorMessage.ToString(), "NaN", nameof(AddIcon), result, error)
+                    );
+                NotifyHelper.Instance.ShowTrayErrorMessage(error);
+                error = null;
+            }
 
             data.uVersion = NOTIFYICON_VERSION_4;
             Shell_NotifyIcon(NotifyCommand.NIM_SETVERSION, ref data);
+
+            data = default;
         }
 
         private static void DeleteIcon()
@@ -273,10 +273,14 @@ namespace CDPIUI_TrayIcon.Forms
 
 
         #region MessageHandler
-
+        static uint s_uTaskbarRestart;
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == WM_MYMESSAGE)
+            if (m.Msg == WM_CREATE)
+            {
+                s_uTaskbarRestart = RegisterWindowMessage("TaskbarCreated");
+            }
+            else if (m.Msg == WM_MYMESSAGE)
             {
                 //(Int32)m.LParam & 0x0000FFFF get the low 2 bytes of LParam, we dont need the high ones. 
                 //(Int32)m.WParam & 0x0000FFFF is the X coordinate and 
@@ -301,7 +305,7 @@ namespace CDPIUI_TrayIcon.Forms
                         break;
                     case WM_CONTEXTMENU:
                         var rect = GetRectIcon();
-                        ShowContextMenuAt(new Point(rect.left, rect.top));
+                        ShowContextMenuAt(new Point(rect.left, rect.top), rect.top - rect.bottom, rect.right - rect.left);
                         break;
 
                     //get what mouse messages you want
@@ -312,6 +316,11 @@ namespace CDPIUI_TrayIcon.Forms
 
                         break;
                 }
+            }
+            else
+            {
+                if (m.Msg == s_uTaskbarRestart)
+                    AddIcon(notify: true, iconName: GetCurrentIcon(), toolTip: GetNowRunnedComponentsString());
             }
 
             base.WndProc(ref m);
@@ -335,6 +344,8 @@ namespace CDPIUI_TrayIcon.Forms
         public const Int32 NIN_POPUPOPEN = 0x406;
         public const Int32 NIN_POPUPCLOSE = 0x407;
         public const Int32 WM_LBUTTONDOWN = 0x0201;
+        public const Int32 WM_CREATE = 0x0001;
+        public const Int32 TASKBAR_INIT_COMPLETE = 0xC0AA;
 
         public const Int32 NIIF_USER = 0x4;
         public const Int32 NIIF_NONE = 0x0;
@@ -380,8 +391,11 @@ namespace CDPIUI_TrayIcon.Forms
             public IntPtr hBalloonIcon;
         }
 
-        [DllImport("shell32.dll")]
+        [DllImport("shell32.dll", SetLastError = true)]
         public static extern System.Int32 Shell_NotifyIcon(NotifyCommand cmd, ref NOTIFYICONDATA data);
+
+        [DllImport("User32.dll", SetLastError = true)]
+        public static extern uint RegisterWindowMessage(String lpString);
 
 
         [StructLayout(LayoutKind.Sequential)]
