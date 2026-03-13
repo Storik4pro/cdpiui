@@ -51,6 +51,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "StartedAll", "All components are running now." },
             { "StartedNow", "Now started: {0}." },
             { "StartedNowS", "Now started: {0}." },
+            { "TrayErrorTitle", "Notify icon" },
+            { "TrayErrorMessage", "We're unable to create icon in system notify aera. Click or tap here to view details.\n{0}" }
         };
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
@@ -81,6 +83,8 @@ namespace CDPIUI_TrayIcon.Helper
             { "StartedAll", "Все установленные компоненты запущены." },
             { "StartedNow", "Сейчас запущен: {0}." },
             { "StartedNowS", "Сейчас запущены: {0}." },
+            { "TrayErrorTitle", "Индикатор уведомлений" },
+            { "TrayErrorMessage", "Невозможно создать индикатор в системном лотке уведомлений. Нажмите или коснитесь здесь, чтобы узнать подробности.\n{0}" }
         };
 
         public static string GetLocaleString(string key)
