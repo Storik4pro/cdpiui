@@ -101,6 +101,9 @@ namespace CDPIUI_TrayIcon.Helper.Basic
                         RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-begin-store-update-check");
                     }
                     break;
+                case "LOGGER:OPEN_TRAY_LOG":
+                    OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "EmptyForm.log"));
+                    break;
                 case "LOGGER:OPEN_MSI_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "MsiInstallerHelper.log"));
                     break;
@@ -116,6 +119,11 @@ namespace CDPIUI_TrayIcon.Helper.Basic
                 
 
             }
+        }
+
+        public void ShowTrayErrorMessage(string errorCode)
+        {
+            ShowMessage(LocaleHelper.GetLocaleString("TrayErrorTitle"), string.Format(LocaleHelper.GetLocaleString("TrayErrorMessage"), errorCode), $"LOGGER:OPEN_TRAY_LOG");
         }
 
         public static void OpenFileInDefaultApp(string filePath)
