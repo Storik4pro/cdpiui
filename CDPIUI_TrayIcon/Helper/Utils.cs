@@ -1,6 +1,7 @@
 ﻿using CDPIUI_TrayIcon.Helper.Basic;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -71,6 +72,17 @@ namespace CDPIUI_TrayIcon.Helper
                 return new Bitmap(resource);
             }
             return null;
+        }
+
+        public static bool IsOsSupportedNewGlyph()
+        {
+            Debug.WriteLine(Environment.OSVersion.ToString());
+            var version1 = Environment.OSVersion.Version;
+            string v2 = "10.0.22000.194";
+
+            var version2 = new Version(v2);
+            if (version1 >= version2) return true;
+            return false;
         }
     }
 }
