@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPIUI_TrayIcon.Helper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -80,6 +81,8 @@ namespace CDPIUI_TrayIcon.Controls
             this.ForeColor = Color.White;
 
             ConnectHandlers();
+
+            SetFont();
         }
 
         #region HandlersManagement
@@ -124,6 +127,11 @@ namespace CDPIUI_TrayIcon.Controls
         }
 
         #endregion
+
+        private void SetFont()
+        {
+            IconGlyph.Font = new Font(Utils.IsOsSupportedNewGlyph() ? "Segoe Fluent Icons" : "Segoe MDL2 Assets", IconGlyph.Font.SizeInPoints);
+        }
 
         private void ModernButtonUserControl_MouseClick(object? sender, MouseEventArgs e)
         {
