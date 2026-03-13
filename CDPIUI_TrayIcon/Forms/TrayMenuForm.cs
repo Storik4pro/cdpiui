@@ -1,5 +1,6 @@
 ﻿using CDPIUI_TrayIcon.Controls;
 using CDPIUI_TrayIcon.Helper;
+using CDPIUI_TrayIcon.Helper.Basic;
 using System.Diagnostics;
 
 namespace CDPIUI_TrayIcon.Forms
@@ -22,6 +23,9 @@ namespace CDPIUI_TrayIcon.Forms
             MaximizeButton.DisplayImage = Utils.GetBitmapFromResourses("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico");
             AllowTransparency = false;
             this.Visible = false;
+            this.KeyPreview = true;
+
+            FormBorderStyle = FormBorderStyle.None;
 
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.UserPaint, true);
@@ -56,7 +60,10 @@ namespace CDPIUI_TrayIcon.Forms
             ExitButton.Clicked += ExitButton_MouseClick;
 
             this.Disposed += TrayMenuForm_Disposed;
+            this.KeyDown += TrayMenuForm_KeyDown;
         }
+
+        
 
         private void DisconnectHandlers()
         {
@@ -70,6 +77,7 @@ namespace CDPIUI_TrayIcon.Forms
             DisconnectComponentPanelChildrensHandlers();
 
             this.Disposed -= TrayMenuForm_Disposed;
+            this.KeyDown -= TrayMenuForm_KeyDown;
         }
 
         private void DisconnectComponentPanelChildrensHandlers()
@@ -90,6 +98,14 @@ namespace CDPIUI_TrayIcon.Forms
         }
 
         #endregion
+
+        private void TrayMenuForm_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                HideWindow();
+            }
+        }
 
         private void ExitButton_MouseClick(object? sender, EventArgs e)
         {
@@ -281,15 +297,67 @@ namespace CDPIUI_TrayIcon.Forms
             GC.Collect();
             Hided?.Invoke();
         }
-        public void ShowWindow(Point location)
+        public void ShowWindow(Point location, int vertOffset, int horOffset)
         {
             this.Visible = true;
             Size = new Size(DefaultWidth, CheckWindowHeight());
-            Location = new Point(x: location.X - this.Width, y: location.Y - this.Height);
+
+            var taskbarPos = Taskbar.DisplayBounds;
+
+            Location = new Point(x: location.X, y: location.Y);
+
+            var screen = GetScreen();
+            var relLoc = Location;
+
+            if (Taskbar.Position == TaskbarPosition.Left)
+            {
+                relLoc.X = taskbarPos.Right;
+            }
+            else if (Taskbar.Position == TaskbarPosition.Right)
+            {
+                relLoc.X = taskbarPos.Left - this.Width;
+            }
+            else if (Taskbar.Position == TaskbarPosition.Top)
+            {
+                relLoc.Y = taskbarPos.Bottom;
+            }
+            else if (Taskbar.Position == TaskbarPosition.Bottom)
+            {
+                relLoc.Y = taskbarPos.Top - this.Height;
+            }
+            
+            if (relLoc.X < screen.Left)
+            {
+                relLoc.X = screen.Left + horOffset;
+            }
+            else if (relLoc.X + this.Width > screen.Right)
+            {
+                relLoc.X = screen.Right - this.Width - horOffset;
+            }
+            if (relLoc.Y < screen.Top)
+            {
+                relLoc.Y = screen.Top + this.Height + vertOffset;
+            }
+            else if (relLoc.Y + this.Height > screen.Bottom)
+            {
+                relLoc.Y = screen.Bottom - this.Height - vertOffset;
+            }
+
+            Location = relLoc;
+
+            this.TopMost = true;
             this.BringToFront();
             this.Activate();
+            this.Focus();
+            this.Focus();
+            this.Select();
         }
         #endregion
+
+        private Rectangle GetScreen()
+        {
+            return Screen.PrimaryScreen.Bounds;
+        }
 
         protected override void WndProc(ref Message m)
         {
