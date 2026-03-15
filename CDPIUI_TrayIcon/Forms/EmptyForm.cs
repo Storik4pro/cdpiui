@@ -11,12 +11,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml;
-using static CDPIUI_TrayIcon.Forms.TrayMenuForm;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Timer = System.Windows.Forms.Timer;
 
 namespace CDPIUI_TrayIcon.Forms
 {
@@ -24,7 +18,7 @@ namespace CDPIUI_TrayIcon.Forms
 
     public partial class EmptyForm : Form
     {
-        private static readonly Guid IconDisplayGuid = new("D6AF8980-885B-453C-908C-DD79AC1F2AB2");
+        private static readonly Guid IconDisplayGuid = GetGuid();
         private static StringBuilder ErrorMessage = new(
             "Application can't create icon in system notification aera during unexpected exception. " +
             "You can find solution of this problem on https://storik4pro.github.io/en-US/cdpiui/wiki/Other/TrayIconNotShown/ or application internal help. \n" +
@@ -37,13 +31,9 @@ namespace CDPIUI_TrayIcon.Forms
 
         private TrayMenuForm? TrayMenuForm;
 
-        private readonly CancellationTokenSource? CancellationTokenSource;
-
         public EmptyForm()
         {
             InitializeComponent();
-
-            CancellationTokenSource = new();
 
             HideWindow();
 
@@ -52,6 +42,21 @@ namespace CDPIUI_TrayIcon.Forms
             this.Load += EmptyForm_Load;
 
             ConnectHandlers();
+        }
+
+        private static Guid GetGuid()
+        {
+            string savedGUID = SettingsManager.Instance.GetValue<string>("TRAY", "iconGUID");
+            if (savedGUID == "NaN")
+            {
+                Guid guid = Guid.NewGuid();
+                SettingsManager.Instance.SetValue("TRAY", "iconGUID", guid.ToString());
+                return guid;
+            }
+            else
+            {
+                return new(savedGUID);
+            }
         }
 
         private void Application_ApplicationExit(object? sender, EventArgs e)
@@ -265,7 +270,6 @@ namespace CDPIUI_TrayIcon.Forms
 
         private void EmptyForm_Disposed(object? sender, EventArgs e)
         {
-            CancellationTokenSource?.Cancel();
             DeleteIcon();
             DisconnectHandlers();
             this.Disposed -= EmptyForm_Disposed;
