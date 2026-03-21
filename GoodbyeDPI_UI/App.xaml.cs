@@ -1,4 +1,6 @@
 ﻿using CDPI_UI.Common;
+using CDPI_UI.Default;
+
 //using Windows.ApplicationModel.Activation;
 using CDPI_UI.DesktopWap.DataModel;
 using CDPI_UI.DesktopWap.Helper;
@@ -121,8 +123,7 @@ namespace CDPI_UI
                 if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
                 {
                     string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
-                    var window = await SafeCreateNewWindow<ViewWindow>();
-                    window.SetId(id);
+                    var window = await UnsafeCreateNewWindow<ViewWindow>(id: id);
                 }
                 else if (arguments.Contains("--show-proxy-setup"))
                 {
@@ -271,29 +272,24 @@ namespace CDPI_UI
                 OpenWindows.Remove(viewWindow);
             }
         }
-        public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : Window, new()
+        public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : TemplateWindow, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
             int findWindowCount = findWindows.Count;
 
             var activeFindWindow = OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
 
-            foreach (Window _win in findWindows)
+            foreach (TemplateWindow _win in findWindows)
             {
-                if (typeof(TWindow) == typeof(ViewWindow))
-                { 
-                    if (_win.GetType() == typeof(ViewWindow))
-                    {
-                        if (((ViewWindow)_win).Id == id)
-                        {
-                            _win.Activate();
-                            return (TWindow)_win;
-                        }
-                    }
+                if (!string.IsNullOrEmpty(_win.Id) && _win.Id == id)
+                {     
+                    _win.Activate();
+                    return (TWindow)_win;
                 }
             }
 
             var newViewWindow = new TWindow();
+            newViewWindow.Id = id;
             WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
             if (activate) newViewWindow.Activate();
 

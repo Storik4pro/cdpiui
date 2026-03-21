@@ -418,8 +418,7 @@ namespace CDPI_UI.Helper
         }
         private async void ShowViewWindowForId(string id)
         {
-            var window = await ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
-            window.SetId(id);
+            var window = await ((App)Microsoft.UI.Xaml.Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: id);
         }
 
         private async void ShowStoreWindow()
