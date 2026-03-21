@@ -2,6 +2,7 @@ using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Messages;
 using CDPI_UI.Views.CreateConfigUtil;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -59,15 +60,30 @@ namespace CDPI_UI
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
+
+            this.Activated += CreateConfigUtilWindow_Activated;
         }
 
-
-
-        public void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
+        private void CreateConfigUtilWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
-            TaskbarManager.Instance.SetProgressState(loadingState);
-            if (loadingState != TaskbarProgressBarState.Indeterminate)
-                TaskbarManager.Instance.SetProgressValue(currentLoadingValue, maxLoadingValue);
+            this.Activated -= CreateConfigUtilWindow_Activated;
+
+            CheckIsGoodCheckInstalled();
+        }
+
+        private async void CheckIsGoodCheckInstalled()
+        {
+            if (!DatabaseHelper.Instance.IsItemInstalled("ASGKOI001"))
+            {
+                var window = await ((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASGKOI001");
+                window.SetItemToViewId("ASGKOI001");
+
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    this.Close();
+                });
+
+            }
         }
 
         public void NavigateToPage<T>(object parameter = null)

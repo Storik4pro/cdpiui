@@ -368,7 +368,6 @@ public sealed partial class ComponentTileUserControl : UserControl
     private async void ViewOutputButtonClick()
     {
         var window = await ((App)Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: StoreId);
-        window?.SetId(StoreId);
     }
 
     private async void ViewSettingsButtonClick()
