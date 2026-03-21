@@ -140,6 +140,12 @@
                                 <FontIcon Glyph="&#xEA99;" />
                             </MenuFlyoutSubItem.Icon>
                         </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem l:Uids.Uid="PathViewModeMenuItem">
+                            <RadioMenuFlyoutItem x:Name="ShowPathsButton" l:Uids.Uid="ShowPathsMenuItem" GroupName="PathViewGroup"
+                                                 Click="ShowPathsButton_Click"/>
+                            <RadioMenuFlyoutItem x:Name="HidePathsButton" l:Uids.Uid="HidePathsMenuItem" GroupName="PathViewGroup" 
+                                                 Click="HidePathsButton_Click"/>
+                        </MenuFlyoutSubItem>
 
                     </MenuBarItem>
 

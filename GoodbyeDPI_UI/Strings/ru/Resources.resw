@@ -2009,4 +2009,13 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
     <value>Сейчас нет доступных обновлений. Однако, они могут появится, если вы проведете ручную проверку ещё раз.</value>
   </data>
+  <data name="PathViewModeMenuItem.Text" xml:space="preserve">
+    <value>Пути к файлам</value>
+  </data>
+  <data name="ShowPathsMenuItem.Text" xml:space="preserve">
+    <value>Полные</value>
+  </data>
+  <data name="HidePathsMenuItem.Text" xml:space="preserve">
+    <value>Только названия файлов</value>
+  </data>
 </root>

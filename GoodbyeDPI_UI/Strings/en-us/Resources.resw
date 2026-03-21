@@ -2007,4 +2007,13 @@ Here is error code in case you need it.
   <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
     <value>There is no updates available right now. You can check updates manually, if you want.</value>
   </data>
+  <data name="PathViewModeMenuItem.Text" xml:space="preserve">
+    <value>File paths</value>
+  </data>
+  <data name="ShowPathsMenuItem.Text" xml:space="preserve">
+    <value>Full</value>
+  </data>
+  <data name="HidePathsMenuItem.Text" xml:space="preserve">
+    <value>Only file names</value>
+  </data>
 </root>

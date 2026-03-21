@@ -19,7 +19,7 @@ using CDPI_UI.Helper.Static;
 
 namespace CDPI_UI.Helper
 {
-    public class ProcessManager
+    public partial class ProcessManager
     {
         public required string Id;
 
@@ -292,6 +292,12 @@ namespace CDPI_UI.Helper
             return _outputBuffer.ToString();
         }
 
+        public static string ReplacePath(string str)
+        {
+            str = DirectoryReplaceRegex().Replace(str, "cdpi-ui://");
+            return str;
+        }
+
         private string ReplaceSymbols(string str)
         {
             str = str.Replace("[?25l\u001b[2J\u001b[m\u001b[H", "");
@@ -371,5 +377,8 @@ namespace CDPI_UI.Helper
             _outputDefaultBuffer.Clear();
             _outputBuffer.Clear();
         }
+
+        [GeneratedRegex(@"(?:[a-zA-Z]):\\.*?/", RegexOptions.Singleline)]
+        private static partial Regex DirectoryReplaceRegex();
     }
 }
