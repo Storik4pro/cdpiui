@@ -1474,7 +1474,6 @@ namespace CDPI_UI.Helper
 
         public async void CheckUpdates()
         {
-            // TODO: Fix 'rcXX' version
             if (IsNowUpdatesChecked) return;
             IsNowUpdatesChecked = true;
             UpdatesAvailableList.Clear();
@@ -1487,10 +1486,11 @@ namespace CDPI_UI.Helper
             {
                 if (item.Id == StateHelper.LocalUserItemsId) continue;
 
-                string repoUrl = item.UpdateCheckUrl;
                 string downloadUrl = item.DownloadUrl;
                 string versionControlType = item.VersionControlType;
                 string directory = item.Directory;
+
+                string repoUrl = GetReadyToUseRepoUrl(item.UpdateCheckUrl, item.Id);
 
                 var versionData = await GetLastVersionAndVersionNotes(repoUrl);
 
@@ -1553,6 +1553,36 @@ namespace CDPI_UI.Helper
             DatabaseHelper.Instance.DeleteItemById(itemId);
 
             ItemRemoved?.Invoke(itemId);
+        }
+
+        private string GetReadyToUseRepoUrl(string repoUrl, string storeId)
+        {
+            if (!Uri.TryCreate(repoUrl, UriKind.Absolute, out var repoUri))
+            {
+                return repoUrl;
+            }
+            string siteName = repoUri.GetLeftPart(UriPartial.Authority);
+            if (!string.IsNullOrEmpty(siteName))
+            {
+                if (VersionControl == SupportedVersionControls.GitHub)
+                {
+                    if (!siteName.Equals("github.com", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var item = GetItemInfoFromStoreId(storeId);
+                        return item.version_control_link;
+                    }
+                }
+                else if (VersionControl == SupportedVersionControls.GitLab)
+                {
+                    if (!siteName.Equals("gitlab.com", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var item = GetItemInfoFromStoreId(storeId);
+                        return item.version_control_link;
+                    }
+                }
+            }
+
+            return siteName;
         }
 
         private static string HandleException(Exception ex)
