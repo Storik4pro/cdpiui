@@ -52,7 +52,7 @@ public sealed partial class GoodCheckWorkPage : Page
 
         _uiDispatcher = DispatcherQueue.GetForCurrentThread();
 
-        CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
+        Default.TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
         GoodCheckProcessHelper.Instance.AllComplete += AllCompletedActions;
 
         SiteListProgressText.Text = GoodCheckProcessHelper.Instance.CurrentSiteList;
@@ -77,7 +77,7 @@ public sealed partial class GoodCheckWorkPage : Page
         });
 
         if (CreateConfigUtilWindow.Instance != null)
-            CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
+            Default.TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
 
         GoodCheckProcessHelper.Instance.Kill();
     }
@@ -109,7 +109,7 @@ public sealed partial class GoodCheckWorkPage : Page
             double percent = (double)current / (double)all * 100.0;
             CalcSpeed(current, all);
 
-            CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal, current, all);
+            Default.TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal, current, all);
             SetSiteListProgressText($"{percent:F0}% [{current}/{all}]");
         };
         GoodCheckProcessHelper.Instance.CorrectCountChanged += (count) =>
