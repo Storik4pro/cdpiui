@@ -325,7 +325,6 @@ namespace CDPI_UI.Helper
             LatestErrorMessage.Add(_object);
 
             var window = await ((App)Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: Id);
-            window?.SetId(Id);
 
             processState = false;
             onProcessStateChanged?.Invoke(Tuple.Create(Id, false));
