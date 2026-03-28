@@ -245,7 +245,7 @@ namespace CDPI_UI.Helper
         }
 
         #region Database
-        private string GetStoreUrl(SupportedVersionControls versionControl)
+        private static string GetStoreUrl(SupportedVersionControls versionControl)
         {
             string gitHubRepo = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
             string gitLabRepo = $"https://gitlab.com/{StateHelper.GitLabStoreRepo}/-/archive/main/CDPIUI-Store-main.zip";
@@ -260,6 +260,39 @@ namespace CDPI_UI.Helper
             if (Directory.Exists(targetFolder))
                 Directory.Delete(targetFolder, recursive: true);
         }
+
+        public static async Task<bool> TryLoadDatabaseForVersionControl(SupportedVersionControls versionControl)
+        {
+            try
+            {
+                string zipUrl = GetStoreUrl(versionControl);
+
+                using HttpClient client = new HttpClient();
+
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", versionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
+
+                using HttpResponseMessage response = await client.GetAsync(zipUrl);
+                response.EnsureSuccessStatusCode();
+
+                string tempZipPath = Path.Combine(Path.GetTempPath(), "store_repo.tmp");
+                await using (var fs = new FileStream(tempZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await response.Content.CopyToAsync(fs);
+                }
+
+                File.Delete(tempZipPath);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Error loading store database: {ex.Message}");
+            }
+            return false;
+        }
+
         public async Task<bool> LoadAllStoreDatabase(bool forseSync = true, SupportedVersionControls versionControl = SupportedVersionControls.None)
         {
             SupportedVersionControls usedVersionControl = versionControl == SupportedVersionControls.None ? VersionControl : versionControl;
@@ -334,7 +367,7 @@ namespace CDPI_UI.Helper
             catch (Exception ex)
             {
                 StoreInternalErrorHappens?.Invoke($"Error loading store database: {ex.Message}");
-                Debug.WriteLine($"Error loading store database: {ex.Message}");
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Error loading store database: {ex.Message}");
             }
             return false;
         }
