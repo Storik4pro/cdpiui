@@ -364,6 +364,20 @@ namespace CDPI_UI.Helper
                         GoodCheckProcessHelper.Instance.HandleProcessException(result[0], value);
                 }
             }
+            else if (message.StartsWith("UTILS:"))
+            {
+                if (message.StartsWith("UTILS:GRANT_ACCESS"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
+                        return;
+                    }
+                    if (bool.TryParse(result[0], out var value))
+                        Troubleshooting.TroubleshootingHelper.Instance.OnGrantAccessCompleted(value);
+                }
+            }
             else if (message.StartsWith("SETTINGS:"))
             {
                 if (message.StartsWith("SETTINGS:AUTORUN_FALSE"))
@@ -399,7 +413,7 @@ namespace CDPI_UI.Helper
                         Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
                         return;
                     }
-                    RemoveMsiInstallerModel(result[0], notify:false);
+                    RemoveMsiInstallerModel(result[0], notify: false);
                 }
             }
             else if (message.StartsWith("COMPATIBILITYCHECK"))

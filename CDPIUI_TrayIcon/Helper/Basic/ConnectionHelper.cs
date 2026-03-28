@@ -347,6 +347,16 @@ namespace CDPIUI_TrayIcon.Helper
                     _ = TasksHelper.Instance.StopAndRemoveTaskAsync(result[0]);
                 }
             }
+            else if (message.StartsWith("UTILS:GRANT_ACCESS"))
+            {
+                var result = ScriptHelper.GetArgsFromString(message);
+                if (result.Length < 1)
+                {
+                    Debug.WriteLine($"ERR, {message} => args exception");
+                    return;
+                }
+                Utils.GrantAccess(result[0], true);
+            }
             else if (message.StartsWith("UPDATE:"))
             {
                 if (message.StartsWith("UPDATE:BEGIN"))
@@ -401,7 +411,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 else if (message.StartsWith("PROXY:SETUP"))
                 {
-                    
+
                     var result = ScriptHelper.GetArgsFromString(message);
                     if (result.Length < 4)
                     {
@@ -438,7 +448,7 @@ namespace CDPIUI_TrayIcon.Helper
                         Console.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"), 
+                    NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"),
                         string.Format(LocaleHelper.GetLocaleString("ConfigRequiredNewestVersionOfComponent"), result[0]), "OPEN_BEGIN_STORE_UPDATE_CHECK");
                 }
             }
