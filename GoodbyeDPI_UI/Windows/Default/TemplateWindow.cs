@@ -272,7 +272,7 @@ namespace CDPI_UI.Default
             return false;
         }
 
-        public static void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
+        public void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
         {
             TaskbarManager.Instance.SetProgressState(loadingState);
             if (loadingState != TaskbarProgressBarState.Indeterminate)
