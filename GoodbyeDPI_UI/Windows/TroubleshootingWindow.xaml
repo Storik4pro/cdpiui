@@ -25,6 +25,7 @@
               Margin="0, 0, 0, 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -45,24 +46,31 @@
                 </AnimatedIcon>
             </Button>
 
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="16, 0, 0, 0">
+            <Grid x:Name="ImageAera"  Height="48" Grid.Column="1">
+                <Image 
+                    Grid.Column="0"
+                    Source="/Assets/Icons/Troubleshooting.ico"
+                    Width="16" Height="16"
+                    Margin="16,16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+            </Grid>
+
+            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="/Assets/Icons/Troubleshooting.ico"
-                    HorizontalAlignment="Left"
-                    Width="16" Height="16"
-                    Margin="0,0" Grid.Column="1"/>
                 <TextBlock 
                     l:Uids.Uid="TroubleshootingTitleTextBlock"
                     x:Name="AppTitleTextBlock"
                     TextWrapping="NoWrap"
                     Style="{StaticResource CaptionTextBlockStyle}"
                     VerticalAlignment="Center"
-                    Grid.Column="2" Margin="18, 0, 0, 0"/>
+                    Grid.Column="2" Margin="0, 0, 0, 0"/>
                 <TextBlock 
                     l:Uids.Uid="PreviewTextBlock"
                     x:Name="AppTitleSubTextBlock" 
