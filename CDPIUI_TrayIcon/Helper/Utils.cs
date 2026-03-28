@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,6 +85,37 @@ namespace CDPIUI_TrayIcon.Helper
             var version2 = new Version(v2);
             if (version1 >= version2) return true;
             return false;
+        }
+
+        public static async void GrantAccess(string file, bool conptySignal)
+        {
+            try
+            {
+                bool exists = System.IO.Directory.Exists(file);
+                if (!exists)
+                {
+                    DirectoryInfo di = System.IO.Directory.CreateDirectory(file);
+                }
+                DirectoryInfo dInfo = new DirectoryInfo(file);
+                DirectorySecurity dSecurity = dInfo.GetAccessControl();
+                dSecurity.AddAccessRule(
+                    new FileSystemAccessRule(
+                        new SecurityIdentifier(WellKnownSidType.WorldSid, null),
+                        FileSystemRights.FullControl,
+                        InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit,
+                        PropagationFlags.NoPropagateInherit,
+                        AccessControlType.Allow
+                        )
+                    );
+                dInfo.SetAccessControl(dSecurity);
+                if (conptySignal) await PipeServer.Instance.SendMessage("UTILS:GRANT_ACCESS(true)");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot grant access for \"{file}\". Exception message: {ex.Message}");
+            }
+
+            if (conptySignal) await PipeServer.Instance.SendMessage("UTILS:GRANT_ACCESS(false)");
         }
     }
 }
