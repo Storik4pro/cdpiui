@@ -480,17 +480,17 @@ namespace CDPI_UI
             var dq = modalWindow.DispatcherQueue;
             if (dq == null)
             {
-                _MakeModalAndAwait(modalWindow, tcs);
+                MakeModalAndAwait(modalWindow, tcs);
             }
             else
             {
-                dq.TryEnqueue(() => _MakeModalAndAwait(modalWindow, tcs));
+                dq.TryEnqueue(() => MakeModalAndAwait(modalWindow, tcs));
             }
 
             return tcs.Task;
         }
 
-        private void _MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        private void MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
         {
             lock (_modalLock)
             {
@@ -527,7 +527,6 @@ namespace CDPI_UI
                     }
 
                     SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-                    SetForegroundWindow(modalHwnd);
 
                     void ClosedHandler(object s, WindowEventArgs e)
                     {
@@ -536,11 +535,11 @@ namespace CDPI_UI
                             var dq2 = modalWindow.DispatcherQueue;
                             if (dq2 != null)
                             {
-                                dq2.TryEnqueue(() => _RestoreAfterModal(modalWindow, modalHwnd));
+                                dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
                             }
                             else
                             {
-                                _RestoreAfterModal(modalWindow, modalHwnd);
+                                RestoreAfterModal(modalWindow, modalHwnd);
                             }
                         }
                         finally
@@ -554,13 +553,64 @@ namespace CDPI_UI
                 }
                 catch (Exception ex)
                 {
-                    try { _RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
+                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
                     tcs.TrySetException(ex);
                 }
             }
         }
 
-        private void _RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
+        public Task MakeWindowNormal(Window modalWindow)
+        {
+            if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            var dq = modalWindow.DispatcherQueue;
+            if (dq == null)
+            {
+                RestoreModalWindowAndAwait(modalWindow, tcs);
+            }
+            else
+            {
+                dq.TryEnqueue(() => RestoreModalWindowAndAwait(modalWindow, tcs));
+            }
+
+            return tcs.Task;
+        }
+
+        private void RestoreModalWindowAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        {
+            lock (_modalLock)
+            {
+                try
+                {
+                    IntPtr modalHwnd = WindowNative.GetWindowHandle(modalWindow);
+                    if (modalHwnd == IntPtr.Zero)
+                    {
+                        tcs.SetException(new InvalidOperationException("HWND err"));
+                        return;
+                    }
+
+                    var dq2 = modalWindow.DispatcherQueue;
+                    if (dq2 != null)
+                    {
+                        dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
+                    }
+                    else
+                    {
+                        RestoreAfterModal(modalWindow, modalHwnd);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
+                    tcs.TrySetException(ex);
+                }
+            }
+        }
+
+
+        private void RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
         {
             lock (_modalLock)
             {
