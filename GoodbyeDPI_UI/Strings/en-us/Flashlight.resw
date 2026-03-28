@@ -275,4 +275,47 @@ Possible events:
   <data name="AskSupport.Content" xml:space="preserve">
     <value>Ask application support about this problem</value>
   </data>
+  <data name="CheckGitHubRepo" xml:space="preserve">
+    <value>Store uses GitHub repository to get list of available for download items and check updates. If repository on GitHub is unavailable (for example: internet provider blocked service), select another service in Store settings.
+
+To view more info about fixing this problem, visit attached link.</value>
+  </data>
+  <data name="CheckGitLabRepo" xml:space="preserve">
+    <value>Store uses GitLab repository to get list of available for download items and check updates. If repository on GitLab is unavailable (for example: internet provider blocked service), select another service in Store settings.
+
+To view more info about fixing this problem, visit attached link.</value>
+  </data>
+  <data name="URL_CheckGitHubRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="URL_CheckGitLabRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="CheckWriteAccess" xml:space="preserve">
+    <value>Application uses your disk to save your items and settings. If application don't have a permissions for that, some things may not work.</value>
+  </data>
+  <data name="CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="URL_CheckWriteAccess" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="InternalHelp" xml:space="preserve">
+    <value>Open local help</value>
+  </data>
 </root>

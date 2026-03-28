@@ -275,4 +275,47 @@
   <data name="AskSupport.Content" xml:space="preserve">
     <value>Связаться с поддержкой</value>
   </data>
+  <data name="CheckGitHubRepo" xml:space="preserve">
+    <value>Магазин использует репозиторий, расположенный на GitHub для получения списка доступных для загрузки элементов и проверки обновлений. Если репозиторий на GitHub недоступен (например, сервис заблокирован поставщиком услуг), то следует выбрать другой сервис в настройках Магазина.
+
+Перейдите по ссылке ниже, чтобы получить рекомендации по исправлению этой проблемы.</value>
+  </data>
+  <data name="CheckGitLabRepo" xml:space="preserve">
+    <value>Магазин использует репозиторий, расположенный на GitLab для получения списка доступных для загрузки элементов и проверки обновлений. Если репозиторий на GitLab недоступен (например, сервис заблокирован поставщиком услуг), то следует выбрать другой сервис в настройках Магазина.
+
+Перейдите по ссылке ниже, чтобы получить рекомендации по исправлению этой проблемы.</value>
+  </data>
+  <data name="URL_CheckGitHubRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="URL_CheckGitLabRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="CheckWriteAccess" xml:space="preserve">
+    <value>Приложение использует ваш диск для сохранения элементов и настроек. Если у приложения нет необходимых разрешений, то некоторые функции могут работать некорректно.</value>
+  </data>
+  <data name="CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="URL_CheckWriteAccess" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="InternalHelp" xml:space="preserve">
+    <value>Получить справку оффлайн</value>
+  </data>
 </root>

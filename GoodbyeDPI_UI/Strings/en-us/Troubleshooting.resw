@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Available" xml:space="preserve">
+    <value>AVAILABLE</value>
+  </data>
   <data name="CheckAdGuard" xml:space="preserve">
     <value>AdGuard services</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="CheckDNS" xml:space="preserve">
     <value>System DNS</value>
+  </data>
+  <data name="CheckGitHubRepo" xml:space="preserve">
+    <value>Store GitHub repository</value>
+  </data>
+  <data name="CheckGitLabRepo" xml:space="preserve">
+    <value>Store GitLab repository</value>
   </data>
   <data name="CheckIntelConnectivityNetwork" xml:space="preserve">
     <value>Intel Connectivity Network services </value>
@@ -158,6 +167,18 @@
   </data>
   <data name="CheckWinDivert" xml:space="preserve">
     <value>WinDivert services</value>
+  </data>
+  <data name="CheckWriteAccess" xml:space="preserve">
+    <value>Access to internal Store directory</value>
+  </data>
+  <data name="CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>Access to Store database directory</value>
+  </data>
+  <data name="CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>Access to Items Store directory</value>
+  </data>
+  <data name="CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>Access to repository Store directory</value>
   </data>
   <data name="Completed" xml:space="preserve">
     <value>Finalizing...</value>
@@ -207,8 +228,14 @@
   <data name="FixResultErrorTitle" xml:space="preserve">
     <value>Some problems cannot be fixed</value>
   </data>
+  <data name="FixResultTip" xml:space="preserve">
+    <value>Click or tap "Exit" to close this wizard.</value>
+  </data>
   <data name="FixResultTitle" xml:space="preserve">
     <value>Fix complete</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>NOT AVAILABLE</value>
   </data>
   <data name="NotExist" xml:space="preserve">
     <value>NOT EXIST</value>
