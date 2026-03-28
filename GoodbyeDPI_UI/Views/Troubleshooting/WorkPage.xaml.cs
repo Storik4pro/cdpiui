@@ -1,3 +1,4 @@
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Troubleshooting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -5,7 +6,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using static CDPI_UI.Helper.Troubleshooting.TroubleshootingHelper;
 using static System.Windows.Forms.AxHost;
@@ -31,6 +35,7 @@ public enum NavigationParameters
 {
     None,
     BeginBasicCheck,
+    BeginStoreRepoCheck,
 }
 
 public class DiagnosticResultModel
@@ -50,17 +55,35 @@ public sealed partial class WorkPage : Page
 {
     private ILocalizer localizer = Localizer.Get();
 
-    private ObservableCollection<DiagnosticResultModel> DiagnosticResults = [];
+    private ObservableCollection<DiagnosticResultModel> DisplayDiagnosticResultsCollection = [];
     private ObservableCollection<DiagnosticResultModel> FixResults = [];
     private NavigationParameters navigationParameter = NavigationParameters.None;
     public WorkPage()
     {
         InitializeComponent();
 
-        DiagnosticResultListView.ItemsSource = DiagnosticResults;
+        DiagnosticResultListView.ItemsSource = DisplayDiagnosticResultsCollection;
         FixResultListView.ItemsSource = FixResults;
 
-        TroubleshootingHelper.Instance.BasicDialogStateChanged += TroubleshootingHelper_BasicDialogStateChanged;
+        TroubleshootingHelper.Instance.CurrentStateChanged += TroubleshootingHelper_BasicDialogStateChanged;
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+
+        try
+        {
+            var animq = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("BackwardConnectedAnimation", ActionButtonsGrid);
+
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+            {
+                animq.Configuration = new BasicConnectedAnimationConfiguration();
+            }
+
+        }
+        catch { }
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -75,13 +98,22 @@ public sealed partial class WorkPage : Page
                 case NavigationParameters.BeginBasicCheck:
                     BeginBasicCheck();
                     break;
+                case NavigationParameters.BeginStoreRepoCheck:
+                    BeginStoreRepoCheck();
+                    break;
             }
+        }
+
+        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
+        if (backAnim != null)
+        {
+            backAnim.TryStart(ActionButtonsGrid);
         }
     }
 
-    private void TroubleshootingHelper_BasicDialogStateChanged(TroubleshootingHelper.RunBasicDialogStates state)
+    private void TroubleshootingHelper_BasicDialogStateChanged(Enum state)
     {
-        if (state == TroubleshootingHelper.RunBasicDialogStates.Preparing || state == TroubleshootingHelper.RunBasicDialogStates.Completed)
+        if (state.ToString() == "Preparing" || state.ToString() == "Completed")
         {
             CurrentStateTextBlock.Text = localizer.GetLocalizedString($"/Troubleshooting/{state}");
         }
@@ -91,41 +123,143 @@ public sealed partial class WorkPage : Page
         }
     }
 
-    private Dictionary<RunBasicDialogStates, bool> BasicDiagnosticResults = [];
-
-    private async void BeginBasicCheck()
+    private string GetHelpFor(string key)
     {
-        LoadingStackPanel.Visibility = Visibility.Visible;
+        string result = localizer.GetLocalizedString($"/Flashlight/{key}");
+
+        return LScriptLangHelper.ExecuteScript(result, scriptArgs: "/Flashlight/");
+    }
+
+    private void GetReady()
+    {
+        LoadingStackPanel.Visibility = Visibility.Collapsed;
         ViewResultsStackPanel.Visibility = Visibility.Collapsed;
         DiagnosticResultStackPanel.Visibility = Visibility.Collapsed;
         FixStackPanel.Visibility = Visibility.Collapsed;
+        FixResultStackPanel.Visibility = Visibility.Collapsed;
 
-        DiagnosticResults.Clear();
+        DisplayDiagnosticResultsCollection.Clear();
+        FixResults.Clear();
 
-        BasicDiagnosticResults = await TroubleshootingHelper.Instance.RunBasicDiagnostic();
+        ForwardButton.Visibility = Visibility.Collapsed;
+        CancelButton.Visibility = Visibility.Visible;
 
+        ((App)Application.Current).ShowWindowModalAsync(((App)Application.Current).GetCurrentWindowFromType<TroubleshootingWindow>());
+    }
+
+    private void GetReadyForCheck()
+    {
+        GetReady();
+        LoadingStackPanel.Visibility = Visibility.Visible;
+    }
+
+    private void GetReadyForFix()
+    {
+        GetReady();
+        FixStackPanel.Visibility = Visibility.Visible;
+    }
+
+    private void CheckViewResultActions()
+    {
         LoadingStackPanel.Visibility = Visibility.Collapsed;
         ViewResultsStackPanel.Visibility = Visibility.Visible;
         DiagnosticResultStackPanel.Visibility = Visibility.Visible;
+    }
 
+    private void CheckCompleteActions()
+    {
+        ForwardButton.Visibility = Visibility.Visible;
+        CancelButton.Visibility = Visibility.Collapsed;
+        ((App)Application.Current).MakeWindowNormal(((App)Application.Current).GetCurrentWindowFromType<TroubleshootingWindow>());
+    }
+
+    private void FixViewResultActions()
+    {
+        FixStackPanel.Visibility = Visibility.Collapsed;
+        ViewResultsStackPanel.Visibility = Visibility.Visible;
+        FixResultStackPanel.Visibility = Visibility.Visible;
+    }
+
+    private void FixCompleteActions()
+    {
+        ExitButton.Visibility = Visibility.Visible;
+        CancelButton.Visibility = Visibility.Collapsed;
+        ((App)Application.Current).MakeWindowNormal(((App)Application.Current).GetCurrentWindowFromType<TroubleshootingWindow>());
+    }
+
+    private object DiagnosticResults = null;
+
+    private async void BeginBasicCheck()
+    {
+        GetReadyForCheck();
+
+        DiagnosticResults = await TroubleshootingHelper.Instance.RunBasicDiagnostic();
+
+        CheckViewResultActions();
+
+        DisplayDiagnosticResults<RunBasicDialogStates>((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults, TroubleshootingHelper.BasicDiagnosticStateModelPairs);
+
+        CheckCompleteActions();
+    }
+
+    private async void BeginBasicFix()
+    {
+        GetReadyForFix();
+
+        var result = await TroubleshootingHelper.Instance.FixAllBasicErrors((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults);
+
+        FixViewResultActions();
+
+        DisplayFixResult<RunBasicDialogStates>(result, BasicDiagnosticStateModelPairs);
+
+        FixCompleteActions();
+    }
+
+    private async void BeginStoreRepoCheck()
+    {
+        GetReadyForCheck();
+
+        DiagnosticResults = await TroubleshootingHelper.Instance.RunStoreDiagnostic();
+
+        CheckViewResultActions();
+
+        DisplayDiagnosticResults<StoreCheckStates>((Dictionary<StoreCheckStates, bool>)DiagnosticResults, TroubleshootingHelper.StoreDiagnosticStateModelPairs);
+
+        CheckCompleteActions();
+    }
+
+    private async void BeginStoreFix()
+    {
+        GetReadyForFix();
+
+        var result = await TroubleshootingHelper.Instance.FixAllStoreErrors((Dictionary<StoreCheckStates, bool>)DiagnosticResults);
+
+        FixViewResultActions();
+
+        DisplayFixResult<StoreCheckStates>(result, StoreDiagnosticStateModelPairs);
+
+        FixCompleteActions();
+    }
+
+    private void DisplayDiagnosticResults<T>(Dictionary<T, bool> diagnosticResult, Dictionary<T, DiagnosticStateModel> diagnosticStatesPair) where T : Enum
+    {
         bool isErrorHappens = false;
-
-        foreach (var crit in BasicDiagnosticResults)
+        foreach (var criterion in diagnosticResult)
         {
-            bool isCorrect = TroubleshootingHelper.BasicDiagnosticStateModelPairs.GetValueOrDefault(crit.Key, null)?.CorrectState == crit.Value;
-            string correctText = TroubleshootingHelper.BasicDiagnosticStateModelPairs.GetValueOrDefault(crit.Key, null)?.CorrectValueDisplayText ?? string.Empty;
-            string inCorrectText = TroubleshootingHelper.BasicDiagnosticStateModelPairs.GetValueOrDefault(crit.Key, null)?.InCorrectValueDisplayText ?? string.Empty;
-            DiagnosticResults.Add(new()
+            bool isCorrect = diagnosticStatesPair.GetValueOrDefault(criterion.Key, null)?.CorrectState == criterion.Value;
+            string correctText = diagnosticStatesPair.GetValueOrDefault(criterion.Key, null)?.CorrectValueDisplayText ?? string.Empty;
+            string inCorrectText = diagnosticStatesPair.GetValueOrDefault(criterion.Key, null)?.InCorrectValueDisplayText ?? string.Empty;
+            DisplayDiagnosticResultsCollection.Add(new()
             {
                 IsHighlighted = !isCorrect,
-                CriterionName = localizer.GetLocalizedString($"/Troubleshooting/{crit.Key}"),
+                CriterionName = localizer.GetLocalizedString($"/Troubleshooting/{criterion.Key}"),
                 CurrentValue = isCorrect ? localizer.GetLocalizedString($"/Troubleshooting/{correctText}") : localizer.GetLocalizedString($"/Troubleshooting/{inCorrectText}"),
                 TargetValue = localizer.GetLocalizedString($"/Troubleshooting/{correctText}"),
                 IconGlyph = isCorrect ? "\uE930" : "\uEA39",
                 IsFixAvailable = false,
                 IsHelpAvailable = true,
-                HelpText = localizer.GetLocalizedString($"/Flashlight/{crit.Key}"),
-                HelpUrl = GetUrl(crit.Key.ToString())
+                HelpText = GetHelpFor($"{criterion.Key}"),
+                HelpUrl = GetUrl(criterion.Key.ToString())
             });
 
             if (!isErrorHappens) isErrorHappens = !isCorrect;
@@ -140,40 +274,21 @@ public sealed partial class WorkPage : Page
         {
             ResultTextBlock.Text = localizer.GetLocalizedString("/Troubleshooting/DiagnosticResultTitle");
             ResultTipTextBlock.Text = localizer.GetLocalizedString("/Troubleshooting/DiagnosticResultTip");
-        }
 
-        ForwardButton.Visibility = Visibility.Visible;
-        CancelButton.Visibility = Visibility.Collapsed;
+        }
     }
 
-    private async void BeginBasicFix()
+    private void DisplayFixResult<T>(Dictionary<T, FixResultModel> fixResult, Dictionary<T, DiagnosticStateModel> diagnosticStatesPair) where T : Enum
     {
-        LoadingStackPanel.Visibility = Visibility.Collapsed;
-        ViewResultsStackPanel.Visibility = Visibility.Collapsed;
-        DiagnosticResultStackPanel.Visibility = Visibility.Collapsed;
-        FixStackPanel.Visibility = Visibility.Visible;
-        FixResultStackPanel.Visibility = Visibility.Collapsed;
-
-        FixResults.Clear();
-
-        ForwardButton.Visibility = Visibility.Collapsed;
-        CancelButton.Visibility = Visibility.Visible;
-
-        var result = await TroubleshootingHelper.Instance.FixAllBasicErrors(BasicDiagnosticResults);
-
-        FixStackPanel.Visibility = Visibility.Collapsed;
-        ViewResultsStackPanel.Visibility = Visibility.Visible;
-        FixResultStackPanel.Visibility = Visibility.Visible;
-
         bool isErrorHappens = false;
 
-        foreach (var crit in result)
+        foreach (var crit in fixResult)
         {
             bool isCorrect = crit.Value.IsFixed;
             if (isCorrect) continue;
 
-            string correctText = TroubleshootingHelper.BasicDiagnosticStateModelPairs.GetValueOrDefault(crit.Key, null)?.CorrectValueDisplayText ?? string.Empty;
-            string inCorrectText = TroubleshootingHelper.BasicDiagnosticStateModelPairs.GetValueOrDefault(crit.Key, null)?.InCorrectValueDisplayText ?? string.Empty;
+            string correctText = diagnosticStatesPair.GetValueOrDefault(crit.Key, null)?.CorrectValueDisplayText ?? string.Empty;
+            string inCorrectText = diagnosticStatesPair.GetValueOrDefault(crit.Key, null)?.InCorrectValueDisplayText ?? string.Empty;
             FixResults.Add(new()
             {
                 IsHighlighted = !isCorrect,
@@ -183,7 +298,7 @@ public sealed partial class WorkPage : Page
                 IconGlyph = isCorrect ? "\uE930" : "\uEA39",
                 IsFixAvailable = false,
                 IsHelpAvailable = true,
-                HelpText = localizer.GetLocalizedString($"/Flashlight/{crit.Key}"),
+                HelpText = GetHelpFor($"{crit.Key}"),
                 HelpUrl = GetUrl(crit.Key.ToString())
             });
 
@@ -200,11 +315,8 @@ public sealed partial class WorkPage : Page
         {
             ResultTextBlock.Text = localizer.GetLocalizedString("/Troubleshooting/FixResultTitle");
             ResultTipTextBlock.Text = localizer.GetLocalizedString("/Troubleshooting/FixResultTip");
+            FixResultListView.Visibility = Visibility.Collapsed;
         }
-
-        
-        ExitButton.Visibility = Visibility.Visible;
-        CancelButton.Visibility = Visibility.Collapsed;
     }
 
     private string GetUrl(string key)
@@ -231,6 +343,10 @@ public sealed partial class WorkPage : Page
         if (navigationParameter == NavigationParameters.BeginBasicCheck)
         {
             BeginBasicFix();
+        }
+        else if (navigationParameter == NavigationParameters.BeginStoreRepoCheck)
+        {
+            BeginStoreFix();
         }
     }
 

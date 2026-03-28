@@ -21,7 +21,7 @@
             <StackPanel Spacing="5" Margin="20 10 20 10">
                 <controls:SettingsCard l:Uids.Uid="NotOneConfigDoesWorkCard" x:Name="NotOneConfigDoesWorkCard" IsClickEnabled="True" Click="NotOneConfigDoesWorkCard_Click"/>
                 <controls:SettingsCard l:Uids.Uid="ComponentDoesNotRunCard" x:Name="ComponentDoesNotRunCard" IsClickEnabled="True" Click="ComponentDoesNotRunCard_Click"/>
-                <controls:SettingsCard l:Uids.Uid="StoreCannotLoadCard" x:Name="StoreCannotLoadCard" IsClickEnabled="True" Click="StoreCannotLoadCard_Click" Visibility="Collapsed"/>
+                <controls:SettingsCard l:Uids.Uid="StoreCannotLoadCard" x:Name="StoreCannotLoadCard" IsClickEnabled="True" Click="StoreCannotLoadCard_Click"/>
                 <controls:SettingsCard l:Uids.Uid="ApplicationCannotDownloadUpdateCard" x:Name="ApplicationCannotDownloadUpdateCard" IsClickEnabled="True" Click="ApplicationCannotDownloadUpdateCard_Click" Visibility="Collapsed"/>
                 <controls:SettingsCard l:Uids.Uid="MyProblemNotInListCard" x:Name="MyProblemNotInListCard" IsClickEnabled="True" Click="MyProblemNotInListCard_Click"/>
             </StackPanel>
