@@ -1,4 +1,5 @@
-﻿using CDPI_UI.Views.CreateConfigHelper;
+﻿using CDPI_UI.Helper.Static;
+using CDPI_UI.Views.CreateConfigHelper;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -84,6 +85,19 @@ namespace CDPI_UI.Helper.CreateConfigHelper
             Tuple.Create("-pattern", string.Empty, true, string.Empty),
             Tuple.Create("-timeout", "Timeout", true, "10"),
             Tuple.Create("-window-size", "WindowSize", true, "0"),
+        };
+        public readonly static List<Tuple<string, string, bool, string>> TgWsProxyDesignerConfig = new()
+        {
+            Tuple.Create("--port", string.Empty, true, "1443"),
+            Tuple.Create("--host", string.Empty, true, "127.0.0.1"),
+            Tuple.Create("--secret", string.Empty, true, Utils.GetRandomHexNumber(32)),
+            Tuple.Create("--dc-ip", string.Empty, true, "2:149.154.167.220"),
+            Tuple.Create("--buf-kb", string.Empty, true, "256"),
+            Tuple.Create("--pool-size", string.Empty, true, "4"),
+            Tuple.Create("--log-file", string.Empty, false, string.Empty),
+            Tuple.Create("--log-max-mb", string.Empty, true, "5"),
+            Tuple.Create("--log-backups", string.Empty, true, "0"),
+            Tuple.Create("--verbose", string.Empty, false, string.Empty),
         };
 
 
@@ -197,6 +211,11 @@ namespace CDPI_UI.Helper.CreateConfigHelper
             }
             return m;
         }
+        public static void LoadTgWsProxyDesignerConfig(ObservableCollection<GraphicDesignerSettingItemModel> list, ObservableCollection<GraphicDesignerExclusiveSettingItemModel> exList)
+        {
+            exList.Clear();
+            LoadDesignerConfig(TgWsProxyDesignerConfig, list);
+        }
         public static void LoadGoodbyeDPIDesignerConfig(ObservableCollection<GraphicDesignerSettingItemModel> list, ObservableCollection<GraphicDesignerExclusiveSettingItemModel> exList)
         {
             exList.Clear();
@@ -228,7 +247,13 @@ namespace CDPI_UI.Helper.CreateConfigHelper
             }
         }
 
-        public static string ConvertStringToGraphicDesignerSettings(ObservableCollection<GraphicDesignerSettingItemModel> list, ObservableCollection<GraphicDesignerExclusiveSettingItemModel> exList, string args)
+        public static string ConvertStringToGraphicDesignerSettings(
+            ObservableCollection<GraphicDesignerSettingItemModel> list, 
+            ObservableCollection<GraphicDesignerExclusiveSettingItemModel> exList, 
+            string args, 
+            bool exclusive=true,
+            List<Tuple<string, string, bool, string>> model = null
+            )
         {
             foreach (var item in list)
             {
@@ -266,8 +291,8 @@ namespace CDPI_UI.Helper.CreateConfigHelper
                     i++;
                 }               
 
-                var item = list.FirstOrDefault(x => x.DisplayName == token);
-                if (item == null)
+                var item = exclusive ? list.FirstOrDefault(x => x.DisplayName == token) : null;
+                if (item == null && exclusive)
                 {
                     bool flag = false;
                     foreach (var _exModel in exList)
@@ -288,6 +313,27 @@ namespace CDPI_UI.Helper.CreateConfigHelper
                         notSupportedFlags += $"{token} ";
                         if (!string.IsNullOrEmpty(value)) notSupportedFlags += $"{value} ";
                     }
+                }
+                else if (item == null && !exclusive && model != null)
+                {
+                    ILocalizer localizer = Localizer.Get();
+                    var tuple = model.FirstOrDefault(x => x.Item1 == token);
+                    if (tuple == null) 
+                    {
+                        notSupportedFlags += $"{token} ";
+                        if (!string.IsNullOrEmpty(value)) notSupportedFlags += $"{value} ";
+                        continue;
+                    }
+                    list.Add(new()
+                    {
+                        Guid = Guid.NewGuid().ToString(),
+                        DisplayName = tuple.Item1,
+                        Description = string.IsNullOrEmpty(tuple.Item2) ? "" : localizer.GetLocalizedString($"/GraphicDesignerDescriptions/{tuple.Item2}"),
+                        EnableTextInput = tuple.Item3,
+                        Type = tuple.Item3 ? "string" : "flag",
+                        Value = value,
+                        IsChecked = true,
+                    });
                 }
                 else
                 {
