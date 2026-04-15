@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
@@ -71,7 +72,8 @@ public enum AvailableComponentFeatures
     AutoSelectConfig,
     CreateConfig,
     ExploreNewConfigs,
-    VisitForum
+    VisitForum,
+    ConnectTgWsProxy
 }
 
 public sealed partial class ComponentTileUserControl : UserControl
@@ -93,6 +95,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         { AvailableComponentFeatures.CreateConfig, "ms-appx:///Assets/Icons/Edit.png" },
         { AvailableComponentFeatures.ExploreNewConfigs, "ms-appx:///Assets/Icons/Store.png" },
         { AvailableComponentFeatures.VisitForum, "ms-appx:///Assets/Icons/OpenInNewWindow.png" },
+        { AvailableComponentFeatures.ConnectTgWsProxy, "ms-appx:///Assets/Icons/Proxy.ico" },
     };
 
     private Dictionary<string, List<AvailableComponentFeatures>> AvailableFeaturesForComponent = new()
@@ -102,6 +105,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         { "CSBIHA024", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.AutoSelectConfig, AvailableComponentFeatures.CreateConfig] },
         { "CSSIXC048", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs] },
         { "CSNIG9025", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig] },
+        { "CSTYFL050", [AvailableComponentFeatures.VisitForum, AvailableComponentFeatures.ConnectTgWsProxy] },
     };
 
 
@@ -184,7 +188,7 @@ public sealed partial class ComponentTileUserControl : UserControl
 
     private void Init()
     {
-        TitleTextBlock.Text = StateHelper.Instance.ComponentIdPairs.GetValueOrDefault(StoreId, StoreId);
+        TitleTextBlock.Text = DatabaseHelper.Instance.GetItemById(StoreId)?.ShortName ?? StoreId;
 
         if (DatabaseHelper.Instance.IsItemInstalled(StoreId))
         {
@@ -502,6 +506,18 @@ public sealed partial class ComponentTileUserControl : UserControl
             case AvailableComponentFeatures.VisitForum:
                 UrlOpenHelper.LaunchComponentForumUrl(StoreId);
                 break;
+            case AvailableComponentFeatures.ConnectTgWsProxy:
+                ConnectTelegramProxyContentDialog dialog = new()
+                {
+                    XamlRoot = this.XamlRoot,
+                };
+                await dialog.ShowAsync();
+                break;
         }
+    }
+
+    private void GoToComponentSettings_Click(object sender, RoutedEventArgs e)
+    {
+        ViewSettingsButtonClick();
     }
 }
