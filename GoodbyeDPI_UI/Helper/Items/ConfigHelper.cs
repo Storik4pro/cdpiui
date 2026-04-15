@@ -47,6 +47,8 @@ namespace CDPI_UI.Helper.Items
         public List<AvailableVarValues> availableCommaVarsValues { get; set; }
         public string startup_string { get; set; }
         public List<string> toggle_lists;
+
+        public bool MarkAsRemoved = false;
     }
 
     public class VariableItem
@@ -236,7 +238,7 @@ namespace CDPI_UI.Helper.Items
             _ = SaveConfigItem(filename, packId, configItem);
         }
 
-        public static async Task SaveConfigItem(string filename, string packId, ConfigItem item)
+        public static async Task<string> SaveConfigItem(string filename, string packId, ConfigItem item)
         {
             string folder = GetItemFolderFromPackId(packId);
             string fileName = Path.Combine(folder, filename);
@@ -245,9 +247,17 @@ namespace CDPI_UI.Helper.Items
 
             string jsonString = System.Text.Json.JsonSerializer.Serialize(item);
             Logger.Instance.CreateDebugLog(nameof(ConfigHelper), jsonString);
-            File.WriteAllText(fileName, jsonString);
+            try
+            {
+                File.WriteAllText(fileName, jsonString);
+            }
+            catch (Exception ex) 
+            {
+                return ErrorsHelper.GetPrettyErrorCode("SAVE_CFG", ex);
+            }
 
             await Task.CompletedTask;
+            return string.Empty;
         }
 
         public static string GetDefaultLocalePath(string packId)
@@ -1115,7 +1125,17 @@ namespace CDPI_UI.Helper.Items
             string packPath = Path.Combine(folder, filename);
 
             var item = Items.FirstOrDefault(x => x.packId == packId && x.file_name == filename);
-            if (item != null) Items.Remove(item);
+            if (item != null)
+            {
+                if (removeFile)
+                {
+                    Items.Remove(item);
+                }
+                else
+                {
+                    item.MarkAsRemoved = true;
+                }
+            }
 
             if (removeFile)
             {
@@ -1249,7 +1269,8 @@ namespace CDPI_UI.Helper.Items
         private static async Task<AsyncOperationResultModel> CreateConfigPack_Work(ConfigPackInitModel modelTemplate, List<ConfigItem> configItems, string outputDir, string tempDir, bool autoImport = false)
         {
             List<string[]> requirements = [];
-            
+
+            configItems.RemoveAll(x => x.MarkAsRemoved);
 
             Directory.CreateDirectory(tempDir);
 
