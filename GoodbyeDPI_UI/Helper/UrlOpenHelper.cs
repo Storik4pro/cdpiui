@@ -38,6 +38,11 @@ namespace CDPI_UI.Helper
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://t.me/storik4dev"));
         }
+
+        public static async void LaunchTelegramProxyUrl(string ip, string port, string secret)
+        {
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri($"tg://proxy?server={ip}&port={port}&secret={secret}"));
+        }
         public static async void LaunchComponentForumUrl(string componentId)
         {
             switch (componentId)
@@ -52,6 +57,9 @@ namespace CDPI_UI.Helper
                     _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://ntc.party/c/community-software/byedpi/39"));
                     break;
                 case "CSSIXC048":
+                    break;
+                case "CSTYFL050":
+                    _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Flowseal/tg-ws-proxy/issues/389"));
                     break;
 
             }
