@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.Controls.Universal.SingleStringTextContentViewerUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Universal"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{x:Bind Text, Mode=OneWay}"/>
+
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Background="{ThemeResource ControlFillColorTertiaryBrush}" CornerRadius="5"/>
+        <TextBlock Grid.Row="1" x:Name="IpTextBlock" Text="{x:Bind DisplayText, Mode=OneWay}" IsTextSelectionEnabled="True" VerticalAlignment="Center" Margin="8 0"/>
+        <Border
+            Grid.Row="1" Grid.Column="1"
+            x:Name="CopyButtonBorder"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}"
+            CornerRadius="{ThemeResource ControlCornerRadius}">
+            <local:CopyButton
+                x:Name="CopyCodeButton"
+                l:Uids.Uid="CopyButton"
+                Click="CopyButton_Click"
+                Content="&#xE8C8;" />
+        </Border>
+    </Grid>
+</UserControl>

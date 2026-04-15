@@ -1,0 +1,48 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
+
+namespace CDPI_UI.Controls.Dialogs.ComponentSettings
+{
+    public sealed partial class CreateNewConfigForComponentContentDialog : ContentDialog
+    {
+        public enum ConfigCreationVariants
+        {
+            None,
+            FromTemplate,
+            Manual
+        }
+
+        public ConfigCreationVariants Result { get; private set; } = ConfigCreationVariants.None;
+        public CreateNewConfigForComponentContentDialog()
+        {
+            InitializeComponent();
+        }
+
+        private void CreateFromTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            Result = ConfigCreationVariants.FromTemplate;
+            this.Hide();
+        }
+
+        private void CreateManuallyButton_Click(object sender, RoutedEventArgs e)
+        {
+            Result = ConfigCreationVariants.Manual;
+            this.Hide();
+        }
+    }
+}
