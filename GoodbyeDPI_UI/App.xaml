@@ -10,6 +10,7 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!--  <ResourceDictionary Source="ToggleSwitchStyles.xaml" /> -->
                 <!-- Other merged dictionaries here -->
+                <ResourceDictionary Source="ms-appx:///Controls/Universal/CopyButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <ResourceDictionary.ThemeDictionaries>
