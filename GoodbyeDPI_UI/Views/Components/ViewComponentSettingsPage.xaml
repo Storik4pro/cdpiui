@@ -11,57 +11,14 @@
     xmlns:l="using:WinUI3Localizer"
     xmlns:lcontrols="using:CDPI_UI">
 
-    <Page.Resources>
-        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
-    </Page.Resources>
+    
     
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="WideLayout">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="NarrowLayout">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,10,0,0" />
-                        <Setter Target="ConfigChooseCombobox.MinWidth" Value="300" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="WindowStates">
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1382"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="MainPanel.Width" Value="1060px"/>
-                        <Setter Target="EmptyPageGrid.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="EmptyPageGrid.Width" Value="1060px"/>
-                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="PageHeader.Width" Value="1060px"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        
         <Grid Margin="20,10,20,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -73,79 +30,6 @@
                 TextWrapping="NoWrap"/>
             <CheckBox x:Name="AutorunCheckBox" l:Uids.Uid="AutorunCheckBox" Grid.Column="1" VerticalAlignment="Center" Click="AutorunCheckBox_Click"/>
         </Grid>
-        <ScrollViewer
-            x:Name="contentSV"
-            Grid.Row="1"
-            Padding="20,0,20,0"
-            IsTabStop="False"
-            UseSystemFocusVisuals="False"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto">
-            <Grid Margin="0 0 0 10">
-                <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10" Visibility="Collapsed">
-                    <controls:SettingsCard l:Uids.Uid="ConfigSettingsCard"
-                                   CornerRadius="10"
-                                   BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
-                        <ComboBox x:Name="ConfigChooseCombobox" 
-                                  MinWidth="400"
-                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged"
-                                  Height="47">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="local:ComboboxItem">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding name}"/>
-                                        <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </controls:SettingsCard>
-
-                    <ItemsRepeater x:Name="StaggeredRepeater" ElementPrepared="StaggeredRepeater_ElementPrepared">
-                        <ItemsRepeater.Layout>
-                            <controls:StaggeredLayout
-                        ColumnSpacing="5"
-                        RowSpacing="5"
-                        DesiredColumnWidth="360"
-                        ItemsStretch="Fill"/>
-                        </ItemsRepeater.Layout>
-                    </ItemsRepeater>
-                </StackPanel>
-                <Grid x:Name="LoadingGrid" Margin="0 200 0 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <ProgressRing Grid.Row="0" HorizontalAlignment="Center"/>
-                    <TextBlock  Grid.Row="1" l:Uids.Uid="WorkingOnItTextBlock" HorizontalAlignment="Center"/>
-                </Grid>
-                <Grid x:Name="EmptyPageGrid" Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="(◡︵◡)" Style="{ThemeResource SubheaderTextBlockStyle}"/>
-                        <TextBlock l:Uids.Uid="EmptyPageTitle" Style="{ThemeResource SubheaderTextBlockStyle}" TextWrapping="NoWrap"/>
-                        <TextBlock l:Uids.Uid="EmptyPageDescription" TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <VariableSizedWrapGrid Orientation="Horizontal" Grid.Row="1" Margin="20" ItemHeight="50">
-                        <Button x:Name="OpenStoreButton" Padding="6" Margin="0 0 10 0" Height="40" Click="OpenStoreButton_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="23" ShowAsMonochrome="True"/>
-                                <TextBlock l:Uids.Uid="ExploreInStore" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="CreateConfigButton" Grid.Column="1" Padding="6" Margin="0 0 10 0" Height="40" Click="CreateConfigButton_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="23" Height="23"/>
-                                <TextBlock l:Uids.Uid="CreateConfigTextBlock" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </VariableSizedWrapGrid>
-                </Grid>
-            </Grid>
-        </ScrollViewer>
+        <Frame x:Name="PageContentFrame" Grid.Row="1" />
     </Grid>
 </Page>
