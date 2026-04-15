@@ -154,8 +154,9 @@
                         </Grid.RowDefinitions>
                         <TextBlock l:Uids.Uid="QuickSettingsTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 0 0 10"/>
 
-                        <StackPanel x:Name="ErrorStackPanel" Visibility="Collapsed" Grid.Row="1">
+                        <StackPanel x:Name="ErrorStackPanel" Visibility="Collapsed" Grid.Row="1" Spacing="10">
                             <TextBlock l:Uids.Uid="ConfigNotReadyToDisplayQuickSettingsTextBlock" TextWrapping="Wrap"/>
+                            <HyperlinkButton l:Uids.Uid="GoToComponentSettings" x:Name="GoToComponentSettings" Click="GoToComponentSettings_Click"/>
                         </StackPanel>
                         <Grid x:Name="ContentStackPanel" Grid.Row="2">
                             <Grid.RowDefinitions>
