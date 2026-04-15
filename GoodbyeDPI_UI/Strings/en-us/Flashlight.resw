@@ -318,4 +318,7 @@ To view more info about fixing this problem, visit attached link.</value>
   <data name="InternalHelp" xml:space="preserve">
     <value>Open local help</value>
   </data>
+  <data name="SaveBeforeQuitTip.Text" xml:space="preserve">
+    <value>Don't forget to save your changes before quit!</value>
+  </data>
 </root>

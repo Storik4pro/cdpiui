@@ -318,4 +318,7 @@
   <data name="InternalHelp" xml:space="preserve">
     <value>Получить справку оффлайн</value>
   </data>
+  <data name="SaveBeforeQuitTip.Text" xml:space="preserve">
+    <value>Сохраните изменения перед тем, как выйти!</value>
+  </data>
 </root>
