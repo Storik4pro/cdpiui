@@ -15,6 +15,7 @@ namespace CDPIUI_TrayIcon.Helper
             { "CSBIHA024", "ByeDPI" },
             { "CSSIXC048", "SpoofDPI" },
             { "CSNIG9025", "NoDPI" },
+            { "CSTYFL050", "TG WS Proxy" },
         };
 
         public static string GetLocalizedComponentName(string id)
