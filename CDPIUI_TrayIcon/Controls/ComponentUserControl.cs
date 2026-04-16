@@ -110,7 +110,7 @@ namespace CDPIUI_TrayIcon.Controls
         private void StateChangedActions()
         {
             ComponentWorkButton.IsHighlighted = IsRunned;
-            ComponentWorkButton.Glyph = IsRunned ? "\uE62E" : "\uF5B0";
+            ComponentWorkButton.Glyph = IsRunned ? "\uF8AE" : "\uF5B0";
         }
 
         private void SetupStateChanged()
@@ -122,14 +122,20 @@ namespace CDPIUI_TrayIcon.Controls
         {
             EventHappens?.Invoke();
 
-            await PipeServer.Instance.SendMessage($"WINDOW:SHOW_COMPONENT_SETTINGS({ComponentId})");
+            if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_COMPONENT_SETTINGS({ComponentId})"))
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-component-settings={ComponentId}");
+            }
         }
 
         private async void OpenPseudoConsoleButton_Clicked(object? sender, EventArgs e)
         {
             EventHappens?.Invoke();
 
-            await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({ComponentId})");
+            if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({ComponentId})")) 
+            {
+                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-pseudoconsole={ComponentId}");
+            }
         }
 
         private async void ComponentWorkButton_Clicked(object? sender, EventArgs e)
