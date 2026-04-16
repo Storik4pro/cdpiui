@@ -220,6 +220,7 @@ namespace CDPI_UI.Views.Components
 
             DispatcherQueue.TryEnqueue(() =>
             {
+                AdvancedLoggingToogleSwitch.IsOn = false;
                 foreach (var item in lst)
                 {
                     if (!item.IsChecked && item.Type == "string") continue;
@@ -477,12 +478,12 @@ namespace CDPI_UI.Views.Components
             CreateConfig();
         }
 
-        private void SetValueToGraphicDesignerItemsList(string key, string value, ObservableCollection<GraphicDesignerSettingItemModel> list)
+        private void SetValueToGraphicDesignerItemsList(string key, string value, ObservableCollection<GraphicDesignerSettingItemModel> list, bool isChecked = true)
         {
             var flag = list.FirstOrDefault(x => x.DisplayName == key);
             if (flag != null)
             {
-                flag.IsChecked = true;
+                flag.IsChecked = isChecked;
                 flag.Value = value;
             }
             else
@@ -491,7 +492,7 @@ namespace CDPI_UI.Views.Components
                 {
                     Guid = Guid.NewGuid().ToString(),
                     DisplayName = key,
-                    IsChecked = true,
+                    IsChecked = isChecked,
                     Value = value,
                     EnableTextInput = true,
                     Type = "string",
@@ -511,7 +512,7 @@ namespace CDPI_UI.Views.Components
             SetValueToGraphicDesignerItemsList("--buf-kb", BufferSizeTextBox.Text, lst);
             SetValueToGraphicDesignerItemsList("--pool-size", WebSocketSizeTextBox.Text, lst);
             SetValueToGraphicDesignerItemsList("--log-max-mb", LogSizeTextBox.Text, lst);
-            SetValueToGraphicDesignerItemsList("--verbose", string.Empty, lst);
+            SetValueToGraphicDesignerItemsList("--verbose", string.Empty, lst, AdvancedLoggingToogleSwitch.IsOn);
 
             lst.RemoveAll(x => x.DisplayName == "--dc-ip");
 
