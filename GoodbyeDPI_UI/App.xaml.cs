@@ -11,6 +11,7 @@ using CDPI_UI.Helper.Static;
 using CDPI_UI.Helper.Store;
 using CDPI_UI.Messages;
 using CDPI_UI.Views;
+using CDPI_UI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -124,6 +125,12 @@ namespace CDPI_UI
                 {
                     string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
                     var window = await UnsafeCreateNewWindow<ViewWindow>(id: id);
+                }
+                else if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-component-settings")))
+                {
+                    string id = Utils.GetValueFromCommmandLineParameter("--show-component-settings");
+                    var window = await SafeCreateNewWindow<ModernMainWindow>();
+                    window.NavView_Navigate(typeof(ViewComponentSettingsPage), id, new DrillInNavigationTransitionInfo());
                 }
                 else if (arguments.Contains("--show-proxy-setup"))
                 {
