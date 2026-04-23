@@ -118,7 +118,7 @@ namespace CDPI_UI.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
+                // onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
                 await PipeClient.Instance.SendMessage($"CONPTY:START({Id}$SEPARATOR{exePath}$SEPARATOR{args})");
@@ -162,7 +162,7 @@ namespace CDPI_UI.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
+                // onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
                 _ = PipeClient.Instance.SendMessage($"CONPTY:START({componentId}$SEPARATOR{exePath}$SEPARATOR{args})");
