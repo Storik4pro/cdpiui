@@ -2129,4 +2129,19 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="ConnectTgWsProxy" xml:space="preserve">
     <value>Подключить Telegram к прокси</value>
   </data>
+  <data name="AutoSelectionNotAvailableTextBlock.Text" xml:space="preserve">
+    <value>Автоподбор не доступен для этого компонента. Вам необходимо создать пресет вручную или использовать существующий образец.</value>
+  </data>
+  <data name="ConfigsForComponentNotFound.Text" xml:space="preserve">
+    <value>Для этого компонента нет установленных пресетов. </value>
+  </data>
+  <data name="NothingToShowTextBlock.Text" xml:space="preserve">
+    <value>Ни один элемент не соответствует указанным фильтрам.</value>
+  </data>
+  <data name="ReadingReportResults" xml:space="preserve">
+    <value>Чтение результатов подбора...</value>
+  </data>
+  <data name="ShowAnywayButton.Content" xml:space="preserve">
+    <value>Отобразить содержимое</value>
+  </data>
 </root>

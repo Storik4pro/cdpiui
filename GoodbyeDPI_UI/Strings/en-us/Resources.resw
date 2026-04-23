@@ -2127,4 +2127,19 @@ Here is error code in case you need it.
   <data name="ConnectTgWsProxy" xml:space="preserve">
     <value>Connect Telegram to proxy </value>
   </data>
+  <data name="AutoSelectionNotAvailableTextBlock.Text" xml:space="preserve">
+    <value>Auto selection is not available for this component. You must create config manually or use templates.</value>
+  </data>
+  <data name="ConfigsForComponentNotFound.Text" xml:space="preserve">
+    <value>We can't found any configs for this component.</value>
+  </data>
+  <data name="NothingToShowTextBlock.Text" xml:space="preserve">
+    <value>No items match the specified filters.</value>
+  </data>
+  <data name="ReadingReportResults" xml:space="preserve">
+    <value>Reading report results...</value>
+  </data>
+  <data name="ShowAnywayButton.Content" xml:space="preserve">
+    <value>Show this content anyway</value>
+  </data>
 </root>
