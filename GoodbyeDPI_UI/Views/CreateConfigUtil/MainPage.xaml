@@ -7,7 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:models="using:CDPI_UI.ViewModels">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +19,16 @@
         <StackPanel Padding="20 20 20 0" Spacing="5">
             <TextBlock l:Uids.Uid="WhatYouWantToDoTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 0 0 10"/>
             <TextBlock l:Uids.Uid="SelectComponentToViewVarsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-            <ComboBox x:Name="ComponentChooseComboBox" SelectionChanged="ComponentChooseComboBox_SelectionChanged"/>
+            <ComboBox x:Name="ComponentChooseComboBox" SelectionChanged="ComponentChooseComboBox_SelectionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:ViewComponentModel">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="20"/>
+                            <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </StackPanel>
         <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="200" VerticalAlignment="Center" Grid.Row="1" Margin="20 0">
             <StackPanel x:Name="GoodCheckSelectionPanel" Spacing="10">
@@ -46,7 +56,7 @@
                 <StackPanel Grid.Column="0" Spacing="5" >
                     <TextBlock l:Uids.Uid="HelpSupportTitle" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
-                        <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Button x:Name="ViewHelpButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="ViewHelpButton_Click">
                             <Button.Content>
                                 <Grid>
                                     <FontIcon Glyph="&#xE897;" />
@@ -61,7 +71,7 @@
                 <StackPanel Grid.Column="0" Spacing="5" >
                     <TextBlock l:Uids.Uid="OtherTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                     <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
-                        <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Button x:Name="ViewOtherButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="ViewOtherButton_Click">
                             <Button.Content>
                                 <Grid>
                                     <FontIcon Glyph="&#xE8A7;" />
@@ -73,6 +83,12 @@
                 </StackPanel>
             </StackPanel>
         </VariableSizedWrapGrid>
+        <StackPanel x:Name="PlaceholderGrid" Grid.Row="1" Margin="20 20 20 0" Spacing="20">
+            <TextBlock l:Uids.Uid="AutoSelectionNotAvailableTextBlock" TextWrapping="Wrap"/>
+            <HyperlinkButton Click="ViewOtherButton_Click">
+                <TextBlock l:Uids.Uid="OpenConfigHelperTextBlock"/>
+            </HyperlinkButton>
+        </StackPanel>
         <Grid x:Name="ActionButtonsGrid" Grid.Row="2">
             <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
 
