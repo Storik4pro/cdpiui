@@ -13,56 +13,80 @@
     xmlns:l="using:WinUI3Localizer">
 
     <Grid>
-        <ScrollViewer>
-            <StackPanel Spacing="10">
-                <lcontrol:GoodCheckReportHeaderButton 
-                    x:Name="HeaderButton" 
-                    IsOpened="True"
-                    ClickCommand="{Binding DataContext.HeaderClickCommand, ElementName=RootPage}"
-                    CornerRadius="0"/>
-                <StackPanel x:Name="ContentPanel" Padding="20 0">
-                    <StackPanel x:Name="SuccessStackPanel">
-                        <TextBlock l:Uids.Uid="SuccessStrategiesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                        
-                        <ListView x:Name="SuccessStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
-                                  ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="local:StrategyUIModel">
-                                    <lcontrol:GoodCheckReportStrategyUserControl
-                                        ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
-                                        Args="{x:Bind Args, Mode=OneWay}"
-                                        FailureCount="{x:Bind FailureCount, Mode=OneWay}"
-                                        SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
-                                        Flag="{x:Bind Flag, Mode=OneWay}"
-                                        FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
-                                        Margin="0 2.5"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        
-                    </StackPanel>
-                    <StackPanel x:Name="FailureStackPanel">
-                        <TextBlock l:Uids.Uid="FailureStrategiesTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                        <TextBlock x:Name="FailureNotSetTextBlock" l:Uids.Uid="ContentNotDisplayedTextBlock"/>
-                        <ListView x:Name="FailureStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
-                                  ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="local:StrategyUIModel">
-                                    <lcontrol:GoodCheckReportStrategyUserControl
-                                        ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
-                                        Args="{x:Bind Args, Mode=OneWay}"
-                                        FailureCount="{x:Bind FailureCount, Mode=OneWay}"
-                                        SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
-                                        Flag="{x:Bind Flag, Mode=OneWay}"
-                                        FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
-                                        Margin="0 2.5"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        
-                    </StackPanel>
-                </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <lcontrol:GoodCheckReportHeaderButton 
+                x:Name="HeaderButton" 
+                IsOpened="True"
+                ClickCommand="{Binding DataContext.HeaderClickCommand, ElementName=RootPage}"
+                CornerRadius="0"/>
+            <SelectorBar x:Name="MainSelectorBar" SelectionChanged="MainSelectorBar_SelectionChanged" Grid.Row="1" >
+                <SelectorBarItem x:Name="SelectorBarItemSuccess" IsSelected="True" l:Uids.Uid="SuccessStrategiesTextBlock"/>
+                <SelectorBarItem x:Name="SelectorBarItemFailure" l:Uids.Uid="FailureStrategiesTextBlock" />
+            </SelectorBar>
+        </Grid>
+        <Grid x:Name="SuccessStackPanel" Grid.Row="1">
+            <TextBlock x:Name="SuccessNotShow" l:Uids.Uid="NothingToShowTextBlock" Visibility="Collapsed" Margin="20"/>
+            <ListView x:Name="SuccessStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:StrategyUIModel">
+                        <lcontrol:GoodCheckReportStrategyUserControl
+                            ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
+                            Args="{x:Bind Args, Mode=OneWay}"
+                            FailureCount="{x:Bind FailureCount, Mode=OneWay}"
+                            SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
+                            Flag="{x:Bind Flag, Mode=OneWay}"
+                            FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
+                            Margin="20 0"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="5" Margin="0 0 0 20"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+        <Grid x:Name="FailureStackPanel" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="FailureNotShow" l:Uids.Uid="NothingToShowTextBlock" Visibility="Collapsed" Margin="20" Grid.Row="0"/>
+            <StackPanel x:Name="ContentNotDisplayedStackPanel" Grid.Row="1" Margin="20 0">
+                <TextBlock x:Name="FailureNotSetTextBlock" l:Uids.Uid="ContentNotDisplayedTextBlock" TextWrapping="Wrap"/>
+                <HyperlinkButton l:Uids.Uid="ShowAnywayButton" x:Name="ShowAnywayButton" Click="ShowAnywayButton_Click"/>
             </StackPanel>
-        </ScrollViewer>
+            <ListView x:Name="FailureStrategiesListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
+                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}" Grid.Row="2">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:StrategyUIModel">
+                        <lcontrol:GoodCheckReportStrategyUserControl
+                            ComponentId="{Binding DataContext.ComponentId, ElementName=RootPage}"
+                            Args="{x:Bind Args, Mode=OneWay}"
+                            FailureCount="{x:Bind FailureCount, Mode=OneWay}"
+                            SuccessCount="{x:Bind SuccessCount, Mode=OneWay}"
+                            Flag="{x:Bind Flag, Mode=OneWay}"
+                            FlagToggledCommand="{Binding DataContext.FlagSetCommand, ElementName=RootPage}"
+                            Margin="20 0"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="5" Margin="0 0 0 20"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+
+        </Grid>
     </Grid>
 </Page>
