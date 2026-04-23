@@ -98,6 +98,9 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\tg_ws_proxy.ico" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\StoreLogo.png" KeyPath="yes" />
       </Component>
