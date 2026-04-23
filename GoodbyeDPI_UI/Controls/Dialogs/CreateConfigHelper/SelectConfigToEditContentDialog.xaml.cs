@@ -1,5 +1,6 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.LScript;
 using CDPI_UI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -7,6 +8,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -60,19 +62,23 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
             ConfigsListView.ItemsSource = ConfigModels;
 
             InitDialog();
+
+            
         }
 
         private void InitDialog()
         {
-            List<ComponentModel> components = new();
+            List<ViewComponentModel> components = new();
             foreach (var component in StateHelper.Instance.ComponentIdPairs)
             {
                 if (component.Key == "ASGKOI001")
                     continue;
                 components.Add(new()
                 {
-                    Id = component.Key,
-                    Name = component.Value
+                    StoreId = component.Key,
+                    DisplayName = component.Value,
+                    ImageSource = 
+                        new BitmapImage(Helper.Static.UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(DatabaseHelper.Instance.GetItemById(component.Key)?.IconPath ?? string.Empty)))
                 });
             }
             ComponentChooseComboBox.ItemsSource = components;
@@ -85,42 +91,48 @@ namespace CDPI_UI.Controls.Dialogs.CreateConfigHelper
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
                     componentId);
 
-            List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
+            List<ConfigItem> items = componentHelper?.GetConfigHelper()?.GetConfigItems();
 
-            foreach (var item in items)
+            if (items != null)
             {
-                ConfigModels.Add(
-                    new()
-                    {
-                        DisplayName = item.name,
-                        Directory = item.file_name,
-                        PackId = item.packId,
-                        PackName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName,
-                    });
+
+                foreach (var item in items)
+                {
+                    ConfigModels.Add(
+                        new()
+                        {
+                            DisplayName = item.name,
+                            Directory = item.file_name,
+                            PackId = item.packId,
+                            PackName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName,
+                        });
+                }
             }
 
             if (ConfigModels.Count == 0)
             {
                 SelectText.Visibility = Visibility.Collapsed;
                 ConfigsScrollViewer.Visibility = Visibility.Collapsed;
+                ConfigsNotFoundStackPanel.Visibility = Visibility.Visible;
             }
             else
             {
                 SelectText.Visibility = Visibility.Visible;
                 ConfigsScrollViewer.Visibility = Visibility.Visible;
+                ConfigsNotFoundStackPanel.Visibility = Visibility.Collapsed;
             }
         }
 
         private void ComponentChooseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            InitModel((ComponentChooseComboBox.SelectedItem as ComponentModel).Id);
+            InitModel((ComponentChooseComboBox.SelectedItem as ViewComponentModel).StoreId);
         }
 
         private void ConfigSelected(Tuple<string, string> tuple)
         {
             ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    (ComponentChooseComboBox.SelectedItem as ComponentModel).Id);
+                    (ComponentChooseComboBox.SelectedItem as ViewComponentModel).StoreId);
             List<ConfigItem> configItems = componentHelper.GetConfigHelper().GetConfigItems();
 
             foreach (var item in configItems)
