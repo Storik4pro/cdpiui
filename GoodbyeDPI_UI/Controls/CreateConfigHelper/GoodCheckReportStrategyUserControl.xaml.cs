@@ -162,11 +162,10 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
     {
         if (!isRunned)
         {
-            isRunned = true;
+            await TasksHelper.Instance.StopTask(ComponentId);
+
             TasksHelper.Instance.TaskStateUpdated += ProcessManager_onProcessStateChanged;
 
-            await TasksHelper.Instance.StopTask(ComponentId);
-            
             TasksHelper.Instance.CreateAndRunNewTask(ComponentId, Args);
 
         }
@@ -177,7 +176,6 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
             PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
-            isRunned = false;
             TasksHelper.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
         }
     }
@@ -192,13 +190,14 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
             PlayIconButton.Visibility = Visibility.Visible;
             isRunned = true;
         }
-        else
+        else if (isRunned)
         {
             PlayIconButton.Checked = false;
             PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
             isRunned = false;
+            TasksHelper.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
         }
     }
 
