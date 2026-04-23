@@ -197,7 +197,7 @@ namespace CDPI_UI
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            BackButton.Visibility = ContentFrame.CanGoBack ? Visibility.Visible : Visibility.Collapsed;
+            BackButton.Visibility = (ContentFrame.CanGoBack && ContentFrame.SourcePageType != typeof(Views.CreateConfigHelper.MainPage)) ? Visibility.Visible : Visibility.Collapsed;
 
             UpdateCurrentHelpItem(e.SourcePageType);
 
@@ -236,11 +236,11 @@ namespace CDPI_UI
                         if (dialog.SelectedConfigResult == SelectResult.Selected)
                         {
                             configItem = dialog.SelectedConfigItem;
-
+                            ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
                         }
                     }
 
-                    ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+                    
                 });
             }
         }
