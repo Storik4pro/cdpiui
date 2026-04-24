@@ -8,6 +8,22 @@ namespace CDPIUI_TrayIcon.Helper
 {
     public class LocaleHelper
     {
+        public static readonly Dictionary<string, string> ComponentNames = new()
+        {
+            { "CSZTBN012", "Zapret" },
+            { "CSGIVS036", "GoodbyeDPI" },
+            { "CSBIHA024", "ByeDPI" },
+            { "CSSIXC048", "SpoofDPI" },
+            { "CSNIG9025", "NoDPI" },
+            { "CSTYFL050", "TG WS Proxy" },
+        };
+
+        public static string GetLocalizedComponentName(string id)
+        {
+            if (ComponentNames.TryGetValue(id, out var name)) return name;
+            return id;
+        }
+
         public static Dictionary<string, string> English = new Dictionary<string, string>()
         {
             { "UpdateFailure", "Application update failed.\nClick or tap here to open log" },
@@ -29,7 +45,15 @@ namespace CDPIUI_TrayIcon.Helper
             { "ProxySetupAsk", "Component {0} requires additional configuration before it can be used.\nClick or tap here to configure it." },
             { "CompatibilityCheckAssistant", "Compatibility check assistant" },
             { "ConfigRequiredNewestVersionOfComponent", "One or several installed items required newest version of {0}.\nClick or tap here to check updates for {0}" },
-            { "Store", "Store" }
+            { "Store", "Store" },
+            { "Setup", "Edit component's settings" },
+            { "ToggleState", "Toggle component state (Runned/Stopped)" },
+            { "AllStopped", "All components are stopped." },
+            { "StartedAll", "All components are running now." },
+            { "StartedNow", "Now started: {0}." },
+            { "StartedNowS", "Now started: {0}." },
+            { "TrayErrorTitle", "Notify icon" },
+            { "TrayErrorMessage", "We're unable to create icon in system notify aera. Click or tap here to view details.\n{0}" }
         };
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
@@ -47,13 +71,21 @@ namespace CDPIUI_TrayIcon.Helper
             { "Start", "Запустить" },
             { "Stop", "Остановить" },
             { "Utils", "Утилиты" },
-            { "Pseudoconsole", "Показать вывода процесса" },
+            { "Pseudoconsole", "Показать вывод процесса" },
             { "MsiInstallerHelper", "Помощник настройки MSI" },
             { "MsiInstallerHelperErr", "Не удалось установить пакет приложения {0}. Код ошибки: {1}" },
             { "ProxySetupAsk", "Компонент {0} требует дополнительной настройки перед началом работы.\nНажмите или коснитесь здесь, чтобы настроить его." },
             { "CompatibilityCheckAssistant", "Помощник проверки совместимости" },
             { "ConfigRequiredNewestVersionOfComponent", "Один или несколько установленных элементов требуют более новую версию {0} для корректной работы.\nНажмите или коснитесь здесь, чтобы проверить наличие обновлений для {0}" },
-            { "Store", "Магазин" }
+            { "Store", "Магазин" },
+            { "Setup", "Изменить настройки компонента" },
+            { "ToggleState", "Переключить состояние компонента (Запущен/Остановлен)" },
+            { "AllStopped", "Все компоненты остановлены." },
+            { "StartedAll", "Все установленные компоненты запущены." },
+            { "StartedNow", "Сейчас запущен: {0}." },
+            { "StartedNowS", "Сейчас запущены: {0}." },
+            { "TrayErrorTitle", "Индикатор уведомлений" },
+            { "TrayErrorMessage", "Невозможно создать индикатор в системном лотке уведомлений. Нажмите или коснитесь здесь, чтобы узнать подробности.\n{0}" }
         };
 
         public static string GetLocaleString(string key)

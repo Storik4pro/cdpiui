@@ -49,7 +49,7 @@ namespace CDPIUI_TrayIcon.Helper
             _cancellationTokenSource = new();
             _cancellationToken = _cancellationTokenSource.Token;
             await PipeServer.Instance.SendMessage($"GOODCHECK:RUNNED({operationId})");
-            TrayIconHelper.Instance.ToggleStartButtonEnabled(true);
+            TasksHelper.Instance.ApplyStatusToAllTasks(true);
 
 
             var startInfo = new ProcessStartInfo
@@ -95,7 +95,7 @@ namespace CDPIUI_TrayIcon.Helper
 
             TryKillProcess(Process);
             await PipeServer.Instance.SendMessage($"GOODCHECK:DIED({operationId})");
-            TrayIconHelper.Instance.ToggleStartButtonEnabled(true);
+            TasksHelper.Instance.ApplyStatusToAllTasks(true);
             return true;
         }
 

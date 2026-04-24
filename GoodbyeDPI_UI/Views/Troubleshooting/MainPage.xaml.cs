@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using Windows.UI.Popups;
 using WinRT.Interop;
 using WinUI3Localizer;
@@ -32,6 +33,35 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         InitializeComponent();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+
+        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
+        if (backAnim != null)
+        {
+            backAnim.TryStart(ActionButtonsGrid);
+        }
+    }
+
+    protected override void OnNavigatedFrom(NavigationEventArgs e)
+    {
+        base.OnNavigatedFrom(e);
+
+        try
+        {
+            var animq = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", ActionButtonsGrid);
+
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+            {
+                animq.Configuration = new BasicConnectedAnimationConfiguration();
+            }
+            
+        }
+        catch { }
     }
 
     private async void ShowDialog(string message, string title)
@@ -74,7 +104,7 @@ public sealed partial class MainPage : Page
 
     private void StoreCannotLoadCard_Click(object sender, RoutedEventArgs e)
     {
-
+        Frame.Navigate(typeof(WorkPage), NavigationParameters.BeginStoreRepoCheck, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
     }
 
     private void ApplicationCannotDownloadUpdateCard_Click(object sender, RoutedEventArgs e)

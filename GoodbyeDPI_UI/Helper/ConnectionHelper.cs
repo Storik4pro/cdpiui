@@ -2,6 +2,7 @@
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.Views.Components;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
@@ -238,6 +239,13 @@ namespace CDPI_UI.Helper
                     ShowViewWindowForId(result[0]);
                     return;
                 }
+                else if (message.StartsWith("WINDOW:SHOW_COMPONENT_SETTINGS"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1) return;
+                    ShowComponentSettingsForId(result[0]);
+                    return;
+                }
                 switch (message)
                 {
                     case "WINDOW:SHOW_MAIN":
@@ -356,6 +364,20 @@ namespace CDPI_UI.Helper
                         GoodCheckProcessHelper.Instance.HandleProcessException(result[0], value);
                 }
             }
+            else if (message.StartsWith("UTILS:"))
+            {
+                if (message.StartsWith("UTILS:GRANT_ACCESS"))
+                {
+                    var result = ScriptHelper.GetArgsFromString(message);
+                    if (result.Length < 1)
+                    {
+                        Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
+                        return;
+                    }
+                    if (bool.TryParse(result[0], out var value))
+                        Troubleshooting.TroubleshootingHelper.Instance.OnGrantAccessCompleted(value);
+                }
+            }
             else if (message.StartsWith("SETTINGS:"))
             {
                 if (message.StartsWith("SETTINGS:AUTORUN_FALSE"))
@@ -391,7 +413,7 @@ namespace CDPI_UI.Helper
                         Logger.Instance.CreateWarningLog(nameof(PipeClient), $"ERR, {message} => args exception");
                         return;
                     }
-                    RemoveMsiInstallerModel(result[0], notify:false);
+                    RemoveMsiInstallerModel(result[0], notify: false);
                 }
             }
             else if (message.StartsWith("COMPATIBILITYCHECK"))
@@ -403,10 +425,14 @@ namespace CDPI_UI.Helper
             }
         }
 
+        private async void ShowComponentSettingsForId(string id)
+        {
+            var window = await ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ModernMainWindow>();
+            window.NavView_Navigate(typeof(ViewComponentSettingsPage), id, new DrillInNavigationTransitionInfo());
+        }
         private async void ShowViewWindowForId(string id)
         {
-            var window = await ((App)Microsoft.UI.Xaml.Application.Current).SafeCreateNewWindow<ViewWindow>();
-            window.SetId(id);
+            var window = await ((App)Microsoft.UI.Xaml.Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: id);
         }
 
         private async void ShowStoreWindow()

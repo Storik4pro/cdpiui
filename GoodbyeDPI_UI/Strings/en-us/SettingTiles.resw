@@ -187,4 +187,7 @@ Preset customization includes automatically selecting component launch settings 
 
 For example, if you add the website "ya.ru" to the exceptions, block bypass will not apply to it.</value>
   </data>
+  <data name="OpenProxyInTelegram" xml:space="preserve">
+    <value>Apply proxy to Telegram</value>
+  </data>
 </root>

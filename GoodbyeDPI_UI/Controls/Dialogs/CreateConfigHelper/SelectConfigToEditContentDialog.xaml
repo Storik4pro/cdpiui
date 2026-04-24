@@ -11,30 +11,61 @@
     xmlns:lcontrol="using:CDPI_UI"
     xmlns:l="using:WinUI3Localizer"
     mc:Ignorable="d"
-    Style="{ThemeResource DefaultContentDialogStyle}">
+    Style="{ThemeResource DefaultContentDialogStyle}"
+    xmlns:models="using:CDPI_UI.ViewModels">
 
-    <Grid Width="400">
+    <ContentDialog.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="ContentDialogMaxWidth">700</x:Double>
+        </ResourceDictionary>
+    </ContentDialog.Resources>
+
+
+
+    <Grid x:Name="MainGrid" HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            <TextBlock l:Uids.Uid="SelectComponentTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" Margin="0 0 0 2"/>
+        <Grid Width="1000"/>
+        <Grid x:Name="MainStackPanel" Grid.Row="0" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock l:Uids.Uid="SelectComponentTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" Margin="0 0 0 2" HorizontalAlignment="Stretch"/>
             <ComboBox x:Name="ComponentChooseComboBox" 
                       HorizontalAlignment="Stretch" 
                       SelectionChanged="ComponentChooseComboBox_SelectionChanged"
-                      DisplayMemberPath="Name"
-                      Margin="0 0 0 5"/>
-            <TextBlock x:Name="SelectText" l:Uids.Uid="SelectConfigToEditTextBlock" Grid.Row="0" TextWrapping="Wrap" Visibility="Collapsed"/>
-        </StackPanel>
+                      Margin="0 0 0 5"
+                      Grid.Row="1">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:ViewComponentModel">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="20"/>
+                            <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock x:Name="SelectText" l:Uids.Uid="SelectConfigToEditTextBlock" Grid.Row="3" TextWrapping="Wrap" Visibility="Collapsed"/>
+        </Grid>
         <StackPanel x:Name="LoadingStackPanel" Grid.Row="2" Visibility="Collapsed">
             <ProgressRing IsIndeterminate="True"/>
             <TextBlock Text="Loading..." HorizontalAlignment="Center" Margin="0 5 0 0"/> 
         </StackPanel>
-        <ScrollViewer x:Name="ConfigsScrollViewer" Grid.Row="2" Visibility="Collapsed">
-            <ListView x:Name="ConfigsListView" Margin="0 5 0 0" SelectionMode="None" Padding="0"
-                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}">
+        <StackPanel x:Name="ConfigsNotFoundStackPanel" Visibility="Collapsed" Grid.Row="2">
+            <TextBlock l:Uids.Uid="ConfigsForComponentNotFound"/>
+        </StackPanel>
+        <ScrollViewer x:Name="ConfigsScrollViewer" Grid.Row="2" Visibility="Collapsed" Margin="0 0 -15 0" Padding="0 0 15 0">
+            <ListView x:Name="ConfigsListView" SelectionMode="None" 
+                      ItemContainerStyle="{StaticResource ListViewItemStretchStyle}" Margin="0 0 0 0">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ConfigToEditModel">
                         <lcontrol:SitelistButton 
@@ -43,10 +74,14 @@
                             PackId="{x:Bind PackId, Mode=OneWay}"
                             Directory="{x:Bind Directory, Mode=OneWay}"
                             IsLogoVisible="False"
-                            ClickCommand="{Binding DataContext.SelectConfigCommand, ElementName=RootDialog}"
-                            Margin="0 2.5"/>
+                            ClickCommand="{Binding DataContext.SelectConfigCommand, ElementName=RootDialog}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="5"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
             </ListView>
         </ScrollViewer>
     </Grid>

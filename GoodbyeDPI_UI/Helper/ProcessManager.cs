@@ -19,7 +19,7 @@ using CDPI_UI.Helper.Static;
 
 namespace CDPI_UI.Helper
 {
-    public class ProcessManager
+    public partial class ProcessManager
     {
         public required string Id;
 
@@ -118,7 +118,7 @@ namespace CDPI_UI.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
+                // onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
                 await PipeClient.Instance.SendMessage($"CONPTY:START({Id}$SEPARATOR{exePath}$SEPARATOR{args})");
@@ -162,7 +162,7 @@ namespace CDPI_UI.Helper
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
+                // onProcessStateChanged?.Invoke(Tuple.Create(Id, true));
                 processState = true;
 
                 _ = PipeClient.Instance.SendMessage($"CONPTY:START({componentId}$SEPARATOR{exePath}$SEPARATOR{args})");
@@ -292,6 +292,12 @@ namespace CDPI_UI.Helper
             return _outputBuffer.ToString();
         }
 
+        public static string ReplacePath(string str)
+        {
+            str = DirectoryReplaceRegex().Replace(str, "cdpi-ui://");
+            return str;
+        }
+
         private string ReplaceSymbols(string str)
         {
             str = str.Replace("[?25l\u001b[2J\u001b[m\u001b[H", "");
@@ -325,7 +331,6 @@ namespace CDPI_UI.Helper
             LatestErrorMessage.Add(_object);
 
             var window = await ((App)Application.Current).UnsafeCreateNewWindow<ViewWindow>(id: Id);
-            window?.SetId(Id);
 
             processState = false;
             onProcessStateChanged?.Invoke(Tuple.Create(Id, false));
@@ -372,5 +377,8 @@ namespace CDPI_UI.Helper
             _outputDefaultBuffer.Clear();
             _outputBuffer.Clear();
         }
+
+        [GeneratedRegex(@"(?:[a-zA-Z]):\\.*?/", RegexOptions.Singleline)]
+        private static partial Regex DirectoryReplaceRegex();
     }
 }

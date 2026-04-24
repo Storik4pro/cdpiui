@@ -120,6 +120,7 @@ namespace CDPI_UI.Helper
             ComponentIdPairs.Add("CSBIHA024", "ByeDPI");
             ComponentIdPairs.Add("CSSIXC048", "SpoofDPI");
             ComponentIdPairs.Add("CSNIG9025", "NoDPI");
+            ComponentIdPairs.Add("CSTYFL050", "TgWsProxy");
         }
 
         public string FindKeyByValue(string value)

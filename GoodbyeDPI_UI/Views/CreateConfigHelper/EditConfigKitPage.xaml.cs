@@ -121,6 +121,7 @@ namespace CDPI_UI.Views.CreateConfigHelper
 
             foreach (ConfigItem item in items)
             {
+                if (item.MarkAsRemoved) continue;
                 List<string> usedSiteLists = 
                     [.. (await ConfigHelper.GetSiteListItemsAsync(item.file_name, item.packId, ignoreNull:true)).Select(x => Path.GetFileName(x.FilePath))];
                 List<string> excludedSiteLists = 
@@ -176,7 +177,7 @@ namespace CDPI_UI.Views.CreateConfigHelper
             {
                 item.DisplayName = parameter.Item2;
                 ConfigItem configItem = ConfigHelper.GetConfigItem(item.FileName, item.PackId);
-                if (configItem != null)
+                if (configItem != null && !configItem.MarkAsRemoved)
                 {
                     configItem.name = parameter.Item2;
                 }
@@ -220,8 +221,11 @@ namespace CDPI_UI.Views.CreateConfigHelper
         private async void SaveKit()
         {
             ToggleLoadingMode(true, localizer.GetLocalizedString("SavingConfigKit"));
-            foreach (ConfigItem configItem in ConfigHelper.GetConfigItems())
+            List<ConfigItem> items = [];
+            items.AddRange(ConfigHelper.GetConfigItems());
+            for (int i = 0; i < items.Count; i++) 
             {
+                ConfigItem configItem = items[i];
                 var item = Configs.FirstOrDefault(x => x.PackId == configItem.packId && x.FileName == configItem.file_name);
                 if (item == null) 
                 {
@@ -236,8 +240,15 @@ namespace CDPI_UI.Views.CreateConfigHelper
                     }
                 }
                 else
-                { 
-                    await ConfigHelper.SaveConfigItem(configItem.file_name, configItem.packId, configItem);
+                {
+                    string errorCode = await ConfigHelper.SaveConfigItem(configItem.file_name, configItem.packId, configItem);
+                    if (!string.IsNullOrEmpty(errorCode)) 
+                    {
+                        ShowErrorDialog(string.Format(localizer.GetLocalizedString("SaveConfigException"), errorCode), localizer.GetLocalizedString("SomethingWentWrong"));
+                        SaveButton.IsEnabled = true;
+                        SaveAsButton.IsEnabled = true;
+                        return;
+                    }
                 }
             }
 

@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +25,8 @@ namespace CDPI_UI.Default
     {
         public new AppWindow AppWindow = null;
         public OverlappedPresenter OverlappedPresenter = null;
+
+        public Action NewIdSet;
 
         private Size WindowSizeProperty = new(484, 300);
         public Size WindowMinSize
@@ -105,6 +108,7 @@ namespace CDPI_UI.Default
             set
             {
                 IdProperty = value;
+                NewIdSet?.Invoke();
             }
         }
 
@@ -266,6 +270,13 @@ namespace CDPI_UI.Default
                 return true;
             }
             return false;
+        }
+
+        public static void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
+        {
+            TaskbarManager.Instance.SetProgressState(loadingState);
+            if (loadingState != TaskbarProgressBarState.Indeterminate)
+                TaskbarManager.Instance.SetProgressValue(currentLoadingValue, maxLoadingValue);
         }
 
         #region WINAPI

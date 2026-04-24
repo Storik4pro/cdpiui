@@ -1,5 +1,6 @@
 ﻿using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.LScript;
+using CDPI_UI.ViewModels;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -437,6 +438,21 @@ namespace CDPI_UI.Helper.Static
             else
             {
                 return new Uri("ms-appx:///Assets/Store/empty.png");
+            }
+        }
+
+        public static void LoadInstalledComponentsList(ObservableCollection<ViewComponentModel> list)
+        {
+            list.Clear();
+            List<DatabaseStoreItem> items = DatabaseHelper.Instance.GetItemsByType("component");
+            foreach (var item in items)
+            {
+                list.Add(new()
+                {
+                    StoreId = item.Id,
+                    DisplayName = item.ShortName,
+                    ImageSource = new BitmapImage(GetUriFromString(LScriptLangHelper.ExecuteScript(item.IconPath)))
+                });
             }
         }
 

@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
+    <None Remove="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml" />
     <None Remove="Controls\ConditionUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml" />
@@ -37,7 +38,10 @@
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\TgWsDataCenterEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
@@ -69,9 +73,12 @@
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
     <None Remove="Controls\Troubleshooting\DiagnosticResultUserControl.xaml" />
+    <None Remove="Controls\Universal\CopyButton.xaml" />
     <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
+    <None Remove="Controls\Universal\LinkedSettingsUserControl.xaml" />
     <None Remove="Controls\Universal\SearchUserControl.xaml" />
+    <None Remove="Controls\Universal\SingleStringTextContentViewerUserControl.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
@@ -79,6 +86,8 @@
     <None Remove="UpdatePage.xaml" />
     <None Remove="UtilsPage.xaml" />
     <None Remove="Views\AboutPage.xaml" />
+    <None Remove="Views\Components\DefaultComponentSettingsPage.xaml" />
+    <None Remove="Views\Components\TgWsProxyComponentPage.xaml" />
     <None Remove="Views\Components\ViewComponentSettingsPage.xaml" />
     <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
     <None Remove="Views\CreateConfigHelper\EditConfigKitPage.xaml" />
@@ -247,7 +256,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\ComponentSettings\" />
     <Folder Include="Controls\GoodCheck\" />
     <Folder Include="Help\EN\Store\" />
   </ItemGroup>
@@ -400,8 +408,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.3.2.0</FileVersion>
-    <AssemblyVersion>0.3.2.0</AssemblyVersion>
+    <FileVersion>0.4.4.0</FileVersion>
+    <AssemblyVersion>0.4.4.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
@@ -496,9 +504,36 @@
     <Page Update="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\TgWsDataCenterEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\LinkedSettingsUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\SingleStringTextContentViewerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\CopyButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Components\DefaultComponentSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Components\TgWsProxyComponentPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\CreateConfigHelper\EditConfigKitPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

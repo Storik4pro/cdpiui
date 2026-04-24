@@ -58,6 +58,7 @@ namespace CDPI_UI
 
         public ViewWindow()
         {
+            this.NewIdSet += SetId;
             this.InitializeComponent();
 
             this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
@@ -78,21 +79,32 @@ namespace CDPI_UI
             {
                 DefaultOutputButton.IsChecked = true;
             }
-            
+
+            if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView"))
+            {
+                HidePathsButton.IsChecked = true;
+            }
+            else
+            {
+                ShowPathsButton.IsChecked = true;
+            }
+
             OutputRichTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
             OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
+
+            SetId();
         }
 
-        public void SetId(string id)
+        private void SetId()
         {
-            Id = id;
+            DisconnectHandlers();
             TrySetCurentProcess();
             ConnectHandlers();
         }
 
         private async Task<ProcessManager> GetProcessManager()
         {
-            ProcessManager processManager = (await TasksHelper.Instance.GetTaskFromId(Id)).ProcessManager;
+            ProcessManager processManager = (await TasksHelper.Instance.GetTaskFromId(Id))?.ProcessManager;
             if (processManager == null) return null;
             return processManager;
         }
@@ -100,7 +112,7 @@ namespace CDPI_UI
         private async void ConnectHandlers()
         {
             var processManager = await GetProcessManager();
-
+            if (processManager == null) return;
             processManager.OutputReceived += OnProcessOutputReceived;
             processManager.onProcessStateChanged += ChangeProcessStatus;
             processManager.ErrorHappens += ErrorHappens;
@@ -123,14 +135,31 @@ namespace CDPI_UI
                 ChangeIcon(processManager.processState);
                 await processManager.GetReady(true);
             }
-
-            
         }
 
-        private void TrySetCurentProcess()
+        private async void DisconnectHandlers()
+        {
+            var processManager = await GetProcessManager();
+            if (processManager == null) return;
+            processManager.OutputReceived -= OnProcessOutputReceived;
+            processManager.onProcessStateChanged -= ChangeProcessStatus;
+            processManager.ErrorHappens -= ErrorHappens;
+            processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
+        }
+
+        private async void TrySetCurentProcess(string procName = null)
         {
             try
             {
+                if (!string.IsNullOrEmpty(procName))
+                {
+                    var processManager = await GetProcessManager();
+                    StatusMessage.Message = string.Format(
+                        processManager.processState ? localizer.GetLocalizedString("ProcessStartedMessageMessage") : localizer.GetLocalizedString("ProcessStoppedMessageMessage"), 
+                        GetProcessName()
+                        );
+                }
+
                 var item = DatabaseHelper.Instance.GetItemById(Id);
                 if (item != null)
                 {
@@ -149,7 +178,7 @@ namespace CDPI_UI
 
         private void ProcessManager_ProcessNameChanged(string obj)
         {
-            TrySetCurentProcess();
+            TrySetCurentProcess(obj);
         }
 
         public bool IsActive()
@@ -190,19 +219,12 @@ namespace CDPI_UI
             });
         }
 
-        private async void ChangeProcessStatus(Tuple<string, bool> tuple)
+        private void ChangeProcessStatus(Tuple<string, bool> tuple)
         {
             if (tuple.Item2)
             {
                 ClearRichTextBlock();
-                if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
-                {
-                    AppendToRichTextBlock((await GetProcessManager()).GetProcessOutput());
-                }
-                else
-                {
-                    AppendToRichTextBlock((await GetProcessManager()).GetDefaultProcessOutput());
-                }
+                AppendToRichTextBlock(GetProcessOutput());
                 ChangeIcon(true);
 
             } else if (!tuple.Item2)
@@ -273,14 +295,9 @@ namespace CDPI_UI
         }
 
 
-        private async void ViewWindow_Closed(object sender, WindowEventArgs args)
+        private void ViewWindow_Closed(object sender, WindowEventArgs args)
         {
-            var processManager = await GetProcessManager();
-            if (processManager == null) return;
-            processManager.OutputReceived -= OnProcessOutputReceived;
-            processManager.onProcessStateChanged -= ChangeProcessStatus;
-            processManager.ErrorHappens -= ErrorHappens;
-            processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
+            DisconnectHandlers();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -307,8 +324,7 @@ namespace CDPI_UI
             {
                 string filename = _dialog.FileName;
                 
-                string text = DefaultOutputButton.IsChecked ? GetProcessManager().Result.GetDefaultProcessOutput() :
-                    GetProcessManager().Result.GetProcessOutput();
+                string text = GetProcessOutput();
                 try
                 {
                     File.WriteAllText(filename, text);
@@ -342,17 +358,34 @@ namespace CDPI_UI
 
         private void CleanOutputButton_Click(object sender, RoutedEventArgs e)
         {
-            ClearRichTextBlock();
-            AppendToRichTextBlock(GetProcessManager().Result.GetProcessOutput());
             SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", true);
+            UpdateTextBlock();
         }
 
         private void DefaultOutputButton_Click(object sender, RoutedEventArgs e)
         {
-            ClearRichTextBlock();
-            AppendToRichTextBlock(GetProcessManager().Result.GetDefaultProcessOutput());
             SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", false);
+            UpdateTextBlock();
         }
+
+        private void ShowPathsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", false);
+            UpdateTextBlock();
+        }
+
+        private void HidePathsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", true);
+            UpdateTextBlock();
+        }
+
+        private void UpdateTextBlock()
+        {
+            ClearRichTextBlock();
+            AppendToRichTextBlock(GetProcessOutput());
+        }
+
         private async void ShowFontSettingsDialog()
         {
             FontSettingsContentDialog dialog = new()
@@ -427,5 +460,21 @@ namespace CDPI_UI
                 }
             }
         }
+
+        private string GetProcessOutput()
+        {
+            string text = SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode") ? GetProcessManager().Result.GetProcessOutput() :
+                    GetProcessManager().Result.GetDefaultProcessOutput();
+
+            if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView"))
+            {
+                return ProcessManager.ReplacePath(text);
+            }
+            else
+            {
+                return text;
+            }
+        }
+
     }
 }

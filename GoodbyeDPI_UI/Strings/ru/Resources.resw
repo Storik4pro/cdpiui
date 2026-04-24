@@ -285,7 +285,7 @@
     <value>Но не время отчаиваться! Как только вы загрузите новый набор настроек из Магазина или создадите свой, страница преобразится</value>
   </data>
   <data name="EmptyPageTitle.Text" xml:space="preserve">
-    <value>На этой странице царит одиночество</value>
+    <value>Похоже на то, что тут ничего нет</value>
   </data>
   <data name="en-us" xml:space="preserve">
     <value>Английский (English)</value>
@@ -2008,5 +2008,140 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="NoUpdatesAvailableRightNowTextBlock.Text" xml:space="preserve">
     <value>Сейчас нет доступных обновлений. Однако, они могут появится, если вы проведете ручную проверку ещё раз.</value>
+  </data>
+  <data name="PathViewModeMenuItem.Text" xml:space="preserve">
+    <value>Пути к файлам</value>
+  </data>
+  <data name="ShowPathsMenuItem.Text" xml:space="preserve">
+    <value>Полные</value>
+  </data>
+  <data name="HidePathsMenuItem.Text" xml:space="preserve">
+    <value>Только названия файлов</value>
+  </data>
+  <data name="LogsTextBlock.Text" xml:space="preserve">
+    <value>Отладка + Производительность</value>
+  </data>
+  <data name="DataCentersTextBlock.Text" xml:space="preserve">
+    <value>Датацентры Telegram</value>
+  </data>
+  <data name="AddTextBlock.Text" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="PasteFromBufferTextBlock.Text" xml:space="preserve">
+    <value>Добавить из буфера обмена</value>
+  </data>
+  <data name="ShareTextBlock.Text" xml:space="preserve">
+    <value>Поделиться</value>
+  </data>
+  <data name="NumberTextBlock.Text" xml:space="preserve">
+    <value>Номер</value>
+  </data>
+  <data name="IpTextBlock.Text" xml:space="preserve">
+    <value>IP-адрес</value>
+  </data>
+  <data name="TgWsDataCenterEditContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="TgWsDataCenterEditContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="AddDataCenter" xml:space="preserve">
+    <value>Добавить новое правило</value>
+  </data>
+  <data name="EditDataCenter" xml:space="preserve">
+    <value>Изменить правило</value>
+  </data>
+  <data name="PasteComplete" xml:space="preserve">
+    <value>Поддерживаемый контент вставлен</value>
+  </data>
+  <data name="PasteFailure" xml:space="preserve">
+    <value>Контент не поддерживается</value>
+  </data>
+  <data name="CopyComplete" xml:space="preserve">
+    <value>Текст скопирован в буфер обмена</value>
+  </data>
+  <data name="AdvancedLoggingSettingsExpander.Header" xml:space="preserve">
+    <value>Подробное ведение журнала (verbose)</value>
+  </data>
+  <data name="AdvancedLoggingSettingsExpander.Description" xml:space="preserve">
+    <value>Записывать в отладочный журнал больше информации. Это может помочь при устранении неполадок, но повышает нагрузку.</value>
+  </data>
+  <data name="BufferSettingsCard.Header" xml:space="preserve">
+    <value>Размер буфера (Кб)</value>
+  </data>
+  <data name="BufferSettingsCard.Description" xml:space="preserve">
+    <value>Размер буфера приёма/передачи в килобайтах. Чем больше значение, тем больше памяти будет выделено на сокет.</value>
+  </data>
+  <data name="WebSocketSettingsCard.Header" xml:space="preserve">
+    <value>Пул WebSocket-сессий </value>
+  </data>
+  <data name="WebSocketSettingsCard.Description" xml:space="preserve">
+    <value>Сколько параллельных WebSocket-сессий к одному датацентру можно одновременно держать. Увеличение может помочь при высокой нагрузке.</value>
+  </data>
+  <data name="LogSizeSettingsCard.Header" xml:space="preserve">
+    <value>Максимальный размер файла журнала (Мб)</value>
+  </data>
+  <data name="LogSizeSettingsCard.Description" xml:space="preserve">
+    <value>При достижении указанного лимита файл будет перезаписан.</value>
+  </data>
+  <data name="LogsPerformanceSettingsExpander.Header" xml:space="preserve">
+    <value>Отладка и производительность</value>
+  </data>
+  <data name="DefaultConfigPlaceholder" xml:space="preserve">
+    <value>Стандартный</value>
+  </data>
+  <data name="GoToComponentSettings.Content" xml:space="preserve">
+    <value>Перейти к настройкам компонента</value>
+  </data>
+  <data name="LinkedSettingsTextBlock.Text" xml:space="preserve">
+    <value>Связанные параметры</value>
+  </data>
+  <data name="CreateNewConfigForComponentContentDialog.Title" xml:space="preserve">
+    <value>Создать новый пресет</value>
+  </data>
+  <data name="CreateNewConfigForComponentContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CreateFromTemplateTextBlock.Text" xml:space="preserve">
+    <value>Использовать рекомендуемый образец</value>
+  </data>
+  <data name="CreateManuallyTextBlock.Text" xml:space="preserve">
+    <value>Создать с нуля</value>
+  </data>
+  <data name="ConnectTelegramProxyContentDialog.Title" xml:space="preserve">
+    <value>Подключить Telegram к прокси</value>
+  </data>
+  <data name="ConnectTelegramProxyContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ConnectManuallyTextBlock.Text" xml:space="preserve">
+    <value>Подключить вручную</value>
+  </data>
+  <data name="ConnectViaLinkTextBlock.Text" xml:space="preserve">
+    <value>Подключить при помощи ссылки </value>
+  </data>
+  <data name="CopyButton.CopiedMessage" xml:space="preserve">
+    <value>Скопировано в буфер обмена.</value>
+  </data>
+  <data name="KeyTextBlock.Text" xml:space="preserve">
+    <value>Ключ</value>
+  </data>
+  <data name="ConnectTgWsProxy" xml:space="preserve">
+    <value>Подключить Telegram к прокси</value>
+  </data>
+  <data name="AutoSelectionNotAvailableTextBlock.Text" xml:space="preserve">
+    <value>Автоподбор не доступен для этого компонента. Вам необходимо создать пресет вручную или использовать существующий образец.</value>
+  </data>
+  <data name="ConfigsForComponentNotFound.Text" xml:space="preserve">
+    <value>Для этого компонента нет установленных пресетов. </value>
+  </data>
+  <data name="NothingToShowTextBlock.Text" xml:space="preserve">
+    <value>Ни один элемент не соответствует указанным фильтрам.</value>
+  </data>
+  <data name="ReadingReportResults" xml:space="preserve">
+    <value>Чтение результатов подбора...</value>
+  </data>
+  <data name="ShowAnywayButton.Content" xml:space="preserve">
+    <value>Отобразить содержимое</value>
   </data>
 </root>

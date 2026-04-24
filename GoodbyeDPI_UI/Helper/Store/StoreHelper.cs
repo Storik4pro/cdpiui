@@ -245,7 +245,7 @@ namespace CDPI_UI.Helper
         }
 
         #region Database
-        private string GetStoreUrl(SupportedVersionControls versionControl)
+        private static string GetStoreUrl(SupportedVersionControls versionControl)
         {
             string gitHubRepo = $"https://api.github.com/repos/{StateHelper.StoreRepo}/zipball/main";
             string gitLabRepo = $"https://gitlab.com/{StateHelper.GitLabStoreRepo}/-/archive/main/CDPIUI-Store-main.zip";
@@ -260,6 +260,39 @@ namespace CDPI_UI.Helper
             if (Directory.Exists(targetFolder))
                 Directory.Delete(targetFolder, recursive: true);
         }
+
+        public static async Task<bool> TryLoadDatabaseForVersionControl(SupportedVersionControls versionControl)
+        {
+            try
+            {
+                string zipUrl = GetStoreUrl(versionControl);
+
+                using HttpClient client = new HttpClient();
+
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIStore", StateHelper.Instance.Version));
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", versionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
+
+                using HttpResponseMessage response = await client.GetAsync(zipUrl);
+                response.EnsureSuccessStatusCode();
+
+                string tempZipPath = Path.Combine(Path.GetTempPath(), "store_repo.tmp");
+                await using (var fs = new FileStream(tempZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await response.Content.CopyToAsync(fs);
+                }
+
+                File.Delete(tempZipPath);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Error loading store database: {ex.Message}");
+            }
+            return false;
+        }
+
         public async Task<bool> LoadAllStoreDatabase(bool forseSync = true, SupportedVersionControls versionControl = SupportedVersionControls.None)
         {
             SupportedVersionControls usedVersionControl = versionControl == SupportedVersionControls.None ? VersionControl : versionControl;
@@ -334,7 +367,7 @@ namespace CDPI_UI.Helper
             catch (Exception ex)
             {
                 StoreInternalErrorHappens?.Invoke($"Error loading store database: {ex.Message}");
-                Debug.WriteLine($"Error loading store database: {ex.Message}");
+                Logger.Instance.CreateErrorLog(nameof(StoreHelper), $"Error loading store database: {ex.Message}");
             }
             return false;
         }
@@ -1404,7 +1437,7 @@ namespace CDPI_UI.Helper
                     }
                     else
                     {
-                        continue;
+                        continue; // TODO: Fix update process for gitlab version
                     }
 
                     TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
@@ -1474,7 +1507,6 @@ namespace CDPI_UI.Helper
 
         public async void CheckUpdates()
         {
-            // TODO: Fix 'rcXX' version
             if (IsNowUpdatesChecked) return;
             IsNowUpdatesChecked = true;
             UpdatesAvailableList.Clear();
@@ -1487,10 +1519,11 @@ namespace CDPI_UI.Helper
             {
                 if (item.Id == StateHelper.LocalUserItemsId) continue;
 
-                string repoUrl = item.UpdateCheckUrl;
                 string downloadUrl = item.DownloadUrl;
                 string versionControlType = item.VersionControlType;
                 string directory = item.Directory;
+
+                string repoUrl = GetReadyToUseRepoUrl(item.UpdateCheckUrl, item.Id);
 
                 var versionData = await GetLastVersionAndVersionNotes(repoUrl);
 
@@ -1553,6 +1586,36 @@ namespace CDPI_UI.Helper
             DatabaseHelper.Instance.DeleteItemById(itemId);
 
             ItemRemoved?.Invoke(itemId);
+        }
+
+        private string GetReadyToUseRepoUrl(string repoUrl, string storeId)
+        {
+            if (!Uri.TryCreate(repoUrl, UriKind.Absolute, out var repoUri))
+            {
+                return repoUrl;
+            }
+            string siteName = repoUri.GetLeftPart(UriPartial.Authority);
+            if (!string.IsNullOrEmpty(siteName))
+            {
+                if (VersionControl == SupportedVersionControls.GitHub)
+                {
+                    if (!siteName.Equals("github.com", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var item = GetItemInfoFromStoreId(storeId);
+                        return item.version_control_link;
+                    }
+                }
+                else if (VersionControl == SupportedVersionControls.GitLab)
+                {
+                    if (!siteName.Equals("gitlab.com", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var item = GetItemInfoFromStoreId(storeId);
+                        return item.version_control_link;
+                    }
+                }
+            }
+
+            return siteName;
         }
 
         private static string HandleException(Exception ex)

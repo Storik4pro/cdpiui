@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -42,6 +43,7 @@ public class StrategyUIModel
 }
 public sealed partial class ViewGoodCheckSiteListReportPage : Page
 {
+    private ILocalizer localizer = Localizer.Get();
     
     public ICommand HeaderClickCommand { get; }
     public ICommand FlagSetCommand { get; }
@@ -62,36 +64,83 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
 
         SuccessStrategiesListView.ItemsSource = SuccessStrategiesList;
         FailureStrategiesListView.ItemsSource = FailureStrategiesList;
-        this.Loaded += ViewGoodCheckSiteListReportPage_Loaded;
+        MainSelectorBar.SelectedItem = SelectorBarItemSuccess;
 
-        FailureNotSetTextBlock.Visibility = SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies") ? Visibility.Collapsed : Visibility.Visible;
+        var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
+        window?.SetStatus(true, localizer.GetLocalizedString("ReadingReportResults"));
+
+        if (SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies"))
+        {
+            FailureStrategiesListView.Visibility = Visibility.Visible;
+            ContentNotDisplayedStackPanel.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            FailureStrategiesListView.Visibility = Visibility.Collapsed;
+            ContentNotDisplayedStackPanel.Visibility = Visibility.Visible;
+        }
+
+        this.Loaded += ViewGoodCheckSiteListReportPage_Loaded;
     }
 
     private async void ViewGoodCheckSiteListReportPage_Loaded(object sender, RoutedEventArgs e)
     {
+        LoadResultFor(true);
+
+        this.Loaded -= ViewGoodCheckSiteListReportPage_Loaded;
+
+        await Task.CompletedTask;
+    }
+
+    private async void LoadResultFor(bool isSuccess)
+    {
+        var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
+        window?.SetStatus(true, localizer.GetLocalizedString("ReadingReportResults"));
+
+        await Task.Run(() => LoadResultToCollection(isSuccess, isSuccess? SuccessStrategiesList : FailureStrategiesList));
+
+        if (SuccessStrategiesList.Count == 0)
+        {
+            SuccessNotShow.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            SuccessNotShow.Visibility = Visibility.Collapsed;
+        }
+        if (FailureStrategiesList.Count == 0)
+        {
+            FailureNotShow.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            FailureNotShow.Visibility = Visibility.Collapsed;
+        }
+
+            window?.SetStatus(false);
+    }
+
+    private async Task LoadResultToCollection(bool isSuccess, ObservableCollection<StrategyUIModel> collection)
+    {
+        await Task.Delay(500);
         foreach (StrategyModel strategy in Strategies)
         {
             if (float.TryParse(strategy.All, out var all) && int.TryParse(strategy.Success, out var success))
             {
-                StrategyUIModel strategyUIModel = new()
+
+                bool isCorrect = all != 0 && (success / (all / 100)) >= 65;
+                if ((isCorrect && isSuccess) || (!isCorrect && !isSuccess))
                 {
-                    Args = strategy.Strategy,
-                    FailureCount = (all - success).ToString(),
-                    SuccessCount = strategy.Success,
-                    Flag = strategy.Flag,
-                };
-                if (all != 0 && (success / (all / 100)) >= 65)
-                {
-                    SuccessStrategiesList.Add(strategyUIModel);
-                }
-                else
-                {
-                    if (SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies"))
-                        FailureStrategiesList.Add(strategyUIModel);
+                    StrategyUIModel strategyUIModel = new()
+                    {
+                        Args = strategy.Strategy,
+                        FailureCount = (all - success).ToString(),
+                        SuccessCount = strategy.Success,
+                        Flag = strategy.Flag,
+                    };
+                    DispatcherQueue.TryEnqueue(() => collection.Add(strategyUIModel));
                 }
             }
         }
-        this.Loaded -= ViewGoodCheckSiteListReportPage_Loaded;
 
         await Task.CompletedTask;
     }
@@ -152,6 +201,31 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
                 }
             }
         }
+    }
+
+    private async void MainSelectorBar_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        if (sender.SelectedItem == SelectorBarItemSuccess)
+        {
+            SuccessStackPanel.Visibility = Visibility.Visible;
+            FailureStackPanel.Visibility = Visibility.Collapsed;
+            if (SuccessStrategiesList.Count == 0) LoadResultFor(true);
+        }
+        else
+        {
+            SuccessStackPanel.Visibility = Visibility.Collapsed;
+            FailureStackPanel.Visibility = Visibility.Visible;
+            if (FailureStrategiesList.Count == 0 && SettingsManager.Instance.GetValue<bool>("CONFIGDESIGNER", "showFailureStrategies")) LoadResultFor(false);
+        }
+    }
+
+    private void ShowAnywayButton_Click(object sender, RoutedEventArgs e)
+    {
+        SuccessStackPanel.Visibility = Visibility.Collapsed;
+        FailureStackPanel.Visibility = Visibility.Visible;
+        FailureStrategiesListView.Visibility = Visibility.Visible;
+        ContentNotDisplayedStackPanel.Visibility = Visibility.Collapsed;
+        if (FailureStrategiesList.Count == 0) LoadResultFor(false);
     }
 
     private void HeaderClick(object parameter)

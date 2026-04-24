@@ -8,13 +8,18 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using WinUI3Localizer;
+using static CDPI_UI.Helper.MsiInstallerHelper;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
+using static System.Windows.Forms.AxHost;
 using Task = System.Threading.Tasks.Task;
 
 namespace CDPI_UI.Helper.Troubleshooting
@@ -37,11 +42,105 @@ namespace CDPI_UI.Helper.Troubleshooting
             }
         }
 
-        public Action<RunBasicDialogStates> BasicDialogStateChanged;
+        public Action<Enum> CurrentStateChanged;
 
         private TroubleshootingHelper()
         {
 
+        }
+
+        public class DiagnosticStateModel
+        {
+            public string CorrectValueDisplayText { get; set; }
+            public string InCorrectValueDisplayText { get; set; }
+            public bool CorrectState { get; set; }
+        }
+
+        public enum StoreCheckStates
+        {
+            Preparing,
+            CheckGitHubRepo,
+            CheckGitLabRepo,
+            CheckWriteAccess,
+            CheckWriteAccessIntoItemsFolder,
+            CheckWriteAccessIntoRepoFolder,
+            CheckWriteAccessIntoDatabaseFolder,
+            Completed
+        }
+
+        public static Dictionary<StoreCheckStates, DiagnosticStateModel> StoreDiagnosticStateModelPairs = new()
+        {
+            { StoreCheckStates.CheckGitHubRepo, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+            { StoreCheckStates.CheckGitLabRepo, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+            { StoreCheckStates.CheckWriteAccess, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+            { StoreCheckStates.CheckWriteAccessIntoItemsFolder, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+            { StoreCheckStates.CheckWriteAccessIntoRepoFolder, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+            { StoreCheckStates.CheckWriteAccessIntoDatabaseFolder, new DiagnosticStateModel() { CorrectState = true, CorrectValueDisplayText = "Available", InCorrectValueDisplayText="NotAvailable" } },
+        };
+
+        public async Task<Dictionary<StoreCheckStates, bool>> RunStoreDiagnostic()
+        {
+            TasksHelper.Instance.StopAllTasks();
+            _ = ProcessManager.StopService();
+            CurrentStateChanged?.Invoke(StoreCheckStates.Preparing);
+
+            await Task.Delay(1000);
+            Services = null;
+            Dictionary<StoreCheckStates, bool> completedStates = [];
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckGitHubRepo);
+            bool isGitHubRepoAvailable = await StoreHelper.TryLoadDatabaseForVersionControl(SupportedVersionControls.GitHub);
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckGitLabRepo);
+            bool isGitLabRepoAvailable = await StoreHelper.TryLoadDatabaseForVersionControl(SupportedVersionControls.GitLab);
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckWriteAccess);
+            string localAppData = StateHelper.GetDataDirectory();
+            string storeFolder = Path.Combine(localAppData, StateHelper.StoreDirName);
+
+            bool hasWriteAccess = IsDirectoryWritable(Path.Combine(storeFolder));
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckWriteAccessIntoItemsFolder);
+            bool hasWriteAccessIntoItemsFolder = IsDirectoryWritable(Path.Combine(storeFolder, StateHelper.StoreItemsDirName));
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckWriteAccessIntoRepoFolder);
+            bool hasWriteAccessIntoRepoFolder = IsDirectoryWritable(Path.Combine(storeFolder, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName));
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.CheckWriteAccessIntoDatabaseFolder);
+            bool hasWriteAccessIntoDatabaseFolder = IsDirectoryWritable(Path.Combine(storeFolder, StateHelper.StoreRepoCache, StateHelper.StoreLocalDirName));
+
+            await Task.Delay(1000);
+
+            completedStates = new()
+            {
+                { StoreCheckStates.CheckGitHubRepo, isGitHubRepoAvailable },
+                { StoreCheckStates.CheckGitLabRepo, isGitLabRepoAvailable },
+                { StoreCheckStates.CheckWriteAccess, hasWriteAccess },
+                { StoreCheckStates.CheckWriteAccessIntoItemsFolder, hasWriteAccessIntoItemsFolder },
+                { StoreCheckStates.CheckWriteAccessIntoRepoFolder, hasWriteAccessIntoRepoFolder },
+                { StoreCheckStates.CheckWriteAccessIntoDatabaseFolder, hasWriteAccessIntoDatabaseFolder },
+            };
+
+            await Task.CompletedTask;
+            Services = null;
+
+            CurrentStateChanged?.Invoke(StoreCheckStates.Completed);
+
+            return completedStates;
+        }
+
+        public async Task<Dictionary<StoreCheckStates, FixResultModel>> FixAllStoreErrors(Dictionary<StoreCheckStates, bool> statesList)
+        {
+            Dictionary<StoreCheckStates, FixResultModel> result = [];
+            foreach (var state in statesList)
+            {
+                if (state.Value != (StoreDiagnosticStateModelPairs.FirstOrDefault(x => x.Key == state.Key).Value?.CorrectState ?? false))
+                {
+                    result.Add(state.Key, await TryToFixStoreError(state.Key));
+                }
+            }
+            await Task.Delay(1000);
+            return result;
         }
 
         public enum RunBasicDialogStates
@@ -63,12 +162,7 @@ namespace CDPI_UI.Helper.Troubleshooting
             CheckAnotherComponentsServices,
             Completed
         }
-        public class DiagnosticStateModel
-        {
-            public string CorrectValueDisplayText { get; set; }
-            public string InCorrectValueDisplayText { get; set; }
-            public bool CorrectState { get; set; }
-        }
+        
 
         public static Dictionary<RunBasicDialogStates, DiagnosticStateModel> BasicDiagnosticStateModelPairs = new()
         {
@@ -92,53 +186,53 @@ namespace CDPI_UI.Helper.Troubleshooting
         {
             TasksHelper.Instance.StopAllTasks();
             _ = ProcessManager.StopService();
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.Preparing);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.Preparing);
 
             await Task.Delay(1000);
             Services = null;
             Dictionary<RunBasicDialogStates, bool> completedStates = [];
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckBFE);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckBFE);
             bool isRunningBFE = IsServiceRunning("BFE");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckProxy);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckProxy);
             bool isProxyEnabled = RegeditHelper.IsProxyEnabled();
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckNetsh);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckNetsh);
             bool isNetshExistInPATH = ExistsOnPath("netsh.exe");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckTimestamps);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckTimestamps);
             bool isTimestampsChecked = CheckTimestamps();
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckAdGuard);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckAdGuard);
             bool isAdGuardRunning = IsProcessRunning("adguardvpnsvc") || IsProcessRunning("adguardvpn") || IsProcessRunning("adguardsvc");
             await Task.Delay(1000);
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckKiller);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckKiller);
             bool isRunningKiller = IsServiceRunning("Killer");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckIntelConnectivityNetwork);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckIntelConnectivityNetwork);
             bool isRunningIntelConnectivityNetwork = IsServiceRunning("Intel") || IsServiceRunning("Connectivity") || IsServiceRunning("Network");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckCheckPointServices);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckCheckPointServices);
             bool isCheckPointServiceRunning = IsServiceRunning("TracSrvWrapper") || IsServiceRunning("EPWD");
             await Task.Delay(1000);
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckSmartByte);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckSmartByte);
             bool isSmartByteRunning = IsServiceRunning("SmartByte");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckVPNs);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckVPNs);
             bool isRunningVPN = IsServiceExist("vpn");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckDNS);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckDNS);
             bool isUsedDNS = GetDnsAdress();
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckWinDivert);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckWinDivert);
             bool isWinDivertRunning = IsServiceRunning("windivert");
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckAnotherComponentsServices);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckAnotherComponentsServices);
             bool isAnotherServiceComponentRunned = IsServiceExist("GoodbyeDPI") || IsServiceExist("discordfix_zapret") || IsServiceExist("winws1") || IsServiceExist("winws2");
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.CheckAnotherComponents);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.CheckAnotherComponents);
             bool isAnotherComponentRunned = IsProcessRunning("winws") || IsProcessRunning("goodbyedpi");
             await Task.Delay(1000);
 
@@ -163,7 +257,7 @@ namespace CDPI_UI.Helper.Troubleshooting
             await Task.CompletedTask;
             Services = null;
 
-            BasicDialogStateChanged?.Invoke(RunBasicDialogStates.Completed);
+            CurrentStateChanged?.Invoke(RunBasicDialogStates.Completed);
 
             return completedStates;
         }
@@ -209,6 +303,42 @@ namespace CDPI_UI.Helper.Troubleshooting
             await Task.CompletedTask;
             return fixResultModel;
         }
+
+        public async Task<FixResultModel> TryToFixStoreError(StoreCheckStates state)
+        {
+            FixResultModel fixResultModel = new() { IsFixed = false, ErrorCode = "INFO_CANNOT_FIX" };
+
+            string localAppData = StateHelper.GetDataDirectory();
+            string storeFolder = Path.Combine(localAppData, StateHelper.StoreDirName);
+
+            switch (state)
+            {
+                case StoreCheckStates.CheckWriteAccess:
+                    fixResultModel.IsFixed = await GrantAccess(storeFolder);
+                    fixResultModel.ErrorCode = fixResultModel.IsFixed ? string.Empty : "ERR_WIN32_UNKNOWN";
+                    break;
+                case StoreCheckStates.CheckWriteAccessIntoDatabaseFolder:
+                    fixResultModel.IsFixed = await GrantAccess(Path.Combine(storeFolder, StateHelper.StoreRepoCache, StateHelper.StoreLocalDirName));
+                    fixResultModel.ErrorCode = fixResultModel.IsFixed ? string.Empty : "ERR_WIN32_UNKNOWN";
+                    break;
+                case StoreCheckStates.CheckWriteAccessIntoItemsFolder:
+                    fixResultModel.IsFixed = await GrantAccess(Path.Combine(storeFolder, StateHelper.StoreItemsDirName));
+                    fixResultModel.ErrorCode = fixResultModel.IsFixed ? string.Empty : "ERR_WIN32_UNKNOWN";
+                    break;
+                case StoreCheckStates.CheckWriteAccessIntoRepoFolder:
+                    fixResultModel.IsFixed = await GrantAccess(Path.Combine(storeFolder, StateHelper.StoreRepoCache, StateHelper.StoreRepoDirName));
+                    fixResultModel.ErrorCode = fixResultModel.IsFixed ? string.Empty : "ERR_WIN32_UNKNOWN";
+                    break;
+                default:
+                    fixResultModel.IsFixed = false;
+                    fixResultModel.ErrorCode = "INFO_CANNOT_FIX";
+                    break;
+            }
+            await Task.CompletedTask;
+            return fixResultModel;
+        }
+
+        #region BasicFixServices
 
         ServiceController[] Services;
 
@@ -335,5 +465,53 @@ namespace CDPI_UI.Helper.Troubleshooting
                 return false;
             }
         }
+
+        #endregion
+
+        #region StoreFixServices
+        private TaskCompletionSource<bool> _tcs;
+        private bool opResult;
+        private async Task<bool> GrantAccess(string file, CancellationToken ct = default)
+        {
+            _tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            using (cts.Token.Register(() => _tcs.TrySetCanceled()))
+            {
+                await PipeClient.Instance.SendMessage($"UTILS:GRANT_ACCESS({file})");
+                await _tcs.Task.ConfigureAwait(false);
+                return _tcs.Task.Result;
+            }
+        }
+
+        public void OnGrantAccessCompleted(bool state)
+        {
+            opResult = state;
+            _tcs.TrySetResult(state);
+        }
+
+        private static bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
+        {
+            try
+            {
+                using FileStream fs = File.Create(
+                    Path.Combine(
+                        dirPath,
+                        Path.GetRandomFileName()
+                    ),
+                    1,
+                    FileOptions.DeleteOnClose);
+                return true;
+            }
+            catch
+            {
+                if (throwIfFails)
+                    throw;
+                else
+                    return false;
+            }
+        }
+
+        #endregion
     }
 }

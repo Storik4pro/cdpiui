@@ -1,4 +1,6 @@
 ﻿using CDPI_UI.Common;
+using CDPI_UI.Default;
+
 //using Windows.ApplicationModel.Activation;
 using CDPI_UI.DesktopWap.DataModel;
 using CDPI_UI.DesktopWap.Helper;
@@ -9,6 +11,7 @@ using CDPI_UI.Helper.Static;
 using CDPI_UI.Helper.Store;
 using CDPI_UI.Messages;
 using CDPI_UI.Views;
+using CDPI_UI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -121,8 +124,13 @@ namespace CDPI_UI
                 if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
                 {
                     string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
-                    var window = await SafeCreateNewWindow<ViewWindow>();
-                    window.SetId(id);
+                    var window = await UnsafeCreateNewWindow<ViewWindow>(id: id);
+                }
+                else if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-component-settings")))
+                {
+                    string id = Utils.GetValueFromCommmandLineParameter("--show-component-settings");
+                    var window = await SafeCreateNewWindow<ModernMainWindow>();
+                    window.NavView_Navigate(typeof(ViewComponentSettingsPage), id, new DrillInNavigationTransitionInfo());
                 }
                 else if (arguments.Contains("--show-proxy-setup"))
                 {
@@ -271,29 +279,24 @@ namespace CDPI_UI
                 OpenWindows.Remove(viewWindow);
             }
         }
-        public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : Window, new()
+        public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : TemplateWindow, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
             int findWindowCount = findWindows.Count;
 
             var activeFindWindow = OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
 
-            foreach (Window _win in findWindows)
+            foreach (TemplateWindow _win in findWindows)
             {
-                if (typeof(TWindow) == typeof(ViewWindow))
-                { 
-                    if (_win.GetType() == typeof(ViewWindow))
-                    {
-                        if (((ViewWindow)_win).Id == id)
-                        {
-                            _win.Activate();
-                            return (TWindow)_win;
-                        }
-                    }
+                if (!string.IsNullOrEmpty(_win.Id) && _win.Id == id)
+                {     
+                    _win.Activate();
+                    return (TWindow)_win;
                 }
             }
 
             var newViewWindow = new TWindow();
+            newViewWindow.Id = id;
             WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
             if (activate) newViewWindow.Activate();
 
@@ -484,17 +487,17 @@ namespace CDPI_UI
             var dq = modalWindow.DispatcherQueue;
             if (dq == null)
             {
-                _MakeModalAndAwait(modalWindow, tcs);
+                MakeModalAndAwait(modalWindow, tcs);
             }
             else
             {
-                dq.TryEnqueue(() => _MakeModalAndAwait(modalWindow, tcs));
+                dq.TryEnqueue(() => MakeModalAndAwait(modalWindow, tcs));
             }
 
             return tcs.Task;
         }
 
-        private void _MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        private void MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
         {
             lock (_modalLock)
             {
@@ -531,7 +534,6 @@ namespace CDPI_UI
                     }
 
                     SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-                    SetForegroundWindow(modalHwnd);
 
                     void ClosedHandler(object s, WindowEventArgs e)
                     {
@@ -540,11 +542,11 @@ namespace CDPI_UI
                             var dq2 = modalWindow.DispatcherQueue;
                             if (dq2 != null)
                             {
-                                dq2.TryEnqueue(() => _RestoreAfterModal(modalWindow, modalHwnd));
+                                dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
                             }
                             else
                             {
-                                _RestoreAfterModal(modalWindow, modalHwnd);
+                                RestoreAfterModal(modalWindow, modalHwnd);
                             }
                         }
                         finally
@@ -558,13 +560,64 @@ namespace CDPI_UI
                 }
                 catch (Exception ex)
                 {
-                    try { _RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
+                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
                     tcs.TrySetException(ex);
                 }
             }
         }
 
-        private void _RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
+        public Task MakeWindowNormal(Window modalWindow)
+        {
+            if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            var dq = modalWindow.DispatcherQueue;
+            if (dq == null)
+            {
+                RestoreModalWindowAndAwait(modalWindow, tcs);
+            }
+            else
+            {
+                dq.TryEnqueue(() => RestoreModalWindowAndAwait(modalWindow, tcs));
+            }
+
+            return tcs.Task;
+        }
+
+        private void RestoreModalWindowAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        {
+            lock (_modalLock)
+            {
+                try
+                {
+                    IntPtr modalHwnd = WindowNative.GetWindowHandle(modalWindow);
+                    if (modalHwnd == IntPtr.Zero)
+                    {
+                        tcs.SetException(new InvalidOperationException("HWND err"));
+                        return;
+                    }
+
+                    var dq2 = modalWindow.DispatcherQueue;
+                    if (dq2 != null)
+                    {
+                        dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
+                    }
+                    else
+                    {
+                        RestoreAfterModal(modalWindow, modalHwnd);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
+                    tcs.TrySetException(ex);
+                }
+            }
+        }
+
+
+        private void RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
         {
             lock (_modalLock)
             {

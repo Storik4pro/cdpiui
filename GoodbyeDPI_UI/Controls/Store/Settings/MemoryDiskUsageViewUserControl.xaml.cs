@@ -244,6 +244,7 @@ namespace CDPI_UI.Controls.Store.Settings
         private void CreateTileForMemoryUsageCategory(long size, long totalSize, MemoryUsageCategories category)
         {
             if (size == 0) return;
+            if (MemoryViewItemModels.FirstOrDefault(x => x.Category == category) != null) return;
             MemoryViewItemModels.Add(new MemoryViewItemModel
             {
                 Category = category,

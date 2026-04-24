@@ -96,6 +96,9 @@ namespace CDPI_UI.Helper
                 try
                 {
                     cmd.ExecuteNonQuery();
+                    var prCmd = connection.CreateCommand();
+                    prCmd.CommandText = @"PRAGMA journal_mode=WAL";
+                    prCmd.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
@@ -160,11 +163,14 @@ namespace CDPI_UI.Helper
             cmd.CommandText = "SELECT * FROM Items WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
 
-            using var reader = cmd.ExecuteReader();
-            if (!reader.Read()) return null;
-            DatabaseStoreItem item = CreateItemFromReader(reader);
+            lock (databaseRequestLock)
+            {
+                using var reader = cmd.ExecuteReader();
+                if (!reader.Read()) return null;
+                DatabaseStoreItem item = CreateItemFromReader(reader);
 
-            return item;
+                return item;
+            }
         }
 
         public List<DatabaseStoreItem> GetItemsByType(string type)

@@ -78,7 +78,7 @@ public sealed partial class MainPage : Page
     {
         if (!DatabaseHelper.Instance.IsItemInstalled("ASPEWK002"))
         {
-            var window = await ((App)Application.Current).SafeCreateNewWindow<StoreSmallDownloadDialog>();
+            var window = await ((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASPEWK002");
             window.SetItemToViewId("ASPEWK002");
         }
         else

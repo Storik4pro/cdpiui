@@ -20,6 +20,7 @@ using TextDecorations = Windows.UI.Text.TextDecorations;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.UI.Xaml.Application;
 using WinUI3Localizer;
+using CDPI_UI.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -52,7 +53,7 @@ public sealed partial class GoodCheckWorkPage : Page
 
         _uiDispatcher = DispatcherQueue.GetForCurrentThread();
 
-        CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
+        TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
         GoodCheckProcessHelper.Instance.AllComplete += AllCompletedActions;
 
         SiteListProgressText.Text = GoodCheckProcessHelper.Instance.CurrentSiteList;
@@ -77,7 +78,7 @@ public sealed partial class GoodCheckWorkPage : Page
         });
 
         if (CreateConfigUtilWindow.Instance != null)
-            CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
+            TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
 
         GoodCheckProcessHelper.Instance.Kill();
     }
@@ -109,7 +110,7 @@ public sealed partial class GoodCheckWorkPage : Page
             double percent = (double)current / (double)all * 100.0;
             CalcSpeed(current, all);
 
-            CreateConfigUtilWindow.Instance.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal, current, all);
+            TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal, current, all);
             SetSiteListProgressText($"{percent:F0}% [{current}/{all}]");
         };
         GoodCheckProcessHelper.Instance.CorrectCountChanged += (count) =>

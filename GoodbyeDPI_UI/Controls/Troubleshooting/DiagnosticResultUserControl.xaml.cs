@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Helper;
+using WinUI3Localizer;
+using CDPI_UI.Helper.LScript;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -22,6 +24,8 @@ namespace CDPI_UI.Controls.Troubleshooting;
 
 public sealed partial class DiagnosticResultUserControl : UserControl
 {
+    private ILocalizer localizer = Localizer.Get();
+
     public DiagnosticResultUserControl()
     {
         InitializeComponent();
@@ -88,8 +92,13 @@ public sealed partial class DiagnosticResultUserControl : UserControl
             }
             else
             {
+                if (value.StartsWith("$INTERNAL_HELP"))
+                {
+                    NetHelpAskButton.Content = localizer.GetLocalizedString("/Flashlight/InternalHelp");
+                }
                 NetHelpAskButton.Visibility = Visibility.Visible;
             }
+
         }
     }
 
@@ -171,8 +180,16 @@ public sealed partial class DiagnosticResultUserControl : UserControl
         FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
     }
 
-    private void NetHelpAskButton_Click(object sender, RoutedEventArgs e)
+    private async void NetHelpAskButton_Click(object sender, RoutedEventArgs e)
     {
-        UrlOpenHelper.LaunchUrl(HelpUrl);
+        if (HelpUrl.StartsWith("$INTERNAL_HELP"))
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            window.NavigateToPage($"/{LScriptLangHelper.GetScriptArgs(HelpUrl)}");
+        }
+        else
+        {
+            UrlOpenHelper.LaunchUrl(HelpUrl);
+        }
     }
 }

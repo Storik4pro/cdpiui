@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPIUI_TrayIcon.Helper.Basic;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
@@ -162,7 +163,7 @@ namespace CDPIUI_TrayIcon.Helper
                     {
                         message = await _streamString.ReadStringAsync(token);
                         Debug.WriteLine(message);
-                        RunMessageActions(message);
+                        _ = RunMessageActions(message);
                     }
                     catch (EndOfStreamException)
                     {
@@ -284,13 +285,13 @@ namespace CDPIUI_TrayIcon.Helper
                         return;
                     }
                     _ = GoodCheckProcessHelper.Instance.StartAsync(result[0], result[1], result[2]);
-                    TrayIconHelper.Instance.ToggleStartButtonEnabled(false);
+                    TasksHelper.Instance.ApplyStatusToAllTasks(false);
 
                 }
                 else if (message.StartsWith("GOODCHECK:STOP"))
                 {
                     GoodCheckProcessHelper.Instance.Stop();
-                    TrayIconHelper.Instance.ToggleStartButtonEnabled(true);
+                    TasksHelper.Instance.ApplyStatusToAllTasks(true);
                 }
             }
             else if (message.StartsWith("SETTINGS:"))
@@ -300,7 +301,7 @@ namespace CDPIUI_TrayIcon.Helper
                     if (!AutoStartManager.AddToAutorun())
                     {
                         _ = SendMessage("SETTINGS:AUTORUN_FALSE");
-                        TrayIconHelper.Instance.ShowMessage(LocaleHelper.GetLocaleString("Autorun"), LocaleHelper.GetLocaleString("AutorunERR"), "OPEN_AUTORUN_ERROR");
+                        NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("Autorun"), LocaleHelper.GetLocaleString("AutorunERR"), "OPEN_AUTORUN_ERROR");
                     }
                 }
                 else if (message.StartsWith("SETTINGS:REMOVE_FROM_AUTORUN"))
@@ -321,7 +322,7 @@ namespace CDPIUI_TrayIcon.Helper
                     }
 
                     TasksHelper.Instance.AddNewTask(result[0]);
-                    TrayIconHelper.Instance.ToggleComponentAvailability(result[0], true);
+                    TasksHelper.Instance.SetTaskStatus(result[0], true);
                 }
                 else if (message.StartsWith("SETTINGS:COMPONENT_SETUP_NOT_FINISHED"))
                 {
@@ -332,7 +333,7 @@ namespace CDPIUI_TrayIcon.Helper
                         return;
                     }
                     TasksHelper.Instance.AddNewTask(result[0]);
-                    TrayIconHelper.Instance.ToggleComponentAvailability(result[0], false);
+                    TasksHelper.Instance.SetTaskStatus(result[0], false);
                 }
                 else if (message.StartsWith("SETTINGS:COMPONENT_NOT_INSTALLED"))
                 {
@@ -345,6 +346,16 @@ namespace CDPIUI_TrayIcon.Helper
 
                     _ = TasksHelper.Instance.StopAndRemoveTaskAsync(result[0]);
                 }
+            }
+            else if (message.StartsWith("UTILS:GRANT_ACCESS"))
+            {
+                var result = ScriptHelper.GetArgsFromString(message);
+                if (result.Length < 1)
+                {
+                    Debug.WriteLine($"ERR, {message} => args exception");
+                    return;
+                }
+                Utils.GrantAccess(result[0], true);
             }
             else if (message.StartsWith("UPDATE:"))
             {
@@ -360,7 +371,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 else if (message.StartsWith("UPDATE:AVAILABLE"))
                 {
-                    TrayIconHelper.Instance.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateAvailable"), "UPDATE:OPEN_DOWNLOAD_PAGE");
+                    NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateAvailable"), "UPDATE:OPEN_DOWNLOAD_PAGE");
                 }
             }
             else if (message.StartsWith("MSI:"))
@@ -400,7 +411,7 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 else if (message.StartsWith("PROXY:SETUP"))
                 {
-                    
+
                     var result = ScriptHelper.GetArgsFromString(message);
                     if (result.Length < 4)
                     {
@@ -427,7 +438,7 @@ namespace CDPIUI_TrayIcon.Helper
                         Console.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    TrayIconHelper.Instance.ShowMessage("CDPI UI", string.Format(LocaleHelper.GetLocaleString("ProxySetupAsk"), result[0]), "OPEN_PROXY_SETUP");
+                    NotifyHelper.ShowMessage("CDPI UI", string.Format(LocaleHelper.GetLocaleString("ProxySetupAsk"), result[0]), "OPEN_PROXY_SETUP");
                 }
                 else if (message.StartsWith("NOTIFY:CCA"))
                 {
@@ -437,7 +448,7 @@ namespace CDPIUI_TrayIcon.Helper
                         Console.WriteLine($"ERR, {message} => args exception");
                         return;
                     }
-                    TrayIconHelper.Instance.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"), 
+                    NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"),
                         string.Format(LocaleHelper.GetLocaleString("ConfigRequiredNewestVersionOfComponent"), result[0]), "OPEN_BEGIN_STORE_UPDATE_CHECK");
                 }
             }
@@ -447,6 +458,7 @@ namespace CDPIUI_TrayIcon.Helper
                 {
                     await SendMessage("MAIN:EXIT_ALL");
                     RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "");
+                    NotifyHelper.Instance.Dispose();
                     Application.Exit();
                 }
             }

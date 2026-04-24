@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.Controls.ComponentSettings.TgWsDataCenterUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.ComponentSettings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer">
+
+    <Grid>
+        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="5"/>
+        <Grid Padding="10 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Bind Number, Mode=OneWay}" IsTextSelectionEnabled="True"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" l:Uids.Uid="NumberTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="{x:Bind Ip, Mode=OneWay}" IsTextSelectionEnabled="True"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" l:Uids.Uid="IpTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+
+            <StackPanel Grid.RowSpan="2" Grid.Column="4" Orientation="Horizontal" Spacing="5">
+                <Button x:Name="EditButton" Click="EditButton_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE70F;" FontSize="16" />
+                        <TextBlock l:Uids.Uid="EditTextBlock"/>
+                    </StackPanel>
+                </Button>
+                <Button l:Uids.Uid="RemoveButton" x:Name="RemoveButton" Padding="6" Height="32" Width="32" Click="RemoveButton_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <FontIcon Glyph="&#xE711;" FontSize="16" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Available" xml:space="preserve">
+    <value>ДОСТУПЕН</value>
+  </data>
   <data name="CheckAdGuard" xml:space="preserve">
     <value>Службы AdGuard</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="CheckDNS" xml:space="preserve">
     <value>Системный DNS-сервер</value>
+  </data>
+  <data name="CheckGitHubRepo" xml:space="preserve">
+    <value>Репозиторий Магазина на GitHub</value>
+  </data>
+  <data name="CheckGitLabRepo" xml:space="preserve">
+    <value>Репозиторий Магазина на GitLab</value>
   </data>
   <data name="CheckIntelConnectivityNetwork" xml:space="preserve">
     <value>Службы Intel Connectivity Network</value>
@@ -158,6 +167,18 @@
   </data>
   <data name="CheckWinDivert" xml:space="preserve">
     <value>Службы WinDivert</value>
+  </data>
+  <data name="CheckWriteAccess" xml:space="preserve">
+    <value>Доступ к внутренней директории Магазина</value>
+  </data>
+  <data name="CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>Доступ к директории базы данных Магазина</value>
+  </data>
+  <data name="CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>Доступ к директории элементов Магазина</value>
+  </data>
+  <data name="CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>Доступ к локальной директории репозитория Магазина</value>
   </data>
   <data name="Completed" xml:space="preserve">
     <value>Завершение...</value>
@@ -207,8 +228,14 @@
   <data name="FixResultErrorTitle" xml:space="preserve">
     <value>Некоторые проблемы не были исправлены</value>
   </data>
+  <data name="FixResultTip" xml:space="preserve">
+    <value>Нажмите или коснитесь кнопки "Выход", чтобы закрыть этот мастер.</value>
+  </data>
   <data name="FixResultTitle" xml:space="preserve">
     <value>Исправление завершено</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>НЕДОСТУПЕН</value>
   </data>
   <data name="NotExist" xml:space="preserve">
     <value>ОТСУТСТВУЕТ</value>

@@ -41,10 +41,12 @@ public sealed partial class TroubleshootingWindow : TemplateWindow
 
         DisableResizeFeature();
 
-        TitleBar = AppTitleBar;
+        TitleIcon = TitleImageRectagle;
+        TitleBar = WindowMoveAera;
         IconUri = @"Assets/Icons/Troubleshooting.ico";
 
         ContentFrame.Navigate(typeof(Views.Troubleshooting.MainPage));
         SetTitleBar(WindowMoveAera);
     }
+
 }

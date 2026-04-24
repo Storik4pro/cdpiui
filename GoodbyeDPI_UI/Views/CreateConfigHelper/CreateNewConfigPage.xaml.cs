@@ -755,9 +755,6 @@ public sealed partial class CreateNewConfigPage : Page
             return;
         }
 
-        configItem.file_name = ConfigItem.file_name;
-        configItem.packId = ConfigItem.packId;
-
         if (PageOpenMode == PageOpenModes.EditConfigNoSave)
         {
             var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
@@ -765,8 +762,6 @@ public sealed partial class CreateNewConfigPage : Page
             window?.NavigateBackWithParameter(configItem);
             return;
         }
-
-        if (configItem == null) return;
 
         string src;
         if (ConfigItem == null || ConfigItem.packId != StateHelper.LocalUserItemsId)
@@ -778,8 +773,15 @@ public sealed partial class CreateNewConfigPage : Page
         transl = Regex.Replace(transl, @"\s+", "_");
         transl = Regex.Replace(transl, @"[^A-Za-z0-9_\.-]", "");
         transl = Regex.Replace(transl, "_+", "_").Trim('_');
-
-        await ConfigHelper.SaveConfigItem(transl, StateHelper.LocalUserItemsId, configItem);
+        
+        string errorCode = await ConfigHelper.SaveConfigItem(transl, StateHelper.LocalUserItemsId, configItem);
+        if (!string.IsNullOrEmpty(errorCode))
+        {
+            ShowErrorDialog(
+                string.Format(localizer.GetLocalizedString("CannotSaveConfigMessage"), errorCode),
+                localizer.GetLocalizedString("SomethingWentWrong")
+                );
+        }
 
         ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(

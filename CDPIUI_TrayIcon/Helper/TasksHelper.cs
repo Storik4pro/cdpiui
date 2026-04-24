@@ -13,12 +13,14 @@ namespace CDPIUI_TrayIcon.Helper
         {
             public required string Id { get; set; }
             public required ProcessManager ProcessManager { get; set; }
+            public bool? IsSetupComplete { get; set; }
         }
 
         public List<TaskModel> Tasks { get; private set; } = [];
 
         public Action? TaskListUpdated;
         public Action<Tuple<string, bool>>? TaskStateUpdated;
+        public Action<Tuple<string, bool>>? TaskSetupStateUpdated;
 
         private static TasksHelper? _instance;
         private static readonly object _lock = new object();
@@ -136,6 +138,47 @@ namespace CDPIUI_TrayIcon.Helper
                 }
                 TaskListUpdated?.Invoke();
             }
+        }
+
+        public async void SetTaskStatus(string id, bool isSetupComplete)
+        {
+            var targetTask = await GetTaskFromId(id);
+            if (targetTask != null)
+            {
+                targetTask.IsSetupComplete = isSetupComplete;
+            }
+            else
+            {
+                ProcessManager processManager = new() { Id = id };
+                processManager.ProcessStateChanged += HandleProcessStateUpdate;
+
+                await _taskOperationLock.WaitAsync();
+
+                try
+                {
+                    Tasks.Add(new() { Id = id, ProcessManager = processManager, IsSetupComplete = isSetupComplete });
+                }
+                catch { }
+                finally
+                {
+                    _taskOperationLock.Release();
+                }
+
+                TaskListUpdated?.Invoke();
+            }
+
+            TaskSetupStateUpdated?.Invoke(Tuple.Create(id, isSetupComplete));
+        }
+
+        public async void ApplyStatusToAllTasks(bool status)
+        {
+            foreach (var task in Tasks)
+            {
+                task.IsSetupComplete = status;
+                TaskSetupStateUpdated?.Invoke(Tuple.Create(task.Id, status));
+            }
+
+            await Task.CompletedTask;
         }
 
         public async Task StopTask(string id)

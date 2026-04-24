@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPI_UI.Controls.Universal.LinkedSettingsUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Universal"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:models="using:CDPI_UI.ViewModels">
+
+    <Grid>
+        <StackPanel Spacing="10">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <FontIcon Glyph="&#xE71B;" FontSize="16"/>
+                <TextBlock l:Uids.Uid="LinkedSettingsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+            </StackPanel>
+            <ListView x:Name="MainListView" ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}"  ItemsSource="{x:Bind SettingModelsList, Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SettingLinkModel">
+                        <HyperlinkButton Content="{x:Bind DisplayName, Mode=OneWay}" Tag="{x:Bind Action, Mode=OneWay}" Padding="2 0" Click="HyperlinkButton_Click"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="5"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </StackPanel>
+    </Grid>
+</UserControl>

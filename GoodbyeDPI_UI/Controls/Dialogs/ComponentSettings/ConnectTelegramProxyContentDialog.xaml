@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    l:Uids.Uid="ConnectTelegramProxyContentDialog"
+    x:Class="CDPI_UI.Controls.Dialogs.ComponentSettings.ConnectTelegramProxyContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Controls.Dialogs.ComponentSettings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:lcontrols="using:CDPI_UI.Controls.Universal"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <Grid>
+        <StackPanel Spacing="5">
+            <TextBlock l:Uids.Uid="ConnectManuallyTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <lcontrols:SingleStringTextContentViewerUserControl l:Uids.Uid="IpTextBlock" x:Name="IpValue"/>
+                <lcontrols:SingleStringTextContentViewerUserControl Grid.Column="2" l:Uids.Uid="PortTextBlock" x:Name="PortValue" />
+                
+                <lcontrols:SingleStringTextContentViewerUserControl Grid.Row="1" Grid.ColumnSpan="3" l:Uids.Uid="KeyTextBlock" x:Name="KeyValue"/>
+            </Grid>
+            <TextBlock l:Uids.Uid="ORSeparatorTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 5" HorizontalAlignment="Center"/>
+            <TextBlock l:Uids.Uid="ConnectViaLinkTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+            <RichTextBlock TextWrapping="Wrap" MaxWidth="450">
+                <Paragraph>
+                    <Hyperlink Click="ConnectUrl_Click">
+                        <Run x:Name="ConnectUrl"/>
+                    </Hyperlink>
+                </Paragraph>
+            </RichTextBlock>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

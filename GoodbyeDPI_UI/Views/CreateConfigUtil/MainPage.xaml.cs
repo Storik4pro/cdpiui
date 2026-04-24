@@ -1,4 +1,6 @@
 using CDPI_UI.Helper;
+using CDPI_UI.Helper.Static;
+using CDPI_UI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,7 +28,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private ObservableCollection<ComboBoxItem> items = [];
+        private ObservableCollection<ViewComponentModel> items = [];
         private List<string> supportedComponents = ["Zapret", "GoodbyeDPI", "ByeDPI"];
         public MainPage()
         {
@@ -37,23 +39,16 @@ namespace CDPI_UI.Views.CreateConfigUtil
         }
         private void GetReadyVariants()
         {
-            items.Clear();
-            foreach (var item in DatabaseHelper.Instance.GetItemsByType("component"))
-            {
-                ComboBoxItem comboBoxItem = new()
-                {
-                    Content = item.ShortName,
-                    Tag = item.Id
-                };
-                items.Add(comboBoxItem);
-            }
+            UIHelper.LoadInstalledComponentsList(items);
             if (items.Count > 0)
             {
                 ComponentChooseComboBox.SelectedIndex = 0;
+                PlaceholderGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
                 GoodCheckSelectionPanel.Visibility = Visibility.Collapsed;
+                PlaceholderGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -64,7 +59,7 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
         private void BeginNewSelectionButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(CreateViaGoodCheck), ((ComboBoxItem)ComponentChooseComboBox.SelectedItem).Tag, new SuppressNavigationTransitionInfo());
+            Frame.Navigate(typeof(CreateViaGoodCheck), ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId, new SuppressNavigationTransitionInfo());
         }
 
         private void GetHelpButton_Click(object sender, RoutedEventArgs e)
@@ -74,14 +69,28 @@ namespace CDPI_UI.Views.CreateConfigUtil
 
         private void ComponentChooseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!supportedComponents.Contains(((ComboBoxItem)ComponentChooseComboBox.SelectedItem).Content))
+            if (!supportedComponents.Contains(((ViewComponentModel)ComponentChooseComboBox.SelectedItem).DisplayName))
             {
                 GoodCheckSelectionPanel.Visibility = Visibility.Collapsed;
+                PlaceholderGrid.Visibility = Visibility.Visible;
             }
             else
             {
                 GoodCheckSelectionPanel.Visibility = Visibility.Visible;
+                PlaceholderGrid.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private async void ViewOtherButton_Click(object sender, RoutedEventArgs e)
+        {
+            var window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
+            window.CreateNewConfigForComponentId((string)((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
+            CreateConfigUtilWindow.Instance.Close();
+        }
+
+        private void ViewHelpButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

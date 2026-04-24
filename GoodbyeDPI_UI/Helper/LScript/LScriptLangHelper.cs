@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using WinUI3Localizer;
 using static CDPI_UI.Helper.MsiInstallerHelper;
 
 namespace CDPI_UI.Helper.LScript
@@ -38,6 +39,24 @@ namespace CDPI_UI.Helper.LScript
             return scriptData;
         }
 
+        public static string GetScriptArgs(string scriptString, string scriptArgs = null)
+        {
+            string scriptData = "";
+            if (scriptString != null && scriptString.StartsWith("$"))
+            {
+                Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
+
+                if (match.Success)
+                {
+                    scriptData = match.Groups[1].Value;
+                }
+
+                if (scriptArgs != null)
+                    scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
+            }
+            return scriptData;
+        }
+
         public static string ExecuteScript(
             string scriptString,
             string scriptArgs = null,
@@ -51,16 +70,7 @@ namespace CDPI_UI.Helper.LScript
             {
                 if (scriptString != null && scriptString.StartsWith("$"))
                 {
-                    Match match = Regex.Match(scriptString, ScriptGetArgsRegex);
-                    string scriptData = "";
-
-                    if (match.Success)
-                    {
-                        scriptData = match.Groups[1].Value;
-                    }
-
-                    if (scriptArgs != null)
-                        scriptData = Regex.Replace(scriptData, @"{.*?}", scriptArgs);
+                    string scriptData = GetScriptArgs(scriptString, scriptArgs);
 
                     if (scriptString.StartsWith("$STATICIMAGE"))
                     {
@@ -92,6 +102,11 @@ namespace CDPI_UI.Helper.LScript
                     else if (scriptString.StartsWith("$LOCALCONDITION"))
                     {
                         executeResult = LocalCondition(scriptData, jparams);
+                    }
+                    else if (scriptString.StartsWith("$Q_LINK"))
+                    {
+                        ILocalizer localizer = Localizer.Get();
+                        executeResult = localizer.GetLocalizedString($"{scriptArgs}{scriptData}");
                     }
                     Logger.Instance.CreateDebugLog(nameof(UIHelper), $"Script {scriptString} execute result is {executeResult}, {scriptData}");
                 }
