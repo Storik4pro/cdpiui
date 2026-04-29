@@ -1,4 +1,5 @@
 ﻿using CDPIUI_TrayIcon.Helper.Basic;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,6 +86,13 @@ namespace CDPIUI_TrayIcon.Helper
             var version2 = new Version(v2);
             if (version1 >= version2) return true;
             return false;
+        }
+
+        public static float GetScalingFactorForMainDisplay()
+        {
+            var currentDPI = Int32.Parse((string?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\ThemeManager", "LastLoadedDPI", "96") ?? "96");
+            var scale = 96 / (float?)currentDPI ?? 96;
+            return scale;
         }
 
         public static async void GrantAccess(string file, bool conptySignal)
