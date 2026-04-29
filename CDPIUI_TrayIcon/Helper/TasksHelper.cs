@@ -73,7 +73,6 @@ namespace CDPIUI_TrayIcon.Helper
 
             try
             {
-                Debug.WriteLine($"Add new task for {id}");
                 Tasks.Add(new() { Id = id, ProcessManager = processManager });
             }
             catch { }
@@ -131,7 +130,6 @@ namespace CDPIUI_TrayIcon.Helper
 
                 try
                 {
-                    Debug.WriteLine($"Add new task for q {id}");
                     Tasks.Add(new() { Id = id, ProcessManager = processManager });
                 }
                 catch { }
