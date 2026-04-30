@@ -1,6 +1,7 @@
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigHelper;
 using CDPI_UI.Helper.Items;
+using CDPI_UI.Views.Components;
 using CDPI_UI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Newtonsoft.Json.Linq;
 using System;
@@ -47,7 +49,11 @@ namespace CDPI_UI.Controls.Dialogs.ComponentSettings
             var savedPackId = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configId");
 
             if (string.IsNullOrEmpty(savedFile) || string.IsNullOrEmpty(savedPackId))
+            {
+                FailedToLoadGrid.Visibility = Visibility.Visible;
+                ContentStackPanel.Visibility = Visibility.Collapsed;
                 return;
+            }
 
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
@@ -75,11 +81,29 @@ namespace CDPI_UI.Controls.Dialogs.ComponentSettings
             }
 
             ConnectUrl.Text = GetUrl();
+
+            if (string.IsNullOrEmpty(PortValue.Text) || string.IsNullOrEmpty(IpValue.Text) || string.IsNullOrEmpty(KeyValue.Text))
+            {
+                FailedToLoadGrid.Visibility = Visibility.Collapsed;
+                ContentStackPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                FailedToLoadGrid.Visibility = Visibility.Visible;
+                ContentStackPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ConnectUrl_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
         {
             UrlOpenHelper.LaunchTelegramProxyUrl(IpValue.DisplayText, PortValue.DisplayText, KeyValue.DisplayText);
+        }
+
+        private async void GoToComponentSettings_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
+            window.NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue("TgWsProxy"), new DrillInNavigationTransitionInfo());
         }
     }
 }
