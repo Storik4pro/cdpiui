@@ -82,15 +82,15 @@ namespace CDPI_UI.Controls.Dialogs.ComponentSettings
 
             ConnectUrl.Text = GetUrl();
 
-            if (string.IsNullOrEmpty(PortValue.Text) || string.IsNullOrEmpty(IpValue.Text) || string.IsNullOrEmpty(KeyValue.Text))
-            {
-                FailedToLoadGrid.Visibility = Visibility.Collapsed;
-                ContentStackPanel.Visibility = Visibility.Visible;
-            }
-            else
+            if (string.IsNullOrEmpty(PortValue.DisplayText) || string.IsNullOrEmpty(IpValue.DisplayText) || string.IsNullOrEmpty(KeyValue.DisplayText))
             {
                 FailedToLoadGrid.Visibility = Visibility.Visible;
                 ContentStackPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                FailedToLoadGrid.Visibility = Visibility.Collapsed;
+                ContentStackPanel.Visibility = Visibility.Visible;
             }
         }
 
