@@ -2142,4 +2142,13 @@ Here is error code in case you need it.
   <data name="ShowAnywayButton.Content" xml:space="preserve">
     <value>Show this content anyway</value>
   </data>
+  <data name="ViewAppliedFlagsForSiteListButton.Text" xml:space="preserve">
+    <value>View applied params</value>
+  </data>
+  <data name="ViewInFolderButton" xml:space="preserve">
+    <value>View in folder</value>
+  </data>
+  <data name="ViewMoreActionsToolTip" xml:space="preserve">
+    <value>View more actions</value>
+  </data>
 </root>

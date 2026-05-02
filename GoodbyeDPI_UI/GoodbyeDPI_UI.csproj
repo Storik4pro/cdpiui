@@ -41,6 +41,7 @@
     <None Remove="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\SiteListItemUserControl.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\TgWsDataCenterEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
@@ -523,6 +524,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Universal\CopyButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\SiteListItemUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Settings\Settings.xml">

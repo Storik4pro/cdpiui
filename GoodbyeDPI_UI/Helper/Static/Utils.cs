@@ -190,6 +190,19 @@ namespace CDPI_UI.Helper.Static
             }
         }
 
+        public static void OpenFileDirectory(string file)
+        {
+            Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot open path \"{file}\"");
+            try
+            {
+                Process.Start("explorer.exe", "/select," + $"\"{file.Replace("/", "\\")}\"");
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot open path \"{file}\" Because exception happens: {ex}");
+            }
+        }
+
         public static void OpenFile(string file)
         {
             int openMode = SettingsManager.Instance.GetValue<int>("FILEOPENACTIONS", "mode");

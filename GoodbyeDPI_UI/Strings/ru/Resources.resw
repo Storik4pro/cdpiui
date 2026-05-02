@@ -2144,4 +2144,13 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="ShowAnywayButton.Content" xml:space="preserve">
     <value>Отобразить содержимое</value>
   </data>
+  <data name="ViewAppliedFlagsForSiteListButton.Text" xml:space="preserve">
+    <value>Показать применяемые флаги запуска</value>
+  </data>
+  <data name="ViewInFolderButton" xml:space="preserve">
+    <value>Показать в папке</value>
+  </data>
+  <data name="ViewMoreActionsToolTip" xml:space="preserve">
+    <value>Показать больше действий</value>
+  </data>
 </root>
