@@ -2151,4 +2151,19 @@ Here is error code in case you need it.
   <data name="ViewMoreActionsToolTip" xml:space="preserve">
     <value>View more actions</value>
   </data>
+  <data name="QHyperlinkButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>🦊 Fox ~</value>
+  </data>
+  <data name="QContentDialog.Title" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="QContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="QTextBlock.Text" xml:space="preserve">
+    <value>Я только что прочитала слово мошка сначало как монашка, потом как мошонка и только после этого нормально</value>
+  </data>
+  <data name="QCopTextBlock.Text" xml:space="preserve">
+    <value>©️ Ква_Блин</value>
+  </data>
 </root>
