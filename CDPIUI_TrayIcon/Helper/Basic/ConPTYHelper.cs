@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 
 namespace CDPIUI_TrayIcon.Helper
 {
+    enum StopActionCallers
+    {
+        Unknown,
+        User
+    }
     public class ConPTYHelper
     {
         private CancellationTokenSource? _cancellationTokenSource;
@@ -27,9 +32,11 @@ namespace CDPIUI_TrayIcon.Helper
         public Action<string>? ProcessExited;
         public Action<string>? OutputAdded;
 
-        private string Preffix = string.Empty;
+        private readonly string Preffix = string.Empty;
 
-        readonly Dictionary<string, string> errorMappings = new()
+        private StopActionCallers StopActionCaller = StopActionCallers.Unknown;
+
+        static readonly Dictionary<string, string> errorMappings = new()
         {
             { "Error opening filter", "FILTER_OPEN_ERROR" },
             { "unknown option", "PARAMETER_ERROR" },
@@ -86,6 +93,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         public async void RunProcess(string exePath, string args, string workingDirectory)
         {
+            StopActionCaller = StopActionCallers.Unknown;
             await _processLock.WaitAsync();
             try
             {
@@ -110,7 +118,7 @@ namespace CDPIUI_TrayIcon.Helper
             _processLock.Release();
         }
 
-        public async void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token)
+        public async void RunProcessWithConPTY(string exePath, string args, string workingDirectory, CancellationToken token, bool disableKillAfterError=false)
         {
             await _processLock.WaitAsync();
 
@@ -119,6 +127,8 @@ namespace CDPIUI_TrayIcon.Helper
             IntPtr hInputWrite = IntPtr.Zero;
             IntPtr hOutputRead = IntPtr.Zero;
             IntPtr hOutputWrite = IntPtr.Zero;
+
+            string lastError = string.Empty;
 
             try
             {
@@ -193,27 +203,25 @@ namespace CDPIUI_TrayIcon.Helper
                 var safeOutputReadHandle = new SafeFileHandle(_hOutputRead, ownsHandle: true);
                 _hOutputRead = IntPtr.Zero;
 
+                _ = Task.Run(() => CheckProcessState(pi, token));
+
                 using (var reader = new FileStream(safeOutputReadHandle, FileAccess.Read))
                 {
                     byte[] buffer = new byte[4096];
                     int bytesRead;
 
+
                     while (!token.IsCancellationRequested)
                     {
                         bytesRead = await reader.ReadAsync(buffer, 0, buffer.Length, cancellationToken: token);
-                        if (bytesRead <= 0) break;
 
                         string _output = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                        bool flag = false;
                         foreach (var errorMapping in errorMappings)
                         {
-                            if (_output.IndexOf(errorMapping.Key, StringComparison.OrdinalIgnoreCase) >= 0)
+                            if (_output.Contains(errorMapping.Key, StringComparison.OrdinalIgnoreCase))
                             {
-                                ShowErrorMessage(errorMapping.Value);
-                                StopProcessAfterDelay();
-                                flag = true;
-                                break; 
+                                lastError = errorMapping.Value;
                             }
                         }
 
@@ -230,8 +238,6 @@ namespace CDPIUI_TrayIcon.Helper
                         _outputDefaultBuffer.Append(_output);
 
                         OutputAdded?.Invoke(_output);
-                        
-                        if (flag) break;
                     }
                 }
 
@@ -243,7 +249,9 @@ namespace CDPIUI_TrayIcon.Helper
             }
             catch (OperationCanceledException ex)
             {
-                // pass
+                
+                Logger.Instance.CreateInfoLog(nameof(ConPTYHelper), $"Process will be stopped {lastError}.");
+                if (!string.IsNullOrEmpty(lastError) && StopActionCaller == StopActionCallers.Unknown) ShowErrorMessage(lastError);
             }
             catch (Exception ex)
             {
@@ -275,8 +283,37 @@ namespace CDPIUI_TrayIcon.Helper
             }
         }
 
+        private async Task CheckProcessState(PROCESS_INFORMATION pi, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (!ProcessAliveCheck(pi))
+                {
+                    _cancellationTokenSource.Cancel();
+                    break;
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        private static bool ProcessAliveCheck(PROCESS_INFORMATION pi)
+        {
+            switch (WaitForSingleObject(pi.hProcess, 0))
+            {
+                case WAIT_OBJECT_0:
+                    return false;
+
+                case WAIT_TIMEOUT:
+                    return true;
+                default:
+                    break;
+            }
+            return true;
+        }
+
         public async Task StopProcess(bool output = true)
         {
+            StopActionCaller = StopActionCallers.User;
             _cancellationTokenSource?.Cancel();
 
             await _processLock.WaitAsync();
@@ -307,18 +344,12 @@ namespace CDPIUI_TrayIcon.Helper
                 processState = false;
                 ChangeProcessState(processState);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 processState = false;
                 ChangeProcessState(processState);
             }
             _processLock.Release();
-        }
-
-        private async void StopProcessAfterDelay()
-        {
-            await Task.Delay(1000);
-            await StopProcess(false);
         }
 
         private void SendStopMessage(string output = "Process will be stopped by user")
@@ -350,6 +381,9 @@ namespace CDPIUI_TrayIcon.Helper
         private const ushort SW_HIDE = 0;
         private const uint INFINITE = 0xFFFFFFFF;
 
+        private const uint WAIT_OBJECT_0 = 0x000000000;
+        private const uint WAIT_TIMEOUT = 0x00000102;
+
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern uint CreatePseudoConsole(COORD size, IntPtr hInput, IntPtr hOutput, uint dwFlags, out IntPtr phPC);
 
@@ -364,6 +398,11 @@ namespace CDPIUI_TrayIcon.Helper
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern void DeleteProcThreadAttributeList(IntPtr lpAttributeList);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool GetExitCodeProcess(
+            IntPtr hProcess,
+            out System.UInt32 lpExitCode);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool CreateProcess(
