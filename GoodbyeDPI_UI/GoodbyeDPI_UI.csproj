@@ -52,6 +52,7 @@
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Q\QContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml" />
     <None Remove="Controls\Store\Settings\MemoryDiskUsageViewUserControl.xaml" />
@@ -409,8 +410,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.4.4.0</FileVersion>
-    <AssemblyVersion>0.4.4.0</AssemblyVersion>
+    <FileVersion>0.4.6.0</FileVersion>
+    <AssemblyVersion>0.4.6.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
@@ -527,6 +528,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Dialogs\ComponentSettings\SiteListItemUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Q\QContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Settings\Settings.xml">
