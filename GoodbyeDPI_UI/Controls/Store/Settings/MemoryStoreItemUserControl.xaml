@@ -49,7 +49,7 @@
                         <TextBlock Text="{x:Bind Title, Mode=OneWay}" MaxLines="2" TextWrapping="Wrap"/>
                         <controls:WrapPanel Orientation="Horizontal" HorizontalSpacing="8">
                             <TextBlock Text="{x:Bind Developer, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextWrapping="NoWrap"/>
-                            <Rectangle VerticalAlignment="Stretch" Fill="{ThemeResource TextFillColorPrimary}" Width="1" Margin="0 2"/>
+                            <Rectangle x:Name="VersionTextBlockSeparator" VerticalAlignment="Stretch" Fill="{ThemeResource TextFillColorPrimary}" Width="1" Margin="0 2"/>
                             <TextBlock x:Name="VersionTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextWrapping="NoWrap" />
                             <Rectangle VerticalAlignment="Stretch" Fill="{ThemeResource TextFillColorPrimary}" Width="1" Margin="0 2"/>
                             <TextBlock x:Name="CategoryTextBlock" Text="{x:Bind Category, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextWrapping="NoWrap" />

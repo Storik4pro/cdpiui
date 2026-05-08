@@ -136,7 +136,8 @@ namespace CDPI_UI.Views.Store.Settings.Memory
                 category = string.IsNullOrEmpty(category) ? item.Type : category;
 
                 string eImageSource = LScriptLangHelper.ExecuteScript(item.IconPath);
-                BitmapImage image = new BitmapImage(new Uri(eImageSource));
+                
+                BitmapImage image = new BitmapImage(UIHelper.GetUriFromString(eImageSource));
 
                 SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(item.BackgroudColor);
 

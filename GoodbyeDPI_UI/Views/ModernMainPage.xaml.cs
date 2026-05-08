@@ -1,3 +1,4 @@
+using CDPI_UI.Controls.Dialogs.Q;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.LScript;
 using CDPI_UI.Helper.Static;
@@ -62,6 +63,17 @@ public sealed partial class ModernMainPage : Page
         this.Loaded += ModernMainPage_Loaded;
 
         StarsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
+
+        DateTime today = DateTime.Today;
+        Random rnd = new Random();
+        if ((today.Month == 4 && today.Day == 1) || rnd.Next(1, 10000) == 180)
+        {
+            QHyperlinkButton.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            QHyperlinkButton.Visibility = Visibility.Collapsed;
+        }
     }
 
     private void Instance_ItemRemoved(string obj)
@@ -192,5 +204,14 @@ public sealed partial class ModernMainPage : Page
     private void AddingCustomSiteListsToConfigHyperlink_Click(object sender, RoutedEventArgs e)
     {
         NavigateToHelpUri("/GettingStarted/AddingCustomSiteListsToConfig");
+    }
+
+    private async void QHyperlinkButton_Click(object sender, RoutedEventArgs e)
+    {
+        QContentDialog q = new()
+        {
+            XamlRoot = this.XamlRoot,
+        };
+        await q.ShowAsync();
     }
 }

@@ -38,6 +38,11 @@ namespace CDPI_UI.Controls.Store.Settings
                 SetValue(StoreIdProperty, value);
                 CheckAvailiableActions();
                 VersionTextBlock.Text = DatabaseHelper.Instance.GetItemById(StoreId)?.CurrentVersion.Replace("v", "") ?? string.Empty;
+                if (string.IsNullOrEmpty(VersionTextBlock.Text))
+                {
+                    VersionTextBlock.Visibility = Visibility.Collapsed;
+                    VersionTextBlockSeparator.Visibility = Visibility.Collapsed;
+                }
             }
         }
 

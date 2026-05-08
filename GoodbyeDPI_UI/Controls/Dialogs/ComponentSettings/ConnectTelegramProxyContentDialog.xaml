@@ -13,7 +13,11 @@
     Style="{ThemeResource DefaultContentDialogStyle}">
 
     <Grid>
-        <StackPanel Spacing="5">
+        <StackPanel x:Name="FailedToLoadGrid" Visibility="Visible" Spacing="5">
+            <TextBlock l:Uids.Uid="ConfigNotReadyToDisplayQuickSettingsTextBlock" TextWrapping="Wrap"/>
+            <HyperlinkButton l:Uids.Uid="GoToComponentSettings" x:Name="GoToComponentSettings" Click="GoToComponentSettings_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="ContentStackPanel" Spacing="5" Visibility="Collapsed">
             <TextBlock l:Uids.Uid="ConnectManuallyTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
             <Grid>
                 <Grid.RowDefinitions>

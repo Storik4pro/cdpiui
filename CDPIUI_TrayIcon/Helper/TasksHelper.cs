@@ -66,10 +66,10 @@ namespace CDPIUI_TrayIcon.Helper
             var t = await GetTaskFromId(id);
             if (t != null) return;
 
+            await _taskOperationLock.WaitAsync();
+
             ProcessManager processManager = new() { Id = id };
             processManager.ProcessStateChanged += HandleProcessStateUpdate;
-
-            await _taskOperationLock.WaitAsync();
 
             try
             {
@@ -122,11 +122,12 @@ namespace CDPIUI_TrayIcon.Helper
             }
             else
             {
+                await _taskOperationLock.WaitAsync();
+
                 ProcessManager processManager = new() { Id = id };
                 processManager.ProcessStateChanged += HandleProcessStateUpdate;
                 await processManager.StartProcess(executable, args);
 
-                await _taskOperationLock.WaitAsync();
                 try
                 {
                     Tasks.Add(new() { Id = id, ProcessManager = processManager });
@@ -149,10 +150,11 @@ namespace CDPIUI_TrayIcon.Helper
             }
             else
             {
+                await _taskOperationLock.WaitAsync();
+
                 ProcessManager processManager = new() { Id = id };
                 processManager.ProcessStateChanged += HandleProcessStateUpdate;
-
-                await _taskOperationLock.WaitAsync();
+                
 
                 try
                 {

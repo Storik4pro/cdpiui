@@ -320,6 +320,9 @@ namespace CDPI_UI.Views.Components
                     };
                     _ = dialog.ShowAsync();
                     break;
+                case ActionIds.OpenFolderClicked:
+                    Utils.OpenFileDirectory(contentDefinition.EditFilePath);
+                    break;
                 case ActionIds.EditButtonClicked:
                     if (!SettingsManager.Instance.GetValue<bool>("FILEOPENACTIONS", "isDialogShown") || !SettingsManager.Instance.GetValueOrDefault<bool>("FILEOPENACTIONS", "doNotRemindAgain", defaultValue: true))
                     {

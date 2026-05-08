@@ -190,6 +190,7 @@ namespace CDPI_UI.Helper.Static
         {
             None,
             ViewButtonClicked,
+            OpenFolderClicked,
             EditButtonClicked,
             SwitchToggled,
             FullButtonElementClicked,
@@ -252,13 +253,28 @@ namespace CDPI_UI.Helper.Static
                             ToolTipService.SetToolTip(editBtn, localizer.GetLocalizedString("Edit")); 
 
                             var viewBtn = new Button { Padding = new Thickness(6) };
-                            viewBtn.Content = new FontIcon { Glyph = "\uE890", FontSize = 16 };
-                            viewBtn.Click += (s, e) =>
+                            MenuFlyout menuFlyout = new() { Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.TopEdgeAlignedRight };
+
+                            FontIcon folderIcon = new() { Glyph = "\uE838" };
+                            MenuFlyoutItem openFolderMenuItem = new() { Text = localizer.GetLocalizedString("ViewInFolderButton"), Icon = folderIcon };
+                            openFolderMenuItem.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.OpenFolderClicked, null, def);
+                            };
+                            menuFlyout.Items.Add(openFolderMenuItem);
+
+                            FontIcon viewIcon = new() { Glyph = "\uE890" };
+                            MenuFlyoutItem viewIconMenuItem = new() { Text = localizer.GetLocalizedString("ViewAppliedFlagsForSiteList"), Icon = viewIcon };
+                            viewIconMenuItem.Click += (s, e) =>
                             {
                                 executeAction?.Invoke(ActionIds.ViewButtonClicked, [list.Title], def);
                             };
+                            menuFlyout.Items.Add(viewIconMenuItem);
 
-                            ToolTipService.SetToolTip(viewBtn, localizer.GetLocalizedString("ViewAppliedFlagsForSiteList"));
+                            viewBtn.Flyout = menuFlyout;
+                            viewBtn.Content = new FontIcon { Glyph = "\uE712", FontSize = 16 };
+
+                            ToolTipService.SetToolTip(viewBtn, localizer.GetLocalizedString("ViewMoreActionsToolTip"));
 
                             contentPanel.Children.Add(editBtn);
                             contentPanel.Children.Add(viewBtn);

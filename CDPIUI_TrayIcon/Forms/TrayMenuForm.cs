@@ -2,6 +2,7 @@
 using CDPIUI_TrayIcon.Helper;
 using CDPIUI_TrayIcon.Helper.Basic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CDPIUI_TrayIcon.Forms
 {
@@ -303,6 +304,7 @@ namespace CDPIUI_TrayIcon.Forms
             Size = new Size(DefaultWidth, CheckWindowHeight());
 
             var taskbarPos = Taskbar.DisplayBounds;
+            float scaleFactor = GetScalingFactor();
 
             Location = new Point(x: location.X, y: location.Y);
 
@@ -311,19 +313,19 @@ namespace CDPIUI_TrayIcon.Forms
 
             if (Taskbar.Position == TaskbarPosition.Left)
             {
-                relLoc.X = taskbarPos.Right;
+                relLoc.X = (int)(taskbarPos.Right / scaleFactor);
             }
             else if (Taskbar.Position == TaskbarPosition.Right)
             {
-                relLoc.X = taskbarPos.Left - this.Width;
+                relLoc.X = (int)(taskbarPos.Left / scaleFactor) - this.Width;
             }
             else if (Taskbar.Position == TaskbarPosition.Top)
             {
-                relLoc.Y = taskbarPos.Bottom;
+                relLoc.Y = (int)(taskbarPos.Bottom / scaleFactor);
             }
             else if (Taskbar.Position == TaskbarPosition.Bottom)
             {
-                relLoc.Y = taskbarPos.Top - this.Height;
+                relLoc.Y = (int)(taskbarPos.Top / scaleFactor) - this.Height;
             }
             
             if (relLoc.X < screen.Left)
@@ -379,6 +381,31 @@ namespace CDPIUI_TrayIcon.Forms
 
         #region WinAPI
         const int WM_ACTIVATEAPP = 0x001C;
+
+        // https://stackoverflow.com/a/21450169/32214029
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        public enum DeviceCap
+        {
+            VERTRES = 10,
+            DESKTOPVERTRES = 117,
+
+            // http://pinvoke.net/default.aspx/gdi32/GetDeviceCaps.html
+        }
+
+        private float GetScalingFactor()
+        {
+            using Graphics g = Graphics.FromHwnd(IntPtr.Zero);
+            IntPtr desktop = g.GetHdc();
+            int LogicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+
+            g.ReleaseHdc(desktop);
+
+            float ScreenScalingFactor = (float)PhysicalScreenHeight / (float)LogicalScreenHeight;
+
+            return ScreenScalingFactor;
+        }
         #endregion
     }
 }

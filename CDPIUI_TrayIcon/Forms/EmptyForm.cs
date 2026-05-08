@@ -1,5 +1,6 @@
 ﻿using CDPIUI_TrayIcon.Helper;
 using CDPIUI_TrayIcon.Helper.Basic;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -75,13 +76,32 @@ namespace CDPIUI_TrayIcon.Forms
         {
             TasksHelper.Instance.TaskStateUpdated += HandleTaskStateUpdate;
             TasksHelper.Instance.TaskListUpdated += HandleTasksListUpdate;
-            
+            SystemEvents.PowerModeChanged += OnPowerChange;
         }
 
         private void DisconnectHandlers()
         {
             TasksHelper.Instance.TaskStateUpdated -= HandleTaskStateUpdate;
             TasksHelper.Instance.TaskListUpdated -= HandleTasksListUpdate;
+            SystemEvents.PowerModeChanged -= OnPowerChange;
+        }
+
+        private async void OnPowerChange(object s, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Resume:
+                    foreach (var task in TasksHelper.Instance.Tasks)
+                    {
+                        if (task.ProcessManager.GetState())
+                        {
+                            await TasksHelper.Instance.RestartTask(task.Id);
+                        }
+                    }
+                    break;
+                case PowerModes.Suspend:
+                    break;
+            }
         }
 
         private string GetCurrentIcon()

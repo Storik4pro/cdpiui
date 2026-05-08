@@ -174,7 +174,7 @@
                     </Grid>
                 </Button>
             </Grid>
-            
+
             <ItemsRepeater x:Name="WidgetsItemsRepeater" Grid.Row="1">
                 <ItemsRepeater.Layout>
                     <toolkit:StaggeredLayout ItemsStretch="Fill"
@@ -183,5 +183,8 @@
                 </ItemsRepeater.Layout>
             </ItemsRepeater>
         </Grid>
+        <HyperlinkButton x:Name="QHyperlinkButton" l:Uids.Uid="QHyperlinkButton" Grid.Row="2" Margin="0 0 0 -20" 
+                         Content="..." VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="10 0" CornerRadius="0" 
+                         Click="QHyperlinkButton_Click"/>
     </Grid>
 </Page>
