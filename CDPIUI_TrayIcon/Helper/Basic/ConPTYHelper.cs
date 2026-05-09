@@ -298,7 +298,7 @@ namespace CDPIUI_TrayIcon.Helper
 
         private static bool ProcessAliveCheck(PROCESS_INFORMATION pi)
         {
-            switch (WaitForSingleObject(pi.hProcess, 0))
+            switch (WaitForSingleObject(pi.hProcess, 2000))
             {
                 case WAIT_OBJECT_0:
                     return false;
