@@ -38,6 +38,7 @@
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
     <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\ChangeSiteListContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml" />
     <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
@@ -79,6 +80,7 @@
     <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
     <None Remove="Controls\Universal\LinkedSettingsUserControl.xaml" />
+    <None Remove="Controls\Universal\NoContentToDisplayUserControl.xaml" />
     <None Remove="Controls\Universal\SearchUserControl.xaml" />
     <None Remove="Controls\Universal\SingleStringTextContentViewerUserControl.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
@@ -410,8 +412,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.4.7.0</FileVersion>
-    <AssemblyVersion>0.4.7.0</AssemblyVersion>
+    <FileVersion>0.5.0.0</FileVersion>
+    <AssemblyVersion>0.5.0.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
@@ -531,6 +533,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Dialogs\Q\QContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\ChangeSiteListContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\NoContentToDisplayUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Settings\Settings.xml">
