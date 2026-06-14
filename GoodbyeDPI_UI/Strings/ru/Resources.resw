@@ -2168,4 +2168,50 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="QCopTextBlock.Text" xml:space="preserve">
     <value>©️ Ква_Блин</value>
   </data>
+  <data name="ChangeSiteList" xml:space="preserve">
+    <value>Заменить список сайтов</value>
+  </data>
+  <data name="ChangeListContentDialogTitle" xml:space="preserve">
+    <value>Заменить {0}</value>
+  </data>
+  <data name="XChangeListContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="XChangeListContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ChangeListTipTextBlock.Text" xml:space="preserve">
+    <value>Замените этот список сайтов другим.
+Это изменение будет применено только для вас. Если вы хотите поделиться этим набором, то внесите изменения вручную.</value>
+  </data>
+  <data name="FromTheStoreTextBlock.Text" xml:space="preserve">
+    <value>Из Магазина</value>
+  </data>
+  <data name="ManuallyTextBlock.Text" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="SelectFileTipTextBlock.Text" xml:space="preserve">
+    <value>Выбрать файл для замены на этом ПК</value>
+  </data>
+  <data name="FindNewItemsInStoreTextBlock.Text" xml:space="preserve">
+    <value>Найти подходящие элементы в Магазине</value>
+  </data>
+  <data name="NoContentToDisplay" xml:space="preserve">
+    <value>Здесь нет контента, который можно отобразить.</value>
+  </data>
+  <data name="NoSuitableStoreItemsFound.Text" xml:space="preserve">
+    <value>Подходящие элементы не найдены среди установленных из Магазина. Попробуйте установить новые поддерживаемые элементы или выберите ручной способ.</value>
+  </data>
+  <data name="YouDontAddAnyFilesYet.Text" xml:space="preserve">
+    <value>Вы еще не добавляли собственные файлы. Чтобы добавить новый файл нажмите на кнопку ниже.</value>
+  </data>
+  <data name="RevertChangeSiteList" xml:space="preserve">
+    <value>Восстановить оригинальный файл</value>
+  </data>
+  <data name="ChooseIpList" xml:space="preserve">
+    <value>Выберите список IP-адресов...</value>
+  </data>
+  <data name="TextFiles" xml:space="preserve">
+    <value>Текстовые файлы</value>
+  </data>
 </root>

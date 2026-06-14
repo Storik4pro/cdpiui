@@ -2166,4 +2166,50 @@ Here is error code in case you need it.
   <data name="QCopTextBlock.Text" xml:space="preserve">
     <value>©️ Ква_Блин</value>
   </data>
+  <data name="ChangeSiteList" xml:space="preserve">
+    <value>Replace site list</value>
+  </data>
+  <data name="ChangeListContentDialogTitle" xml:space="preserve">
+    <value>Replace {0}</value>
+  </data>
+  <data name="XChangeListContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="XChangeListContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ChangeListTipTextBlock.Text" xml:space="preserve">
+    <value>Replace this list with another list you want. 
+This change appears only for yourself. If you want share this kit with others, make changes in config manually.</value>
+  </data>
+  <data name="FromTheStoreTextBlock.Text" xml:space="preserve">
+    <value>From the Store</value>
+  </data>
+  <data name="ManuallyTextBlock.Text" xml:space="preserve">
+    <value>Manually</value>
+  </data>
+  <data name="SelectFileTipTextBlock.Text" xml:space="preserve">
+    <value>Select file on this PC</value>
+  </data>
+  <data name="FindNewItemsInStoreTextBlock.Text" xml:space="preserve">
+    <value>Find new items in Store</value>
+  </data>
+  <data name="NoContentToDisplay" xml:space="preserve">
+    <value>There is no content to display for.</value>
+  </data>
+  <data name="NoSuitableStoreItemsFound.Text" xml:space="preserve">
+    <value>No suitable items found in you Store library. Try to install new items or select manual method.</value>
+  </data>
+  <data name="YouDontAddAnyFilesYet.Text" xml:space="preserve">
+    <value>You don't add any files yet. Add new file by clicking to button.</value>
+  </data>
+  <data name="RevertChangeSiteList" xml:space="preserve">
+    <value>Restore original file</value>
+  </data>
+  <data name="ChooseIpList" xml:space="preserve">
+    <value>Select IP-list</value>
+  </data>
+  <data name="TextFiles" xml:space="preserve">
+    <value>TXT files</value>
+  </data>
 </root>
