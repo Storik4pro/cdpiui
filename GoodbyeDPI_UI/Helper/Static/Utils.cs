@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Formats.Tar;
 using System.Globalization;
@@ -192,7 +193,6 @@ namespace CDPI_UI.Helper.Static
 
         public static void OpenFileDirectory(string file)
         {
-            Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot open path \"{file}\"");
             try
             {
                 Process.Start("explorer.exe", "/select," + $"\"{file.Replace("/", "\\")}\"");
@@ -404,6 +404,29 @@ namespace CDPI_UI.Helper.Static
             return "EN";
         }
 
+        public static long GetFileSize(string filePath)
+        {
+            long fileSize = 0;
+            try
+            {
+                FileInfo info = new FileInfo(filePath);
+                uint dummy, sectorsPerCluster, bytesPerSector;
+                int result = GetDiskFreeSpaceW(info.Directory.Root.FullName, out sectorsPerCluster, out bytesPerSector, out dummy, out dummy);
+                if (result == 0) throw new Win32Exception();
+                uint clusterSize = sectorsPerCluster * bytesPerSector;
+                uint hosize;
+                uint losize = GetCompressedFileSizeW(filePath, out hosize);
+                long size;
+                size = (long)hosize << 32 | losize;
+                return ((size + clusterSize - 1) / clusterSize) * clusterSize;
+            }
+            catch(Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(nameof(Utils), $"Unable to calculate size for \"{filePath}\". {ex.Message}");
+            }
+            return fileSize;
+        }
+
         public static async Task<long> GetDirectorySize(string directory)
         {
             long dirSize = 0;
@@ -503,6 +526,12 @@ namespace CDPI_UI.Helper.Static
                         if (relativePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)
                             && File.Exists(destinationPath))
                         {
+                            // This code is actually piece of shit. But, i so tired now to make something better. =(
+                            if (File.Exists($"{destinationPath}.bak"))
+                            {
+                                destinationPath = $"{destinationPath}.bak";
+                            }
+                            // End of piece of shit
                             string destLines = File.ReadAllText(destinationPath);
                             string tmpFile = Path.Combine(destinationDir, $"__TEMPFILE.txt");
                             entry.ExtractToFile(tmpFile, overwrite: true);
@@ -671,9 +700,26 @@ namespace CDPI_UI.Helper.Static
                 else return 0;
             }
 
+            if (DateTime.TryParseExact(oldVersion, "ddMMyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime oldData) &&
+                DateTime.TryParseExact(newVersion, "ddMMyyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime newData))
+            {
+                return DateTime.Compare(oldData, newData);
+            }
+
             Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot compare {oldVersion} and {newVersion}.");
             return 0;
         }
+
+        #region WINAPI
+        [DllImport("kernel32.dll")]
+        static extern uint GetCompressedFileSizeW([In, MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
+            [Out, MarshalAs(UnmanagedType.U4)] out uint lpFileSizeHigh);
+
+        [DllImport("kernel32.dll", SetLastError = true, PreserveSig = true)]
+        static extern int GetDiskFreeSpaceW([In, MarshalAs(UnmanagedType.LPWStr)] string lpRootPathName,
+           out uint lpSectorsPerCluster, out uint lpBytesPerSector, out uint lpNumberOfFreeClusters,
+           out uint lpTotalNumberOfClusters);
+        #endregion
 
         [GeneratedRegex(@"^[a-zA-Z0-9\-]+$")]
         private static partial Regex CheckIdRegex();
