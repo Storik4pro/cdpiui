@@ -71,6 +71,10 @@ namespace CDPI_UI.Helper
             {
                 return (T)(object)10.0;
             }
+            else if (typeof(T) == typeof(List<string>))
+            {
+                return (T)(object)new List<string>();
+            }
             else
             {
                 return (T)(object)default(T);
@@ -114,22 +118,14 @@ namespace CDPI_UI.Helper
             string value = settingElement.Attribute("Value")?.Value;
             string type = settingElement.Attribute("Type")?.Value;
 
-            if (typeof(T) == typeof(int) && type == "int" && int.TryParse(value, out int intValue))
-                return (T)(object)intValue;
-
-            if (typeof(T) == typeof(double) && type == "double" && double.TryParse(value, out double doubleValue))
-                return (T)(object)doubleValue;
-
-            if (typeof(T) == typeof(bool) && type == "bool" && bool.TryParse(value, out bool boolValue))
-                return (T)(object)boolValue;
-
-            if (typeof(T) == typeof(string) && type == "string")
-                return (T)(object)value;
-
-            if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
-                return (T)(object)DateTime.Parse((string)value);
-
-            throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group '{group}'.");
+            try
+            {
+                return GetValueFromString<T>(value, type);
+            }
+            catch
+            {
+                throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group '{group}'.");
+            }
         }
         public T GetValue<T>(IEnumerable<string> groupPath, string key, XElement xElement = null, bool raiseExceptionIfNotExits = false)
         {
@@ -157,6 +153,7 @@ namespace CDPI_UI.Helper
 
             if (settingElement == null)
             {
+                if (raiseExceptionIfNotExits) throw new Exception("Value not exist");
                 var defaultValue = GetDefaultValue<T>();
                 SetValue(groupPath, key, defaultValue);
                 Debug.WriteLine($"Setting '{key}' in group path '{string.Join("/", groupPath)}' not found.");
@@ -166,15 +163,62 @@ namespace CDPI_UI.Helper
             string value = (string)settingElement.Attribute("Value");
             string type = (string)settingElement.Attribute("Type");
 
+            try
+            {
+                return GetValueFromString<T>(value, type);
+            }
+            catch
+            {
+                throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group path '{string.Join("/", groupPath)}'.");
+            }
+        }
+
+        public Dictionary<string, T> GetKeyPair<T>(IEnumerable<string> groupPath, XElement xElement = null, bool raiseExceptionIfNotExits = false)
+        {
+            if (xElement == null) xElement = _xDocument.Root;
+            XElement current = xElement;
+
+            Dictionary<string, T> dict = [];
+
+            foreach (var grp in groupPath)
+            {
+                current = current
+                    .Elements("Group")
+                    .FirstOrDefault(g => (string)g.Attribute("Name") == grp);
+                if (current == null)
+                {
+                    if (raiseExceptionIfNotExits) throw new Exception("Value not exist");
+                    var defaultValue = GetDefaultValueForKey<T>(groupPath, "$$~");
+                    SetValue(groupPath, "$$~", defaultValue);
+                    Debug.WriteLine($"Group path '{string.Join("/", groupPath)}' not found.");
+                    return dict;
+                }
+            }
+            
+            if (current != null)
+            {
+                foreach (var setting in current.Elements("Setting"))
+                {
+                    var result = GetValueFromString<T>((string)setting.Attribute("Value"), (string)setting.Attribute("Type"));
+                    dict.Add((string)setting.Attribute("Key"), result);
+                }
+            }
+            return dict;
+        }
+
+        private static T GetValueFromString<T>(string value, string type)
+        {
             if (typeof(T) == typeof(int) && type == "int" && int.TryParse(value, out var iv)) return (T)(object)iv;
             if (typeof(T) == typeof(double) && type == "double" && double.TryParse(value, out var dv)) return (T)(object)dv;
             if (typeof(T) == typeof(bool) && type == "bool" && bool.TryParse(value, out var bv)) return (T)(object)bv;
             if (typeof(T) == typeof(string) && type == "string") return (T)(object)value;
 
+            if (typeof(T) == typeof(List<string>) && type == nameof(List<string>)) return string.IsNullOrEmpty(value) ? (T)(object)new List<string>() : (T)(object)value.Split(';').ToList();
+
             if (typeof(T) == typeof(DateTime) && type == nameof(DateTime))
                 return (T)(object)DateTime.Parse((string)value);
 
-            throw new Exception($"Type mismatch or unsupported type for setting '{key}' in group path '{string.Join("/", groupPath)}'.");
+            throw new Exception();
         }
 
         public void SetValue<T>(string group, string key, T value)
@@ -206,6 +250,13 @@ namespace CDPI_UI.Helper
             {
                 type = nameof(DateTime);
                 valueString = value.ToString();
+            }
+            else if (typeof(T) == typeof(List<string>))
+            {
+                type = nameof(List<string>);
+                valueString = string.Join(";", (List<string>)(object)value);
+
+                Debug.WriteLine(valueString);
             }
             else
             {
@@ -265,6 +316,10 @@ namespace CDPI_UI.Helper
                 case string s:
                     type = "string";
                     valueString = s;
+                    break;
+                case List<string> lst:
+                    type = nameof(List<string>);
+                    valueString = string.Join(";", lst);
                     break;
                 default:
                     type = nameof(T);
