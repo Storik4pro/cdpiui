@@ -166,21 +166,28 @@ namespace CDPI_UI.Views.Components
                     if (item.Type == "NULL")
                         continue;
 
+                    string hardLinkTargetFile = HardLinkHelper.IsFileLinked(sel.packId, item.FilePath);
+
                     string title =
                         localizer.GetLocalizedString($"/SettingTiles/{item.Type}") +
-                        $" {item.Name}";
+                        $" {item.Name}" + (string.IsNullOrEmpty(hardLinkTargetFile) ? "" : $" ({Path.GetFileName(hardLinkTargetFile)})");
 
                     SettingsTileItem settingsTileItem = new()
                     {
                         Title = title,
                         ShowTopRectangle = _flag,
                     };
+                    
                     settingsTileItem.Contents.Add(new SettingTileContentDefinition
                     {
                         ContentType = item.Type == "AutoSiteList" ? SettingTileContentType.OnlyViewButton : SettingTileContentType.EditViewButtons,
                         EditFilePath = item.FilePath,
+                        PackId = sel.packId,
                         ViewParams = item.ApplyParams,
                         PrettyViewParams = item.PrettyApplyParams,
+                        IsFileHardLinked = !string.IsNullOrEmpty(hardLinkTargetFile),
+                        HardLinkTargetFile = hardLinkTargetFile,
+                        IsIPSet = item.Type == "IpList"
                     });
 
                     sitelistTile.Items.Add(settingsTileItem);
@@ -206,21 +213,28 @@ namespace CDPI_UI.Views.Components
                     if (item.Type == "NULL")
                         continue;
 
+                    string hardLinkTargetFile = HardLinkHelper.IsFileLinked(sel.packId, item.FilePath);
+
                     string title =
                         localizer.GetLocalizedString($"/SettingTiles/{item.Type}") +
-                        $" {item.Name}";
+                        $" {item.Name}" + (string.IsNullOrEmpty(hardLinkTargetFile) ? "" : $" ({Path.GetFileName(hardLinkTargetFile)})");
 
                     SettingsTileItem settingsTileItem = new()
                     {
                         Title = title,
                         ShowTopRectangle = _flag,
                     };
+                    
                     settingsTileItem.Contents.Add(new SettingTileContentDefinition
                     {
                         ContentType = item.Type == "AutoSiteList" ? SettingTileContentType.OnlyViewButton : SettingTileContentType.EditViewButtons,
+                        PackId = sel.packId,
                         EditFilePath = item.FilePath,
                         ViewParams = item.ApplyParams,
                         PrettyViewParams = item.PrettyApplyParams,
+                        IsFileHardLinked = !string.IsNullOrEmpty(hardLinkTargetFile),
+                        HardLinkTargetFile = hardLinkTargetFile,
+                        IsIPSet = item.Type == "IpList"
                     });
 
                     sitelistTile.Items.Add(settingsTileItem);
@@ -323,6 +337,16 @@ namespace CDPI_UI.Views.Components
                 case ActionIds.OpenFolderClicked:
                     Utils.OpenFileDirectory(contentDefinition.EditFilePath);
                     break;
+                case ActionIds.ChangeSiteListClicked:
+                    if (contentDefinition.IsFileHardLinked)
+                    {
+                        RevertFileLink(arguments[0], contentDefinition.PackId, contentDefinition.EditFilePath, contentDefinition.HardLinkTargetFile);
+                    }
+                    else
+                    {
+                        ShowChangeListDialog(arguments[0], contentDefinition.PackId, contentDefinition.EditFilePath, contentDefinition.IsIPSet);
+                    }
+                    break;
                 case ActionIds.EditButtonClicked:
                     if (!SettingsManager.Instance.GetValue<bool>("FILEOPENACTIONS", "isDialogShown") || !SettingsManager.Instance.GetValueOrDefault<bool>("FILEOPENACTIONS", "doNotRemindAgain", defaultValue: true))
                     {
@@ -347,6 +371,48 @@ namespace CDPI_UI.Views.Components
                     ButtonClick(contentDefinition.ClickId);
                     break;
 
+            }
+        }
+
+        private async void RevertFileLink(string file, string packId, string fileName, string linkName)
+        {
+            var result = await HardLinkHelper.RemoveLinkForItemId(packId, linkName, fileName);
+
+            Debug.WriteLine(result.IsSuccess);
+
+            ShowAnim = false;
+            var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            _ = Task.Run(() => InitSettingsTiles(item));
+        }
+
+        private async void ShowChangeListDialog(string file, string packId, string fileName, bool isIPSet)
+        {
+            ChangeSiteListContentDialog changeListContentDialog = new()
+            {
+                XamlRoot = this.XamlRoot,
+                ListTitle = file,
+                PackId = packId,
+                FileName = fileName,
+                IsIpSet = isIPSet,
+            };
+            await changeListContentDialog.ShowAsync();
+
+            if (changeListContentDialog.IsDialogFinishedSuccessfully)
+            {
+                if (changeListContentDialog.SelectionType == FileSelectionType.FromTheStore)
+                {
+                    var result = await HardLinkHelper.CreateHardLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
+                }
+                else if (changeListContentDialog.SelectionType == FileSelectionType.FromLocalDrive)
+                {
+                    var result = await HardLinkHelper.CreateSymbolicLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
+
+                    Debug.WriteLine($"!>>> {result.IsSuccess}, {result.ErrorCode}, {result.ErrorMessage}");
+                }
+
+                ShowAnim = false;
+                var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                _ = Task.Run(() => InitSettingsTiles(item));
             }
         }
         private async void ShowEditAskDialog(string file)
