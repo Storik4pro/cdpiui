@@ -1,4 +1,6 @@
 using CDPI_UI.Controls.Dialogs.ComponentSettings;
+using CDPI_UI.Controls.Dialogs.Universal;
+using CDPI_UI.DataModel;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
@@ -316,6 +318,19 @@ namespace CDPI_UI.Views.Components
 
             helpTile.Items.Add(helpTileItem);
 
+            SettingsTileItem whatConfigChooseHelpTileItem = new()
+            {
+                Title = localizer.GetLocalizedString("/Flashlight/WhatConfigChooseHelp"),
+                ShowTopRectangle = true,
+            };
+            whatConfigChooseHelpTileItem.Contents.Add(new SettingTileContentDefinition
+            {
+                ContentType = SettingTileContentType.FullButton,
+                ClickId = "HELPOFFLINECONFIGCHOOISE"
+            });
+
+            helpTile.Items.Add(whatConfigChooseHelpTileItem);
+
             // TODO: add dynamic help
 
             DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(helpTile, HandleSettingTileElementClick)); });
@@ -380,9 +395,20 @@ namespace CDPI_UI.Views.Components
 
             Debug.WriteLine(result.IsSuccess);
 
-            ShowAnim = false;
-            var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
-            _ = Task.Run(() => InitSettingsTiles(item));
+            if (!result.IsSuccess)
+            {
+                ErrorContentDialog dialog = new();
+                await dialog.ShowErrorDialogAsync(
+                    string.Format(localizer.GetLocalizedString("ReplaceSiteListException"), Path.GetFileName(linkName), Path.GetFileName(fileName), result.ErrorCode), result.ErrorMessage, this.XamlRoot
+                    );
+            }
+            else
+            {
+
+                ShowAnim = false;
+                var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                _ = Task.Run(() => InitSettingsTiles(item));
+            }
         }
 
         private async void ShowChangeListDialog(string file, string packId, string fileName, bool isIPSet)
@@ -399,20 +425,33 @@ namespace CDPI_UI.Views.Components
 
             if (changeListContentDialog.IsDialogFinishedSuccessfully)
             {
+                AsyncOperationResultModel result;
                 if (changeListContentDialog.SelectionType == FileSelectionType.FromTheStore)
                 {
-                    var result = await HardLinkHelper.CreateHardLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
+                    result = await HardLinkHelper.CreateHardLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
                 }
-                else if (changeListContentDialog.SelectionType == FileSelectionType.FromLocalDrive)
+                else
                 {
-                    var result = await HardLinkHelper.CreateSymbolicLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
-
-                    Debug.WriteLine($"!>>> {result.IsSuccess}, {result.ErrorCode}, {result.ErrorMessage}");
+                    result = await HardLinkHelper.CreateSymbolicLinkForItemId(packId, changeListContentDialog.NewFileName, fileName);
                 }
 
-                ShowAnim = false;
-                var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
-                _ = Task.Run(() => InitSettingsTiles(item));
+                if (!result.IsSuccess)
+                {
+                    ErrorContentDialog dialog = new();
+                    await dialog.ShowErrorDialogAsync(
+                        string.Format(localizer.GetLocalizedString("ReplaceSiteListException"), Path.GetFileName(fileName), Path.GetFileName(changeListContentDialog.NewFileName), result.ErrorCode), 
+                        result.ErrorMessage, 
+                        this.XamlRoot
+                        );
+                }
+                else
+                {
+                    ShowAnim = false;
+                    var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                    _ = Task.Run(() => InitSettingsTiles(item));
+                }
+
+                
             }
         }
         private async void ShowEditAskDialog(string file)
@@ -449,6 +488,10 @@ namespace CDPI_UI.Views.Components
                     break;
                 case "HELPOFFLINE":
                     OfflineHelpWindow offlineHelpWindow = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+                    break;
+                case "HELPOFFLINECONFIGCHOOISE":
+                    OfflineHelpWindow offlineHelpWindow1 = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+                    offlineHelpWindow1.NavigateToPage("/Autoselection/BestConfigSelection");
                     break;
             }
         }
