@@ -1,4 +1,4 @@
-using CDPI_UI.DataModel;
+using CDPI_UI.Controls.Dialogs.Universal;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
 using Microsoft.UI;
