@@ -40,6 +40,17 @@ namespace CDPI_UI
     {
         public static CreateConfigUtilWindow Instance { get; private set; }
 
+        private string targetStoreId = string.Empty;
+        public string TargetStoreId
+        {
+            get => targetStoreId;
+            set
+            {
+                targetStoreId = value;
+                ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), TargetStoreId);
+            }
+        }
+
         private ILocalizer localizer = Localizer.Get();
 
         public CreateConfigUtilWindow()
@@ -56,7 +67,7 @@ namespace CDPI_UI
 
             ExtendsContentIntoTitleBar = true;
 
-            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage));
+            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), TargetStoreId);
             SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
@@ -67,23 +78,6 @@ namespace CDPI_UI
         private void CreateConfigUtilWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             this.Activated -= CreateConfigUtilWindow_Activated;
-
-            CheckIsGoodCheckInstalled();
-        }
-
-        private async void CheckIsGoodCheckInstalled()
-        {
-            if (!DatabaseHelper.Instance.IsItemInstalled("ASGKOI001"))
-            {
-                var window = await ((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASGKOI001");
-                window.SetItemToViewId("ASGKOI001");
-
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    this.Close();
-                });
-
-            }
         }
 
         public void NavigateToPage<T>(object parameter = null)
