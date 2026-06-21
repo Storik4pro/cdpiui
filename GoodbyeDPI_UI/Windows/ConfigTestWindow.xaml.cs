@@ -38,7 +38,20 @@ namespace CDPI_UI
             }
         }
 
-        private ObservableCollection<ViewComponentModel> Models = [];
+        private string TestedComponentId = string.Empty;
+
+        private readonly ObservableCollection<PresetResultViewModel> _resultItems = new();
+        private readonly ObservableCollection<ViewComponentModel> Models = new();
+
+        private PresetTestHelper _activeHelper;
+        private PresetTestType _lastTestType = PresetTestType.Standard;
+
+        private class ComponentEntry
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public override string ToString() => Name;
+        }
 
         public ConfigTestWindow()
         {
@@ -49,25 +62,22 @@ namespace CDPI_UI
             TitleIcon = TitleImageRectagle;
             TitleBar = WindowMoveAera;
             IconUri = @"Assets/Icons/GoodCheck.ico";
-            WindowMinSize = new System.Windows.Size(900, 520);
+            WindowMinSize = new System.Windows.Size(1100, 520);
 
             SetTitleBar(WindowMoveAera);
 
-
-            StartTestButton.IsEnabled = false;
             ComponentComboBox.ItemsSource = Models;
+            ResultsListView.ItemsSource = _resultItems;
+            LoadComponents();
         }
 
         private void LoadComponents()
         {
             try
             {
-                var components = DatabaseHelper.Instance.GetItemsByType("component");
                 UIHelper.LoadInstalledComponentsList(Models);
 
                 Models.Remove(Models.FirstOrDefault(x => x.StoreId == "CSTYFL050"));
-
-
 
 
                 if (Models.Count > 0)
@@ -76,9 +86,7 @@ namespace CDPI_UI
                     StartTestButton.IsEnabled = true;
                 }
                 else
-                {
                     StartTestButton.IsEnabled = false;
-                }
             }
             catch (Exception ex)
             {
@@ -125,6 +133,7 @@ namespace CDPI_UI
         {
             if (_isTesting) return;
 
+
             if (ComponentComboBox.SelectedItem is not ViewComponentModel entry)
                 return;
 
@@ -155,20 +164,25 @@ namespace CDPI_UI
             }
 
             ClearOutput();
+            ClearResults();
             SetTestingUi(true);
             _testCts = new CancellationTokenSource();
+            _activeHelper = new PresetTestHelper();
 
-            var progress = new Progress<List<TestLogSegment>>(AppendLine);
+            TestedComponentId = entry.StoreId;
+
+            var logProgress = new Progress<List<TestLogSegment>>(AppendLine);
+            var testProgress = new Progress<PresetTestProgress>(UpdateProgress);
 
             try
             {
-                var helper = new PresetTestHelper();
-                await Task.Run(() => helper.RunAsync(entry.StoreId, processManager, testType, presets, progress, _testCts.Token));
-            }
-            catch (OperationCanceledException)
-            {
-                AppendLine(new TestLogSegment(localizer.GetLocalizedString("PT_Cancelled"), TestLogColor.Yellow));
-                try { await processManager.StopProcess(false); } catch { }
+                PresetTestRunResult runResult = await Task.Run(() =>
+                    _activeHelper.RunAsync(entry.StoreId, processManager, _lastTestType, presets, logProgress, testProgress, _testCts.Token));
+
+                if (runResult.WasCancelled)
+                    AppendLine(new TestLogSegment(localizer.GetLocalizedString("PT_Cancelled"), TestLogColor.Yellow));
+
+                ShowResults(runResult, _lastTestType);
             }
             catch (Exception ex)
             {
@@ -179,6 +193,8 @@ namespace CDPI_UI
             finally
             {
                 SetTestingUi(false);
+                HideProgress();
+                _activeHelper = null;
                 _testCts?.Dispose();
                 _testCts = null;
             }
@@ -186,7 +202,133 @@ namespace CDPI_UI
 
         private void StopTestButton_Click(object sender, RoutedEventArgs e)
         {
-            try { _testCts?.Cancel(); } catch { }
+            try
+            {
+                _activeHelper?.CancelAllCurls();
+                _testCts?.Cancel();
+            }
+            catch { }
+        }
+
+        private async void ApplyPresetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is PresetResultViewModel vm)
+                await ApplyPresetAsync(vm, restartIfRunning: false);
+        }
+
+        private async void RunPresetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is PresetResultViewModel vm)
+                await ApplyPresetAsync(vm, restartIfRunning: true);
+        }
+
+        private async Task ApplyPresetAsync(PresetResultViewModel vm, bool restartIfRunning)
+        {
+            if (vm?.Preset == null || string.IsNullOrEmpty(TestedComponentId))
+                return;
+
+            try
+            {
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", TestedComponentId], "configFile", vm.Preset.file_name);
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", TestedComponentId], "configId", vm.Preset.packId);
+
+                ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(TestedComponentId);
+                componentHelper.ReInitConfigs();
+
+                AppendLine(new TestLogSegment(string.Format(localizer.GetLocalizedString("PT_PresetApplied"), vm.PresetName), TestLogColor.Green));
+
+                if (restartIfRunning)
+                {
+                    if (await TasksHelper.Instance.IsTaskRunned(TestedComponentId))
+                        await TasksHelper.Instance.RestartTask(TestedComponentId);
+                    else
+                        TasksHelper.Instance.CreateAndRunNewTask(TestedComponentId);
+                }
+                else if (await TasksHelper.Instance.IsTaskRunned(TestedComponentId))
+                {
+                    await TasksHelper.Instance.RestartTask(TestedComponentId);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLine(new TestLogSegment($"[{localizer.GetLocalizedString("PT_Warn")}] ", TestLogColor.Yellow),
+                           new TestLogSegment(ex.Message, TestLogColor.Red));
+            }
+        }
+
+        private void ShowResults(PresetTestRunResult runResult, PresetTestType testType)
+        {
+            _resultItems.Clear();
+            if (runResult?.Ranked == null || runResult.Ranked.Count == 0)
+            {
+                ResultsListView.Visibility = Visibility.Collapsed;
+                ResultsPlaceholderTextBlock.Visibility = Visibility.Visible;
+                return;
+            }
+
+            string applyLabel = localizer.GetLocalizedString("PresetTestApplyButton");
+            string runLabel = localizer.GetLocalizedString("PresetTestRunButton");
+            string recommended = localizer.GetLocalizedString("PresetTestRecommendedBadge");
+            ConfigItem bestPreset = runResult.Best?.Preset;
+
+            foreach (PresetTestResult r in runResult.Ranked)
+            {
+                bool isBest = bestPreset != null && r.Preset != null &&
+                    r.Preset.file_name == bestPreset.file_name &&
+                    r.Preset.packId == bestPreset.packId;
+
+                _resultItems.Add(new PresetResultViewModel
+                {
+                    Preset = r.Preset,
+                    PresetName = r.PresetName,
+                    PackName = string.IsNullOrEmpty(r.PackName) ? r.Preset?.file_name : r.PackName,
+                    MetricsText = r.GetMetricsSummary(testType, localizer),
+                    IsBest = isBest,
+                    RecommendedBadge = recommended,
+                    ApplyLabel = applyLabel,
+                    RunLabel = runLabel
+                });
+            }
+
+            ResultsPlaceholderTextBlock.Visibility = Visibility.Collapsed;
+            ResultsListView.Visibility = Visibility.Visible;
+        }
+
+        private void ClearResults()
+        {
+            _resultItems.Clear();
+            ResultsListView.Visibility = Visibility.Collapsed;
+            ResultsPlaceholderTextBlock.Visibility = Visibility.Visible;
+        }
+
+        private void UpdateProgress(PresetTestProgress p)
+        {
+            if (p == null) return;
+
+            ProgressPanel.Visibility = Visibility.Visible;
+            TestProgressBar.Value = p.Percent;
+            ProgressStatusTextBlock.Text = string.Format(
+                localizer.GetLocalizedString("PT_ProgressStatus"),
+                p.CurrentIndex, p.TotalPresets, p.CurrentPresetName);
+
+            if (p.EstimatedRemaining.HasValue && p.CompletedPresets > 0 && p.CompletedPresets < p.TotalPresets)
+            {
+                var eta = p.EstimatedRemaining.Value;
+                ProgressEtaTextBlock.Text = Utils.ConvertMinutesToPrettyText(eta.Minutes);
+                
+            }
+            else
+            {
+                ProgressEtaTextBlock.Text = localizer.GetLocalizedString("Calculating");
+            }
+        }
+
+        private void HideProgress()
+        {
+            ProgressPanel.Visibility = Visibility.Collapsed;
+            TestProgressBar.Value = 0;
+            ProgressStatusTextBlock.Text = string.Empty;
+            ProgressEtaTextBlock.Text = string.Empty;
         }
 
         private void TargetsButton_Click(object sender, RoutedEventArgs e)
@@ -217,6 +359,9 @@ namespace CDPI_UI
             AllConfigsRadio.IsEnabled = !testing;
             SelectedConfigsRadio.IsEnabled = !testing;
             PresetListView.IsEnabled = !testing && SelectedConfigsRadio.IsChecked == true;
+
+            if (testing)
+                ProgressPanel.Visibility = Visibility.Visible;
         }
 
         private void ClearOutput()
@@ -265,4 +410,20 @@ namespace CDPI_UI
             window.NavigateToPage("/Autoselection/BestConfigSelection");
         }
     }
+
+    public class PresetResultViewModel
+    {
+        public ConfigItem Preset { get; set; }
+        public string PresetName { get; set; }
+        public string PackName { get; set; }
+        public string MetricsText { get; set; }
+        public bool IsBest { get; set; }
+        public string RecommendedBadge { get; set; }
+        public string ApplyLabel { get; set; }
+        public string RunLabel { get; set; }
+
+        public Visibility RecommendedBadgeVisibility => IsBest ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+        
 }
