@@ -1,6 +1,6 @@
 using CDPI_UI.Controls.CreateConfigHelper;
 using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
-using CDPI_UI.DataModel;
+using CDPI_UI.Controls.Dialogs.Universal;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
 using CDPI_UI.Helper.Static;
