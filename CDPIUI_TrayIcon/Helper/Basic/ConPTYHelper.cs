@@ -235,6 +235,11 @@ namespace CDPIUI_TrayIcon.Helper
                             _output = newOutput;
                         }
 
+                        if (_outputDefaultBuffer.Length > 5000)
+                        {
+                            _outputDefaultBuffer.Clear();
+                        }
+
                         _outputDefaultBuffer.Append(_output);
 
                         OutputAdded?.Invoke(_output);
