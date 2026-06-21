@@ -62,6 +62,8 @@ namespace CDPI_UI.Helper
             { nameof(StoreLocalItemInstallingDialog), WindowResizeOptions.ExtendedMessage },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
+            { nameof(ConfigTestWindow), WindowResizeOptions.ResizeAndPositionFollowSystem }, 
+            { nameof(EditHostFileWindow), WindowResizeOptions.OnlyPositionWizard }, 
         };
         // positionType, Width, Height
         private static Dictionary<WindowResizeOptions, Tuple<WindowPositionVariants, int, int>> WindowsResizeParams = new()
