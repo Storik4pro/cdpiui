@@ -175,7 +175,7 @@ namespace CDPI_UI.Helper.Static
             }
         }
 
-        public static void RunApp(string executable, string arguments)
+        public static void RunApp(string executable, string arguments, bool askUAC = false)
         {
             try
             {
@@ -183,6 +183,7 @@ namespace CDPI_UI.Helper.Static
                 {
                     UseShellExecute = true
                 };
+                if (askUAC) psi.Verb = "runas";
                 Process.Start(psi);
             }
             catch (Exception ex)
@@ -203,29 +204,31 @@ namespace CDPI_UI.Helper.Static
             }
         }
 
-        public static void OpenFile(string file)
+        public static void OpenFile(string file, bool askUAC = false, bool useNotepadAsDefault = false)
         {
             int openMode = SettingsManager.Instance.GetValue<int>("FILEOPENACTIONS", "mode");
             string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
             if (openMode == (int)TextFileOpenModes.UserChoose && File.Exists(appPath))
             {
-                Utils.RunApp(appPath, $"\"{file}\"");
+                Utils.RunApp(appPath, $"\"{file}\"", askUAC);
             }
             else
             {
-                Utils.OpenFileInDefaultApp(file);
+                if (useNotepadAsDefault) Utils.RunApp("notepad.exe", $"\"{file}\"", askUAC);
+                else Utils.OpenFileInDefaultApp(file, askUAC);
             }
         }
 
-        public static void OpenFileInDefaultApp(string filePath)
+        public static void OpenFileInDefaultApp(string filePath, bool askUAC = false)
         {
             try
             {
                 var psi = new ProcessStartInfo
                 {
                     FileName = Path.GetFullPath(filePath),
-                    UseShellExecute = true
+                    UseShellExecute = true,
                 };
+                if (askUAC) psi.Verb = "runas";
                 Process.Start(psi);
             }
             catch (Exception ex)
