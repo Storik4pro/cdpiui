@@ -321,4 +321,7 @@
   <data name="SaveBeforeQuitTip.Text" xml:space="preserve">
     <value>Сохраните изменения перед тем, как выйти!</value>
   </data>
+  <data name="WhatConfigChooseHelp" xml:space="preserve">
+    <value>Какой пресет мне следует выбрать?</value>
+  </data>
 </root>

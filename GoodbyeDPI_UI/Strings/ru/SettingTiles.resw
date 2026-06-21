@@ -159,7 +159,7 @@
     <value>Изменить этот пресет</value>
   </data>
   <data name="SelectAutomatically" xml:space="preserve">
-    <value>Подобрать пресет автоматически</value>
+    <value>Создать новый пресет в автоматическом режиме</value>
   </data>
   <data name="Features" xml:space="preserve">
     <value>Возможности</value>

@@ -321,4 +321,7 @@ To view more info about fixing this problem, visit attached link.</value>
   <data name="SaveBeforeQuitTip.Text" xml:space="preserve">
     <value>Don't forget to save your changes before quit!</value>
   </data>
+  <data name="WhatConfigChooseHelp" xml:space="preserve">
+    <value>What config should I choose?</value>
+  </data>
 </root>
