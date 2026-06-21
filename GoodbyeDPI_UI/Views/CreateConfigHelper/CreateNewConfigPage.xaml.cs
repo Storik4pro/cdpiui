@@ -292,6 +292,8 @@ public sealed partial class CreateNewConfigPage : Page
 
     private void CreateNewConfigPage_Loaded(object sender, RoutedEventArgs e)
     {
+        EditItemId = StateHelper.LocalUserItemsId;
+
         if (navigationParameter != null) RunOnNavigatedToActions(navigationParameter);
         AuditSaveAvailable();
         navigationParameter = null;
@@ -314,8 +316,6 @@ public sealed partial class CreateNewConfigPage : Page
 
     private void RunOnNavigatedToActions(object args)
     {
-        EditItemId = StateHelper.LocalUserItemsId;
-
         if (args is Tuple<string, ConfigItem, bool, string> tuple)
         {
             string operationType = tuple.Item1;
