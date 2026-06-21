@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPI_UI.ConfigTestWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:winex="using:WinUIEx"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:items="using:CDPI_UI.Helper.Items"
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:models="using:CDPI_UI.ViewModels">
+
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop />
+    </template:TemplateWindow.SystemBackdrop>
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar"
+              Canvas.ZIndex="1"
+              Height="48"
+              IsHitTestVisible="True"
+              VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="ImageAera" Height="48">
+                <Image
+                    Source="/Assets/Icons/GoodCheck.ico"
+                    Width="16" Height="16"
+                    Margin="16,16"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
+            </Grid>
+            <Grid x:Name="WindowMoveAera" Grid.Column="1">
+                <TextBlock
+                    l:Uids.Uid="PresetTestWindowTitleTextBlock"
+                    x:Name="AppTitleTextBlock"
+                    TextWrapping="NoWrap"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,0"/>
+            </Grid>
+            <Button HorizontalAlignment="Right" Grid.Column="1" Margin="0 0 150 0" Padding="6" l:Uids.Uid="AboutUtilityButton">
+                <FontIcon Glyph="&#xE946;" FontSize="16"/>
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedRight">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <FontIcon Glyph="&#xE946;" FontSize="16"/>
+                                <TextBlock l:Uids.Uid="PresetTestWindowTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            </StackPanel>
+                            <Rectangle Fill="{ThemeResource SurfaceStrokeColorDefaultBrush}" Height="1" Margin="0 2 0 5"/>
+                            <TextBlock l:Uids.Uid="ConfigTextUtilityAboutTextBlock" TextWrapping="Wrap" MaxWidth="450"/>
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="SettingsPanel" Grid.Column="0"
+                  MinWidth="300" MaxWidth="720" Width="420"
+                  Margin="16,4,0,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,12">
+                    <TextBlock l:Uids.Uid="PresetTestComponentLabel" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <ComboBox x:Name="ComponentComboBox" SelectionChanged="ComponentComboBox_SelectionChanged" HorizontalAlignment="Stretch">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:ViewComponentModel">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="20"/>
+                                    <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Spacing="6" Margin="0,0,0,12">
+                    <TextBlock l:Uids.Uid="PresetTestTypeLabel" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <RadioButton x:Name="StandardTestRadio" l:Uids.Uid="PresetTestStandardRadio" GroupName="TestTypeGroup" IsChecked="True"/>
+                    <RadioButton x:Name="DpiTestRadio" l:Uids.Uid="PresetTestDpiRadio" GroupName="TestTypeGroup"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Spacing="6" Margin="0,0,0,8">
+                    <TextBlock l:Uids.Uid="PresetTestConfigSelectionLabel" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                    <RadioButton x:Name="AllConfigsRadio" l:Uids.Uid="PresetTestAllConfigsRadio" GroupName="ConfigSelectionGroup" IsChecked="True" Checked="ConfigSelectionRadio_Checked"/>
+                    <RadioButton x:Name="SelectedConfigsRadio" l:Uids.Uid="PresetTestSelectedConfigsRadio" GroupName="ConfigSelectionGroup" Checked="ConfigSelectionRadio_Checked"/>
+                </StackPanel>
+
+                <ListView x:Name="PresetListView" Grid.Row="3"
+                          SelectionMode="Multiple"
+                          IsEnabled="False"
+                          Margin="0,0,0,12"
+                          BorderThickness="1"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          CornerRadius="4"
+                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="items:ConfigItem">
+                            <TextBlock Text="{x:Bind name}"
+                                       TextWrapping="WrapWholeWords"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackPanel x:Name="ProgressPanel" Grid.Row="4" Spacing="4" Margin="0,0,0,8" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                    <TextBlock x:Name="ProgressStatusTextBlock" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords"/>
+                    <ProgressBar x:Name="TestProgressBar" Minimum="0" Maximum="100"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <TextBlock l:Uids.Uid="GoodCheckSelectionTime" Style="{StaticResource CaptionTextBlockStyle}"/>
+                        <TextBlock x:Name="ProgressEtaTextBlock" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Right" Margin="10 0 0 0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Row="5" Spacing="8">
+                    <Button x:Name="StartTestButton" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="StartTestButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE768;" FontSize="14"/>
+                            <TextBlock l:Uids.Uid="PresetTestStartButton"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="StopTestButton" HorizontalAlignment="Stretch" IsEnabled="False" Click="StopTestButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE71A;" FontSize="14"/>
+                            <TextBlock l:Uids.Uid="PresetTestStopButton"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="TargetsButton" HorizontalAlignment="Stretch" Click="TargetsButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8A5;" FontSize="14"/>
+                            <TextBlock l:Uids.Uid="PresetTestTargetsButton"/>
+                        </StackPanel>
+                    </Button>
+                    <HyperlinkButton x:Name="HelpHyperLinkButton" Click="HelpHyperLinkButton_Click" Padding="6">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <FontIcon Glyph="&#xE754;" FontSize="16"/>
+                            <TextBlock l:Uids.Uid="GetHelpTextBlock"/>
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
+            </Grid>
+
+            <controls:ContentSizer Grid.Column="1"
+                                   TargetControl="{x:Bind SettingsPanel}"/>
+
+            <Grid x:Name="ResultsPanel" Grid.Column="2"
+                  MinWidth="320" MaxWidth="520" Width="380"
+                  Margin="8,4,0,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock l:Uids.Uid="PresetTestResultsHeader"
+                           Style="{StaticResource BodyStrongTextBlockStyle}"
+                           Margin="0,0,0,8"/>
+                <ListView x:Name="ResultsListView" Grid.Row="1"
+                          SelectionMode="None"
+                          Visibility="Collapsed"
+                          BorderThickness="1"
+                          ItemContainerStyle="{StaticResource ListViewItemStretchStyle}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          CornerRadius="4">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:PresetResultViewModel">
+                            <Border Padding="12,10"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{x:Bind RecommendedBadge, Mode=OneWay}"
+                                               Visibility="{x:Bind RecommendedBadgeVisibility, Mode=OneWay}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
+                                    <TextBlock Text="{x:Bind PresetName, Mode=OneWay}"
+                                               Style="{StaticResource BodyStrongTextBlockStyle}"
+                                               TextWrapping="WrapWholeWords"/>
+                                    <TextBlock Text="{x:Bind PackName, Mode=OneWay}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               TextWrapping="WrapWholeWords"/>
+                                    <TextBlock Text="{x:Bind MetricsText, Mode=OneWay}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               TextWrapping="WrapWholeWords"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                                        <Button Content="{x:Bind ApplyLabel, Mode=OneWay}"
+                                                Click="ApplyPresetButton_Click"
+                                                Tag="{x:Bind}"
+                                                Style="{StaticResource AccentButtonStyle}"
+                                                Padding="12,4"/>
+                                        <Button Content="{x:Bind RunLabel, Mode=OneWay}"
+                                                Click="RunPresetButton_Click"
+                                                Tag="{x:Bind}"
+                                                Padding="12,4"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="8"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+
+                <TextBlock x:Name="ResultsPlaceholderTextBlock" Grid.Row="1"
+                    l:Uids.Uid="PresetTestResultsPlaceholder"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    TextWrapping="WrapWholeWords"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="26"/>
+            </Grid>
+
+            <controls:ContentSizer Grid.Column="3"
+                       TargetControl="{x:Bind ResultsPanel}"/>
+
+            <Grid Grid.Column="4" Margin="0,0,0,0" CornerRadius="6">
+                <ScrollViewer x:Name="OutputScrollViewer"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Auto"
+                              Background="Black"
+                              CornerRadius="6">
+                    <RichTextBlock x:Name="OutputRichTextBlock"
+                                   FontFamily="Consolas"
+                                   FontSize="14"
+                                   Foreground="#DCDCDC"
+                                   IsTextSelectionEnabled="True"
+                                   Padding="16"
+                                   SelectionHighlightColor="Gray">
+                        <Paragraph x:Name="OutputParagraph"/>
+                    </RichTextBlock>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</template:TemplateWindow>
