@@ -100,6 +100,7 @@
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
     <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\EditHostsFile\MainPage.xaml" />
     <None Remove="Views\ModernMainPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
     <None Remove="Views\SetupProxy\MainPage.xaml" />
@@ -122,6 +123,7 @@
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\EditHostFileWindow.xaml" />
     <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
     <None Remove="Windows\ModernMainWindow.xaml" />
@@ -541,9 +543,18 @@
     <Page Update="Controls\Universal\NoContentToDisplayUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Update="Template\Hosts\hosts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\EditHostsFile\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\EditHostFileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Components\DefaultComponentSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
