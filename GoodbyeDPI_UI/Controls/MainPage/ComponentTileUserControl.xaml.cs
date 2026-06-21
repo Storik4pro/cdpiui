@@ -493,7 +493,7 @@ public sealed partial class ComponentTileUserControl : UserControl
                 break;
             case AvailableComponentFeatures.AutoSelectConfig:
                 CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
-                gwindow.NavigateToPage<CreateViaGoodCheck>(StoreId);
+                gwindow.TargetStoreId = StoreId;
                 break;
             case AvailableComponentFeatures.CreateConfig:
                 CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
