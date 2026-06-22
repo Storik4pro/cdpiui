@@ -627,11 +627,12 @@ public sealed partial class CreateNewConfigPage : Page
                 Directory.CreateDirectory(Path.GetDirectoryName(locFile));
             }
 
-            if (!File.Exists(locFile))
-                File.Create(locFile);
-
-            Dictionary<string, string> localizationDict = Utils.LoadJson<Dictionary<string, string>>(locFile);
-            if (localizationDict == null) localizationDict = new();
+            Dictionary<string, string> localizationDict = [];
+            if (File.Exists(locFile))
+            {
+                localizationDict = Utils.LoadJson<Dictionary<string, string>>(locFile);
+            }
+            localizationDict ??= [];
 
             foreach (var condition in Conditions)
             {
@@ -786,7 +787,7 @@ public sealed partial class CreateNewConfigPage : Page
         ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
                     (ComponentChooseComboBox.SelectedItem as ComponentModel).Id);
-        componentHelper.ReInitConfigs();
+        componentHelper?.ReInitConfigs();
 
         ShowDialog();
     }
