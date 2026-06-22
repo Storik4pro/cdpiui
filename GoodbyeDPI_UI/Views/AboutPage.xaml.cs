@@ -52,6 +52,7 @@ namespace CDPI_UI.Views
 
         private ObservableCollection<AcknowledgmentsModel> AcknowledgmentsList = new ObservableCollection<AcknowledgmentsModel>()
         {
+            new () { Name = "Niko" },
             new () { Name = "o2o" },
             new () { Name = "Factiosi" },
             new () { Name = "Lumenpearson" },
