@@ -182,4 +182,19 @@ Unfortunately we can't find page your looking for. Please, make sure program has
   <data name="SaveConfigKitAs" xml:space="preserve">
     <value>Save new config kit</value>
   </data>
+  <data name="Utils" xml:space="preserve">
+    <value>Utils</value>
+  </data>
+  <data name="EditHostsFileUtility" xml:space="preserve">
+    <value>Hosts file utility</value>
+  </data>
+  <data name="Autoselection" xml:space="preserve">
+    <value>Autoselection utilities </value>
+  </data>
+  <data name="1WhatAutoSelectionIs" xml:space="preserve">
+    <value>What is autoselection?</value>
+  </data>
+  <data name="BestConfigSelection" xml:space="preserve">
+    <value>Select the best config</value>
+  </data>
 </root>

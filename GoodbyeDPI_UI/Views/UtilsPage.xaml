@@ -89,6 +89,14 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png"  ShowAsMonochrome="True" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="EditHostsFileSettingsCard" x:Name="EditHostsFileSettingsCard" IsClickEnabled="True" Click="EditHostsFileSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/EditHostsFile.ico"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="CreateConfigUtilSettingsCard" x:Name="CreateConfigUtilSettingsCard" IsClickEnabled="True" Click="CreateConfigUtilSettingsCard_Click">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
@@ -103,6 +111,14 @@
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="PresetTestSettingsCard" x:Name="PresetTestSettingsCard" IsClickEnabled="True" Click="PresetTestSettingsCard_Click" Visibility="Collapsed">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="TroubleshootinSettingsCard" x:Name="TroubleshootinSettingsCard" IsClickEnabled="True" Click="TroubleshootinSettingsCard_Click">

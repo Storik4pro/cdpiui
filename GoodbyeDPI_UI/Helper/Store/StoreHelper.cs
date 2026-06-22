@@ -1289,6 +1289,11 @@ namespace CDPI_UI.Helper
             {
                 downloadLinks = await GetDownloadLinksAsync(item.files_to_download);
             }
+            else if (item.version_control == "subscription")
+            {
+                downloadUrl = item.version_control_link;
+                tag = "0.0.0";
+            }
             var errorLink = downloadLinks.FirstOrDefault(i => i.errorHappens);
             if (errorLink != null)
             {

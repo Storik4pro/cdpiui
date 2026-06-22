@@ -94,8 +94,8 @@ namespace CDPI_UI.Common
             startInfo.FileName = @"powershell.exe";
             startInfo.Arguments = 
                 $"Test-FileCatalog " +
-                $"-CatalogFilePath \"{catalogFile}\" " +
-                $"-Path \"{compareDirectory}\" " +
+                $"-CatalogFilePath \'{catalogFile}\' " +
+                $"-Path \'{compareDirectory}\' " +
                 $"-FilesToSkip catalog.cat";
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CDPI_UI.Views.EditHostsFile.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPI_UI.Views.EditHostsFile"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock l:Uids.Uid="EditHostsFileMainPageTitleTextBlock" Style="{ThemeResource TitleTextBlockStyle}" Margin="20 0"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="5" Margin="20 10 20 10">
+                <Grid Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock l:Uids.Uid="HostsFileEditCurrentStatusTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <FontIcon x:Name="StatusFontIcon" Glyph="&#xEC61;" FontSize="16"/>
+                        <TextBlock x:Name="StatusTextBlock" Grid.Column="2" Text="Replaced"/>
+                    </Grid>
+                </Grid>
+                <TextBlock l:Uids.Uid="ActionsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <controls:SettingsCard l:Uids.Uid="ReplaceHostsFileSettingsCard" x:Name="ReplaceHostsFileSettingsCard" IsClickEnabled="True" Click="ReplaceHostsFileSettingsCard_Click" IsActionIconVisible="False"
+                                       Margin="0 0 0 10">
+                    <Button l:Uids.Uid="ReplaceButton" Click="ReplaceHostsFileSettingsCard_Click" MinWidth="100"/>
+                </controls:SettingsCard>
+                <controls:SettingsCard 
+                    l:Uids.Uid="RemoveHostsFileSettingsCard" 
+                    x:Name="RemoveHostsFileSettingsCard" 
+                    IsClickEnabled="True" 
+                    Click="RemoveHostsFileSettingsCard_Click" 
+                    IsActionIconVisible="False"
+                    Background="{ThemeResource SystemFillColorCriticalBackground}">
+                    <controls:SettingsCard.Resources>
+                        <SolidColorBrush x:Name="SettingsCardBackgroundPointerOver" x:Key="SettingsCardBackgroundPointerOver" Color="{ThemeResource SystemFillColorCriticalBackground}"/>
+                        <SolidColorBrush x:Name="SettingsCardBorderBrushPointerOverSolidColorBrush" x:Key="SettingsCardBorderBrushPointerOver" Color="{ThemeResource SystemFillColorCriticalBackground}"/>
+                    </controls:SettingsCard.Resources>
+                    <Button l:Uids.Uid="RemoveButton" Click="RemoveHostsFileSettingsCard_Click" MinWidth="100"/>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="RecoverHostsFileSettingsCard" x:Name="RecoverHostsFileSettingsCard" IsClickEnabled="True" Click="RecoverHostsFileSettingsCard_Click" IsActionIconVisible="False">
+                    <Button l:Uids.Uid="RecoverButton" Click="RecoverHostsFileSettingsCard_Click" MinWidth="100"/>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="OpenHostsFileSettingsCard" x:Name="OpenHostsFileSettingsCard" IsClickEnabled="True" Click="OpenHostsFileSettingsCard_Click" >
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;"/>
+                    </controls:SettingsCard.ActionIcon>
+                </controls:SettingsCard>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid x:Name="LoadingGrid" Grid.Row="2" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock l:Uids.Uid="WorkingOnItTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="20 0 0 0"/>
+            <ProgressBar IsIndeterminate="True" CornerRadius="0" Grid.Row="1"/>
+        </Grid>
+        <Grid x:Name="ActionButtonsGrid" Grid.Row="3">
+            <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+
+            <Grid Padding="20">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE897;" FontSize="16"/>
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="10"  HorizontalAlignment="Right">
+                    <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

@@ -162,6 +162,9 @@ namespace CDPI_UI.Helper.Static
             public string EditFilePath { get; set; }
             public List<string> ViewParams { get; set; }
             public List<string> PrettyViewParams { get; set; }
+            public bool IsFileHardLinked { get; set; }
+            public string HardLinkTargetFile { get; set; }
+            public bool IsIPSet { get; set; }
 
             public string ClickId { get; set; }
 
@@ -191,6 +194,7 @@ namespace CDPI_UI.Helper.Static
             None,
             ViewButtonClicked,
             OpenFolderClicked,
+            ChangeSiteListClicked,
             EditButtonClicked,
             SwitchToggled,
             FullButtonElementClicked,
@@ -262,6 +266,18 @@ namespace CDPI_UI.Helper.Static
                                 executeAction?.Invoke(ActionIds.OpenFolderClicked, null, def);
                             };
                             menuFlyout.Items.Add(openFolderMenuItem);
+
+                            FontIcon changeIcon = new() { Glyph = def.IsFileHardLinked? "\uE7A7" : "\uE895" };
+                            MenuFlyoutItem changeIconMenuItem = new() 
+                            { 
+                                Text = def.IsFileHardLinked ? localizer.GetLocalizedString("RevertChangeSiteList") : localizer.GetLocalizedString("ChangeSiteList"), 
+                                Icon = changeIcon
+                            };
+                            changeIconMenuItem.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.ChangeSiteListClicked, [list.Title], def);
+                            };
+                            menuFlyout.Items.Add(changeIconMenuItem);
 
                             FontIcon viewIcon = new() { Glyph = "\uE890" };
                             MenuFlyoutItem viewIconMenuItem = new() { Text = localizer.GetLocalizedString("ViewAppliedFlagsForSiteList"), Icon = viewIcon };

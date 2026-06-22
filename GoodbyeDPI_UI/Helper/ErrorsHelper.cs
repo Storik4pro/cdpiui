@@ -1,6 +1,7 @@
 ﻿using CDPI_UI.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,16 @@ using static System.Net.WebRequestMethods;
 namespace CDPI_UI.Helper
 {
     #region CustomExceptions
+    public class ApplicationFilesDamagedException : System.Exception
+    {
+        public ApplicationFilesDamagedException() : base() { }
+        public ApplicationFilesDamagedException(string message) : base(message) { }
+        public ApplicationFilesDamagedException(string message, System.Exception inner) : base(message, inner) { }
+
+        protected ApplicationFilesDamagedException(System.Runtime.Serialization.SerializationInfo info,
+            System.Runtime.Serialization.StreamingContext context)
+        { }
+    }
     public class AddonNotInstalledException : System.Exception
     {
         public AddonNotInstalledException() : base() { }
@@ -52,6 +63,8 @@ namespace CDPI_UI.Helper
     {
         public enum PrettyErrorCode
         {
+            SUCCESS,
+
             INVALID_URI,
             HOST_NAME_NOT_RESOLVED,
             CANNOT_CONNECT,
@@ -87,6 +100,9 @@ namespace CDPI_UI.Helper
             IO_FILE_CORRUPT,
             IO_SYSTEM_CANT_ACCESS_FILE,
 
+            // WIN32
+            OPERATION_CANCELLED_BY_USER,
+
             // Extraction errors
             EXTRACT_INVALID_ARCHIVE,
             EXTRACT_ENTRY_CORRUPTED,
@@ -103,6 +119,9 @@ namespace CDPI_UI.Helper
             // CatalogCheck
             CATALOG_SIGNATURE_CHECK_FAILURE,
             CATALOG_INVALID,
+
+            // Application
+            APPLICATION_DAMAGED_NEED_REPAIR,
 
             UNKNOWN,
         }
@@ -195,20 +214,16 @@ namespace CDPI_UI.Helper
                             return PrettyErrorCode.NEWEST_VERSION_INSTALLED;
                         case UnknownFileFormatException:
                             return PrettyErrorCode.PACK_NOT_SUPPORTED;
+                        case ApplicationFilesDamagedException:
+                            return PrettyErrorCode.APPLICATION_DAMAGED_NEED_REPAIR;
                     }
                     if (current is IOException)
                     {
                         var hrGeneric = unchecked((uint)current.HResult);
-                        if (hrGeneric == 0x80070070u)
-                            return PrettyErrorCode.IO_DISK_FULL;
-                        if (hrGeneric == 0x80070020)
-                            return PrettyErrorCode.IO_FILE_USED_FOR_ANOTHER_PROCESS;
-                        if (hrGeneric == 0x000003EE)
-                            return PrettyErrorCode.IO_FILE_INVALID;
-                        if (hrGeneric == 0x00000570)
-                            return PrettyErrorCode.IO_FILE_CORRUPT;
-                        if (hrGeneric == 0x00000780)
-                            return PrettyErrorCode.IO_SYSTEM_CANT_ACCESS_FILE;
+
+                        PrettyErrorCode code = ConvertHresultToCode(current.HResult, out rawHResult);
+                        
+                        if (code != PrettyErrorCode.UNKNOWN) return code;
 
                         rawHResult = hrGeneric;
                         return PrettyErrorCode.IO_GENERIC;
@@ -218,37 +233,20 @@ namespace CDPI_UI.Helper
                     
 
                     Debug.WriteLine(unchecked((uint)current.HResult));
-                    if (current.HResult != 0)
+
+                    int _hr = current.HResult;
+                    if (ex is Win32Exception w32ex)
                     {
-                        uint hr = unchecked((uint)current.HResult);
+                        _hr = w32ex.NativeErrorCode;
+                    }
+
+                    if (_hr != 0)
+                    {
+                        uint hr = unchecked((uint)_hr);
                         rawHResult = hr;
-                        switch (hr)
-                        {
-                            case 0x80072EE7u:
-                                return PrettyErrorCode.HOST_NAME_NOT_RESOLVED;
-                            case 0x80072EFDu:
-                                return PrettyErrorCode.CANNOT_CONNECT;
-                            case 0x80072EFEu:
-                                return PrettyErrorCode.CONNECTION_ABORTED;
-                            case 0x80072EE2u:
-                                return PrettyErrorCode.TIMEOUT;
-                            case 0x80072F76u:
-                                return PrettyErrorCode.ERROR_HTTP_HEADER_NOT_FOUND;
-                            case 0x80072F78u:
-                                return PrettyErrorCode.ERROR_HTTP_INVALID_SERVER_RESPONSE;
-                            case 0x80072F8Fu:
-                                return PrettyErrorCode.CERTIFICATE_EXPIRED;
-                            case 0x80072F8Eu:
-                                return PrettyErrorCode.CERTIFICATE_COMMON_NAME_INCORRECT;
-                            case 0x80004005u:
-                                break;
-                            case 0x80070005u:
-                                return PrettyErrorCode.ACCESS_DENIED;
-                            case 0x80004004u:
-                                return PrettyErrorCode.OPERATION_CANCELED;
-                            default:
-                                break;
-                        }
+                        PrettyErrorCode code = ConvertHresultToCode(_hr, out rawHResult);
+
+                        if (code != PrettyErrorCode.UNKNOWN) return code;
                     }
                 }
                 if (ex is UriFormatException)
@@ -258,6 +256,58 @@ namespace CDPI_UI.Helper
                 return PrettyErrorCode.UNKNOWN;
             }
         }
+
+        private static PrettyErrorCode ConvertHresultToCode(int HResult, out uint? rawHResult)
+        {
+            uint hr = unchecked((uint)HResult);
+            rawHResult = hr;
+            switch (hr)
+            {
+                case 0:
+                    return PrettyErrorCode.SUCCESS;
+                case 0x80072EE7u:
+                    return PrettyErrorCode.HOST_NAME_NOT_RESOLVED;
+                case 0x80072EFDu:
+                    return PrettyErrorCode.CANNOT_CONNECT;
+                case 0x80072EFEu:
+                    return PrettyErrorCode.CONNECTION_ABORTED;
+                case 0x80072EE2u:
+                    return PrettyErrorCode.TIMEOUT;
+                case 0x80072F76u:
+                    return PrettyErrorCode.ERROR_HTTP_HEADER_NOT_FOUND;
+                case 0x80072F78u:
+                    return PrettyErrorCode.ERROR_HTTP_INVALID_SERVER_RESPONSE;
+                case 0x80072F8Fu:
+                    return PrettyErrorCode.CERTIFICATE_EXPIRED;
+                case 0x80072F8Eu:
+                    return PrettyErrorCode.CERTIFICATE_COMMON_NAME_INCORRECT;
+                case 0x80004005u:
+                    break;
+                case 0x80070005u:
+                    return PrettyErrorCode.ACCESS_DENIED;
+                case 0x80004004u:
+                    return PrettyErrorCode.OPERATION_CANCELED;
+                case 0x80070070u:
+                    return PrettyErrorCode.IO_DISK_FULL;
+                case 0x80070002:
+                    return PrettyErrorCode.IO_FILE_NOT_FOUND;
+                case 0x80070020:
+                    return PrettyErrorCode.IO_FILE_USED_FOR_ANOTHER_PROCESS;
+                case 0x000003EE:
+                    return PrettyErrorCode.IO_FILE_INVALID;
+                case 0x00000570:
+                    return PrettyErrorCode.IO_FILE_CORRUPT;
+                case 0x00000780:
+                    return PrettyErrorCode.IO_SYSTEM_CANT_ACCESS_FILE;
+                case 0x000004C7:
+                    return PrettyErrorCode.OPERATION_CANCELLED_BY_USER;
+                default:
+                    break;
+            }
+
+            return PrettyErrorCode.UNKNOWN;
+        }
+
         public static string GetPrettyErrorCode(string preffix, Exception ex)
         {
             string prettyErrorCode;
@@ -274,6 +324,27 @@ namespace CDPI_UI.Helper
             else
             {
                 prettyErrorCode = $"{preffix}_{code}{_statusCode}";
+            }
+            return prettyErrorCode;
+        }
+
+        public static string GetPrettyErrorCode(string preffix, int hcode)
+        {
+            string prettyErrorCode;
+
+            PrettyErrorCode prettyCode = ConvertHresultToCode(hcode, out uint? hr);
+
+            var code = prettyCode.ToString();
+
+            Logger.Instance.CreateErrorLog(nameof(ErrorHelper), $"{code} - {hr}");
+            if (hr != null)
+            {
+                string hrHex = $"0x{hr.Value:X8}";
+                prettyErrorCode = $"{preffix}_{code} ({hrHex})";
+            }
+            else
+            {
+                prettyErrorCode = $"{preffix}_{code}";
             }
             return prettyErrorCode;
         }

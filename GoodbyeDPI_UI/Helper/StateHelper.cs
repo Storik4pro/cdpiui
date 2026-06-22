@@ -105,6 +105,8 @@ namespace CDPI_UI.Helper
             FileTypes.Add("msi", ".msi");
             FileTypes.Add("UPDmsi", ".msi");
             FileTypes.Add("elmsi", ".exe");
+            FileTypes.Add("lst", ".lst");
+            FileTypes.Add("raw", ".txt");
 
             string exePath = Assembly.GetEntryAssembly()?.Location
                  ?? Assembly.GetExecutingAssembly()?.Location

@@ -231,16 +231,16 @@
     <value>Создайте свой пресет</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Description" xml:space="preserve">
-    <value>Подбор параметров запуска для компонентов. Упрощенный сборщик пресетов</value>
+    <value>Выбор лучшего пресета из загруженных. Упрощенное создание нового пресета</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Header" xml:space="preserve">
-    <value>Автоматическая утилита создания пресета</value>
+    <value>Средства автоподбора</value>
   </data>
   <data name="CreateConfigUtilWindowTitle" xml:space="preserve">
-    <value>Автоматическая утилита создания пресета</value>
+    <value>Средства автоподбора</value>
   </data>
   <data name="CreateConfigUtilWindowTitleTextBlock.Text" xml:space="preserve">
-    <value>Автоматическая утилита создания пресета</value>
+    <value>Средства автоподбора</value>
   </data>
   <data name="CreateNewConfigViaGoodCheckTextBlock.Text" xml:space="preserve">
     <value>Создать новый пресет с использованием GoodCheck</value>
@@ -857,7 +857,7 @@
   <data name="DeveloperTextBlock.Text" xml:space="preserve">
     <value>Разработчик</value>
   </data>
-  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+  <data name="tem" xml:space="preserve">
     <value>Сведения об этом приложении</value>
   </data>
   <data name="AcknowledgmentsTextBlock.Text" xml:space="preserve">
@@ -2167,5 +2167,385 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="QCopTextBlock.Text" xml:space="preserve">
     <value>©️ Ква_Блин</value>
+  </data>
+  <data name="ChangeSiteList" xml:space="preserve">
+    <value>Заменить список сайтов</value>
+  </data>
+  <data name="ChangeListContentDialogTitle" xml:space="preserve">
+    <value>Заменить {0}</value>
+  </data>
+  <data name="XChangeListContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="XChangeListContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ChangeListTipTextBlock.Text" xml:space="preserve">
+    <value>Замените этот список сайтов другим.
+Это изменение будет применено только для вас. Если вы хотите поделиться этим набором, то внесите изменения вручную.</value>
+  </data>
+  <data name="FromTheStoreTextBlock.Text" xml:space="preserve">
+    <value>Из Магазина</value>
+  </data>
+  <data name="ManuallyTextBlock.Text" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="SelectFileTipTextBlock.Text" xml:space="preserve">
+    <value>Выбрать файл для замены на этом ПК</value>
+  </data>
+  <data name="FindNewItemsInStoreTextBlock.Text" xml:space="preserve">
+    <value>Найти подходящие элементы в Магазине</value>
+  </data>
+  <data name="NoContentToDisplay" xml:space="preserve">
+    <value>Здесь нет контента, который можно отобразить.</value>
+  </data>
+  <data name="NoSuitableStoreItemsFound.Text" xml:space="preserve">
+    <value>Подходящие элементы не найдены среди установленных из Магазина. Попробуйте установить новые поддерживаемые элементы или выберите ручной способ.</value>
+  </data>
+  <data name="YouDontAddAnyFilesYet.Text" xml:space="preserve">
+    <value>Вы еще не добавляли собственные файлы. Чтобы добавить новый файл нажмите на кнопку ниже.</value>
+  </data>
+  <data name="RevertChangeSiteList" xml:space="preserve">
+    <value>Восстановить оригинальный файл</value>
+  </data>
+  <data name="ChooseIpList" xml:space="preserve">
+    <value>Выберите список IP-адресов...</value>
+  </data>
+  <data name="TextFiles" xml:space="preserve">
+    <value>Текстовые файлы</value>
+  </data>
+  <data name="PresetTestConfirmButton" xml:space="preserve">
+    <value>Запустить тест</value>
+  </data>
+  <data name="PresetTestConfirmMessage" xml:space="preserve">
+    <value>Тест пресетов поочерёдно запустит каждый пресет текущего компонента и проверит доступность сайтов. Это будет многократно прерывать текущее соединение и может занять несколько минут. Продолжить?</value>
+  </data>
+  <data name="PresetTestWindowTitle" xml:space="preserve">
+    <value>Тест пресетов</value>
+  </data>
+  <data name="PresetTestWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Тест пресетов</value>
+  </data>
+  <data name="PresetTestSettingsCard.Header" xml:space="preserve">
+    <value>Тест пресетов</value>
+  </data>
+  <data name="PresetTestSettingsCard.Description" xml:space="preserve">
+    <value>Поочерёдный запуск пресетов компонента с проверкой доступности сайтов. Поиск наиболее эффективного пресета.</value>
+  </data>
+  <data name="PresetTestComponentLabel.Text" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="PresetTestTypeLabel.Text" xml:space="preserve">
+    <value>Тип теста</value>
+  </data>
+  <data name="PresetTestStandardRadio.Content" xml:space="preserve">
+    <value>Стандартные тесты (HTTP/пинг)</value>
+  </data>
+  <data name="PresetTestDpiRadio.Content" xml:space="preserve">
+    <value>Проверка DPI (заморозка TCP 16-20)</value>
+  </data>
+  <data name="PresetTestConfigSelectionLabel.Text" xml:space="preserve">
+    <value>Какие пресеты тестировать</value>
+  </data>
+  <data name="PresetTestAllConfigsRadio.Content" xml:space="preserve">
+    <value>Все конфиги</value>
+  </data>
+  <data name="PresetTestSelectedConfigsRadio.Content" xml:space="preserve">
+    <value>Выбранные конфиги</value>
+  </data>
+  <data name="PresetTestStartButton.Text" xml:space="preserve">
+    <value>Запустить тест</value>
+  </data>
+  <data name="PresetTestStopButton.Text" xml:space="preserve">
+    <value>Остановить тест</value>
+  </data>
+  <data name="PresetTestTargetsButton.Text" xml:space="preserve">
+    <value>Список сайтов для теста</value>
+  </data>
+  <data name="PT_AdminConfirmed" xml:space="preserve">
+    <value>Права администратора подтверждены</value>
+  </data>
+  <data name="PT_Info" xml:space="preserve">
+    <value>ИНФО</value>
+  </data>
+  <data name="PT_Warn" xml:space="preserve">
+    <value>ВНИМАНИЕ</value>
+  </data>
+  <data name="PT_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PT_TargetsLoaded" xml:space="preserve">
+    <value>Загружено целей: {0}</value>
+  </data>
+  <data name="PT_Header" xml:space="preserve">
+    <value>ТЕСТЫ КОНФИГОВ</value>
+  </data>
+  <data name="PT_ModeLabel" xml:space="preserve">
+    <value>Режим:</value>
+  </data>
+  <data name="PT_ModeStandard" xml:space="preserve">
+    <value>СТАНДАРТ</value>
+  </data>
+  <data name="PT_ModeDpi" xml:space="preserve">
+    <value>ПРОВЕРКА DPI</value>
+  </data>
+  <data name="PT_TotalConfigs" xml:space="preserve">
+    <value>Всего конфигов: {0}</value>
+  </data>
+  <data name="PT_MayTakeTime" xml:space="preserve">
+    <value>Тесты могут занять несколько минут. Подождите...</value>
+  </data>
+  <data name="PT_NoPresets" xml:space="preserve">
+    <value>Нет доступных пресетов для теста.</value>
+  </data>
+  <data name="PT_NoTargets" xml:space="preserve">
+    <value>Список целевых сайтов пуст.</value>
+  </data>
+  <data name="PT_NoSelection" xml:space="preserve">
+    <value>Выберите хотя бы один пресет для теста.</value>
+  </data>
+  <data name="PT_ComponentNotFound" xml:space="preserve">
+    <value>Не удалось получить процесс для выбранного компонента.</value>
+  </data>
+  <data name="PT_Preset" xml:space="preserve">
+    <value>[{0}/{1}] {2}</value>
+  </data>
+  <data name="PT_Skipped" xml:space="preserve">
+    <value>Пропущено (пустые параметры запуска)</value>
+  </data>
+  <data name="PT_Starting" xml:space="preserve">
+    <value>Запуск конфигурации...</value>
+  </data>
+  <data name="PT_FailedToStart" xml:space="preserve">
+    <value>Не удалось запустить</value>
+  </data>
+  <data name="PT_RunningTests" xml:space="preserve">
+    <value>Выполнение тестов...</value>
+  </data>
+  <data name="PT_ColPing" xml:space="preserve">
+    <value>Пинг</value>
+  </data>
+  <data name="PT_ColDpi" xml:space="preserve">
+    <value>DPI</value>
+  </data>
+  <data name="PT_StatusOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PT_StatusFail" xml:space="preserve">
+    <value>ОШИБКА</value>
+  </data>
+  <data name="PT_StatusUnsupported" xml:space="preserve">
+    <value>НЕПОДД</value>
+  </data>
+  <data name="PT_StatusFreeze" xml:space="preserve">
+    <value>Заморозка</value>
+  </data>
+  <data name="PT_StatusRst" xml:space="preserve">
+    <value>RST</value>
+  </data>
+  <data name="PT_StatusTimeout" xml:space="preserve">
+    <value>Таймаут</value>
+  </data>
+  <data name="PT_Ms" xml:space="preserve">
+    <value>{0} мс</value>
+  </data>
+  <data name="PT_Analytics" xml:space="preserve">
+    <value>АНАЛИТИКА</value>
+  </data>
+  <data name="PT_AHttpOk" xml:space="preserve">
+    <value>HTTP OK:</value>
+  </data>
+  <data name="PT_AErr" xml:space="preserve">
+    <value>Ош:</value>
+  </data>
+  <data name="PT_AUnsupported" xml:space="preserve">
+    <value>Неподд:</value>
+  </data>
+  <data name="PT_ADpiOk" xml:space="preserve">
+    <value>DPI OK:</value>
+  </data>
+  <data name="PT_ADpiFail" xml:space="preserve">
+    <value>DPI сбой:</value>
+  </data>
+  <data name="PT_APingOk" xml:space="preserve">
+    <value>Пинг OK:</value>
+  </data>
+  <data name="PT_AFail" xml:space="preserve">
+    <value>Сбой:</value>
+  </data>
+  <data name="PT_BestConfig" xml:space="preserve">
+    <value>Лучший конфиг: {0}</value>
+  </data>
+  <data name="PT_NoWorking" xml:space="preserve">
+    <value>Рабочий конфиг не найден.</value>
+  </data>
+  <data name="PT_ResultsSaved" xml:space="preserve">
+    <value>Результаты сохранены в {0}</value>
+  </data>
+  <data name="PT_Cancelled" xml:space="preserve">
+    <value>Тест отменён пользователем.</value>
+  </data>
+  <data name="PT_NoCurl" xml:space="preserve">
+    <value>curl.exe не найден. Установите curl или добавьте его в PATH.</value>
+  </data>
+  <data name="PT_CurlFound" xml:space="preserve">
+    <value>curl.exe найден</value>
+  </data>
+  <data name="PT_StatusSsl" xml:space="preserve">
+    <value>SSL</value>
+  </data>
+  <data name="PT_StatusBlocked" xml:space="preserve">
+    <value>БЛОК</value>
+  </data>
+  <data name="PT_DpiSuiteFailed" xml:space="preserve">
+    <value>Не удалось загрузить список целей DPI-проверки (нет интернета?).</value>
+  </data>
+  <data name="PT_DpiTargetsLoaded" xml:space="preserve">
+    <value>Загружено целей DPI: {0}</value>
+  </data>
+  <data name="PT_DpiFreezeNote" xml:space="preserve">
+    <value>Обнаружен паттерн заморозки 16-20 КБ; цензор, вероятно, режет эту стратегию.</value>
+  </data>
+  <data name="PT_DpiNoFreeze" xml:space="preserve">
+    <value>Паттерн заморозки 16-20 КБ для этой цели не обнаружен.</value>
+  </data>
+  <data name="PT_DpiBlockedWarn" xml:space="preserve">
+    <value>Обнаружена возможная DPI-блокировка TCP 16-20 на одной или нескольких целях.</value>
+  </data>
+  <data name="PT_DpiOkAll" xml:space="preserve">
+    <value>Паттерн заморозки 16-20 КБ не обнаружен ни на одной цели.</value>
+  </data>
+  <data name="PT_ABlocked" xml:space="preserve">
+    <value>Блок:</value>
+  </data>
+  <data name="ReplaceSiteListException" xml:space="preserve">
+    <value>Невозможно заменить список сайтов "{0}" списком "{1}". 
+Код исключения: {2}</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>Неожиданное исключение</value>
+  </data>
+  <data name="CopyErrorText" xml:space="preserve">
+    <value>Скопировать информацию об ошибке</value>
+  </data>
+  <data name="EditHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Утилита изменения файла hosts</value>
+  </data>
+  <data name="EditHostsFileSettingsCard.Description" xml:space="preserve">
+    <value>Добавить заблокированные адреса. Восстановить оригинальный файл из резервной копии</value>
+  </data>
+  <data name="EditHostsFileWindowTitle" xml:space="preserve">
+    <value>Утилита изменения файла hosts</value>
+  </data>
+  <data name="EditHostsFileTitleTextBlock.Text" xml:space="preserve">
+    <value>Утилита изменения файла hosts</value>
+  </data>
+  <data name="EditHostsFileMainPageTitleTextBlock.Text" xml:space="preserve">
+    <value>Что следует сделать?</value>
+  </data>
+  <data name="ReplaceHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Добавить адреса в файл hosts</value>
+  </data>
+  <data name="RemoveHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Убрать адреса из файла hosts</value>
+  </data>
+  <data name="RecoverHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Восстановить оригинальный файл hosts из резервной копии</value>
+  </data>
+  <data name="ReplaceButton.Content" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="RemoveButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="RecoverButton.Content" xml:space="preserve">
+    <value>Восстановить </value>
+  </data>
+  <data name="HostsFileEditCurrentStatusTextBlock.Text" xml:space="preserve">
+    <value>Статус замены:</value>
+  </data>
+  <data name="HostsFileStatusEnabled" xml:space="preserve">
+    <value>Файл hosts был изменен</value>
+  </data>
+  <data name="HostsFileStatusDisabled" xml:space="preserve">
+    <value>Файл hosts не изменен</value>
+  </data>
+  <data name="HostsFileAreAllreadyEdited" xml:space="preserve">
+    <value>Невозможно добавить адреса в файл hosts – адреса уже добавлены.</value>
+  </data>
+  <data name="HostsFileNotEdited" xml:space="preserve">
+    <value>Невозможно удалить адреса из файла hosts — вы их ещё не добавили.</value>
+  </data>
+  <data name="NoBackupAvailable" xml:space="preserve">
+    <value>Невозможно восстановить файл hosts – резервная копия отсутствует.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingAddDomainsToHostsFile" xml:space="preserve">
+    <value>Мы не можем редактировать файл hosts в вашей системе из-за непредвиденной ошибки. Отключите антивирус, перезагрузите компьютер и попробуйте снова.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingRemoveDomainsToHostsFile" xml:space="preserve">
+    <value>Что-то пошло не так, когда мы пытались удалить добавленные ранее адреса в файл hosts. Отключите антивирус, перезагрузите компьютер и попробуйте снова.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingRecoverHostsFile" xml:space="preserve">
+    <value>Что-то пошло не так, когда мы пытались восстановить файл hosts. Убедитесь, что резервная копия существует.</value>
+  </data>
+  <data name="OpenHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Открыть файл hosts в редакторе по умолчанию</value>
+  </data>
+  <data name="TestBestConfigSettingsCard.Header" xml:space="preserve">
+    <value>Подобрать лучший пресет автоматически</value>
+  </data>
+  <data name="TestBestConfigSettingsCard.Description" xml:space="preserve">
+    <value>Протестировать все установленные пресеты и предложить лучший</value>
+  </data>
+  <data name="CreateNewViaGoodCheckSettingsCard.Header" xml:space="preserve">
+    <value>Создать новый пресет с лучшими параметрами через GoodCheck</value>
+  </data>
+  <data name="CreateNewViaGoodCheckSettingsCard.Description" xml:space="preserve">
+    <value>Создайте свой собственный пресет с параметрами, подобранными под вашего провайдера</value>
+  </data>
+  <data name="CreateYouOwnConfigSettingsCard.Description" xml:space="preserve">
+    <value>Создайте пресет своими руками в удобном современном редакторе</value>
+  </data>
+  <data name="NoOneComponentInstalledTextBlock.Text" xml:space="preserve">
+    <value>Вы ещё не установили ни одного компонента (без хотя бы одного установленного компонента выполнить это действие не удастся).
+Вы можете посетить Магазин, чтобы загрузить новые компоненты и пресеты к ним.</value>
+  </data>
+  <data name="AboutUtilityButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Сведения об этом средстве</value>
+  </data>
+  <data name="ConfigTextUtilityAboutTextBlock.Text" xml:space="preserve">
+    <value>Утилита автоматического тестирования пресетов обхода DPI для поддерживаемых компонентов. Реализация ориентирована на логику аналогичной утилиты из набора zapret-discord-youtube.
+
+Оригинальный разработчик: Niko</value>
+  </data>
+  <data name="PresetTestResultsHeader.Text" xml:space="preserve">
+    <value>Результаты</value>
+  </data>
+  <data name="PresetTestResultsPlaceholder.Text" xml:space="preserve">
+    <value>Запустите тест — здесь появится рейтинг пресетов.</value>
+  </data>
+  <data name="PresetTestRecommendedBadge" xml:space="preserve">
+    <value>Рекомендуется</value>
+  </data>
+  <data name="PresetTestApplyButton" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="PresetTestRunButton" xml:space="preserve">
+    <value>Запустить</value>
+  </data>
+  <data name="PT_ProgressStatus" xml:space="preserve">
+    <value>Тест пресета {0}/{1}: {2}</value>
+  </data>
+  <data name="PT_ProgressEta" xml:space="preserve">
+    <value>Осталось примерно: {0} мин {1} сек</value>
+  </data>
+  <data name="PT_MetricsStandard" xml:space="preserve">
+    <value>HTTP OK: {0} | Ping OK: {1} | Ошибки: {2}</value>
+  </data>
+  <data name="PT_MetricsDpi" xml:space="preserve">
+    <value>DPI OK: {0} | Блок: {1} | Сбой: {2}</value>
+  </data>
+  <data name="PT_PresetApplied" xml:space="preserve">
+    <value>Пресет применён: {0}</value>
   </data>
 </root>

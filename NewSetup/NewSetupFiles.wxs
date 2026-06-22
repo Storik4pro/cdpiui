@@ -27,6 +27,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Edit.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\EditHostsFile.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -96,10 +99,10 @@
         <File Source="$(var.SourceDir)\Assets\Store\spoofdpi.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
-        <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
+        <File Source="$(var.SourceDir)\Assets\Store\tg_ws_proxy.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
-        <File Source="$(var.SourceDir)\Assets\Store\tg_ws_proxy.ico" KeyPath="yes" />
+        <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\StoreLogo.png" KeyPath="yes" />
@@ -206,11 +209,20 @@
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\e_sqlite3.dll" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\EditHostFile.exe" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
         <File Source="$(var.SourceDir)\en-us\Microsoft.ui.xaml.dll.mui" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
         <File Source="$(var.SourceDir)\en-us\Microsoft.UI.Xaml.Phone.dll.mui" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Autoselection">
+        <File Source="$(var.SourceDir)\Help\EN\Autoselection\1WhatAutoSelectionIs.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Autoselection">
+        <File Source="$(var.SourceDir)\Help\EN\Autoselection\BestConfigSelection.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
         <File Source="$(var.SourceDir)\Help\EN\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
@@ -239,8 +251,20 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\TroubleshootingComponentExceptions">
         <File Source="$(var.SourceDir)\Help\EN\TroubleshootingComponentExceptions\BasicTroubleshooting.md" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Utils">
+        <File Source="$(var.SourceDir)\Help\EN\Utils\EditHostsFileUtility.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN">
         <File Source="$(var.SourceDir)\Help\EN\WelcomeToHelp.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
+        <File Source="$(var.SourceDir)\Help\RU\Autoselection\1WhatAutoSelectionIs.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
+        <File Source="$(var.SourceDir)\Help\RU\Autoselection\BestConfigSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\CreateConfigHelper">
+        <File Source="$(var.SourceDir)\Help\RU\CreateConfigHelper\SaveConfigKitAs.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\GettingStarted">
         <File Source="$(var.SourceDir)\Help\RU\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
@@ -268,6 +292,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\TroubleshootingComponentExceptions">
         <File Source="$(var.SourceDir)\Help\RU\TroubleshootingComponentExceptions\BasicTroubleshooting.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Utils">
+        <File Source="$(var.SourceDir)\Help\RU\Utils\EditHostsFileUtility.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU">
         <File Source="$(var.SourceDir)\Help\RU\WelcomeToHelp.md" KeyPath="yes" />

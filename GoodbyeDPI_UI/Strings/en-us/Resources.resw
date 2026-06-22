@@ -231,16 +231,16 @@ Please, install lates version of "{0}" in Store</value>
     <value>Create your own config</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Description" xml:space="preserve">
-    <value>Automatic selection settings for Zapret, ByeDPI, GoodbyeDPI. Graphic config builder.</value>
+    <value>Select best config from installed. Easy graphic config builder</value>
   </data>
   <data name="CreateConfigUtilSettingsCard.Header" xml:space="preserve">
-    <value>Easy&amp;Quick config create utility</value>
+    <value>Autoselection utilities </value>
   </data>
   <data name="CreateConfigUtilWindowTitle" xml:space="preserve">
-    <value>Easy&amp;Quick config create utility</value>
+    <value>Autoselection utilities </value>
   </data>
   <data name="CreateConfigUtilWindowTitleTextBlock.Text" xml:space="preserve">
-    <value>Easy&amp;Quick config create utility</value>
+    <value>Autoselection utilities </value>
   </data>
   <data name="CreateNewConfigViaGoodCheckTextBlock.Text" xml:space="preserve">
     <value>Create new config via GoodCheck</value>
@@ -855,7 +855,7 @@ Please, install lates version of "{0}" in Store</value>
   <data name="DeveloperTextBlock.Text" xml:space="preserve">
     <value>Developer</value>
   </data>
-  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+  <data name="tem" xml:space="preserve">
     <value>About this app</value>
   </data>
   <data name="AcknowledgmentsTextBlock.Text" xml:space="preserve">
@@ -2165,5 +2165,385 @@ Here is error code in case you need it.
   </data>
   <data name="QCopTextBlock.Text" xml:space="preserve">
     <value>©️ Ква_Блин</value>
+  </data>
+  <data name="ChangeSiteList" xml:space="preserve">
+    <value>Replace site list</value>
+  </data>
+  <data name="ChangeListContentDialogTitle" xml:space="preserve">
+    <value>Replace {0}</value>
+  </data>
+  <data name="XChangeListContentDialog.SecondaryButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="XChangeListContentDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ChangeListTipTextBlock.Text" xml:space="preserve">
+    <value>Replace this list with another list you want. 
+This change appears only for yourself. If you want share this kit with others, make changes in config manually.</value>
+  </data>
+  <data name="FromTheStoreTextBlock.Text" xml:space="preserve">
+    <value>From the Store</value>
+  </data>
+  <data name="ManuallyTextBlock.Text" xml:space="preserve">
+    <value>Manually</value>
+  </data>
+  <data name="SelectFileTipTextBlock.Text" xml:space="preserve">
+    <value>Select file on this PC</value>
+  </data>
+  <data name="FindNewItemsInStoreTextBlock.Text" xml:space="preserve">
+    <value>Find new items in Store</value>
+  </data>
+  <data name="NoContentToDisplay" xml:space="preserve">
+    <value>There is no content to display for.</value>
+  </data>
+  <data name="NoSuitableStoreItemsFound.Text" xml:space="preserve">
+    <value>No suitable items found in you Store library. Try to install new items or select manual method.</value>
+  </data>
+  <data name="YouDontAddAnyFilesYet.Text" xml:space="preserve">
+    <value>You don't add any files yet. Add new file by clicking to button.</value>
+  </data>
+  <data name="RevertChangeSiteList" xml:space="preserve">
+    <value>Restore original file</value>
+  </data>
+  <data name="ChooseIpList" xml:space="preserve">
+    <value>Select IP-list</value>
+  </data>
+  <data name="TextFiles" xml:space="preserve">
+    <value>TXT files</value>
+  </data>
+  <data name="PresetTestConfirmButton" xml:space="preserve">
+    <value>Start test</value>
+  </data>
+  <data name="PresetTestConfirmMessage" xml:space="preserve">
+    <value>Preset testing will sequentially start each preset of the current component and check site availability. This will repeatedly interrupt the current connection and may take several minutes. Continue?</value>
+  </data>
+  <data name="PresetTestWindowTitle" xml:space="preserve">
+    <value>Preset testing</value>
+  </data>
+  <data name="PresetTestWindowTitleTextBlock.Text" xml:space="preserve">
+    <value>Preset testing</value>
+  </data>
+  <data name="PresetTestSettingsCard.Header" xml:space="preserve">
+    <value>Preset testing</value>
+  </data>
+  <data name="PresetTestSettingsCard.Description" xml:space="preserve">
+    <value>Sequentially launch component presets and check site availability. Find the best-performing preset.</value>
+  </data>
+  <data name="PresetTestComponentLabel.Text" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="PresetTestTypeLabel.Text" xml:space="preserve">
+    <value>Test type</value>
+  </data>
+  <data name="PresetTestStandardRadio.Content" xml:space="preserve">
+    <value>Standard tests (HTTP/ping)</value>
+  </data>
+  <data name="PresetTestDpiRadio.Content" xml:space="preserve">
+    <value>DPI checkers (TCP 16-20 freeze)</value>
+  </data>
+  <data name="PresetTestConfigSelectionLabel.Text" xml:space="preserve">
+    <value>Presets to test</value>
+  </data>
+  <data name="PresetTestAllConfigsRadio.Content" xml:space="preserve">
+    <value>All configs</value>
+  </data>
+  <data name="PresetTestSelectedConfigsRadio.Content" xml:space="preserve">
+    <value>Selected configs</value>
+  </data>
+  <data name="PresetTestStartButton.Text" xml:space="preserve">
+    <value>Start test</value>
+  </data>
+  <data name="PresetTestStopButton.Text" xml:space="preserve">
+    <value>Stop test</value>
+  </data>
+  <data name="PresetTestTargetsButton.Text" xml:space="preserve">
+    <value>Test sites list</value>
+  </data>
+  <data name="PT_AdminConfirmed" xml:space="preserve">
+    <value>Administrator rights confirmed</value>
+  </data>
+  <data name="PT_Info" xml:space="preserve">
+    <value>INFO</value>
+  </data>
+  <data name="PT_Warn" xml:space="preserve">
+    <value>WARNING</value>
+  </data>
+  <data name="PT_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PT_TargetsLoaded" xml:space="preserve">
+    <value>Loaded targets: {0}</value>
+  </data>
+  <data name="PT_Header" xml:space="preserve">
+    <value>PRESET TESTS</value>
+  </data>
+  <data name="PT_ModeLabel" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="PT_ModeStandard" xml:space="preserve">
+    <value>STANDARD</value>
+  </data>
+  <data name="PT_ModeDpi" xml:space="preserve">
+    <value>DPI CHECK</value>
+  </data>
+  <data name="PT_TotalConfigs" xml:space="preserve">
+    <value>Total configs: {0}</value>
+  </data>
+  <data name="PT_MayTakeTime" xml:space="preserve">
+    <value>Tests may take several minutes. Please wait...</value>
+  </data>
+  <data name="PT_NoPresets" xml:space="preserve">
+    <value>No presets available for testing.</value>
+  </data>
+  <data name="PT_NoTargets" xml:space="preserve">
+    <value>Target sites list is empty.</value>
+  </data>
+  <data name="PT_NoSelection" xml:space="preserve">
+    <value>Select at least one preset to test.</value>
+  </data>
+  <data name="PT_ComponentNotFound" xml:space="preserve">
+    <value>Failed to get a process for the selected component.</value>
+  </data>
+  <data name="PT_Preset" xml:space="preserve">
+    <value>[{0}/{1}] {2}</value>
+  </data>
+  <data name="PT_Skipped" xml:space="preserve">
+    <value>Skipped (empty startup parameters)</value>
+  </data>
+  <data name="PT_Starting" xml:space="preserve">
+    <value>Launching configuration...</value>
+  </data>
+  <data name="PT_FailedToStart" xml:space="preserve">
+    <value>Failed to start</value>
+  </data>
+  <data name="PT_RunningTests" xml:space="preserve">
+    <value>Running tests...</value>
+  </data>
+  <data name="PT_ColPing" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="PT_ColDpi" xml:space="preserve">
+    <value>DPI</value>
+  </data>
+  <data name="PT_StatusOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PT_StatusFail" xml:space="preserve">
+    <value>FAIL</value>
+  </data>
+  <data name="PT_StatusUnsupported" xml:space="preserve">
+    <value>N/S</value>
+  </data>
+  <data name="PT_StatusFreeze" xml:space="preserve">
+    <value>Freeze</value>
+  </data>
+  <data name="PT_StatusRst" xml:space="preserve">
+    <value>RST</value>
+  </data>
+  <data name="PT_StatusTimeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
+  <data name="PT_Ms" xml:space="preserve">
+    <value>{0} ms</value>
+  </data>
+  <data name="PT_Analytics" xml:space="preserve">
+    <value>ANALYTICS</value>
+  </data>
+  <data name="PT_AHttpOk" xml:space="preserve">
+    <value>HTTP OK:</value>
+  </data>
+  <data name="PT_AErr" xml:space="preserve">
+    <value>Err:</value>
+  </data>
+  <data name="PT_AUnsupported" xml:space="preserve">
+    <value>N/S:</value>
+  </data>
+  <data name="PT_ADpiOk" xml:space="preserve">
+    <value>DPI OK:</value>
+  </data>
+  <data name="PT_ADpiFail" xml:space="preserve">
+    <value>DPI Fail:</value>
+  </data>
+  <data name="PT_APingOk" xml:space="preserve">
+    <value>Ping OK:</value>
+  </data>
+  <data name="PT_AFail" xml:space="preserve">
+    <value>Fail:</value>
+  </data>
+  <data name="PT_BestConfig" xml:space="preserve">
+    <value>Best config: {0}</value>
+  </data>
+  <data name="PT_NoWorking" xml:space="preserve">
+    <value>No working config found.</value>
+  </data>
+  <data name="PT_ResultsSaved" xml:space="preserve">
+    <value>Results saved to {0}</value>
+  </data>
+  <data name="PT_Cancelled" xml:space="preserve">
+    <value>Test cancelled by user.</value>
+  </data>
+  <data name="PT_NoCurl" xml:space="preserve">
+    <value>curl.exe not found. Install curl or add it to PATH.</value>
+  </data>
+  <data name="PT_CurlFound" xml:space="preserve">
+    <value>curl.exe found</value>
+  </data>
+  <data name="PT_StatusSsl" xml:space="preserve">
+    <value>SSL</value>
+  </data>
+  <data name="PT_StatusBlocked" xml:space="preserve">
+    <value>BLOCKED</value>
+  </data>
+  <data name="PT_DpiSuiteFailed" xml:space="preserve">
+    <value>Failed to load DPI checker target list (no internet connection?).</value>
+  </data>
+  <data name="PT_DpiTargetsLoaded" xml:space="preserve">
+    <value>DPI targets loaded: {0}</value>
+  </data>
+  <data name="PT_DpiFreezeNote" xml:space="preserve">
+    <value>16-20KB freeze pattern detected; the censor is likely cutting this strategy.</value>
+  </data>
+  <data name="PT_DpiNoFreeze" xml:space="preserve">
+    <value>No 16-20KB freeze pattern for this target.</value>
+  </data>
+  <data name="PT_DpiBlockedWarn" xml:space="preserve">
+    <value>Detected possible DPI TCP 16-20 blocking on one or more targets.</value>
+  </data>
+  <data name="PT_DpiOkAll" xml:space="preserve">
+    <value>No 16-20KB freeze pattern detected across targets.</value>
+  </data>
+  <data name="PT_ABlocked" xml:space="preserve">
+    <value>Blocked:</value>
+  </data>
+  <data name="ReplaceSiteListException" xml:space="preserve">
+    <value>Unable to replace site list "{0}" with "{1}". 
+Error code: {2}</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>Unexpected exception</value>
+  </data>
+  <data name="CopyErrorText" xml:space="preserve">
+    <value>Copy exception info</value>
+  </data>
+  <data name="EditHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Hosts file utility</value>
+  </data>
+  <data name="EditHostsFileSettingsCard.Description" xml:space="preserve">
+    <value>Add blocked domains to system hosts file. Recover hosts file </value>
+  </data>
+  <data name="EditHostsFileWindowTitle" xml:space="preserve">
+    <value>Hosts file utility</value>
+  </data>
+  <data name="EditHostsFileTitleTextBlock.Text" xml:space="preserve">
+    <value>Hosts file utility</value>
+  </data>
+  <data name="EditHostsFileMainPageTitleTextBlock.Text" xml:space="preserve">
+    <value>What should be done?</value>
+  </data>
+  <data name="ReplaceHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Add domains to hosts file</value>
+  </data>
+  <data name="RemoveHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Remove custom domains from hosts file</value>
+  </data>
+  <data name="RecoverHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Recover original hosts file from backup</value>
+  </data>
+  <data name="ReplaceButton.Content" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="RemoveButton.Content" xml:space="preserve">
+    <value>Remove </value>
+  </data>
+  <data name="RecoverButton.Content" xml:space="preserve">
+    <value>Recover</value>
+  </data>
+  <data name="HostsFileEditCurrentStatusTextBlock.Text" xml:space="preserve">
+    <value>Current status:</value>
+  </data>
+  <data name="HostsFileStatusEnabled" xml:space="preserve">
+    <value>Hosts file edited</value>
+  </data>
+  <data name="HostsFileStatusDisabled" xml:space="preserve">
+    <value>Hosts file not edited </value>
+  </data>
+  <data name="HostsFileAreAllreadyEdited" xml:space="preserve">
+    <value>Cannot add domains to hosts file – domains are already added.</value>
+  </data>
+  <data name="HostsFileNotEdited" xml:space="preserve">
+    <value>Cannot remove domains from hosts file – you haven't added them yet.</value>
+  </data>
+  <data name="NoBackupAvailable" xml:space="preserve">
+    <value>Cannot recover hosts file – backup is not exist.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingAddDomainsToHostsFile" xml:space="preserve">
+    <value>Something went wrong when we try to add application domains to hosts file. Turn off antivirus, restart your PC and try again.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingRemoveDomainsToHostsFile" xml:space="preserve">
+    <value>Something went wrong when we try to remove application domains from hosts file. Turn off antivirus, restart your PC and try again.</value>
+  </data>
+  <data name="ErrorHappensWhenTryingRecoverHostsFile" xml:space="preserve">
+    <value>Something went wrong when we try to recover hosts file. Make sure backup exist. </value>
+  </data>
+  <data name="OpenHostsFileSettingsCard.Header" xml:space="preserve">
+    <value>Open hosts file in default text editor</value>
+  </data>
+  <data name="TestBestConfigSettingsCard.Header" xml:space="preserve">
+    <value>Select best config automatically</value>
+  </data>
+  <data name="TestBestConfigSettingsCard.Description" xml:space="preserve">
+    <value>Test all installed configs and offer the best</value>
+  </data>
+  <data name="CreateNewViaGoodCheckSettingsCard.Header" xml:space="preserve">
+    <value>Create new config with best settings via GoodCheck</value>
+  </data>
+  <data name="CreateNewViaGoodCheckSettingsCard.Description" xml:space="preserve">
+    <value>Create new custom config for your provider</value>
+  </data>
+  <data name="CreateYouOwnConfigSettingsCard.Description" xml:space="preserve">
+    <value>Create config you want by you own hands in user-friendly editor</value>
+  </data>
+  <data name="NoOneComponentInstalledTextBlock.Text" xml:space="preserve">
+    <value>You not installed any component yet (we can't complete this action without at least one installed component).
+You can visit the Store to download new components and config for them.</value>
+  </data>
+  <data name="AboutUtilityButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>About utility</value>
+  </data>
+  <data name="ConfigTextUtilityAboutTextBlock.Text" xml:space="preserve">
+    <value>A utility for automatically testing DPI bypass presets for supported components. Its implementation is based on the logic of a similar utility from the zapret-discord-youtube kit.
+
+Original developer: Niko</value>
+  </data>
+  <data name="PresetTestResultsHeader.Text" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="PresetTestResultsPlaceholder.Text" xml:space="preserve">
+    <value>Run a test to see ranked presets here.</value>
+  </data>
+  <data name="PresetTestRecommendedBadge" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="PresetTestApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="PresetTestRunButton" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="PT_ProgressStatus" xml:space="preserve">
+    <value>Testing preset {0}/{1}: {2}</value>
+  </data>
+  <data name="PT_ProgressEta" xml:space="preserve">
+    <value>Estimated time left: {0} min {1} sec</value>
+  </data>
+  <data name="PT_MetricsStandard" xml:space="preserve">
+    <value>HTTP OK: {0} | Ping OK: {1} | Errors: {2}</value>
+  </data>
+  <data name="PT_MetricsDpi" xml:space="preserve">
+    <value>DPI OK: {0} | Blocked: {1} | Fail: {2}</value>
+  </data>
+  <data name="PT_PresetApplied" xml:space="preserve">
+    <value>Preset applied: {0}</value>
   </data>
 </root>

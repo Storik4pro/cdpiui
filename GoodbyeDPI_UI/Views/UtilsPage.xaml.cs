@@ -27,8 +27,6 @@ namespace CDPI_UI.Views
         public UtilsPage()
         {
             this.InitializeComponent();
-
-            CreateConfigUtilSettingsCard.IsEnabled = DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodCheck"));
         }
 
         private void PseudoconsoleSettingsCard_Click(object sender, RoutedEventArgs e)
@@ -64,6 +62,16 @@ namespace CDPI_UI.Views
         private void TroubleshootinSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<TroubleshootingWindow>();
+        }
+
+        private void PresetTestSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ConfigTestWindow>();
+        }
+
+        private void EditHostsFileSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<EditHostFileWindow>();
         }
     }
 }

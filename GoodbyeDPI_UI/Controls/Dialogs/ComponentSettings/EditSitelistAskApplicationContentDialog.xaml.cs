@@ -39,6 +39,8 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
 {
     private ILocalizer localizer = Localizer.Get();
     public string FilePath { get; set; } = string.Empty;
+    public bool UseUAC { get; set; } = false;
+    public bool UseNotepadAsDefault { get; set; } = false;
     public bool IsSuccess { get; private set; } = false;
     public EditSitelistAskApplicationContentDialog()
     {
@@ -85,7 +87,7 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
             SettingsManager.Instance.SetValue("FILEOPENACTIONS", "applicationPath", appPath);
             SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.UserChoose);
             if (!string.IsNullOrEmpty(FilePath))
-                Utils.RunApp(appPath, $"\"{FilePath}\"");
+                Utils.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
             IsSuccess = true;
             this.Hide();
         }
@@ -99,7 +101,8 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
     {
         SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.FollowSystem);
         if (!string.IsNullOrEmpty(FilePath))
-            Utils.OpenFileInDefaultApp(FilePath);
+            if (UseNotepadAsDefault) Utils.RunApp("notepad.exe", $"\"{FilePath}\"", UseUAC);
+            else Utils.OpenFileInDefaultApp(FilePath, UseUAC);
         IsSuccess = true;
         this.Hide();
     }
@@ -109,7 +112,7 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
         SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.UserChoose);
         string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
         if (!string.IsNullOrEmpty(FilePath))
-            Utils.RunApp(appPath, $"\"{FilePath}\"");
+            Utils.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
         IsSuccess = true;
         this.Hide();
     }

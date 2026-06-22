@@ -182,4 +182,19 @@
   <data name="SaveConfigKitAs" xml:space="preserve">
     <value>Сохранение нового набора пресетов</value>
   </data>
+  <data name="Utils" xml:space="preserve">
+    <value>Утилиты</value>
+  </data>
+  <data name="EditHostsFileUtility" xml:space="preserve">
+    <value>Утилита изменения файла hosts</value>
+  </data>
+  <data name="Autoselection" xml:space="preserve">
+    <value>Средства автоподбора</value>
+  </data>
+  <data name="1WhatAutoSelectionIs" xml:space="preserve">
+    <value>Что такое автоподбор?</value>
+  </data>
+  <data name="BestConfigSelection" xml:space="preserve">
+    <value>Подбор лучшего пресета</value>
+  </data>
 </root>

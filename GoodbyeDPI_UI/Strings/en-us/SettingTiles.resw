@@ -159,7 +159,7 @@ Preset customization includes automatically selecting component launch settings 
     <value>Edit that config</value>
   </data>
   <data name="SelectAutomatically" xml:space="preserve">
-    <value>Select config automatically</value>
+    <value>Select config automatic mode</value>
   </data>
   <data name="Features" xml:space="preserve">
     <value>Features</value>

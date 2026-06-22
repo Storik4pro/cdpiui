@@ -26,18 +26,29 @@ namespace CDPI_UI.DesktopWap.Helper
         
         public static Windows.UI.Color ApplySystemThemeToCaptionButtons(Window window)
         {
-            var frame = (Application.Current as CDPI_UI.App).GetRootFrame() as FrameworkElement;
-            Windows.UI.Color color;
-            if (frame.ActualTheme == ElementTheme.Dark)
+            try
             {
-                color = Colors.White;
+                var frame = (Application.Current as CDPI_UI.App).GetRootFrame() as FrameworkElement;
+                Windows.UI.Color color;
+
+                if (frame.ActualTheme == ElementTheme.Dark)
+                {
+                    color = Colors.White;
+                }
+                else
+                {
+                    color = Colors.Black;
+                }
+                SetCaptionButtonColors(window, color);
+
+                return color;
             }
-            else
+            catch (Exception ex)
             {
-                color = Colors.Black;
+                return Windows.UI.Color.FromArgb(255, 0, 0, 0);
             }
-            SetCaptionButtonColors(window, color);
-            return color;
+            
+            
         }
         
         public static void SetCaptionButtonColors(Window window, Windows.UI.Color color)

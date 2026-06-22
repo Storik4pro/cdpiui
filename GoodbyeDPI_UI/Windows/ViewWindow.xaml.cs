@@ -29,7 +29,6 @@ using Windows.Storage.Provider;
 using Windows.Storage;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
-using CDPI_UI.DataModel;
 using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using CDPI_UI.Controls.Dialogs;
@@ -39,6 +38,7 @@ using CDPI_UI.Helper.Static;
 using WindowId = Microsoft.UI.WindowId;
 using Microsoft.UI.Windowing;
 using CDPI_UI.Default;
+using CDPI_UI.Controls.Dialogs.Universal;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
