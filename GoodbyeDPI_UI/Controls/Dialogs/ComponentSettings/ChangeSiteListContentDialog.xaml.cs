@@ -95,13 +95,16 @@ namespace CDPI_UI.Controls.Dialogs.ComponentSettings
             {
                 foreach (var file in Directory.EnumerateFiles(item.Directory))
                 {
-                    SiteListModels.Add(new()
+                    if (!file.EndsWith(".md") && !file.EndsWith(".json") && !file.EndsWith(".cat"))
                     {
-                        Title = Path.GetFileName(file),
-                        Developer = $"{item.ShortName} – {item.Developer}",
-                        FileName = file,
-                        Size = Utils.FormatSize(Utils.GetFileSize(file))
-                    });
+                        SiteListModels.Add(new()
+                        {
+                            Title = Path.GetFileName(file),
+                            Developer = $"{item.ShortName} – {item.Developer}",
+                            FileName = file,
+                            Size = Utils.FormatSize(Utils.GetFileSize(file))
+                        });
+                    }
                 }
             }
 
