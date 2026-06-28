@@ -93,7 +93,10 @@ namespace CDPI_UI.Helper
         public bool isCheckedComponentsUpdateComplete = false;
         public string lastComponentsUpdateError = "";
 
+        
+
         public string Version;
+        public static bool IsPreview = true;
 
         private StateHelper()
         {
