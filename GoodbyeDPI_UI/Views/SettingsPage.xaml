@@ -118,6 +118,20 @@
                         </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
+                <controls:SettingsCard l:Uids.Uid="PreferSystemWindowTitleBarSettingsCard" >
+                    <controls:SettingsCard.Description>
+                        <Grid x:Name="InfoStackPanel" Grid.Row="1" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE946;" FontSize="14"/>
+                            <TextBlock Grid.Column="2" l:Uids.Uid="AppRestartNeededTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                        </Grid>
+                    </controls:SettingsCard.Description>
+                    <ToggleSwitch x:Name="PreferSystemWindowTitleBarToggleSwitch" Toggled="PreferSystemWindowTitleBarToggleSwitch_Toggled"/>
+                </controls:SettingsCard>
                 <controls:SettingsExpander l:Uids.Uid="NotificationSettingsExpander">
                     <controls:SettingsExpander.Items>
                         <controls:SettingsCard ContentAlignment="Left">

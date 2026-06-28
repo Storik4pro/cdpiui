@@ -89,6 +89,10 @@ namespace CDPI_UI.Views
 
             HideInTrayToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup");
 
+            PreferSystemWindowTitleBarToggleSwitch.IsOn = SettingsManager.Instance.GetValue<int>("APPEARANCE", "titleBarMode") == 0 ? true : false;
+
+            InfoStackPanel.Visibility = Visibility.Collapsed;
+
             UpdateTextFileOpenSettings();
         }
 
@@ -295,6 +299,12 @@ namespace CDPI_UI.Views
         {
             var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
             window.NavigateSubPage(typeof(Views.Store.SettingsPage), null, new DrillInNavigationTransitionInfo());
+        }
+
+        private void PreferSystemWindowTitleBarToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue<int>("APPEARANCE", "titleBarMode", PreferSystemWindowTitleBarToggleSwitch.IsOn ? 0 : 1);
+            InfoStackPanel.Visibility = Visibility.Visible;
         }
     }
 }
