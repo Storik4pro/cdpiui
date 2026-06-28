@@ -2548,4 +2548,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="PT_PresetApplied" xml:space="preserve">
     <value>Пресет применён: {0}</value>
   </data>
+  <data name="PreferSystemWindowTitleBarSettingsCard.Header" xml:space="preserve">
+    <value>Предпочитать системный заголовок для окон приложения</value>
+  </data>
 </root>

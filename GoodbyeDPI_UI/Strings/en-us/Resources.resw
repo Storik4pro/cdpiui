@@ -2546,4 +2546,7 @@ Original developer: Niko</value>
   <data name="PT_PresetApplied" xml:space="preserve">
     <value>Preset applied: {0}</value>
   </data>
+  <data name="PreferSystemWindowTitleBarSettingsCard.Header" xml:space="preserve">
+    <value>Prefer system title bar for windows</value>
+  </data>
 </root>
