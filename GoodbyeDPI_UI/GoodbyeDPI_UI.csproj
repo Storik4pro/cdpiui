@@ -84,6 +84,7 @@
     <None Remove="Controls\Universal\SearchUserControl.xaml" />
     <None Remove="Controls\Universal\SingleStringTextContentViewerUserControl.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
+    <None Remove="Controls\WindowControls\TitleBarUserControl.xaml" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
     <None Remove="SystemPage.xaml" />
@@ -131,6 +132,7 @@
     <None Remove="Windows\PrepareWindow.xaml" />
     <None Remove="Windows\ProxySetupUtilWindow.xaml" />
     <None Remove="Windows\TroubleshootingWindow.xaml" />
+    <None Remove="Windows\WelcomeWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -543,12 +545,18 @@
     <Page Update="Controls\Universal\NoContentToDisplayUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\WindowControls\TitleBarUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Hosts\hosts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Windows\WelcomeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\EditHostsFile\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
