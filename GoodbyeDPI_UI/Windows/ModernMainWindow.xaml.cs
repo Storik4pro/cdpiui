@@ -41,14 +41,10 @@ namespace CDPI_UI
         public ModernMainWindow()
         {
             InitializeComponent();
-            this.Title = "CDPI UI";
             IconUri = @"Assets/favicon.ico";
-            TitleIcon = ImageAera;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature(isMinimizable:true);
-
-            SetTitleBar(WindowMoveAera);
 
             NavView.SelectedItem = NavView.MenuItems[0];
             ContentFrame.Navigate(typeof(ModernMainPage));
@@ -223,6 +219,11 @@ namespace CDPI_UI
                 Debug.WriteLine(ex);
             }
 
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            TitleBarMode = TitleBarMode == TitleBarModes.System ? TitleBarModes.Custom : TitleBarModes.System;
         }
     }
 }

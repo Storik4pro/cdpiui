@@ -35,11 +35,12 @@ namespace CDPI_UI
 
             WindowMinSize = new System.Windows.Size(0, 0);
             IsAppShownInSwitchers = false;
+            IconUri = @"Assets/favicon.ico";
+            this.CustomTitleBarUserControl = TitleBarUserControl;
+
             this.OverlappedPresenter.SetBorderAndTitleBar(true, false);
 
             DisableResizeFeature();
-
-            SetTitleBar(WindowMoveAera);
 
             this.Closed += CriticalErrorHandlerWindow_Closed;
 

@@ -10,7 +10,8 @@
     mc:Ignorable="d"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:wc="using:CDPI_UI.Controls.WindowControls">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -25,78 +26,40 @@
                 <Setter Property="OpenPaneLength" Value="72" />
             </Style>
         </Grid.Resources>
-        <Grid x:Name="AppTitleBar"
-              Canvas.ZIndex="1"
-              Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
-              IsHitTestVisible="True"
-              VerticalAlignment="Top"
-              Margin="0, 0, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="8"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.ChildrenTransitions>
-                <RepositionThemeTransition/>
-            </Grid.ChildrenTransitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
+            ShowControlsContent="False">
+            <wc:TitleBarUserControl.ControlsContent>
+                <Button x:Name="BackButton" 
+                        Grid.Column="1"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="30"
+                        Height="30"
+                        Padding="6"
+                        Margin="8 0 0 0"
+                        PointerEntered="BackButton_PointerEntered" 
+                        PointerExited="BackButton_PointerExited"
+                        Click="BackButton_Click">
+                    <AnimatedIcon x:Name="SearchAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedBackVisualSource/>
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <SymbolIconSource Symbol="Back"/>
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
+                </Button>
+            </wc:TitleBarUserControl.ControlsContent>
 
-            <Button x:Name="BackButton" 
-                    Grid.Column="1"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    Width="30"
-                    Height="30"
-                    Padding="6"
-                    PointerEntered="BackButton_PointerEntered" 
-                    PointerExited="BackButton_PointerExited"
-                    Click="BackButton_Click"
-                    Visibility="Collapsed">
-                <AnimatedIcon x:Name="SearchAnimatedIcon">
-                    <AnimatedIcon.Source>
-                        <animatedvisuals:AnimatedBackVisualSource/>
-                    </AnimatedIcon.Source>
-                    <AnimatedIcon.FallbackIconSource>
-                        <SymbolIconSource Symbol="Back"/>
-                    </AnimatedIcon.FallbackIconSource>
-                </AnimatedIcon>
-            </Button>
-
-            <Grid x:Name="ImageAera" Grid.Column="2" Height="48">
-                <Image 
-                    Grid.Column="0"
-                    Source="/Assets/StoreLogo.png"
-                    Width="16" Height="16"
-                    Margin="8,16"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
-                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
-            </Grid>
-
-            <Grid x:Name="WindowMoveAera" Grid.Column="3" Margin="0, 0, 0, 0" Padding="10, 0, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock l:Uids.Uid="StoreWindowTitleTextBlock"
-                           x:Name="AppTitleTextBlock"
-                           TextWrapping="NoWrap"
-                           Style="{StaticResource CaptionTextBlockStyle}"
-                           VerticalAlignment="Center"
-                           Grid.Column="2" Margin="0, 0, 0, 0"/>
-                <TextBlock l:Uids.Uid="PreviewTextBlock"
-                           x:Name="AppTitleSubTextBlock" 
-                           Grid.Column="3"
-                           TextWrapping="NoWrap"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                           Style="{StaticResource CaptionTextBlockStyle}"
-                           VerticalAlignment="Center"
-                           Margin="8, 0, 0, 0"/>
-            </Grid>
-
-        </Grid>
+        </wc:TitleBarUserControl>
         <NavigationView x:Name="NavView" 
                         Canvas.ZIndex="0"
                         PaneDisplayMode="Left"
@@ -110,8 +73,7 @@
                         BackRequested="NavView_BackRequested"
                         DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
                         AlwaysShowHeader="False"
-                        Margin="0, 43, 0, 0"
-                        >
+                        Grid.Row="1">
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" MaxWidth="1000">

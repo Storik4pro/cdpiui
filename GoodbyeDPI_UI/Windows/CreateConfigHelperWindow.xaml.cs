@@ -59,14 +59,12 @@ namespace CDPI_UI
         {
             this.InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("CreateConfigHelperWindowTitle"));
+            WindowTitle = localizer.GetLocalizedString("CreateConfigHelperWindowTitle");
             IconUri = @"Assets/Icons/Edit.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
 
             WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
 
-            SetTitleBar(WindowMoveAera);
 
             Instanse = this;
 

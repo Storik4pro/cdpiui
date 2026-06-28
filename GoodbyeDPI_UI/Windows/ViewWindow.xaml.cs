@@ -61,15 +61,14 @@ namespace CDPI_UI
             this.NewIdSet += SetId;
             this.InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PseudoconsoleWindowTitle"));
+            WindowTitle = localizer.GetLocalizedString("PseudoconsoleWindowTitle");
             IconUri = @"Assets/Icons/Pseudoconsole.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = AppTitleBarContent;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
+
             this.Closed += ViewWindow_Closed;
 
             WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
 
-            SetTitleBar(AppTitleBar);
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
             {

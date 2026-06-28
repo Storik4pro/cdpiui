@@ -31,16 +31,14 @@ public sealed partial class EditHostFileWindow : TemplateWindow
     {
         InitializeComponent();
 
-        this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("EditHostsFileWindowTitle"));
+        WindowTitle = localizer.GetLocalizedString("EditHostsFileWindowTitle");
 
         DisableResizeFeature();
 
-        TitleIcon = TitleImageRectagle;
-        TitleBar = WindowMoveAera;
         IconUri = @"Assets/Icons/EditHostsFile.ico";
+        this.CustomTitleBarUserControl = TitleBarUserControl;
 
         ContentFrame.Navigate(typeof(Views.EditHostsFile.MainPage));
 
-        SetTitleBar(WindowMoveAera);
     }
 }

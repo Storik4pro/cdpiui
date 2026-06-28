@@ -58,10 +58,9 @@ namespace CDPI_UI.Messages
         {
             InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
+            WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
             IconUri = @"Assets/favicon.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature();
 
@@ -69,8 +68,6 @@ namespace CDPI_UI.Messages
 
             ToggleItemLoadingMode(true);
             SetLoadingState(true, localizer.GetLocalizedString("SatusGettingPackInfo"));
-
-            SetTitleBar(WindowMoveAera);
 
             this.Closed += StoreLocalItemInstallingDialog_Closed;
             this.Activated += StoreLocalItemInstallingDialog_Activated;

@@ -10,62 +10,22 @@
     Title="EditHostFileWindow"
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:wc="using:CDPI_UI.Controls.WindowControls">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
     </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
-        <Grid x:Name="AppTitleBar"
-          Canvas.ZIndex="1"
-          Height="48"
-          IsHitTestVisible="True"
-          VerticalAlignment="Top"
-          Margin="0, 0, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid x:Name="ImageAera"  Height="48" Grid.Column="1">
-                <Image 
-                Grid.Column="0"
-                Source="/Assets/Icons/EditHostsFile.ico"
-                Width="16" Height="16"
-                Margin="16,16"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"/>
-                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
-            </Grid>
-
-            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                l:Uids.Uid="EditHostsFileTitleTextBlock"
-                x:Name="AppTitleTextBlock"
-                TextWrapping="NoWrap"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                VerticalAlignment="Center"
-                Grid.Column="2" Margin="0, 0, 0, 0"/>
-                <TextBlock 
-                l:Uids.Uid="PreviewTextBlock"
-                x:Name="AppTitleSubTextBlock" 
-                Grid.Column="3"
-                TextWrapping="NoWrap"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                VerticalAlignment="Center"
-                Margin="8, 0, 0, 0"/>
-            </Grid>
-        </Grid>
-        <Frame x:Name="ContentFrame" Margin="0,48,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="48"/>
+        <Frame x:Name="ContentFrame" Grid.Row="1">
             <Frame.ContentTransitions>
                 <TransitionCollection>
                     <NavigationThemeTransition>

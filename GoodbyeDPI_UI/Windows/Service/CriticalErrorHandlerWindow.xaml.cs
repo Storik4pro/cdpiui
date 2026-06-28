@@ -47,13 +47,12 @@ namespace CDPI_UI
             InitializeComponent();
             ((App)Application.Current).ShowWindowModalAsync(this);
 
+            WindowTitle = "Critical exception handler";
             IconUri = @"Assets/Icons/Error.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature();
 
-            SetTitleBar(WindowMoveAera);
 
             this.Closed += CriticalErrorHandlerWindow_Closed;
 

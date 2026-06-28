@@ -57,14 +57,13 @@ namespace CDPI_UI
         {
             InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("PresetTestWindowTitle"));
+            WindowTitle = localizer.GetLocalizedString("PresetTestWindowTitle");
 
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
             IconUri = @"Assets/Icons/GoodCheck.ico";
+            this.CustomTitleBarUserControl = TitleBarUserControl;
+
             WindowMinSize = new System.Windows.Size(1100, 520);
 
-            SetTitleBar(WindowMoveAera);
 
             ComponentComboBox.ItemsSource = Models;
             ResultsListView.ItemsSource = _resultItems;

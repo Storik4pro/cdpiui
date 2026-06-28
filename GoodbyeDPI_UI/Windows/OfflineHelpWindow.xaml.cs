@@ -55,14 +55,23 @@ namespace CDPI_UI
         public OfflineHelpWindow()
         {
             InitializeComponent();
-            
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("OfflineHelpWindowTitle"));
-            IconUri = @"Assets/Icons/Help.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
-            SetTitleBar(WindowMoveAera);
 
-            MarkdownConfig = new MarkdownConfig();
+            WindowTitle = localizer.GetLocalizedString("OfflineHelpWindowTitle");
+            IconUri = @"Assets/Icons/Help.ico";
+            this.CustomTitleBarUserControl = TitleBarUserControl;
+
+            if (this.TitleBarMode == TitleBarModes.Custom)
+            {
+                MainGrid.Resources["NavigationViewContentMargin"] = new Thickness(0, 43, 0, 0);
+                MainGrid.Resources["NavigationViewMinimalContentMargin"] = new Thickness(0, 43, 0, 0);
+            }
+            else
+            {
+                MainGrid.Resources["NavigationViewContentMargin"] = new Thickness(0);
+                MainGrid.Resources["NavigationViewMinimalContentMargin"] = new Thickness(0);
+            }
+
+                MarkdownConfig = new MarkdownConfig();
 
             InitHelp();
         }

@@ -37,16 +37,14 @@ public sealed partial class TroubleshootingWindow : TemplateWindow
     {
         InitializeComponent();
 
-        this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("TroubleshootingWindowTitle"));
+        WindowTitle = localizer.GetLocalizedString("TroubleshootingWindowTitle");
 
         DisableResizeFeature();
 
-        TitleIcon = TitleImageRectagle;
-        TitleBar = WindowMoveAera;
         IconUri = @"Assets/Icons/Troubleshooting.ico";
+        this.CustomTitleBarUserControl = TitleBarUserControl;
 
         ContentFrame.Navigate(typeof(Views.Troubleshooting.MainPage));
-        SetTitleBar(WindowMoveAera);
     }
 
 }

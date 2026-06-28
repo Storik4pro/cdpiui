@@ -50,14 +50,11 @@ namespace CDPI_UI.Messages
         {
             InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
+            WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
             IconUri = @"Assets/favicon.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature();
-
-            SetTitleBar(WindowMoveAera);
 
             ToggleItemLoadingMode(true);
 

@@ -38,16 +38,15 @@ public sealed partial class StoreWindow : TemplateWindow
     public StoreWindow()
     {
         this.InitializeComponent();
-        this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("StoreWindowsTitle"));
-        TitleBar = WindowMoveAera;
-        TitleIcon = TitleImageRectagle;
+        WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
+        IconUri = "Assets/Icons/Store.png";
+        this.CustomTitleBarUserControl = TitleBarUserControl;
 
         Instance = this;
 
         NavView.SelectedItem = NavView.MenuItems[0];
         ContentFrame.Navigate(typeof(HomePage));
 
-        SetTitleBar(WindowMoveAera);
         NavView.SelectionChanged += NavView_SelectionChanged;
 
         StoreHelper.Instance.QueueUpdated += StoreHelper_QueueUpdated;
@@ -106,13 +105,7 @@ public sealed partial class StoreWindow : TemplateWindow
 
     private void NavigationViewControl_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
     {
-        AppTitleBar.Margin = new Thickness()
-        {
-            Left = AppTitleBar.Margin.Left,
-            Top = AppTitleBar.Margin.Top,
-            Right = AppTitleBar.Margin.Right,
-            Bottom = AppTitleBar.Margin.Bottom
-        };
+        // pass
     }
     private double NavViewCompactModeThresholdWidth { get { return NavView.CompactModeThresholdWidth; } }
 
@@ -199,7 +192,7 @@ public sealed partial class StoreWindow : TemplateWindow
 
                 if (item == null) return;
 
-                BackButton.Visibility = Visibility.Collapsed;
+                TitleBarUserControl.ShowControlsContent = false;
             }
             catch (Exception ex) { Debug.WriteLine($"==>{ex}"); }
         }
@@ -215,7 +208,7 @@ public sealed partial class StoreWindow : TemplateWindow
         try
         {
             ContentFrame.Navigate(page, parameter, effect);
-            BackButton.Visibility = Visibility.Visible;
+            TitleBarUserControl.ShowControlsContent = true;
         }
         catch (Exception ex)
         {

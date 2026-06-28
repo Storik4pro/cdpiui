@@ -14,64 +14,22 @@
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:wc="using:CDPI_UI.Controls.WindowControls">
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="AppBar" Height="36"/>
+            <RowDefinition x:Name="AppBar" Height="auto"/>
             <RowDefinition x:Name="FuncBar" Height="36"/>
             <RowDefinition x:Name="ViewHeader" Height="Auto"/>
             <RowDefinition x:Name="View" Height="*"/>
             <RowDefinition x:Name="StatusBar" Height="28"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="48"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid x:Name="ImageAera"  Height="48" >
-                 <Image 
-                    Grid.Column="0"
-                    Source="/Assets/Icons/Pseudoconsole.png"
-                    Width="16" Height="16"
-                    Margin="16,16"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
-                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
-            </Grid>
-            <Grid x:Name="AppTitleBar"
-                  Canvas.ZIndex="1"
-                  Grid.Row="0"
-                  Grid.Column="1"
-                  Height="48"
-                  IsHitTestVisible="True"
-                  VerticalAlignment="Top">
-                <Grid x:Name="AppTitleBarContent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="36"/>
 
-                    <TextBlock 
-                        Grid.Column="0"
-                        l:Uids.Uid="PseudoconsoleTextBlock"
-                        x:Name="AppTitleTextBlock"
-                        TextWrapping="NoWrap"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        VerticalAlignment="Center"
-                        Margin="0, 0, 0, 0" />
-                    <TextBlock l:Uids.Uid="PreviewTextBlock"
-                        x:Name="AppTitleSubTextBlock" 
-                        Grid.Column="1"
-                        TextWrapping="NoWrap"
-                        Style="{StaticResource AppBarTipTextBlockStyle}"
-                        VerticalAlignment="Center"
-                        Margin="8, 0, 0, 0"/>
-                </Grid>
-            </Grid>
-        </Grid>
-        
-        <Grid Grid.Row="1" Height="36">
+        <Grid Grid.Row="1" Height="36" Margin="0 -4 0 0">
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
                VerticalAlignment="Bottom">
             </Rectangle>
@@ -83,7 +41,7 @@
                     <ColumnDefinition x:Name="Quick" Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
-                    <MenuBarItem l:Uids.Uid="FileMenuItem" Height="28">
+                    <MenuBarItem l:Uids.Uid="FileMenuItem" Height="28" Margin="4 0">
                         <MenuFlyoutItem l:Uids.Uid="SaveMenuItem" x:Name="SaveButton" Click="SaveButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE74E;" />
@@ -103,7 +61,7 @@
                         </MenuFlyoutItem>
                     </MenuBarItem>
 
-                    <MenuBarItem l:Uids.Uid="ProcessMenuItem" Height="28">
+                    <MenuBarItem l:Uids.Uid="ProcessMenuItem" Height="28" Margin="4 0">
                         <MenuFlyoutItem x:Name="ProcessControl" Click="ProcessControl_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon x:Name="ProcessControlIcon" Glyph="&#xE71A;" />
@@ -123,7 +81,7 @@
                         </MenuFlyoutItem>
                     </MenuBarItem>
 
-                    <MenuBarItem l:Uids.Uid="ViewMenuItem" Height="28">
+                    <MenuBarItem l:Uids.Uid="ViewMenuItem" Height="28" Margin="4 0">
                         <MenuFlyoutItem l:Uids.Uid="FontMenuItem" Click="MenuFlyoutItem_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8D2;" />
@@ -149,7 +107,7 @@
 
                     </MenuBarItem>
 
-                    <MenuBarItem l:Uids.Uid="HelpMenuItem" Height="28">
+                    <MenuBarItem l:Uids.Uid="HelpMenuItem" Height="28" Margin="4 0">
                         <MenuFlyoutItem l:Uids.Uid="VisitGitHubPageMenuItem" x:Name="SupportButton" Click="SupportButton_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8A7;" />

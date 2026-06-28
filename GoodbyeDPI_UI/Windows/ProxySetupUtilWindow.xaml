@@ -10,79 +10,41 @@
     xmlns:winex="using:WinUIEx"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:wc="using:CDPI_UI.Controls.WindowControls">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
     </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
-        <Grid x:Name="AppTitleBar"
-              Canvas.ZIndex="1"
-              Height="48"
-              IsHitTestVisible="True"
-              VerticalAlignment="Top"
-              Margin="0, 0, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button x:Name="BackButton" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="48"
+            ShowControlsContent="False">
+            <wc:TitleBarUserControl.ControlsContent>
+                <Button x:Name="BackButton" 
                     Background="Transparent"
                     BorderBrush="Transparent"
                     Width="30"
                     Height="30"
-                    Padding="6"
-                    Visibility="Collapsed">
-                <AnimatedIcon x:Name="SearchAnimatedIcon">
-                    <AnimatedIcon.Source>
-                        <animatedvisuals:AnimatedBackVisualSource/>
-                    </AnimatedIcon.Source>
-                    <AnimatedIcon.FallbackIconSource>
-                        <SymbolIconSource Symbol="Back"/>
-                    </AnimatedIcon.FallbackIconSource>
-                </AnimatedIcon>
-            </Button>
-
-            <Grid x:Name="ImageAera"  Height="48" Grid.Column="1" >
-                <Image 
-                    Grid.Column="0"
-                    Source="/Assets/Icons/Proxy.ico"
-                    Width="16" Height="16"
-                    Margin="16,16"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
-                <Rectangle x:Name="TitleImageRectagle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
-            </Grid>
-
-            <Grid x:Name="WindowMoveAera" Grid.Column="2" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                    l:Uids.Uid="ProxyWindowTitleTextBlock"
-                    x:Name="AppTitleTextBlock"
-                    TextWrapping="NoWrap"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    VerticalAlignment="Center"
-                    Grid.Column="2" Margin="2, 0, 0, 0"/>
-                <TextBlock 
-                    l:Uids.Uid="PreviewTextBlock"
-                    x:Name="AppTitleSubTextBlock" 
-                    Grid.Column="3"
-                    TextWrapping="NoWrap"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    VerticalAlignment="Center"
-                    Margin="8, 0, 0, 0"/>
-            </Grid>
-        </Grid>
-        <Frame x:Name="ContentFrame" Margin="0,48,0,0">
+                    Padding="6">
+                    <AnimatedIcon x:Name="SearchAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedBackVisualSource/>
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <SymbolIconSource Symbol="Back"/>
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
+                </Button>
+            </wc:TitleBarUserControl.ControlsContent>
+        </wc:TitleBarUserControl>
+        <Frame x:Name="ContentFrame" Grid.Row="1">
             <Frame.ContentTransitions>
                 <TransitionCollection>
                     <NavigationThemeTransition  />

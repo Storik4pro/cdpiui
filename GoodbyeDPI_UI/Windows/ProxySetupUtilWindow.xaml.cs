@@ -34,16 +34,14 @@ namespace CDPI_UI
         {
             InitializeComponent();
 
-            this.Title = UIHelper.GetWindowName(localizer.GetLocalizedString("ProxyWindowTitle"));
+            WindowTitle = localizer.GetLocalizedString("ProxyWindowTitle");
             IconUri = @"Assets/Icons/Proxy.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
             DisableResizeFeature();
 
             NativeWindowHelper.ForceDisableMaximize(this);
 
             ContentFrame.Navigate(typeof(Views.SetupProxy.MainPage));
-            SetTitleBar(WindowMoveAera);
         }
     }
 }

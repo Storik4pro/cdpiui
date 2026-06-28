@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template:TemplateWindow
+    x:Name="MainWindow"
     x:Class="CDPI_UI.ModernMainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,67 +10,21 @@
     mc:Ignorable="d"
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:template="using:CDPI_UI.Default">
+    xmlns:template="using:CDPI_UI.Default"
+    xmlns:wc="using:CDPI_UI.Controls.WindowControls">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
     </template:TemplateWindow.SystemBackdrop>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="43"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="ImageAera"  Height="48">
-            <Image 
-                Grid.Column="0"
-                Source="/Assets/favicon.ico"
-                Width="16" Height="16"
-                Margin="16,16"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"/>
-            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Transparent"/>
-        </Grid>
-        <Grid x:Name="AppTitleBar"
-              Grid.Column="1"
-              Canvas.ZIndex="1"
-              Height="48"
-              IsHitTestVisible="True"
-              VerticalAlignment="Top"
-              Margin="0, 0, 0, 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid x:Name="WindowMoveAera" Grid.Column="1" Margin="0, 0, 0, 0" Padding="0, 0, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock 
-                    Text="CDPI UI"
-                    x:Name="AppTitleTextBlock"
-                    TextWrapping="NoWrap"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    VerticalAlignment="Center"
-                    Grid.Column="2" Margin="0, 0, 0, 0"/>
-                <TextBlock 
-                    l:Uids.Uid="PreviewTextBlock"
-                    x:Name="AppTitleSubTextBlock" 
-                    Grid.Column="3"
-                    TextWrapping="NoWrap"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                    Style="{StaticResource CaptionTextBlockStyle}"
-                    VerticalAlignment="Center"
-                    Margin="8, 0, 0, 0"/>
-            </Grid>
-        </Grid>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="43"/>
         <NavigationView x:Name="NavView"
                         IsSettingsVisible="False"
                         IsBackButtonVisible="Collapsed"
@@ -109,6 +64,6 @@
 
             <Frame x:Name="ContentFrame" Margin="0,0,0,0"/>
         </NavigationView>
-        
+        <Button x:Name="TestButton" Click="TestButton_Click" Grid.Row="1"/>
     </Grid>
 </template:TemplateWindow>

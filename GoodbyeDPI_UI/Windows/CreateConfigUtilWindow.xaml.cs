@@ -57,18 +57,14 @@ namespace CDPI_UI
         {
             InitializeComponent();
 
-            this.Title = localizer.GetLocalizedString("CreateConfigUtilWindowTitle");
+            WindowTitle = localizer.GetLocalizedString("CreateConfigUtilWindowTitle");
             IconUri = @"Assets/Icons/GoodCheck.ico";
-            TitleIcon = TitleImageRectagle;
-            TitleBar = WindowMoveAera;
+            this.CustomTitleBarUserControl = TitleBarUserControl;
             DisableResizeFeature();
 
             Instance = this;
 
-            ExtendsContentIntoTitleBar = true;
-
             ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), TargetStoreId);
-            SetTitleBar(WindowMoveAera);
 
             this.Closed += CreateConfigUtilWindow_Closed;
 
