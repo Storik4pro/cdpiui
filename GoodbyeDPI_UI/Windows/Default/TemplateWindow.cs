@@ -1,15 +1,21 @@
-﻿using CDPI_UI.Helper;
+﻿using CDPI_UI.Controls.WindowControls;
+using CDPI_UI.DesktopWap.Helper;
+using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +27,38 @@ using Size = System.Windows.Size;
 
 namespace CDPI_UI.Default
 {
+    public enum TitleBarModes
+    {
+        System = 0,
+        Custom = 1,
+    }
     public partial class TemplateWindow : WindowEx
     {
         public new AppWindow AppWindow = null;
         public OverlappedPresenter OverlappedPresenter = null;
 
         public Action NewIdSet;
+
+        private string WindowTitleProperty = "CDPI UI";
+        public string WindowTitle
+        {
+            get
+            {
+                return WindowTitleProperty;
+            }
+            set
+            {
+                WindowTitleProperty = value;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (WindowTitle != null)
+                    {
+                        Title = UIHelper.GetWindowName(WindowTitle);
+                        if (CustomTitleBarUserControl != null) CustomTitleBarUserControl.Title = WindowTitle;
+                    }
+                });
+            }
+        }
 
         private Size WindowSizeProperty = new(484, 300);
         public Size WindowMinSize
@@ -57,30 +89,17 @@ namespace CDPI_UI.Default
             }
         }
 
-        private FrameworkElement TitleBarProperty = null;
-        public FrameworkElement TitleBar
+        private TitleBarUserControl CustomTitleBarUserControlProperty = null;
+        public TitleBarUserControl CustomTitleBarUserControl
         {
             get
             {
-                return TitleBarProperty;
+                return CustomTitleBarUserControlProperty;
             }
             set
             {
-                TitleBarProperty = value;
-            }
-        }
-
-        private FrameworkElement TitleIconProperty = null;
-        public FrameworkElement TitleIcon
-        {
-            get
-            {
-                return TitleIconProperty;
-            }
-            set
-            {
-                TitleIconProperty = value;
-                AssignActionHandlerToWindowIcon();
+                CustomTitleBarUserControlProperty = value;
+                InitializeTitleBar();
             }
         }
 
@@ -112,8 +131,24 @@ namespace CDPI_UI.Default
             }
         }
 
+        private TitleBarModes titleBarMode = TitleBarModes.Custom;
+        public TitleBarModes TitleBarMode
+        {
+            get
+            {
+                return titleBarMode;
+            }
+            set
+            {
+                titleBarMode = value;
+                SetTitleBarMode(TitleBarMode);
+            }
+        }
+
         public TemplateWindow()
         {
+            this.Title = "CDPI UI";
+
             GetAppWindowAndPresenter();
 
             if (this.Content is FrameworkElement rootElement)
@@ -123,7 +158,7 @@ namespace CDPI_UI.Default
 
             WindowHelper.SetWindowBorderMargin(this);
 
-            ExtendsContentIntoTitleBar = true;
+            TitleBarMode = (TitleBarModes)SettingsManager.Instance.GetValue<int>("APPEARANCE", "titleBarMode");
 
             Activated += DefaultWindow_Activated;
             Closed += DefaultWindow_Closed;
@@ -134,6 +169,42 @@ namespace CDPI_UI.Default
             }
 
             UpdateWindowMinSize();
+        }
+
+        private void SetTitleBarMode(TitleBarModes mode)
+        {
+            
+                switch (mode)
+                {
+                    case TitleBarModes.System:
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (CustomTitleBarUserControl != null) CustomTitleBarUserControl.Visibility = Visibility.Collapsed;
+                        });
+                        ExtendsContentIntoTitleBar = false;
+                        break;
+                    case TitleBarModes.Custom:
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            if (CustomTitleBarUserControl != null) CustomTitleBarUserControl.Visibility = Visibility.Visible;
+                        });
+                        ExtendsContentIntoTitleBar = true;
+                        break;
+                }
+        }
+
+        private void InitializeTitleBar()
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (CustomTitleBarUserControlProperty == null) return;
+
+                SetTitleBar(CustomTitleBarUserControl.WindowMoveAera);
+                AssignActionHandlerToWindowIcon();
+                CustomTitleBarUserControl.Visibility = TitleBarMode == TitleBarModes.Custom ? Visibility.Visible : Visibility.Collapsed;
+                CustomTitleBarUserControl.Title = WindowTitle;
+                if (!string.IsNullOrEmpty(IconUri)) CustomTitleBarUserControl.IconSource = new BitmapImage(new Uri($"ms-appx:///{IconUri}"));
+            });
         }
 
         public void DisableResizeFeature(bool isMinimizable = false)
@@ -151,43 +222,32 @@ namespace CDPI_UI.Default
             if (args.Handled) return;
             Closed -= DefaultWindow_Closed;
             Activated -= DefaultWindow_Activated;
-            if (TitleIcon != null) TitleIcon.PointerPressed -= TitleIcon_PointerPressed;
+            if (CustomTitleBarUserControl?.ImageAera != null) CustomTitleBarUserControl.ImageAera.PointerPressed -= TitleIcon_PointerPressed;
         }
 
         private void DefaultWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             UpdateWindowMinSize();
 
-            if (TitleBar == null) return;
+            if (CustomTitleBarUserControl?.AppTitleTextBlock == null) return;
             if (args.WindowActivationState == WindowActivationState.CodeActivated ||
                 args.WindowActivationState == WindowActivationState.PointerActivated)
             {
-                AssignStateToAllFrameworkElementChildrens(TitleBar, true);
+                AssignStateToTextBlock(CustomTitleBarUserControl.AppTitleTextBlock, true);
             }
             else
             {
-                AssignStateToAllFrameworkElementChildrens(TitleBar, false);
+                AssignStateToTextBlock(CustomTitleBarUserControl.AppTitleTextBlock, false);
             }
         }
 
-        private static void AssignStateToAllFrameworkElementChildrens(FrameworkElement frameworkElement, bool isEnabled)
+        private static void AssignStateToTextBlock(TextBlock textBlock, bool isEnabled)
         {
-            try
+            Style captionStyle = (Style)((App)Application.Current).Resources["AppBarTipTextBlockStyle"];
+            if (textBlock.Style != captionStyle)
             {
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(frameworkElement); i++)
-                {
-                    var child = VisualTreeHelper.GetChild(frameworkElement, i);
-                    if (child is TextBlock textBlock)
-                    {
-                        Style captionStyle = (Style)((App)Application.Current).Resources["AppBarTipTextBlockStyle"];
-                        if (textBlock.Style != captionStyle)
-                        {
-                            textBlock.Style = (Style)(isEnabled ? ((App)Application.Current).Resources["DefaultTextBlockStyle"] : ((App)Application.Current).Resources["DisabledTextBlockStyle"]);
-                        }
-                    }
-                }
+                textBlock.Style = (Style)(isEnabled ? ((App)Application.Current).Resources["DefaultTextBlockStyle"] : ((App)Application.Current).Resources["DisabledTextBlockStyle"]);
             }
-            catch { }
         }
 
         public void GetAppWindowAndPresenter()
@@ -208,9 +268,9 @@ namespace CDPI_UI.Default
 
         private void AssignActionHandlerToWindowIcon()
         {
-            if (TitleIcon == null) return;
+            if (CustomTitleBarUserControl?.ImageAera == null) return;
 
-            TitleIcon.PointerPressed += TitleIcon_PointerPressed;
+            CustomTitleBarUserControl.ImageAera.PointerPressed += TitleIcon_PointerPressed;
         }
 
         private void TitleIcon_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -235,6 +295,10 @@ namespace CDPI_UI.Default
 
         private void UpdateWindowIcon()
         {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (CustomTitleBarUserControl != null) CustomTitleBarUserControl.IconSource = new BitmapImage(new Uri($"ms-appx:///{IconUri}"));
+            });
             WindowHelper.SetWindowIcon(this, IconUri);
         }
 
@@ -278,6 +342,8 @@ namespace CDPI_UI.Default
             if (loadingState != TaskbarProgressBarState.Indeterminate)
                 TaskbarManager.Instance.SetProgressValue(currentLoadingValue, maxLoadingValue);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #region WINAPI
 
