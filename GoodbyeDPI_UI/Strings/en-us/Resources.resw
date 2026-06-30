@@ -2549,4 +2549,7 @@ Original developer: Niko</value>
   <data name="PreferSystemWindowTitleBarSettingsCard.Header" xml:space="preserve">
     <value>Prefer system title bar for windows</value>
   </data>
+  <data name="WelcomeWindowTitle" xml:space="preserve">
+    <value>Welcome wizard</value>
+  </data>
 </root>

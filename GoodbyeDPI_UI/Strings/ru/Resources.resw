@@ -2551,4 +2551,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="PreferSystemWindowTitleBarSettingsCard.Header" xml:space="preserve">
     <value>Предпочитать системный заголовок для окон приложения</value>
   </data>
+  <data name="WelcomeWindowTitle" xml:space="preserve">
+    <value>Помощник настройки</value>
+  </data>
 </root>
