@@ -64,6 +64,5 @@
 
             <Frame x:Name="ContentFrame" Margin="0,0,0,0"/>
         </NavigationView>
-        <Button x:Name="TestButton" Click="TestButton_Click" Grid.Row="1"/>
     </Grid>
 </template:TemplateWindow>

@@ -220,10 +220,5 @@ namespace CDPI_UI
             }
 
         }
-
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            TitleBarMode = TitleBarMode == TitleBarModes.System ? TitleBarModes.Custom : TitleBarModes.System;
-        }
     }
 }
