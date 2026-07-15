@@ -65,6 +65,8 @@ namespace CDPI_UI
 
             WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
 
+            MainFrame = ContentFrame;
+
 
             Instanse = this;
 
@@ -79,23 +81,6 @@ namespace CDPI_UI
             SetEditorBackgroundSettings();
 
             SetStatus();
-        }
-        private object NavigateBackParameterProperty = null;
-        public object NavigateBackParameter 
-        { 
-            get => NavigateBackParameterProperty;
-            private set => NavigateBackParameterProperty = value; 
-        }
-
-        public void NavigateBackWithParameter(object parameter)
-        {
-            NavigateBackParameter = parameter;
-            ContentFrame.GoBack();
-        }
-
-        public void ClearNavigateBackParameter()
-        {
-            NavigateBackParameter = null;
         }
 
         private void Fe_Loaded(object sender, RoutedEventArgs e)
