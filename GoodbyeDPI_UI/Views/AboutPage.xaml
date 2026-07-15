@@ -20,26 +20,26 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="WideLayout">
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="SmallState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="NarrowLayout">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
+                        <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
                     </VisualState.Setters>
                 </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="WideSState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="contentSV.Padding" Value="20,0" />
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState x:Name="WideState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1382"/>
+                        <AdaptiveTrigger MinWindowWidth="1100"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
@@ -48,16 +48,9 @@
                         <Setter Target="PageHeader.Width" Value="1060px"/>
                     </VisualState.Setters>
                 </VisualState>
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-
-                    </VisualState.Setters>
-                </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+        
 
         <TextBlock
             l:Uids.Uid="AboutPageTextBlock"
