@@ -1,8 +1,21 @@
+using CDPI_UI.Controls.MainPage;
+using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Items;
+using CDPI_UI.Helper.LScript;
+using CDPI_UI.Helper.Static;
+using CDPI_UI.Helper.ViewModels;
+using CDPI_UI.ViewModels;
+using CDPI_UI.Views.Components;
 using CDPI_UI.Views.CreateConfigUtil;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Xaml.Interactivity;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,284 +23,132 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation.Metadata;
+using Windows.Graphics.Imaging;
+using Windows.Storage.Streams;
+using Windows.UI;
 using Windows.UI.Popups;
+using WinRT.Interop;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.Static.UIHelper;
+using Button = Microsoft.UI.Xaml.Controls.Button;
+using Page = Microsoft.UI.Xaml.Controls.Page;
+using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
+
 
 namespace CDPI_UI.Views
 {
+    
     public sealed partial class MainPage : Page
     {
-        private readonly ObservableCollection<UIElement> _tiles = new();
+        private ObservableCollection<ViewStoreItemModel> Components = [];
+        
         private ILocalizer localizer = Localizer.Get();
+
+        public ICommand ShowComponentSettingsClickCommand { get; }
+
+        private FrameworkElement StoredElement;
 
         public MainPage()
         {
             this.InitializeComponent();
-            // ProcessManager.Instance.onProcessStateChanged += OnProcessStateChanged;
-            // ProcessManager.Instance.ErrorHappens += OnErrorHappens;
-            // ProcessToggleSwitch.IsOn = ProcessManager.Instance.processState;
+            this.DataContext = this;
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            ProcessToggleSwitch.Toggled += ToggleSwitch_Toggled;
+            MainListView.ItemsSource = Components;
 
-            StaggeredRepeater.ItemsSource = _tiles;
+            LoadComponents();
+            ShowComponentSettingsClickCommand = new RelayCommand(p => ShowComponentSettings(p));
 
-            InitSettingsTiles();
-            GetReadyComponentInfo();
-
-            SettingsManager.Instance.PropertyChanged += SettingsManager_PropertyChanged;
-            SettingsManager.Instance.EnumPropertyChanged += SettingsManager_EnumPropertyChanged;
-
-            StoreHelper.Instance.ItemRemoved += StoreHelper_ItemRemoved;
-            StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
+            StoreHelper.Instance.ItemActionsStopped += Instance_ItemActionsStopped;
+            StoreHelper.Instance.ItemRemoved += Instance_ItemRemoved;
         }
 
-        private void StoreHelper_ItemRemoved(string obj)
+        private void Instance_ItemRemoved(string obj)
         {
-            GetReadyComponentInfo();
-            InitSettingsTiles();
+            LoadComponents();
         }
 
-        private void StoreHelper_ItemActionsStopped(string obj)
+        private void Instance_ItemActionsStopped(string obj)
         {
-            GetReadyComponentInfo();
-            InitSettingsTiles();
+            LoadComponents();
         }
 
-        private void SettingsManager_EnumPropertyChanged(IEnumerable<string> enumerable)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            foreach (var group in enumerable)
+            base.OnNavigatedTo(e);
+        }
+
+        private void LoadComponents()
+        {
+            Components.Clear();
+            List<DatabaseStoreItem> installedComponents = DatabaseHelper.Instance.GetItemsByType("component");
+
+            foreach (DatabaseStoreItem installedComponent in installedComponents)
             {
-                if (group == "CONFIGS")
+                Components.Add(new ViewStoreItemModel()
                 {
-                    GetReadyComponentInfo();
-                    return;
-                }
-            }
-        }
-        private void SettingsManager_PropertyChanged(string group)
-        {
-            if (group == "COMPONENTS") GetReadyComponentInfo();
-        }
-
-        private void GetReadyComponentInfo()
-        {
-            ComponentControlSettingCard.Description = string.Empty;
-            ComponentControlSettingCard.Header = string.Empty;
-
-            string nowUsedComponentId = SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed");
-            CheckRunAvailability(nowUsedComponentId);
-
-            DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(nowUsedComponentId);
-            if (string.IsNullOrEmpty(nowUsedComponentId) || databaseStoreItem is null)
-            {
-                ComponentControlSettingCard.Header = localizer.GetLocalizedString("/SettingTiles/NowUsedComponentError");
-                return;
-            }
-
-            ComponentControlSettingCard.Header = $"{StateHelper.Instance.ComponentIdPairs[nowUsedComponentId].Normalize()} {databaseStoreItem.CurrentVersion}";
-
-            if (!string.IsNullOrEmpty(GetConfigName(nowUsedComponentId)))
-                ComponentControlSettingCard.Description = string.Format(localizer.GetLocalizedString("/SettingTiles/NowUsedComponentDescription"), GetConfigName(nowUsedComponentId));
-            else
-                ComponentControlSettingCard.Description = localizer.GetLocalizedString("/SettingTiles/NowUsedComponentDescriptionError");
-        }
-
-        private static string GetConfigName(string componentId)
-        {
-            var savedFile = SettingsManager.Instance.GetValue<string>(["CONFIGS", componentId], "configFile");
-            var savedPackId = SettingsManager.Instance.GetValue<string>(["CONFIGS", componentId], "configId");
-
-            if (string.IsNullOrEmpty(savedFile) || string.IsNullOrEmpty(savedPackId))
-                return string.Empty;
-
-            var componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId);
-            List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
-
-            return items.FirstOrDefault(x => x.packId == savedPackId && x.file_name == savedFile)?.name ?? string.Empty;
-        }
-
-        private bool IsRunAvailable(string componentId)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(componentId) || !DatabaseHelper.Instance.IsItemInstalled(componentId))
-                    return false;
-
-                if (string.IsNullOrEmpty(ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId).GetStartupParams()))
-                    return false;
-
-                return true;
-            }
-            catch { }
-            return false;
-        }
-
-        private void CheckRunAvailability(string componentId)
-        {
-            if (IsRunAvailable(componentId))
-            {
-                ComponentControlSettingCard.IsEnabled = true;
-            }
-            else
-            {
-                ComponentControlSettingCard.IsEnabled = false;
-            }
-        }
-
-        private void OnErrorHappens(string message, string _object)
-        {
-            ProcessToggleSwitch.IsOn = false;
-        }
-
-        private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            var toggleSwitch = sender as ToggleSwitch;
-
-            if (toggleSwitch.IsOn)
-            {
-                // await ProcessManager.Instance.StartProcess();
-            }
-            else
-            {
-                // await ProcessManager.Instance.StopProcess();
-            }
-        }
-
-        private void OnProcessStateChanged(string state)
-        {
-            ProcessToggleSwitch.Toggled -= ToggleSwitch_Toggled;
-            if (state == "started")
-            {
-                ProcessToggleSwitch.IsOn = true;
-            }
-            else
-            {
-                ProcessToggleSwitch.IsOn = false;
-            }
-            ProcessToggleSwitch.Toggled += ToggleSwitch_Toggled;
-        }
-
-        private static Thickness _Padding = new(20, 10, 20, 10);
-
-        private List<ComboBoxModel> GetComponents()
-        {
-            List<ComboBoxModel> components = new();
-            foreach (var component in StateHelper.Instance.ComponentIdPairs)
-            {
-                if (component.Key == "ASGKOI001")
-                    continue;
-                if (!DatabaseHelper.Instance.IsItemInstalled(component.Key))
-                    continue;
-                components.Add(new()
-                {
-                    Id = component.Key,
-                    DisplayName = component.Value
+                    StoreId = installedComponent.Id,
+                    ImageSource = new BitmapImage(UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(installedComponent.IconPath))),
+                    Name = string.IsNullOrEmpty(installedComponent.ShortName) ? installedComponent.Id : installedComponent.ShortName,
+                    ColorHEX = installedComponent.BackgroudColor
                 });
             }
-            return components;
-        }
 
-        private void InitSettingsTiles()
-        {
+            if (Components.Count > 0)
+            {
+                ComponentTilePlaceholder.Visibility = Visibility.Collapsed;
+                FlashlightTipsWidgetUserControl.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ComponentTilePlaceholder.Visibility = Visibility.Visible;
+                FlashlightTipsWidgetUserControl.Visibility = Visibility.Collapsed;
+            }
+
             
-            _tiles.Clear();
-
-            SettingsTile featuresTile = new()
-            {
-                IconGlyph = "\uF133",
-                Title = localizer.GetLocalizedString("/SettingTiles/Features"),
-            };
-
-            SettingsTileItem featuresTileItem = new()
-            {
-                Title = localizer.GetLocalizedString("PseudoconsoleSettingsCardHeader"),
-                ShowTopRectangle = false,
-            };
-            featuresTileItem.Contents.Add(new SettingTileContentDefinition
-            {
-                ContentType = SettingTileContentType.FullButton,
-                ClickId = "PSEUDOCONSOLEOPEN"
-            });
-
-            featuresTile.Items.Add(featuresTileItem);
-
-            _tiles.Add(CreateSettingTile(featuresTile, HandleSettingTileElementClick, TileType.Basic, padding: _Padding));
-
-            SettingsTile componentTile = new()
-            {
-                IconGlyph = "\uE9F5",
-                Title = localizer.GetLocalizedString("/SettingTiles/QuickSettingsTile"),
-            };
-
-            SettingsTileItem componentTileItem = new()
-            {
-                Title = localizer.GetLocalizedString("/SettingTiles/NowUsedComponent"),
-                ShowTopRectangle = false,
-            };
-            componentTileItem.Contents.Add(new SettingTileContentDefinition
-            {
-                ContentType = SettingTileContentType.ComboBoxSelector,
-                ComboBoxItems = GetComponents(),
-                SelectedComboBoxItemId = SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed")
-            });
-
-            componentTile.Items.Add(componentTileItem);
-
-            _tiles.Add(CreateSettingTile(componentTile, HandleSettingTileElementClick, TileType.Basic, padding: _Padding));
-
-            SettingsTile flashlightTile = new()
-            {
-                IconGlyph = "\uE754",
-                Title = localizer.GetLocalizedString("/Flashlight/Title"),
-            };
-
-            SettingsTileItem flashlightTileItem = new()
-            {
-                Title = localizer.GetLocalizedString("/Flashlight/Welcome"),
-                ShowTopRectangle = false,
-            };
-            flashlightTileItem.Contents.Add(new SettingTileContentDefinition
-            {
-                ContentType = SettingTileContentType.OnlyTextContent,
-            });
-
-            flashlightTile.Items.Add(flashlightTileItem);
-
-            _tiles.Add(CreateSettingTile(flashlightTile, HandleSettingTileElementClick, TileType.Basic, padding: _Padding));
         }
 
-        private void HandleSettingTileElementClick(ActionIds actionId, List<string> arguments, SettingTileContentDefinition contentDefinition)
+        private void TryAnimate()
         {
-            switch (actionId)
-            {
-                
-                case ActionIds.SwitchToggled:
-                    
-                    break;
-                case ActionIds.FullButtonElementClicked:
-                    ButtonClick(contentDefinition.ClickId);
-                    break;
-                case ActionIds.ComboBoxSelectionChanged:
-                    SettingsManager.Instance.SetValue("COMPONENTS", "nowUsed", arguments[0]);
-                    break;
-
-            }
+            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
+            if (StoredElement != null) anim?.TryStart(StoredElement);
+            StoredElement = null;
         }
 
-        private async void ButtonClick(string targetId)
+        private void ShowComponentSettings(object p)
         {
-            switch (targetId)
+            var item = MainListView.ContainerFromItem((ViewStoreItemModel)p);
+            if (item is FrameworkElement fw)
             {
-                case "PSEUDOCONSOLEOPEN":
-                    await ((App)Application.Current).SafeCreateNewWindow<ViewWindow>();
-                    break;
+                StoredElement = fw;
+                var anim = ConnectedAnimationService.GetForCurrentView()
+                    .PrepareToAnimate("ForwardConnectedAnimation", fw);
+
+                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+                {
+                    anim.Configuration = new BasicConnectedAnimationConfiguration();
+                }
             }
+            Frame.Navigate(typeof(ViewComponentSettingsPage), ((ViewStoreItemModel)p).StoreId, new DrillInNavigationTransitionInfo());
         }
 
+        private void MainListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            TryAnimate();
+            FlashlightTipsWidgetUserControl.ConnectHandlers();
+        }
+
+        
     }
 }

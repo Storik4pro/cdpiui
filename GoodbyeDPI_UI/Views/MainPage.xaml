@@ -1,201 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
+    x:Name="RootPage"
     x:Class="CDPI_UI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPI_UI"
+    xmlns:local="using:CDPI_UI.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:BackdropMaterial.ApplyToRootOrPageBackground="True"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:viewmodels="using:CDPI_UI.ViewModels"
+    xmlns:conv="using:CDPI_UI.Converters"
+    xmlns:mpcontrols="using:CDPI_UI.Controls.MainPage"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
 
     <Page.Resources>
-        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
     </Page.Resources>
 
     <Grid x:Name="RootGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="WideLayout">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
-                    </VisualState.StateTriggers>
-                </VisualState>
-                <VisualState x:Name="NarrowLayout">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="contentSV.Padding" Value="16,0" />
-                        <Setter Target="PageHeader.Margin" Value="16,20,0,0" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="WindowStates">
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1382"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="MainPanel.Width" Value="1060px"/>
-                        
-                        <Setter Target="PageHeader.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="PageHeader.Width" Value="1060px"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="NarrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
-        <TextBlock
-            l:Uids.Uid="HomeTextBlock"
-            x:Name="PageHeader"
-            Margin="20,24,20,10"
-            Style="{StaticResource TitleTextBlockStyle}"
-            TextWrapping="NoWrap"/>
-        <ScrollViewer
-            x:Name="contentSV"
-            Grid.Row="1"
-            Padding="20,0,20,0"
-            IsTabStop="False"
-            UseSystemFocusVisuals="False"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto">
-            <Grid>
-                <StackPanel x:Name="MainPanel" Spacing="{StaticResource SettingsCardSpacing}" Margin="0 0 0 10">
-                    <controls:SettingsCard x:Name="ComponentControlSettingCard"
-                                           CornerRadius="10"
-                                           BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
-                        <ToggleSwitch x:Name="ProcessToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Margin="0, 0, 0, 0" />
-                    </controls:SettingsCard>
-
-                    <ItemsRepeater x:Name="StaggeredRepeater">
-                        <ItemsRepeater.Layout>
-                            <controls:StaggeredLayout
-                                ColumnSpacing="5"
-                                RowSpacing="5"
-                                DesiredColumnWidth="360"
-                                ItemsStretch="Fill"/>
-                        </ItemsRepeater.Layout>
-                    </ItemsRepeater>
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
-        <!--
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WindowStates">
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1328"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="WidgetPanel.HorizontalAlignment" Value="Center"/>
-                        <Setter Target="WidgetPanel.Width" Value="1248px"/>
-                    </VisualState.Setters>
-                </VisualState>
                 <VisualState x:Name="SmallState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="WidgetPanel.HorizontalAlignment" Value="Stretch"/>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1100"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
+                        <Setter Target="MainStackPanel.Width" Value="1060" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <TextBlock
-            l:Uids.Uid="HomeTextBlock"
-            x:Name="PageHeader"
-            Margin="20,24,20,0"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Visibility="Collapsed"/>
-        <ScrollViewer
-            x:Name="contentSV"
-            Grid.Row="1"
-            Padding="0,0,0,0"
-            IsTabStop="False"
-            UseSystemFocusVisuals="False"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto">
-            <Grid x:Name="MainPanel">
-                <Grid x:Name="MainView">
-                    <Image Source="/Assets/Wallpaper/Kislovodsk/1.jpeg" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="10" Width="400">
-                        <Border>
-                            <Border.Background>
-                                <AcrylicBrush TintOpacity="0.4" TintColor="#FF000000" FallbackColor="#FF008000"/>
-                            </Border.Background>
-                        </Border>
-                        <Grid Padding="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <ToggleButton CornerRadius="90" Height="100" Width="100">
-                                <FontIcon Glyph="&#xE7E8;" FontSize="32"/>
-                            </ToggleButton>
-                            <Grid Grid.Column="1" Padding="15 0 0 0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid>
-                                    <TextBlock Text="Component" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic" TextWrapping="NoWrap"/>
-                                    <TextBlock Margin="10 10 0 0" Text="Zapret" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap"/>
-                                </Grid>
-                                <Grid Grid.Row="1">
-                                    <TextBlock Text="Config" Style="{ThemeResource CaptionTextBlockStyle}" FontStyle="Italic" TextWrapping="NoWrap"/>
-                                    <TextBlock Margin="10 10 0 0" Text="Default config ALT 3" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="NoWrap"/>
-                                </Grid>
-                                <Grid Grid.Row="2">
-                                    <HyperlinkButton Content="Go to settings..." Padding="0"/>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+        <ScrollViewer Padding="20 0">
+            <StackPanel x:Name="MainStackPanel" Spacing="20" Margin="0 20">
+                <mpcontrols:WelcomePlaceholderUserControl x:Name="ComponentTilePlaceholder"/>
 
-                <StackPanel x:Name="WidgetPanel" VerticalAlignment="Bottom" Padding="20 0 20 20">
-                    <ItemsRepeater x:Name="StaggeredRepeater">
-                        <ItemsRepeater.Layout>
-                            <toolkit:StaggeredLayout
-                                x:Name="StaggeredLayout"
-                                ColumnSpacing="5"
-                                RowSpacing="5"
-                                DesiredColumnWidth="300"
-                                ItemsStretch="Fill"/>
-                        </ItemsRepeater.Layout>
-                    </ItemsRepeater>
+                <ListView x:Name="MainListView" ItemContainerStyle="{StaticResource ListViewItemStretchStyle}" SelectionMode="None" Loaded="MainListView_Loaded">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:ViewStoreItemModel">
+                            <mpcontrols:SmallComponentTileUserControl 
+                                CardBackgroundColor="{x:Bind ColorHEX, Mode=OneWay}" 
+                                CardImageSource="{x:Bind ImageSource, Mode=OneWay}" 
+                                CardTitle="{x:Bind Name, Mode=OneWay}"
+                                StoreId="{x:Bind StoreId, Mode=OneWay}"
+                                IsOpened="False"
+                                ShowSettingsCommand="{Binding ShowComponentSettingsClickCommand, ElementName=RootPage}"
+                                ShowSettingsCommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="5"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+                <StackPanel Spacing="5">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition />
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+
+                    <mpcontrols:FlashlightTipsWidgetUserControl x:Name="FlashlightTipsWidgetUserControl" />
+                    <mpcontrols:WidgetUserControl/>
                 </StackPanel>
-
-                <toolkit:SettingsCard Header="Enabled" Visibility="Collapsed">
-                    <ToggleSwitch x:Name="ProcessToggleSwitch" Grid.Column="1" VerticalAlignment="Center" Margin="0, 0, 0, 0" />
-                </toolkit:SettingsCard>
-                
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
-        -->
+
     </Grid>
 
 </Page>
