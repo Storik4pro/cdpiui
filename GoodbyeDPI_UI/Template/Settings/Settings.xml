@@ -4,6 +4,8 @@
 		<Setting Key="Theme" Type="string" Value="Dark" />
     <Setting Key="mainGridColumnsCount" Type="int" Value="-1"/>
     <Setting Key="titleBarMode" Type="int" Value="1"/>
+    <Setting Key="showWidgetsPanel" Type="bool" Value="true"/>
+    <Setting Key="showFlashlightWidget" Type="bool" Value="true"/>
 	</Group>
 	<Group Name="SYSTEM">
 		<Setting Key="autorun" Type="bool" Value="false" />
