@@ -2554,4 +2554,77 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="WelcomeWindowTitle" xml:space="preserve">
     <value>Помощник настройки</value>
   </data>
+  <data name="ShowWidgets" xml:space="preserve">
+    <value>Показать виджеты</value>
+  </data>
+  <data name="HideWidgets" xml:space="preserve">
+    <value>Спрятать виджеты</value>
+  </data>
+  <data name="CommunityContentDialog.Title" xml:space="preserve">
+    <value>Сообщества</value>
+  </data>
+  <data name="TelegramMainUrlName" xml:space="preserve">
+    <value>Официальное сообщество CDPI UI</value>
+  </data>
+  <data name="TelegramMainUrlDescription" xml:space="preserve">
+    <value>Официальный канал Storik4 посвященный разработке CDPI UI и GoodbyeDPI-UI. Если у вас появился вопрос относительно этих приложений, то смело обращайтесь – активные участники сообщества вам помогут. Если же вы хотите кому-то помочь, то становитесь его частью!</value>
+  </data>
+  <data name="TelegramMemeUrlName" xml:space="preserve">
+    <value>Смешные картинки</value>
+  </data>
+  <data name="TelegramMemeUrlDescription" xml:space="preserve">
+    <value>Просто канал с мемами</value>
+  </data>
+  <data name="TelegramLUrlName" xml:space="preserve">
+    <value>Персональный канал разработчика</value>
+  </data>
+  <data name="TelegramLUrlDescription" xml:space="preserve">
+    <value>Канал с жизнью разработчика программ, которые вы используете.</value>
+  </data>
+  <data name="NTCPartyName" xml:space="preserve">
+    <value>NTC party</value>
+  </data>
+  <data name="NTCPartyDescription" xml:space="preserve">
+    <value>*Доступ возможен только с IPv6 адресов</value>
+  </data>
+  <data name="BBDName" xml:space="preserve">
+    <value>Сообщество ByeByeDPI</value>
+  </data>
+  <data name="BBDDecription" xml:space="preserve">
+    <value>Группа обсуждения ByeByeDPI – мобильного клиента ByeDPI</value>
+  </data>
+  <data name="FlashlightTipsWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Советы от Фонарика</value>
+  </data>
+  <data name="PreviousTipButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Предыдущий совет</value>
+  </data>
+  <data name="NextTipButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Следующий совет</value>
+  </data>
+  <data name="HideFlashlightWidgetButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Спрятать Фонарик</value>
+  </data>
+  <data name="FlashlightBad" xml:space="preserve">
+    <value>Фонарик не отвечает в текущий момент. 
+Вот код ошибки, если он вам нужен: ERR_FLASHLIGHT_BUSY</value>
+  </data>
+  <data name="FlashlightBadTitle" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="ViewOutputButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать вывод (Псевдоконсоль)</value>
+  </data>
+  <data name="ShowMoreSettingsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать больше настроек</value>
+  </data>
+  <data name="ShowMoreComponentSettingsText" xml:space="preserve">
+    <value>Перейти к параметрам этого компонента</value>
+  </data>
+  <data name="ShowLessComponentSettingsText" xml:space="preserve">
+    <value>Свернуть параметры компонента</value>
+  </data>
+  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+    <value>About this app</value>
+  </data>
 </root>

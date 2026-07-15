@@ -324,4 +324,56 @@ To view more info about fixing this problem, visit attached link.</value>
   <data name="WhatConfigChooseHelp" xml:space="preserve">
     <value>What config should I choose?</value>
   </data>
+  <data name="Tip_1" xml:space="preserve">
+    <value>Application has automatic troubleshooting utility! It may help you if some things not work – Store cannot install items, component won't run and more. Just visit [Utilities] page and find [Troubleshooting utility]</value>
+  </data>
+  <data name="Tip_2" xml:space="preserve">
+    <value>You can change default mono font, who shown in [Pseudoconsole] and other places in [View] settings. You also can setup path view mode – full or only names (it make output more readable and hiding you real username) </value>
+  </data>
+  <data name="Tip_3" xml:space="preserve">
+    <value>You're missing something...</value>
+  </data>
+  <data name="Tip_4" xml:space="preserve">
+    <value>I'm always with you! Only when you use this application actually. But does you need be close to be close?</value>
+  </data>
+  <data name="Tip_5" xml:space="preserve">
+    <value>If you installed ByeDPI, NoDPI or SpoofDPI you need to setup proxy. Without that component take no effect on you traffic. 
+For setup proxy visit [Utilities] page and find [Setup proxy].</value>
+  </data>
+  <data name="Tip_6" xml:space="preserve">
+    <value>I know, u may not need me, but don't leave me! I need you more than anything I have. 
+Just... don't close my widget, please</value>
+  </data>
+  <data name="Tip_7" xml:space="preserve">
+    <value>Just spend some time to learn how DPI works. Sometimes ready solutions may not work for you personally. 
+Best way to be online – knowledge, remember about it.</value>
+  </data>
+  <data name="Tip_8" xml:space="preserve">
+    <value>Nek0t was the first person to send a donation. Now his nickname is captured in this fact.</value>
+  </data>
+  <data name="Tip_9" xml:space="preserve">
+    <value>Changing hosts file may help you get access to Finland Discord servers and GitHub storage. 
+U can change hosts file using [Hosts file changing utility]. Just find it on [Utilities] page.</value>
+  </data>
+  <data name="Tip_10" xml:space="preserve">
+    <value>Psss. I guess now is the best time to say thanks to developer! Words are so much expensive, than you think!</value>
+  </data>
+  <data name="Tip_11" xml:space="preserve">
+    <value>There is no need to select config manually! 
+Just go to [Autoselection] utility, select component you want and make some tea (or coffee, what u like more). Find it at [Utilities] page.</value>
+  </data>
+  <data name="Tip_12" xml:space="preserve">
+    <value>If you don't like something in this app, there is two ways for you:
+1. Tell about it developer and wait some time (it maybe reeeeealy long time).
+2. Just do it! Clone the repo, make changes and create pull request. There is 90% chance you code will be approved.</value>
+  </data>
+  <data name="Tip_13" xml:space="preserve">
+    <value>I'm not insist, but maybe using AI for every task is bad. </value>
+  </data>
+  <data name="Tip_14" xml:space="preserve">
+    <value>You can edit config kit by yourself and share it with friends! Just visit [Config edit&amp;create utility] and find [File/Edit Config Kit].</value>
+  </data>
+  <data name="AreYouKnow" xml:space="preserve">
+    <value>Are you know?</value>
+  </data>
 </root>

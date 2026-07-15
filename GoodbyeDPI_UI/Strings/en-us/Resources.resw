@@ -2552,4 +2552,77 @@ Original developer: Niko</value>
   <data name="WelcomeWindowTitle" xml:space="preserve">
     <value>Welcome wizard</value>
   </data>
+  <data name="ShowWidgets" xml:space="preserve">
+    <value>Show widgets</value>
+  </data>
+  <data name="HideWidgets" xml:space="preserve">
+    <value>Hide widgets</value>
+  </data>
+  <data name="CommunityContentDialog.Title" xml:space="preserve">
+    <value>Communities </value>
+  </data>
+  <data name="TelegramMainUrlName" xml:space="preserve">
+    <value>CDPI UI official community</value>
+  </data>
+  <data name="TelegramMainUrlDescription" xml:space="preserve">
+    <value>Official Storik4's channel about development of CDPI UI, GoodbyeDPI-UI applications. If you ask something community members may help you with problem</value>
+  </data>
+  <data name="TelegramMemeUrlName" xml:space="preserve">
+    <value>Funny Pictures</value>
+  </data>
+  <data name="TelegramMemeUrlDescription" xml:space="preserve">
+    <value>Just meme channel </value>
+  </data>
+  <data name="TelegramLUrlName" xml:space="preserve">
+    <value>Storik4's personal channel</value>
+  </data>
+  <data name="TelegramLUrlDescription" xml:space="preserve">
+    <value>Life channel of the developer of programs you use. Main language – Russian.</value>
+  </data>
+  <data name="NTCPartyName" xml:space="preserve">
+    <value>NTC party</value>
+  </data>
+  <data name="NTCPartyDescription" xml:space="preserve">
+    <value>Discussion board for network censorship all around the world, with anti-censorship software developers, researchers and tech-savvy users.</value>
+  </data>
+  <data name="BBDName" xml:space="preserve">
+    <value>ByeByeDPI Community</value>
+  </data>
+  <data name="BBDDecription" xml:space="preserve">
+    <value>Discussion group about BBD – mobile ByeDPI client</value>
+  </data>
+  <data name="FlashlightTipsWidgetTitleTextBlock.Text" xml:space="preserve">
+    <value>Flashlight tips</value>
+  </data>
+  <data name="PreviousTipButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="NextTipButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HideFlashlightWidgetButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Hide Flashlight</value>
+  </data>
+  <data name="FlashlightBad" xml:space="preserve">
+    <value>Flashlight won't response now. 
+Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
+  </data>
+  <data name="FlashlightBadTitle" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="ViewOutputButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>View output (Pseudoconsole)</value>
+  </data>
+  <data name="ShowMoreSettingsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Show more settings </value>
+  </data>
+  <data name="ShowMoreComponentSettingsText" xml:space="preserve">
+    <value>Show settings of that component</value>
+  </data>
+  <data name="ShowLessComponentSettingsText" xml:space="preserve">
+    <value>Go back to the main page</value>
+  </data>
+  <data name="AboutAppTextBlock.Text" xml:space="preserve">
+    <value>About this app</value>
+  </data>
 </root>
