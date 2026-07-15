@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls" 
+    xmlns:viewmodels="using:CDPI_UI.ViewModels"
     xmlns:l="using:WinUI3Localizer">
 
 
@@ -127,7 +128,7 @@
 
                             <ListView x:Name="AdditionalFeaturesListView" ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}">
                                 <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="local:AvailableFeaturesItem">
+                                    <DataTemplate x:DataType="viewmodels:FeaturesViewModel">
                                         <Button x:Name="AvailableFeaturesButton" Background="Transparent" BorderBrush="Transparent" 
                                                 HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6"
                                                 Tag="{x:Bind Id, Mode=OneWay}" Click="AvailableFeaturesButton_Click">

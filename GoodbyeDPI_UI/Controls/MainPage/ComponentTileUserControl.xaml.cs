@@ -60,21 +60,7 @@ public class ConfigSettingsItem
     public string Id { get; set; }
     public bool Value { get; set; }
 }
-public class AvailableFeaturesItem
-{
-    public string DisplayName { get; set; }
-    public AvailableComponentFeatures Id { get; set; }
-    public Uri Image { get; set; }
-}
-public enum AvailableComponentFeatures
-{
-    SetupProxy,
-    AutoSelectConfig,
-    CreateConfig,
-    ExploreNewConfigs,
-    VisitForum,
-    ConnectTgWsProxy
-}
+
 
 public sealed partial class ComponentTileUserControl : UserControl
 {
@@ -86,27 +72,11 @@ public sealed partial class ComponentTileUserControl : UserControl
 
     private ObservableCollection<ComboboxItem> _comboboxItems = new();
     private ObservableCollection<ConfigSettingsItem> ConfigSettingsList = [];
-    private ObservableCollection<AvailableFeaturesItem> AvailableFeaturesList = [];
+    private ObservableCollection<FeaturesViewModel> AvailableFeaturesList = [];
 
-    private Dictionary<AvailableComponentFeatures, string> AvailableComponentFeatureImages = new()
-    {
-        { AvailableComponentFeatures.SetupProxy, "ms-appx:///Assets/Icons/Proxy.ico" },
-        { AvailableComponentFeatures.AutoSelectConfig, "ms-appx:///Assets/Icons/GoodCheck.png" },
-        { AvailableComponentFeatures.CreateConfig, "ms-appx:///Assets/Icons/Edit.png" },
-        { AvailableComponentFeatures.ExploreNewConfigs, "ms-appx:///Assets/Icons/Store.png" },
-        { AvailableComponentFeatures.VisitForum, "ms-appx:///Assets/Icons/OpenInNewWindow.png" },
-        { AvailableComponentFeatures.ConnectTgWsProxy, "ms-appx:///Assets/Icons/Proxy.ico" },
-    };
+    
 
-    private Dictionary<string, List<AvailableComponentFeatures>> AvailableFeaturesForComponent = new()
-    {
-        { "CSZTBN012", [AvailableComponentFeatures.AutoSelectConfig, AvailableComponentFeatures.ExploreNewConfigs, AvailableComponentFeatures.VisitForum] },
-        { "CSGIVS036", [AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs, AvailableComponentFeatures.AutoSelectConfig] },
-        { "CSBIHA024", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.AutoSelectConfig, AvailableComponentFeatures.CreateConfig] },
-        { "CSSIXC048", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs] },
-        { "CSNIG9025", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig] },
-        { "CSTYFL050", [AvailableComponentFeatures.VisitForum, AvailableComponentFeatures.ConnectTgWsProxy] },
-    };
+    
 
 
     public ComponentTileUserControl()
@@ -253,12 +223,12 @@ public sealed partial class ComponentTileUserControl : UserControl
     private void GetAvailableFeaturesForItem()
     {
         AvailableFeaturesList.Clear();
-        AvailableFeaturesForComponent.TryGetValue(StoreId, out var availableFeatures);
+        FeaturesData.AvailableFeaturesForComponent.TryGetValue(StoreId, out var availableFeatures);
         if (availableFeatures == null) return;
 
         foreach (var feature in availableFeatures)
         {
-            AvailableComponentFeatureImages.TryGetValue(feature, out var imageSource);
+            FeaturesData.AvailableComponentFeatureImages.TryGetValue(feature, out var imageSource);
             if (imageSource == null) continue;
 
             AvailableFeaturesList.Add(new()
