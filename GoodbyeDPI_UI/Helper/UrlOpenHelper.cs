@@ -10,13 +10,23 @@ namespace CDPI_UI.Helper
     {
         public const string MainRepoUrl = "https://github.com/Storik4pro/cdpiui";
         public const string LicenseUrl = "https://github.com/Storik4pro/cdpiui/blob/main/LICENSE.txt";
+        public const string ReportUrl = "https://github.com/Storik4pro/cdpiui/issues";
+
+        public const string TelegramMainUrl = "https://t.me/storik4dev";
+        public const string TelegramMemeUrl = "https://t.me/storik4m";
+        public const string TelegramLUrl = "https://t.me/storik4l";
+
+
+        public const string NTCParty = "https://ntc.party";
+        public const string BBD = "https://t.me/byebyedpi_group";
+
         public static async void LaunchUrl(string uri)
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(uri));
         }
         public static async void LaunchReportUrl()
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/Storik4pro/cdpiui/issues"));
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(ReportUrl));
         }
         public static async void LaunchMainRepoUrl()
         {
@@ -36,7 +46,7 @@ namespace CDPI_UI.Helper
         }
         public static async void LaunchTelegramUrl()
         {
-            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("https://t.me/storik4dev"));
+            _ = await Windows.System.Launcher.LaunchUriAsync(new Uri(TelegramMainUrl));
         }
 
         public static async void LaunchTelegramProxyUrl(string ip, string port, string secret)
