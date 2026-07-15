@@ -144,6 +144,19 @@ namespace CDPI_UI.Default
                 SetTitleBarMode(TitleBarMode);
             }
         }
+        private object NavigateBackParameterProperty = null;
+        public object NavigateBackParameter 
+        { 
+            get => NavigateBackParameterProperty;
+            private set => NavigateBackParameterProperty = value; 
+        }
+
+        private Frame MainFrameProperty;
+        public Frame MainFrame
+        {
+            get => MainFrameProperty;
+            set => MainFrameProperty = value;
+        }
 
         public TemplateWindow()
         {
@@ -334,6 +347,17 @@ namespace CDPI_UI.Default
                 return true;
             }
             return false;
+        }
+
+        public void NavigateBackWithParameter(object parameter)
+        {
+            NavigateBackParameter = parameter;
+            MainFrame?.GoBack();
+        }
+
+        public void ClearNavigateBackParameter()
+        {
+            NavigateBackParameter = null;
         }
 
         public static void ToggleLoadingState(TaskbarProgressBarState loadingState, int currentLoadingValue = 0, int maxLoadingValue = 100)
