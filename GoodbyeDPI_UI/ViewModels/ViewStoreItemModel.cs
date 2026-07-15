@@ -1,10 +1,12 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using CDPI_UI.Helper.Static;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Windows.UI;
 
 namespace CDPI_UI.ViewModels
 {
@@ -13,7 +15,11 @@ namespace CDPI_UI.ViewModels
         public string StoreId { get; set; }
         public string Name { get; set; }
         public string Developer { get; set; }
-        public string Color { get; set; }
+        public string ColorHEX { get; set; }
+        public Brush ColorBrush
+        {
+            get => UIHelper.HexToSolidColorBrushConverter(ColorHEX);
+        }
         
         public ImageSource ImageSource { get; set; }
 
