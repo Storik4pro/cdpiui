@@ -56,13 +56,7 @@ public sealed partial class ModernMainPage : Page
         StoreHelper.Instance.ItemActionsStopped += Instance_ItemActionsStopped;
         StoreHelper.Instance.ItemRemoved += Instance_ItemRemoved;
 
-        LearnMoreAboutUIHyperlink.Content = localizer.GetLocalizedString("/Help/LearnMoreAboutUI");
-        FirstStepsHyperlink.Content = localizer.GetLocalizedString("/Help/FirstSteps");
-        AddingCustomSiteListsToConfigHyperlink.Content = localizer.GetLocalizedString("/Help/AddingCustomSiteListsToConfig");
-
         this.Loaded += ModernMainPage_Loaded;
-
-        StarsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
 
         DateTime today = DateTime.Today;
         Random rnd = new Random();
@@ -148,63 +142,7 @@ public sealed partial class ModernMainPage : Page
         }
     }
 
-    private async void ShowDialog(string message, string title)
-    {
-        var dlg = new MessageDialog(message, title);
-        InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>()));
-        await dlg.ShowAsync();
-    }
-
-    private void ApplicationSetupHelperButton_Click(object sender, RoutedEventArgs e)
-    {
-        ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
-    }
-
-    private async void GetNewComponentsFromStoreButton_Click(object sender, RoutedEventArgs e)
-    {
-        await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-    }
-
-    private async void OpenStoreButton_Click(object sender, RoutedEventArgs e)
-    {
-        await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-    }
-
-    private async void OpenHelpButton_Click(object sender, RoutedEventArgs e)
-    {
-        await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-    }
-
-    private void AskCommunityButton_Click(object sender, RoutedEventArgs e)
-    {
-        UrlOpenHelper.LaunchTelegramUrl();
-    }
-
-    private void ReportProblemButton_Click(object sender, RoutedEventArgs e)
-    {
-        UrlOpenHelper.LaunchReportUrl();
-    }
-
-    private async void NavigateToHelpUri(string uri)
-    {
-        OfflineHelpWindow window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage(uri);
-    }
-
-    private void LearnMoreAboutUIHyperlink_Click(object sender, RoutedEventArgs e)
-    {
-        NavigateToHelpUri("/GettingStarted/LearnMoreAboutUI");
-    }
-
-    private void FirstStepsHyperlink_Click(object sender, RoutedEventArgs e)
-    {
-        NavigateToHelpUri("/GettingStarted/FirstSteps");
-    }
-
-    private void AddingCustomSiteListsToConfigHyperlink_Click(object sender, RoutedEventArgs e)
-    {
-        NavigateToHelpUri("/GettingStarted/AddingCustomSiteListsToConfig");
-    }
+    
 
     private async void QHyperlinkButton_Click(object sender, RoutedEventArgs e)
     {
