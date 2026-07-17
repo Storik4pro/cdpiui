@@ -12,9 +12,11 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -39,11 +41,21 @@ public class ComponentTileModel
     public double Height;
 }
 
-public sealed partial class ModernMainPage : Page
+public sealed partial class ModernMainPage : Page, INotifyPropertyChanged
 {
     public ObservableCollection<ComponentTileModel> TileModels = [];
 
-    public double ElementWidth { get; set; } = 210;
+    private double ElementWidthProperty = 210;
+    public double ElementWidth {
+        get
+        {
+            return ElementWidthProperty;
+        }
+        set
+        {
+            SetField(ref ElementWidthProperty, value);
+        }
+    }
     public double ElementHeight { get; set; } = 250;
     public double Spacing { get; set; } = 0;
 
@@ -105,9 +117,16 @@ public sealed partial class ModernMainPage : Page
         
     }
 
+    private int MaxColumns()
+    {
+        double pageWidth = ContentGrid.ActualWidth;
+
+        return (int)(pageWidth / 210);
+    }
+
     private void CalcWidth(int columns, int elCount)
     {
-        double pageWidth = this.ActualWidth;
+        double pageWidth = ContentGrid.ActualWidth;
         
         if (columns < 0)
         {
@@ -124,7 +143,8 @@ public sealed partial class ModernMainPage : Page
                 columns = 4;
             }
         }
-        ElementWidth = (pageWidth - 40 - (10 * (columns - 1))) / columns;
+        columns = Math.Min(columns, MaxColumns());
+        ElementWidth = (pageWidth + 10) / columns;
         Spacing = columns != 1 ? 10 : 0;
     }
 
@@ -152,4 +172,25 @@ public sealed partial class ModernMainPage : Page
         };
         await q.ShowAsync();
     }
+
+    private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        List<DatabaseStoreItem> installedComponents = DatabaseHelper.Instance.GetItemsByType("component");
+        CalcWidth(SettingsManager.Instance.GetValue<int>("APPEARANCE", "mainGridColumnsCount"), installedComponents.Count);
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 }
