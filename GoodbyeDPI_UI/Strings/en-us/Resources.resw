@@ -192,7 +192,7 @@ Please, install lates version of "{0}" in Store</value>
     <value>Click "Next" button to continue</value>
   </data>
   <data name="ColorSelector.Header" xml:space="preserve">
-    <value>Choose an accent color in PC settings </value>
+    <value>Color scheme</value>
   </data>
   <data name="ComponentSelector.Description" xml:space="preserve">
     <value>The component that should be used by default</value>
@@ -703,10 +703,10 @@ Please, install lates version of "{0}" in Store</value>
     <value>Components Store</value>
   </data>
   <data name="SystemTheme" xml:space="preserve">
-    <value>Follow system</value>
+    <value>System</value>
   </data>
   <data name="ThemeSelector.Header" xml:space="preserve">
-    <value>Choose theme</value>
+    <value>Application theme</value>
   </data>
   <data name="UtilsButton.Content" xml:space="preserve">
     <value>Utils</value>
@@ -1058,7 +1058,7 @@ Additional info:
     <value>Retry</value>
   </data>
   <data name="HideToTrayOnStartupCard.Header" xml:space="preserve">
-    <value>Hide application in system tray and run current component when launched from the "Start" menu</value>
+    <value>Allow autorun actions on normal startup</value>
   </data>
   <data name="ViewInStoreTextBlock.Text" xml:space="preserve">
     <value>View in Store</value>
@@ -1492,9 +1492,8 @@ Some features is not available at the moment. Keep in mind — this application 
 
 Some features may work not as planned — don't worry. Just say about it to developers. It will be fixed as soon as possible.</value>
   </data>
-  <data name="AutorunWarnTextBlock.Text" xml:space="preserve">
-    <value>You haven't added any components to startup. The app will launch without any action. 
-To fix this, go to the component settings page and select the [Startup automatically] checkbox.</value>
+  <data name="AutorunWarningInfoBar.Message" xml:space="preserve">
+    <value>You haven't added any components to startup. Select the components you want to turn on when your PC starts below</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
@@ -2624,5 +2623,77 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   </data>
   <data name="AboutAppTextBlock.Text" xml:space="preserve">
     <value>About this app</value>
+  </data>
+  <data name="PersonalizationSettingsCard.Header" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="PersonalizationSettingsCard.Description" xml:space="preserve">
+    <value>Select app theme. Switch main page markup.</value>
+  </data>
+  <data name="Personalization" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="AvailableThemesSettingsCard.Header" xml:space="preserve">
+    <value>Available themes</value>
+  </data>
+  <data name="AvailableAccentColorsSettingsCard.Header" xml:space="preserve">
+    <value>Available colors</value>
+  </data>
+  <data name="SystemAccentColorsSettingsCard.Header" xml:space="preserve">
+    <value>System accent color</value>
+  </data>
+  <data name="AvailableMarkupSettingsCard.Header" xml:space="preserve">
+    <value>Available markups</value>
+  </data>
+  <data name="MarkupSelector.Header" xml:space="preserve">
+    <value>Main page markup</value>
+  </data>
+  <data name="MainPageTextBlock.Text" xml:space="preserve">
+    <value>Main page</value>
+  </data>
+  <data name="MarkupPropertiesSettingsExpander.Header" xml:space="preserve">
+    <value>Markup properties</value>
+  </data>
+  <data name="FlashlightWidgetSettingsCard.Header" xml:space="preserve">
+    <value>Show Flashlight tips</value>
+  </data>
+  <data name="WidgetsSettingsCard.Header" xml:space="preserve">
+    <value>Show quick widgets</value>
+  </data>
+  <data name="ClassicMarkup" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="ModernMarkup" xml:space="preserve">
+    <value>Modern</value>
+  </data>
+  <data name="AutorunSettingsCard.Header" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="AutorunSettingsCard.Description" xml:space="preserve">
+    <value>Select components to start up with this PC. Select app startup mode</value>
+  </data>
+  <data name="Autorun" xml:space="preserve">
+    <value>Autorun</value>
+  </data>
+  <data name="AutorunWarningInfoBar.Title" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ComponentAutorunSettingsExpander.Header" xml:space="preserve">
+    <value>Components</value>
+  </data>
+  <data name="NoComponentInstalledInfoBar.Title" xml:space="preserve">
+    <value>You don't install any component yet</value>
+  </data>
+  <data name="HideToTrayOnStartupCard.Description" xml:space="preserve">
+    <value>Hide application to tray and begin autorun actions when started from "Start" menu</value>
+  </data>
+  <data name="SelectFontSettingsCard.Header" xml:space="preserve">
+    <value>Default mono font</value>
+  </data>
+  <data name="SelectFontButton.Content" xml:space="preserve">
+    <value>Change font</value>
+  </data>
+  <data name="FontSizeDescription" xml:space="preserve">
+    <value>Now selected: font family: {0}, font size: {1}</value>
   </data>
 </root>

@@ -192,7 +192,7 @@
     <value>Для продолжения нажмите кнопку "Далее"</value>
   </data>
   <data name="ColorSelector.Header" xml:space="preserve">
-    <value>Выберите акцент в параметрах этой системы</value>
+    <value>Цветовая схема</value>
   </data>
   <data name="ComponentSelector.Description" xml:space="preserve">
     <value>Этот компонент будет запускаться при нажатии на кнопку "Вкл."</value>
@@ -703,10 +703,10 @@
     <value>Магазин компонентов</value>
   </data>
   <data name="SystemTheme" xml:space="preserve">
-    <value>Следовать параметрам системы</value>
+    <value>Системная</value>
   </data>
   <data name="ThemeSelector.Header" xml:space="preserve">
-    <value>Выберите тему</value>
+    <value>Тема приложения</value>
   </data>
   <data name="UtilsButton.Content" xml:space="preserve">
     <value>Утилиты</value>
@@ -1061,7 +1061,7 @@
     <value>Повторить попытку</value>
   </data>
   <data name="HideToTrayOnStartupCard.Header" xml:space="preserve">
-    <value>Прятать приложение в системный лоток уведомлений при запуске из меню "Пуск"</value>
+    <value>Применять действия автозапуска при обычном запуске</value>
   </data>
   <data name="ViewInStoreTextBlock.Text" xml:space="preserve">
     <value>Показать в Магазине</value>
@@ -1495,9 +1495,8 @@
 
 Некоторые функции могут работать не так, как планировалось. Не переживайте — сообщите об этом разработчику. Проблема будет исправлена как можно раньше</value>
   </data>
-  <data name="AutorunWarnTextBlock.Text" xml:space="preserve">
-    <value>Вы не добавили ни один компонент в автозапуск. Приложение будет запущено без дополнительных действий. 
-Чтобы исправить это перейдите на страницу настройки компонента и переключите флажок [Запускать автоматически] в положение включено.</value>
+  <data name="AutorunWarningInfoBar.Message" xml:space="preserve">
+    <value>Вы не добавили ни один компонент в автозапуск. Выберите компоненты, которые требуется включать вместе с запуском ПК ниже</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Изменить</value>
@@ -2626,5 +2625,77 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="AboutAppTextBlock.Text" xml:space="preserve">
     <value>About this app</value>
+  </data>
+  <data name="PersonalizationSettingsCard.Header" xml:space="preserve">
+    <value>Персонализация</value>
+  </data>
+  <data name="PersonalizationSettingsCard.Description" xml:space="preserve">
+    <value>Выбрать тему приложения. Изменить макет главной страницы</value>
+  </data>
+  <data name="Personalization" xml:space="preserve">
+    <value>Персонализация</value>
+  </data>
+  <data name="AvailableThemesSettingsCard.Header" xml:space="preserve">
+    <value>Доступные темы</value>
+  </data>
+  <data name="AvailableAccentColorsSettingsCard.Header" xml:space="preserve">
+    <value>Доступные цвета</value>
+  </data>
+  <data name="SystemAccentColorsSettingsCard.Header" xml:space="preserve">
+    <value>Системный цвет</value>
+  </data>
+  <data name="AvailableMarkupSettingsCard.Header" xml:space="preserve">
+    <value>Доступные макеты</value>
+  </data>
+  <data name="MarkupSelector.Header" xml:space="preserve">
+    <value>Внешний вид главной страницы</value>
+  </data>
+  <data name="MainPageTextBlock.Text" xml:space="preserve">
+    <value>Главная страница</value>
+  </data>
+  <data name="MarkupPropertiesSettingsExpander.Header" xml:space="preserve">
+    <value>Отображаемый контент</value>
+  </data>
+  <data name="FlashlightWidgetSettingsCard.Header" xml:space="preserve">
+    <value>Показать советы от Фонарика</value>
+  </data>
+  <data name="WidgetsSettingsCard.Header" xml:space="preserve">
+    <value>Показать виджеты</value>
+  </data>
+  <data name="ClassicMarkup" xml:space="preserve">
+    <value>Классический</value>
+  </data>
+  <data name="ModernMarkup" xml:space="preserve">
+    <value>Современный</value>
+  </data>
+  <data name="AutorunSettingsCard.Header" xml:space="preserve">
+    <value>Автозапуск</value>
+  </data>
+  <data name="AutorunSettingsCard.Description" xml:space="preserve">
+    <value>Выбор компонентов для запуска с этим ПК. Настройка запуска приложения</value>
+  </data>
+  <data name="Autorun" xml:space="preserve">
+    <value>Автозапуск</value>
+  </data>
+  <data name="AutorunWarningInfoBar.Title" xml:space="preserve">
+    <value>Обратите внимание</value>
+  </data>
+  <data name="ComponentAutorunSettingsExpander.Header" xml:space="preserve">
+    <value>Компоненты</value>
+  </data>
+  <data name="NoComponentInstalledInfoBar.Title" xml:space="preserve">
+    <value>Вы ещё не установили ни одного компонента</value>
+  </data>
+  <data name="HideToTrayOnStartupCard.Description" xml:space="preserve">
+    <value>Спрятать приложение в системный лоток и применить действия автозапуска при запуске через меню "Пуск"</value>
+  </data>
+  <data name="SelectFontSettingsCard.Header" xml:space="preserve">
+    <value>Стандартный моноширинный шрифт</value>
+  </data>
+  <data name="SelectFontButton.Content" xml:space="preserve">
+    <value>Изменить шрифт</value>
+  </data>
+  <data name="FontSizeDescription" xml:space="preserve">
+    <value>Сейчас выбрано: семейство шрифта {0}, размер {1}</value>
   </data>
 </root>
