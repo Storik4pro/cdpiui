@@ -479,11 +479,13 @@ namespace CDPI_UI.Helper.Static
             List<DatabaseStoreItem> items = DatabaseHelper.Instance.GetItemsByType("component");
             foreach (var item in items)
             {
+                
                 list.Add(new()
                 {
                     StoreId = item.Id,
                     DisplayName = item.ShortName,
-                    ImageSource = new BitmapImage(GetUriFromString(LScriptLangHelper.ExecuteScript(item.IconPath)))
+                    ImageSource = new BitmapImage(GetUriFromString(LScriptLangHelper.ExecuteScript(item.IconPath))),
+                    IsUsedForAutorun = SettingsManager.Instance.GetValue<bool>(["CONFIGS", item.Id], "usedForAutorun")
                 });
             }
         }

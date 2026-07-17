@@ -12,5 +12,7 @@ namespace CDPI_UI.ViewModels
         public string StoreId { get; set; }
         public string DisplayName { get; set; }
         public ImageSource ImageSource { get; set; }
+
+        public bool IsUsedForAutorun { get; set; }
     }
 }
