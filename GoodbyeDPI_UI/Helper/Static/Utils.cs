@@ -727,6 +727,12 @@ namespace CDPI_UI.Helper.Static
         [GeneratedRegex(@"^[a-zA-Z0-9\-]+$")]
         private static partial Regex CheckIdRegex();
 
+#if DEBUG
+        public static bool IsDebug = true;
+#else
+        public static bool IsDebug = false;
+#endif
+
 #if SINGLEFILE
         public static bool IsApplicationBuildAsSingleFile = true;
         public static bool IsApplicationBuildAsMsi = false;
@@ -736,7 +742,7 @@ namespace CDPI_UI.Helper.Static
 #elif Release
         public static bool IsApplicationBuildAsSingleFile = true;
         public static bool IsApplicationBuildAsMsi = false;
-#else 
+#else
         public static bool IsApplicationBuildAsSingleFile = false;
         public static bool IsApplicationBuildAsMsi = false;
 #endif
