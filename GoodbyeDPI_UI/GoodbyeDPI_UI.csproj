@@ -53,9 +53,14 @@
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\MainPage\CommunityContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Q\QContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml" />
+    <None Remove="Controls\MainPage\FlashlightTipsWidgetUserControl.xaml" />
+    <None Remove="Controls\MainPage\SmallComponentTileUserControl.xaml" />
+    <None Remove="Controls\MainPage\WelcomePlaceholderUserControl.xaml" />
+    <None Remove="Controls\MainPage\WidgetUserControl.xaml" />
     <None Remove="Controls\Store\Settings\MemoryDiskUsageViewUserControl.xaml" />
     <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
@@ -104,6 +109,8 @@
     <None Remove="Views\EditHostsFile\MainPage.xaml" />
     <None Remove="Views\ModernMainPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\Settings\AutorunPage.xaml" />
+    <None Remove="Views\Settings\PersonalizePage.xaml" />
     <None Remove="Views\SetupProxy\MainPage.xaml" />
     <None Remove="Views\SetupProxy\ManualSetupPage.xaml" />
     <None Remove="Views\SetupProxy\ProxiFyreSetupPage.xaml" />
@@ -170,6 +177,9 @@
     <Content Include="Strings\en-us\UIHelper.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Strings\en-us\Widgets.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Strings\ru\Flashlight.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -192,6 +202,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Widgets.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -227,6 +240,7 @@
     <PackageReference Include="Unidecode.NET" Version="2.1.0" />
     <PackageReference Include="WinUI3Localizer" Version="2.3.0" />
     <PackageReference Include="WinUIEx" Version="2.6.0" />
+    <PackageReference Include="XBindLeakFix" Version="1.0.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -548,12 +562,33 @@
     <Page Update="Controls\WindowControls\TitleBarUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\MainPage\SmallComponentTileUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\MainPage\CommunityContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\WidgetUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\FlashlightTipsWidgetUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\WelcomePlaceholderUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Hosts\hosts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Template\Settings\Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Settings\AutorunPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Settings\PersonalizePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Windows\WelcomeWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -686,5 +721,11 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\ru\Troubleshooting.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Widgets.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Widgets.resw" />
   </ItemGroup>
 </Project>
