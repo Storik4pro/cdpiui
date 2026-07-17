@@ -68,6 +68,7 @@ public sealed partial class FontSettingsContentDialog : ContentDialog
         if (!result)
         {
             WarningText.Visibility = Visibility.Visible;
+            args.Cancel = true;
             return;
         }
 
