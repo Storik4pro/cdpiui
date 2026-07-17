@@ -19,6 +19,17 @@
     <Grid x:Name="RootGrid">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
+                <VisualState x:Name="SSmallView">
+                    <VisualState.StateTriggers>
+                        <triggers:ControlSizeTrigger TargetElement="{Binding ElementName=RootGrid}" CanTrigger="True" MaxWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ImageGrid.Visibility" Value="Collapsed"/>
+                        <Setter Target="ImageColumn.Width" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup>
                 <VisualState x:Name="NormalView">
                     <VisualState.StateTriggers>
                         <triggers:ControlSizeTrigger TargetElement="{Binding ElementName=RootGrid}"
@@ -39,7 +50,7 @@
                         <triggers:ControlSizeTrigger TargetElement="{Binding ElementName=RootGrid}"
                                                      CanTrigger="{x:Bind IsOpened, Mode=OneWay}"
                                                      MaxWidth="1000"
-                                                     MinWidth="0"/> 
+                                                     MinWidth="0"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="ComponentSettingsCard.CornerRadius" Value="0"/>
@@ -50,7 +61,7 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-            
+
 
         </VisualStateManager.VisualStateGroups>
 
@@ -59,10 +70,15 @@
         </Grid.ChildrenTransitions>
 
         <controls:SettingsCard x:Name="ComponentSettingsCard" Padding="0" HorizontalContentAlignment="Center" Height="68" BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
+            <controls:SettingsCard.Resources>
+                <x:Double x:Key="SettingsCardWrapThreshold">20</x:Double>
+                <x:Double x:Key="SettingsCardWrapNoIconThreshold">20</x:Double>
+            </controls:SettingsCard.Resources>
+
             <controls:SettingsCard.Header>
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="65"/>
+                        <ColumnDefinition x:Name="ImageColumn" Width="65"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
