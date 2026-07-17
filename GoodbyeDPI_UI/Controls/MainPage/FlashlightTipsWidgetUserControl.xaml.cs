@@ -39,7 +39,7 @@ public sealed partial class FlashlightTipsWidgetUserControl : UserControl
     {
         InitializeComponent();
 
-        // this.Visibility = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "showFlashlightWidget") ? Visibility.Visible : Visibility.Collapsed;
+        this.Visibility = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "showFlashlightWidget") ? Visibility.Visible : Visibility.Collapsed;
 
         LoadTips();
 
