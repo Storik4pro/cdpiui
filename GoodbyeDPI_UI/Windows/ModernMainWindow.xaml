@@ -40,7 +40,7 @@
                         BackRequested="NavView_BackRequested">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPI_UI.Views.ModernMainPage" Icon="Home"/>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="MAINPAGE" Icon="Home"/>
 
                 <NavigationViewItem l:Uids.Uid="UtilsButton" Tag="CDPI_UI.Views.UtilsPage" >
                     <NavigationViewItem.Icon>

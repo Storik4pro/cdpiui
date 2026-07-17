@@ -1,6 +1,7 @@
 using CDPI_UI.Default;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
+using CDPI_UI.ViewModels;
 using CDPI_UI.Views;
 using CDPI_UI.Views.Components;
 using Microsoft.UI;
@@ -44,15 +45,27 @@ namespace CDPI_UI
             IconUri = @"Assets/favicon.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
 
-            DisableResizeFeature(isMinimizable:true);
+            MainFrame = ContentFrame;
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            ContentFrame.Navigate(typeof(ModernMainPage));
+            ContentFrame.Navigate(GetMainPage());
 
             if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
             {
                 ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
                 SettingsManager.Instance.SetValue("AD", "welcomeToPreview", true);
+            }
+        }
+
+        private static Type GetMainPage()
+        {
+            if (SettingsManager.Instance.GetValue<string>("APPEARANCE", "mainPageMarkup") == MarkupTypes.Classic.ToString())
+            {
+                return typeof(MainPage);
+            }
+            else
+            {
+                return typeof(ModernMainPage);
             }
         }
 
@@ -72,7 +85,7 @@ namespace CDPI_UI
             NavView.SelectedItem = NavView.MenuItems[0];
 
             if (ContentFrame.CurrentSourcePageType == null)
-                NavView_Navigate(typeof(Views.MainPage), null, new EntranceNavigationTransitionInfo());
+                NavView_Navigate(GetMainPage(), null, new EntranceNavigationTransitionInfo());
         }
 
         private void NavView_ItemInvoked(NavigationView sender,
@@ -109,7 +122,11 @@ namespace CDPI_UI
 
                     return;
                 }
-
+                if (args.InvokedItemContainer.Tag.ToString().StartsWith("MAINPAGE"))
+                {
+                    NavView_Navigate(GetMainPage(), null, args.RecommendedNavigationTransitionInfo);
+                    return;
+                }
 
                 Type navPageType = Type.GetType(args.InvokedItemContainer.Tag.ToString());
                 NavView_Navigate(navPageType, null, args.RecommendedNavigationTransitionInfo);
@@ -131,12 +148,12 @@ namespace CDPI_UI
 
             if (navPageType is not null)
             {
-                if (Type.Equals(navPageType, typeof(ModernMainPage)) && Type.Equals(preNavPageType, typeof(ViewComponentSettingsPage)))
+                if (Type.Equals(navPageType, GetMainPage()) && Type.Equals(preNavPageType, typeof(ViewComponentSettingsPage)))
                 {
                     
-                    if (!RemoveAndGoBackTo(typeof(ModernMainPage), ContentFrame))
+                    if (!RemoveAndGoBackTo(GetMainPage(), ContentFrame))
                     {
-                        ContentFrame.Navigate(typeof(ModernMainPage), parameter, new DrillInNavigationTransitionInfo());
+                        ContentFrame.Navigate(GetMainPage(), parameter, new DrillInNavigationTransitionInfo());
                     }
                 }
                 else if (!Type.Equals(preNavPageType, navPageType) || Type.Equals(navPageType, typeof(ViewComponentSettingsPage)))
@@ -144,34 +161,6 @@ namespace CDPI_UI
                     ContentFrame.Navigate(navPageType, parameter, transitionInfo);
                 }
             }
-        }
-
-        private bool RemoveAndGoBackTo(Type pageType, Frame rootFrame)
-        {
-            if (rootFrame == null) return false;
-
-            var back = rootFrame.BackStack;
-            int targetIndex = -1;
-            for (int i = back.Count - 1; i >= 0; i--)
-            {
-                if (back[i].SourcePageType == pageType)
-                {
-                    targetIndex = i;
-                    break;
-                }
-            }
-
-            if (targetIndex == -1) return false;
-
-            for (int i = back.Count - 1; i > targetIndex; i--)
-                back.RemoveAt(i);
-
-            if (rootFrame.CanGoBack)
-            {
-                rootFrame.GoBack();
-                return true;
-            }
-            return false;
         }
 
         private void NavView_BackRequested(NavigationView sender,
