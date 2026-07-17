@@ -279,6 +279,33 @@ namespace CDPI_UI
                 OpenWindows.Remove(viewWindow);
             }
         }
+        public async Task<Window> UnsafeCreateNewWindow(Type windowType, bool activate = true, string id = "")
+        {
+            var findWindows = OpenWindows.Where(w => windowType.IsInstanceOfType(w)).ToList();
+            int findWindowCount = findWindows.Count;
+
+            var activeFindWindow = findWindows.FirstOrDefault(w => w.DispatcherQueue != null);
+
+            foreach (TemplateWindow _win in findWindows)
+            {
+                if (!string.IsNullOrEmpty(_win.Id) && _win.Id == id)
+                {
+                    _win.Activate();
+                    return _win;
+                }
+            }
+
+            var newWindow = (TemplateWindow)Activator.CreateInstance(windowType);
+            newWindow.Id = id;
+            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
+            if (activate) newWindow.Activate();
+
+            RegisterWindow(newWindow, isUnsafe: true);
+            await Task.CompletedTask;
+
+            return newWindow;
+        }
+
         public async Task<TWindow> UnsafeCreateNewWindow<TWindow>(bool activate = true, string id = "") where TWindow : TemplateWindow, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
@@ -305,6 +332,39 @@ namespace CDPI_UI
 
             return newViewWindow;
         }
+        public async Task<Window> SafeCreateNewWindow(Type windowType, bool activate = true)
+        {
+            var findWindows = OpenWindows.Where(w => windowType.IsInstanceOfType(w)).ToList();
+            int findWindowCount = findWindows.Count;
+
+            var activeFindWindow = findWindows.FirstOrDefault(w => w.DispatcherQueue != null);
+
+            if (activeFindWindow != null && findWindowCount == 1)
+            {
+                if (activate) activeFindWindow.Activate();
+                await Task.CompletedTask;
+                return activeFindWindow;
+            }
+            else
+            {
+                foreach (var viewWindow in findWindows)
+                {
+                    viewWindow.Close();
+                    OpenWindows.Remove(viewWindow);
+                }
+
+                var newWindow = (Window)Activator.CreateInstance(windowType);
+
+                WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
+                RegisterWindow(newWindow);
+
+                if (activate) newWindow.Activate();
+                await Task.CompletedTask;
+
+                return newWindow;
+            }
+        }
+
         public async Task<TWindow> SafeCreateNewWindow<TWindow>(bool activate = true) where TWindow : Window, new()
         {
             var findWindows = OpenWindows.OfType<TWindow>().ToList();
