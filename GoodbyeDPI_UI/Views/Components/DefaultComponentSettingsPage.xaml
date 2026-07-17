@@ -71,6 +71,9 @@
                     <controls:SettingsCard l:Uids.Uid="ConfigSettingsCard"
                                            CornerRadius="10"
                                            BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
+                        <controls:SettingsCard.Resources>
+                            <x:Double x:Key="SettingsCardWrapNoIconThreshold">700</x:Double>
+                        </controls:SettingsCard.Resources>
                         <ComboBox x:Name="ConfigChooseCombobox" 
                                   MinWidth="400"
                                   SelectionChanged="ConfigChooseCombobox_SelectionChanged"
