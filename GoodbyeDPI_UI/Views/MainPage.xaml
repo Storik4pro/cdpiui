@@ -73,8 +73,9 @@
                             <RepositionThemeTransition />
                         </TransitionCollection>
                     </StackPanel.ChildrenTransitions>
-
-                    <mpcontrols:FlashlightTipsWidgetUserControl x:Name="FlashlightTipsWidgetUserControl" />
+                    <Grid x:Name="FlashlightContainer">
+                        <mpcontrols:FlashlightTipsWidgetUserControl x:Name="FlashlightTipsWidgetUserControl"/>
+                    </Grid>
                     <mpcontrols:WidgetUserControl/>
                 </StackPanel>
             </StackPanel>

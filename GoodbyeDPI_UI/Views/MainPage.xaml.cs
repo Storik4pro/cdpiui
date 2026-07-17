@@ -108,12 +108,12 @@ namespace CDPI_UI.Views
             if (Components.Count > 0)
             {
                 ComponentTilePlaceholder.Visibility = Visibility.Collapsed;
-                FlashlightTipsWidgetUserControl.Visibility = Visibility.Visible;
+                FlashlightContainer.Visibility = Visibility.Visible;
             }
             else
             {
                 ComponentTilePlaceholder.Visibility = Visibility.Visible;
-                FlashlightTipsWidgetUserControl.Visibility = Visibility.Collapsed;
+                FlashlightContainer.Visibility = Visibility.Collapsed;
             }
 
             
