@@ -2,7 +2,11 @@ using CDPI_UI.Controls.Dialogs.ComponentSettings;
 using CDPI_UI.Helper;
 using CDPI_UI.Helper.Static;
 using CDPI_UI.Properties;
+using CDPI_UI.ViewModels;
+using CDPI_UI.Views.Settings;
 using CDPI_UI.Views.Store;
+using CDPI_UI.Views.Store.Settings;
+using CDPI_UI.Views.Store.Settings.Memory;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,6 +26,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using static CDPI_UI.Helper.Static.UIHelper;
 
@@ -47,53 +52,82 @@ namespace CDPI_UI.Views
     }
     public sealed partial class SettingsPage : Page
     {
-        private ObservableCollection<ThemeSelectModel> themes = [];
-        private ObservableCollection<GridColumnsCountModel> gridColumnModels = [];
+        
         private ObservableCollection<LanguageSelectModel> languages = [];
         private ObservableCollection<ComboBoxModel> components = [];
+
+        public static readonly List<Type> MainSettingsNavigationSupportedPages = [
+            typeof(SettingsPage),
+            typeof(PersonalizePage),
+            typeof(AutorunPage)
+            ];
 
         private ILocalizer localizer = Localizer.Get();
         public SettingsPage()
         {
             InitializeComponent();
 
-            AutorunToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun");
-            CheckAutorun(SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun"));
-            SettingsManager.Instance.PropertyChanged += SettingsManager_PropertyChanged;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
 
-            ComponentComboBox.ItemsSource = components;
-            CreateComponents();
-            ComponentComboBox.SelectedItem = components.FirstOrDefault(x => x.Id == SettingsManager.Instance.GetValue<string>("COMPONENTS", "nowUsed"));
-            ComponentComboBox.SelectionChanged += ComponentComboBox_SelectionChanged;
 
-            ThemeComboBox.ItemsSource = themes;
-            CreateThemes();
-            ElementTheme theme = ((App)Application.Current).GetCurrentTheme();
-            ThemeComboBox.SelectedItem = themes.FirstOrDefault(x => x.Id == theme);
-            ThemeComboBox.SelectionChanged += ThemeComboBox_SelectionChanged;
+            
 
             LanguageComboBox.ItemsSource = languages;
             CreateLanguages();
             LanguageComboBox.SelectedItem = languages.FirstOrDefault(x => string.Equals(x.Id, localizer.GetCurrentLanguage(), StringComparison.OrdinalIgnoreCase));
             LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
 
-            MainGridColumnSelector.ItemsSource = gridColumnModels;
-            CreateGridColimnVariants();
-            MainGridColumnSelector.SelectedItem = gridColumnModels.FirstOrDefault(x => x.Count == SettingsManager.Instance.GetValue<int>("APPEARANCE", "mainGridColumnsCount"));
-            MainGridColumnSelector.SelectionChanged += MainGridColumnSelector_SelectionChanged;
+            
 
             ProcessStateToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
             AppUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
             StoreUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
 
-            HideInTrayToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup");
+            
 
-            PreferSystemWindowTitleBarToggleSwitch.IsOn = SettingsManager.Instance.GetValue<int>("APPEARANCE", "titleBarMode") == 0 ? true : false;
-
-            InfoStackPanel.Visibility = Visibility.Collapsed;
+            
 
             UpdateTextFileOpenSettings();
+
+            BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
+            CreateBreadcrumbBarNavigation();
+        }
+
+        private ObservableCollection<BreadcrumbBarModel> BreadcrumbBarModels = [];
+        public void CreateBreadcrumbBarNavigation()
+        {
+            BreadcrumbBarModels.Clear();
+            BreadcrumbBarModels.Add(new()
+            {
+                DisplayName = localizer.GetLocalizedString("Settings"),
+                Tag = this.GetType()
+            });
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            try
+            {
+                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
+                anim?.TryStart(NavGrid);
+                var backanim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
+                backanim?.TryStart(NavGrid);
+            }
+            catch { }
+        }
+
+        private void PrepareAnimate()
+        {
+            var anim = ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
+
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+            {
+                anim.Configuration = new BasicConnectedAnimationConfiguration();
+            }
         }
 
         private void UpdateTextFileOpenSettings()
@@ -106,83 +140,11 @@ namespace CDPI_UI.Views
                     mode == (int)TextFileOpenModes.UserChoose ? Utils.FirstCharToUpper(Path.GetFileNameWithoutExtension(appPath)) : localizer.GetLocalizedString("FollowSystem"));
         }
 
-        private void SettingsManager_PropertyChanged(string propertyName)
-        {
-            AutorunToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun");
-            CheckAutorun(SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun"));
-        }
+        
 
-        private void AutorunToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (SettingsManager.Instance.GetValue<bool>("SYSTEM", "autorun") != AutorunToggleSwitch.IsOn)
-            {
-                if (AutorunToggleSwitch.IsOn)
-                {
-                    AutoStartManager.AddToAutorun();
-                }
-                else
-                {
-                    AutoStartManager.RemoveFromAutorun();
-                }
-            }
-        }
+        
 
-        private void CheckAutorun(bool value)
-        {
-            if (value)
-            {
-                AutorunWarn.Visibility = Visibility.Visible;
-                foreach (var id in StateHelper.Instance.ComponentIdPairs.Keys)
-                {
-                    if (SettingsManager.Instance.GetValue<bool>(["CONFIGS", id], "usedForAutorun"))
-                    {
-                        AutorunWarn.Visibility = Visibility.Collapsed;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                AutorunWarn.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void ColorSelectorButton_Click(object sender, RoutedEventArgs e)
-        {
-            _ = Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:personalization-colors"));
-        }
-
-        private void CreateComponents()
-        {
-            components.Clear();
-            foreach (var component in DatabaseHelper.Instance.GetItemsByType("component"))
-            {
-                components.Add(new()
-                {
-                    Id = component.Id,
-                    DisplayName = component.ShortName
-                });
-            }
-        }
-
-        private void CreateThemes()
-        {
-            themes.Add(new() 
-            { 
-                Id = ElementTheme.Dark,
-                DisplayName = localizer.GetLocalizedString("DarkTheme")
-            });
-            themes.Add(new() 
-            { 
-                Id = ElementTheme.Light,
-                DisplayName = localizer.GetLocalizedString("LightTheme")
-            });
-            themes.Add(new() 
-            { 
-                Id = ElementTheme.Default,
-                DisplayName = localizer.GetLocalizedString("SystemTheme")
-            });
-        }
+        
 
         private void CreateLanguages()
         {
@@ -198,46 +160,9 @@ namespace CDPI_UI.Views
             });
         }
 
-        private void CreateGridColimnVariants()
-        {
-            gridColumnModels.Clear();
-            gridColumnModels.Add(new()
-            {
-                Count = -1,
-                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountAuto")
-            });
-            gridColumnModels.Add(new()
-            {
-                Count = 1,
-                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountOne")
-            });
-            gridColumnModels.Add(new()
-            {
-                Count = 2,
-                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountTwo")
-            });
-            gridColumnModels.Add(new()
-            {
-                Count = 4,
-                DisplayName = localizer.GetLocalizedString("MainPageGridColumnsCountFour")
-            });
-        }
+        
 
-        private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (this.Content is FrameworkElement frameworkElement)
-            {
-
-                ElementTheme newTheme = ElementTheme.Default;
-
-                newTheme = ((ThemeSelectModel)ThemeComboBox.SelectedItem).Id;
-                frameworkElement.RequestedTheme = newTheme;
-
-                SettingsManager.Instance.SetValue<string>("APPEARANCE", "Theme", newTheme.ToString());
-
-                ((App)Application.Current).UpdateThemeForAllWindows(newTheme);
-            }
-        }
+        
 
         private void ProcessStateToast_Click(object sender, RoutedEventArgs e)
         {
@@ -264,26 +189,12 @@ namespace CDPI_UI.Views
             _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
         }
 
-        private void ComponentComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue<string>("COMPONENTS", "nowUsed", ((ComboBoxModel)ComponentComboBox.SelectedItem).Id);
-        }
-
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             localizer.SetLanguage(((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
             SettingsManager.Instance.SetValue<string>("SYSTEM", "language", ((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
         }
-
-        private void HideInTrayToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue<bool>("APPEARANCE", "hideToTrayOnStartup", HideInTrayToggleSwitch.IsOn);
-        }
-
-        private void MainGridColumnSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue<int>("APPEARANCE", "mainGridColumnsCount", ((GridColumnsCountModel)MainGridColumnSelector.SelectedItem).Count);
-        }
+        
 
         private async void OpenComponentSiteListToEditCard_Click(object sender, RoutedEventArgs e)
         {
@@ -301,10 +212,20 @@ namespace CDPI_UI.Views
             window.NavigateSubPage(typeof(Views.Store.SettingsPage), null, new DrillInNavigationTransitionInfo());
         }
 
-        private void PreferSystemWindowTitleBarToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        
+
+        private void PersonalizationSettingsCard_Click(object sender, RoutedEventArgs e)
         {
-            SettingsManager.Instance.SetValue<int>("APPEARANCE", "titleBarMode", PreferSystemWindowTitleBarToggleSwitch.IsOn ? 0 : 1);
-            InfoStackPanel.Visibility = Visibility.Visible;
+            PrepareAnimate();
+
+            Frame.Navigate(typeof(PersonalizePage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+        }
+
+        private void AutorunSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            PrepareAnimate();
+
+            Frame.Navigate(typeof(AutorunPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }
 }
