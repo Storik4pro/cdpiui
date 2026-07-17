@@ -107,7 +107,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid SizeChanged="Grid_SizeChanged">
         <ScrollViewer
             x:Name="scroller"
             HorizontalScrollBarVisibility="Hidden"

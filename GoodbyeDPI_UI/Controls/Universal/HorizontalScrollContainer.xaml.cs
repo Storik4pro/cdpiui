@@ -87,4 +87,9 @@ public sealed partial class HorizontalScrollContainer : UserControl
             ScrollForwardBtn.Visibility = Visibility.Collapsed;
         }
     }
+
+    private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        scroller.ChangeView(0, null, null);
+    }
 }
