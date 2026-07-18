@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /GoodbyeDPI_UI/RemoteDebug.txt
 /CDPIUI/Helper/Secret.cs
 /CDPIUI/RemoteDebug.txt
+/CDPIUI.TrayIcon/Helper/Secret.cs
