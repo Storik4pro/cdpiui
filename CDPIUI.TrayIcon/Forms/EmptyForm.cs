@@ -1,5 +1,5 @@
-﻿using CDPIUI_TrayIcon.Helper;
-using CDPIUI_TrayIcon.Helper.Basic;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using CDPIUI.TrayIcon.Helper;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace CDPIUI_TrayIcon.Forms
+namespace CDPIUI.TrayIcon.Forms
 {
     // Used for creating tray menu handler only.
 
@@ -190,7 +190,7 @@ namespace CDPIUI_TrayIcon.Forms
 
         private static nint LoadIcon(string name)
         {
-            var icon = Utils.GetBitmapFromResourses($"CDPIUI_TrayIcon.Assets.{name}.ico");
+            var icon = Utils.GetBitmapFromResourses($"CDPIUI.TrayIcon.Assets.{name}.ico");
             if (icon != null)
             {
                 nint result = icon.GetHicon();

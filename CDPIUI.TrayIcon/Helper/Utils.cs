@@ -1,4 +1,4 @@
-﻿using CDPIUI_TrayIcon.Helper.Basic;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class Utils
     {

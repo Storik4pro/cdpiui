@@ -1,4 +1,4 @@
-﻿using CDPIUI_TrayIcon.Helper.Basic;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class MsiInstallerHelper
     {

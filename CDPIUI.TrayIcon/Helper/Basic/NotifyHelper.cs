@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 using WinRT.Interop;
 using static System.Windows.Forms.AxHost;
 
-namespace CDPIUI_TrayIcon.Helper.Basic
+namespace CDPIUI.TrayIcon.Helper.Basic
 {
 
     public class NotifyHelper : IDisposable

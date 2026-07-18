@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class Logger
     {

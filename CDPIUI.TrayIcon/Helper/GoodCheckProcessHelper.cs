@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class GoodCheckProcessHelper
     {

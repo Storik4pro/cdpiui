@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Devices.Radios;
 
-namespace CDPIUI_TrayIcon.Controls
+namespace CDPIUI.TrayIcon.Controls
 {
     public partial class BackgroundUserControl : Panel
     {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     enum StopActionCallers
     {

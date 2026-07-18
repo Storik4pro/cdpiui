@@ -1,4 +1,4 @@
-﻿namespace CDPIUI_TrayIcon.Forms
+﻿namespace CDPIUI.TrayIcon.Forms
 {
     partial class EmptyForm
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32.SafeHandles;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class ProcessManager
     {

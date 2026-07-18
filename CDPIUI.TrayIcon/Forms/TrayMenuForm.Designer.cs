@@ -1,9 +1,9 @@
-﻿using CDPIUI_TrayIcon.Helper;
+﻿using CDPIUI.TrayIcon.Helper;
 using System;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
-namespace CDPIUI_TrayIcon.Forms
+namespace CDPIUI.TrayIcon.Forms
 {
     partial class TrayMenuForm
     {
@@ -32,10 +32,10 @@ namespace CDPIUI_TrayIcon.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            ExitButton = new CDPIUI_TrayIcon.Controls.ModernButtonUserControl();
-            MaximizeButton = new CDPIUI_TrayIcon.Controls.ModernButtonUserControl();
-            Separator = new CDPIUI_TrayIcon.Controls.ModernSeparatorUserControl();
-            MainPanel = new CDPIUI_TrayIcon.Controls.BackgroundUserControl();
+            ExitButton = new CDPIUI.TrayIcon.Controls.ModernButtonUserControl();
+            MaximizeButton = new CDPIUI.TrayIcon.Controls.ModernButtonUserControl();
+            Separator = new CDPIUI.TrayIcon.Controls.ModernSeparatorUserControl();
+            MainPanel = new CDPIUI.TrayIcon.Controls.BackgroundUserControl();
             BasicActionsPanel = new Panel();
             ComponentPanel = new Panel();
             MainPanel.SuspendLayout();

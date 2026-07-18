@@ -1,4 +1,4 @@
-﻿using CDPIUI_TrayIcon.Helper.Basic;
+﻿using CDPIUI.TrayIcon.Helper;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper.Basic
 {
     public class PipeServer : IDisposable
     {
@@ -528,7 +528,7 @@ namespace CDPIUI_TrayIcon.Helper
         public async Task<int> WriteStringAsync(string outString, CancellationToken token = default)
         {
             byte[] outBuffer = streamEncoding.GetBytes(outString ?? string.Empty);
-            int len = Math.Min(outBuffer.Length, UInt16.MaxValue);
+            int len = Math.Min(outBuffer.Length, ushort.MaxValue);
 
             byte[] header = new byte[2] { (byte)(len / 256), (byte)(len & 255) };
             await ioStream.WriteAsync(header, 0, 2, token).ConfigureAwait(false);

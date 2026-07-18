@@ -1,10 +1,10 @@
-﻿using CDPIUI_TrayIcon.Controls;
-using CDPIUI_TrayIcon.Helper;
-using CDPIUI_TrayIcon.Helper.Basic;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using CDPIUI.TrayIcon.Controls;
+using CDPIUI.TrayIcon.Helper;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace CDPIUI_TrayIcon.Forms
+namespace CDPIUI.TrayIcon.Forms
 {
     public partial class TrayMenuForm : Form
     {
@@ -21,7 +21,7 @@ namespace CDPIUI_TrayIcon.Forms
             InitializeComponent();
 
             StartPosition = FormStartPosition.Manual;
-            MaximizeButton.DisplayImage = Utils.GetBitmapFromResourses("CDPIUI_TrayIcon.Assets.trayLogoNormal.ico");
+            MaximizeButton.DisplayImage = Utils.GetBitmapFromResourses("CDPIUI.TrayIcon.Assets.trayLogoNormal.ico");
             AllowTransparency = false;
             this.Visible = false;
             this.KeyPreview = true;

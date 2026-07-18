@@ -1,4 +1,4 @@
-﻿namespace CDPIUI_TrayIcon.Controls
+﻿namespace CDPIUI.TrayIcon.Controls
 {
     partial class ComponentUserControl
     {

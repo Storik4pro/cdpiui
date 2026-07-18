@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CDPIUI_TrayIcon.Controls
+namespace CDPIUI.TrayIcon.Controls
 {
     public partial class ModernSeparatorUserControl : UserControl
     {

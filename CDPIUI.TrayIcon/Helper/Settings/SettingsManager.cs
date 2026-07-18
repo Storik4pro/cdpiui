@@ -1,4 +1,4 @@
-﻿using CDPIUI_TrayIcon.Helper;
+﻿using CDPIUI.TrayIcon.Helper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CDPIUI_TrayIcon.Helper
+namespace CDPIUI.TrayIcon.Helper
 {
     public class SettingsManager
     {

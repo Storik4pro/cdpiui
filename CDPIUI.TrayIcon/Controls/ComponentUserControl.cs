@@ -1,4 +1,5 @@
-﻿using CDPIUI_TrayIcon.Helper;
+﻿using CDPIUI.TrayIcon.Helper.Basic;
+using CDPIUI.TrayIcon.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.ApplicationModel.Chat;
 
-namespace CDPIUI_TrayIcon.Controls
+namespace CDPIUI.TrayIcon.Controls
 {
     public partial class ComponentUserControl : UserControl
     {

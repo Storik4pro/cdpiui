@@ -13,7 +13,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace CDPIUI_TrayIcon.Helper.Basic
+namespace CDPIUI.TrayIcon.Helper.Basic
 {
     public enum TaskbarPosition
     {
