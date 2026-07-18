@@ -1,4 +1,5 @@
 using CDPIUI.Helper;
+using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.CreateConfigUtil;
 using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
 using CDPIUI.Helper.Settings;

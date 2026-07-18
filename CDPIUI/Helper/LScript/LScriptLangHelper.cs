@@ -1,4 +1,5 @@
-﻿using CDPIUI.Helper.Static;
+﻿using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.Static;
 using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;

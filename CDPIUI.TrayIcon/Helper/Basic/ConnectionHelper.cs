@@ -1,5 +1,4 @@
-﻿using CDPIUI.TrayIcon.Helper;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;

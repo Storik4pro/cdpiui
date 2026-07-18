@@ -1,4 +1,5 @@
-﻿using CDPIUI.Helper.Static;
+﻿using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.Static;
 using CDPIUI.Messages;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;

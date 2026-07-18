@@ -1,4 +1,5 @@
-﻿using CDPIUI.Helper.Static;
+﻿using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.Static;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

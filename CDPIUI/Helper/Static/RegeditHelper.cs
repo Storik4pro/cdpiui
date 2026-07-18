@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CDPIUI.Helper.Basic;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

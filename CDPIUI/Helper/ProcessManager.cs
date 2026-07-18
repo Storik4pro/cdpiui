@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Devices.Power;
 using CDPIUI;
 using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Basic;
 
 namespace CDPIUI.Helper
 {

@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.Items;
 using CDPIUI.Helper.Static;
 using WinUI3Localizer;

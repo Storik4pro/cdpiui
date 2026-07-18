@@ -6,6 +6,7 @@ using CDPIUI.DesktopWap.DataModel;
 using CDPIUI.DesktopWap.Helper;
 //using CDPIUI.Data;
 using CDPIUI.Helper;
+using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.Items;
 using CDPIUI.Helper.Static;
 using CDPIUI.Helper.Store;

@@ -21,6 +21,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.UI.Xaml.Application;
 using WinUI3Localizer;
 using CDPIUI.Default;
+using CDPIUI.Helper.Basic;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

@@ -1,5 +1,6 @@
 using CDPIUI.Default;
 using CDPIUI.Helper;
+using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using CDPIUI.Views;
@@ -114,9 +115,9 @@ namespace CDPIUI
             }
             else if (args.InvokedItemContainer != null)
             {
-                if (args.InvokedItemContainer.Tag.ToString().StartsWith("CDPI_UI.Views.Components."))
+                if (args.InvokedItemContainer.Tag.ToString().StartsWith("CDPIUI.Views.Components."))
                 {
-                    string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPI_UI.Views.Components.", "");
+                    string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPIUI.Views.Components.", "");
 
                     NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
 

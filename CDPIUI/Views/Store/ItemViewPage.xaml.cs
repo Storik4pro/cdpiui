@@ -1,5 +1,6 @@
 using CDPIUI.Controls.Dialogs.Store;
 using CDPIUI.Helper;
+using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
 using CDPIUI.Views.Components;

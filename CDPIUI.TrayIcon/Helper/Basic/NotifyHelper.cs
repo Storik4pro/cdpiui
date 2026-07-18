@@ -1,5 +1,4 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
