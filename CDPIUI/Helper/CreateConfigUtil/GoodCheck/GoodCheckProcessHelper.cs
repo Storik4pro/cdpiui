@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
+namespace CDPIUI.Helper.CreateConfigUtil.GoodCheck
 {
     public enum GoodCheckProcessMode
     {

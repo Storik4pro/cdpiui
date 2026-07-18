@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CDPI_UI.Helper;
+using CDPIUI.Helper;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -15,9 +15,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 using WinRT;
 using System.Runtime.InteropServices;
-using CDPI_UI;
+using CDPIUI;
 
-namespace CDPI_UI.DesktopWap.Helper
+namespace CDPIUI.DesktopWap.Helper
 {
     internal class TitleBarHelper
     {
@@ -28,7 +28,7 @@ namespace CDPI_UI.DesktopWap.Helper
         {
             try
             {
-                var frame = (Application.Current as CDPI_UI.App).GetRootFrame() as FrameworkElement;
+                var frame = (Application.Current as CDPIUI.App).GetRootFrame() as FrameworkElement;
                 Windows.UI.Color color;
 
                 if (frame.ActualTheme == ElementTheme.Dark)

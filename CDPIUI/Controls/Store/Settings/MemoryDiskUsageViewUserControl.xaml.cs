@@ -1,8 +1,8 @@
-using CDPI_UI.Extensions;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Views.Store.Settings;
-using CDPI_UI.Views.Store.Settings.Memory;
+using CDPIUI.Extensions;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
+using CDPIUI.Views.Store.Settings;
+using CDPIUI.Views.Store.Settings.Memory;
 using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -29,7 +29,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Store.Settings
+namespace CDPIUI.Controls.Store.Settings
 {
     
 

@@ -1,4 +1,4 @@
-using CDPI_UI.Controls.Dialogs.ProxySetupUtil;
+using CDPIUI.Controls.Dialogs.ProxySetupUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -18,7 +18,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI
+namespace CDPIUI
 {
 
     public sealed partial class ApplicationUserControl : UserControl

@@ -12,12 +12,12 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper.Static;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI;
+namespace CDPIUI;
 
 public sealed partial class GoodCheckSitelistButton : UserControl
 {

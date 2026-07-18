@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public enum MarkupTypes
     {

@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Default;
+﻿using CDPIUI.Default;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public class WidgetViewModel
     {

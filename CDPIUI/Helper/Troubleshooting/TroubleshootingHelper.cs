@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,12 +17,12 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.MsiInstallerHelper;
+using static CDPIUI.Helper.MsiInstallerHelper;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using static System.Windows.Forms.AxHost;
 using Task = System.Threading.Tasks.Task;
 
-namespace CDPI_UI.Helper.Troubleshooting
+namespace CDPIUI.Helper.Troubleshooting
 {
     public class TroubleshootingHelper
     {

@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,10 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Shell;
 using Windows.Media.Protection.PlayReady;
-using static CDPI_UI.Helper.ErrorsHelper;
-using static CDPI_UI.Helper.MsiInstallerHelper;
+using static CDPIUI.Helper.ErrorsHelper;
+using static CDPIUI.Helper.MsiInstallerHelper;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class AsyncOperationException : System.Exception
     {

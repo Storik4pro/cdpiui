@@ -13,15 +13,15 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Windows.Forms;
-using CDPI_UI.Helper;
+using CDPIUI.Helper;
 using Application = Microsoft.UI.Xaml.Application;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper.Static;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Dialogs;
+namespace CDPIUI.Controls.Dialogs;
 
 public sealed partial class FontSettingsContentDialog : ContentDialog
 {

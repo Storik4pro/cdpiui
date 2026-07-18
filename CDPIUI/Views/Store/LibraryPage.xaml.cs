@@ -1,7 +1,7 @@
-using CDPI_UI.Controls.Store.Settings;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Controls.Store.Settings;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,7 +24,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.Store
+namespace CDPIUI.Views.Store
 {
     public class LibraryItemModel : IComparable
     {

@@ -1,8 +1,8 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigUtil;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using CDPI_UI.Helper.Settings;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigUtil;
+using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Helper.Settings;
+using CDPIUI.Helper.Static;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
@@ -31,13 +31,13 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.Static.UIHelper;
+using static CDPIUI.Helper.Static.UIHelper;
 using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.CreateConfigUtil
+namespace CDPIUI.Views.CreateConfigUtil
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

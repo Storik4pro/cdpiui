@@ -1,4 +1,4 @@
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,7 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 
-namespace CDPI_UI;
+namespace CDPIUI;
 
 public sealed partial class StoreItemLargeButton : UserControl
 {

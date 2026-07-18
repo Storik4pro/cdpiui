@@ -1,11 +1,11 @@
-﻿using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+﻿using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class ApplicationTaskMonitor
     {

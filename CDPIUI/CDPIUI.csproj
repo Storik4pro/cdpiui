@@ -434,6 +434,7 @@
     <AssemblyVersion>0.5.1.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>
   </PropertyGroup>
 
   <!--
@@ -727,5 +728,8 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Remove="Strings\en-us\Widgets.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CDPIUI.Shared\CDPIUI.Shared.csproj" />
   </ItemGroup>
 </Project>

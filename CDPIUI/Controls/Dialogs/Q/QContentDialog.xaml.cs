@@ -16,7 +16,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Dialogs.Q
+namespace CDPIUI.Controls.Dialogs.Q
 {
     public sealed partial class QContentDialog : ContentDialog
     {

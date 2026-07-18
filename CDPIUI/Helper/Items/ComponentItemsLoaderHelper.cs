@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper.Items
+namespace CDPIUI.Helper.Items
 {
     public class ComponentItemsLoaderHelper
     {

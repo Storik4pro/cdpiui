@@ -1,7 +1,7 @@
-﻿using CDPI_UI.Controls.WindowControls;
-using CDPI_UI.DesktopWap.Helper;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Controls.WindowControls;
+using CDPIUI.DesktopWap.Helper;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -25,7 +25,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using Application = Microsoft.UI.Xaml.Application;
 using Size = System.Windows.Size;
 
-namespace CDPI_UI.Default
+namespace CDPIUI.Default
 {
     public enum TitleBarModes
     {

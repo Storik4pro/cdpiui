@@ -1,6 +1,6 @@
-﻿using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.ViewModels;
+﻿using CDPIUI.Helper.Items;
+using CDPIUI.Helper.LScript;
+using CDPIUI.ViewModels;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -22,7 +22,7 @@ using Windows.UI.Core;
 using WinUI3Localizer;
 using Padding = System.Windows.Forms.Padding;
 
-namespace CDPI_UI.Helper.Static
+namespace CDPIUI.Helper.Static
 {
     public static class UIHelper
     {

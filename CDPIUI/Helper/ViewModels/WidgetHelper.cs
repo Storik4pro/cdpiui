@@ -1,7 +1,7 @@
-﻿using CDPI_UI.Controls.Dialogs.MainPage;
-using CDPI_UI.Default;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.ViewModels;
+﻿using CDPIUI.Controls.Dialogs.MainPage;
+using CDPIUI.Default;
+using CDPIUI.Helper.Static;
+using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper.ViewModels
+namespace CDPIUI.Helper.ViewModels
 {
     public static class WidgetHelper
     {

@@ -10,11 +10,11 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public enum PresetTestType
     {

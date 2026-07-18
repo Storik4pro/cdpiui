@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Views.Store;
+﻿using CDPIUI.Views.Store;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     internal partial class ViewConfigInKitModel : INotifyPropertyChanged
     {

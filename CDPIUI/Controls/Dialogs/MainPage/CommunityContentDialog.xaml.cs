@@ -13,14 +13,14 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Helper;
+using CDPIUI.ViewModels;
+using CDPIUI.Helper;
 using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Dialogs.MainPage;
+namespace CDPIUI.Controls.Dialogs.MainPage;
 
 public sealed partial class CommunityContentDialog : ContentDialog
 {

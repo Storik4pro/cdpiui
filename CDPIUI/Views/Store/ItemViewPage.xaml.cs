@@ -1,8 +1,8 @@
-using CDPI_UI.Controls.Dialogs.Store;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Views.Components;
+using CDPIUI.Controls.Dialogs.Store;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Views.Components;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using CommunityToolkit.WinUI.Animations.Expressions;
 using Microsoft.UI.Xaml;
@@ -31,7 +31,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.Store
+namespace CDPIUI.Views.Store
 {
     public class AdditionalItemInfoModel
     {

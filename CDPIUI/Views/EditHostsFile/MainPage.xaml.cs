@@ -13,15 +13,15 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.UI;
-using CDPI_UI.Helper;
+using CDPIUI.Helper;
 using WinUI3Localizer;
-using CDPI_UI.Controls.Dialogs.Universal;
+using CDPIUI.Controls.Dialogs.Universal;
 using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.EditHostsFile;
+namespace CDPIUI.Views.EditHostsFile;
 
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.

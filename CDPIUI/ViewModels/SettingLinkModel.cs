@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public enum LinkedActions
     {

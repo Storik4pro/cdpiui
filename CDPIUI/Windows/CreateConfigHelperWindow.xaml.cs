@@ -1,11 +1,11 @@
-using CDPI_UI.Controls.CreateConfigHelper;
-using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
-using CDPI_UI.Default;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Views.CreateConfigHelper;
-using CDPI_UI.Views.CreateConfigUtil;
+using CDPIUI.Controls.CreateConfigHelper;
+using CDPIUI.Controls.Dialogs.CreateConfigHelper;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.Views.CreateConfigHelper;
+using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -33,14 +33,14 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using static CDPI_UI.Win32;
+using static CDPIUI.Win32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

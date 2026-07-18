@@ -1,8 +1,8 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Messages;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.Store;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
+using CDPIUI.Messages;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.Store;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,7 +24,7 @@ using static WinUI3Localizer.LanguageDictionary;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.CreateConfigUtil
+namespace CDPIUI.Views.CreateConfigUtil
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

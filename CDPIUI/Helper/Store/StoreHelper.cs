@@ -1,8 +1,8 @@
-﻿using CDPI_UI.Common;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.Store;
+﻿using CDPIUI.Common;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Store;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
@@ -29,11 +29,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Services.Maps.LocalSearch;
 using Windows.UI.WebUI;
-using static CDPI_UI.Helper.ErrorsHelper;
+using static CDPIUI.Helper.ErrorsHelper;
 using TimeSpan = System.TimeSpan;
 using Version = System.Version;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class UICategoryData
     {

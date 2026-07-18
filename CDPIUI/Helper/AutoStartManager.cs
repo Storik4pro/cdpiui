@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public static class AutoStartManager
     {

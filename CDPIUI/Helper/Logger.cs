@@ -8,10 +8,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using static CDPI_UI.Helper.ErrorsHelper;
+using static CDPIUI.Helper.ErrorsHelper;
 using Exception = System.Exception;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class Logger
     {

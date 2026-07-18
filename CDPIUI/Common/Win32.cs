@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using static CDPI_UI.App;
+using static CDPIUI.App;
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     internal static class Win32
     {

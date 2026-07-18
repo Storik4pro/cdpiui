@@ -1,6 +1,6 @@
-using CDPI_UI.Controls.Store;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Controls.Store;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,7 +23,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.CreateConfigHelper
+namespace CDPIUI.Controls.CreateConfigHelper
 {
     public enum OpenFileDirectoryTypes
     {

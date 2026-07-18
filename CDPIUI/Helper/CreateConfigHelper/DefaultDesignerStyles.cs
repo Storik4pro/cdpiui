@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TextControlBoxNS;
 using Windows.UI;
 
-namespace CDPI_UI.Helper.CreateConfigHelper
+namespace CDPIUI.Helper.CreateConfigHelper
 {
     internal class DarkDefaultHighlighter : SyntaxHighlightLanguage
     {

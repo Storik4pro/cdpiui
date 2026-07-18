@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using CDPI_UI.Helper;
+using CDPIUI.Helper;
 using System.IO;
 using System.Reflection;
 
-namespace CDPI_UI.Common
+namespace CDPIUI.Common
 {
     internal class FileLoader
     {

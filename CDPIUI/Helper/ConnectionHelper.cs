@@ -1,8 +1,8 @@
-﻿using CDPI_UI;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Views.Components;
+﻿using CDPIUI;
+using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.Views.Components;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using static CDPI_UI.Helper.MsiInstallerHelper;
+using static CDPIUI.Helper.MsiInstallerHelper;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class PipeClient
     {

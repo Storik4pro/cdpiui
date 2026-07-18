@@ -1,6 +1,6 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,12 +16,12 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using static CDPI_UI.Helper.StoreHelper;
+using static CDPIUI.Helper.StoreHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Dialogs.Store
+namespace CDPIUI.Controls.Dialogs.Store
 {
     public sealed partial class AcceptLicenseContentDialog : ContentDialog
     {

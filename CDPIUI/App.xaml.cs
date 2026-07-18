@@ -1,17 +1,17 @@
-﻿using CDPI_UI.Common;
-using CDPI_UI.Default;
+﻿using CDPIUI.Common;
+using CDPIUI.Default;
 
 //using Windows.ApplicationModel.Activation;
-using CDPI_UI.DesktopWap.DataModel;
-using CDPI_UI.DesktopWap.Helper;
-//using CDPI_UI.Data;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.Store;
-using CDPI_UI.Messages;
-using CDPI_UI.Views;
-using CDPI_UI.Views.Components;
+using CDPIUI.DesktopWap.DataModel;
+using CDPIUI.DesktopWap.Helper;
+//using CDPIUI.Data;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Store;
+using CDPIUI.Messages;
+using CDPIUI.Views;
+using CDPIUI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -43,14 +43,14 @@ using WinRT;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using static CDPI_UI.Win32;
+using static CDPIUI.Win32;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using WASDK = Microsoft.WindowsAppSDK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

@@ -1,4 +1,4 @@
-﻿using CDPI_UI.DataModel;
+﻿using CDPIUI.DataModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public static class HardLinkHelper
     {

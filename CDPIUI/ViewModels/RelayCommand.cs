@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public class RelayCommand : ICommand
     {

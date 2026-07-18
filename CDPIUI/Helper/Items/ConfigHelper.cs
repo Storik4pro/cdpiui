@@ -1,9 +1,9 @@
-﻿using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
-using CDPI_UI.DataModel;
-using CDPI_UI.Extensions;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.Store;
+﻿using CDPIUI.Controls.Dialogs.CreateConfigHelper;
+using CDPIUI.DataModel;
+using CDPIUI.Extensions;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Store;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using Windows.Devices.Power;
 
-namespace CDPI_UI.Helper.Items
+namespace CDPIUI.Helper.Items
 {
     public class AvailableVarValues
     {

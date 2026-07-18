@@ -1,4 +1,4 @@
-﻿using CDPI_UI.ViewModels;
+﻿using CDPIUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper.UserExperience
+namespace CDPIUI.Helper.UserExperience
 {
     public class LinkedSettingsHelper
     {

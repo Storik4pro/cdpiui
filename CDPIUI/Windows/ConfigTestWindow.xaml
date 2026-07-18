@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template:TemplateWindow
     x:Name="MainWindow"
-    x:Class="CDPI_UI.ConfigTestWindow"
+    x:Class="CDPIUI.ConfigTestWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPI_UI"
+    xmlns:local="using:CDPIUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:items="using:CDPI_UI.Helper.Items"
-    xmlns:template="using:CDPI_UI.Default"
-    xmlns:models="using:CDPI_UI.ViewModels"
-    xmlns:wc="using:CDPI_UI.Controls.WindowControls"
+    xmlns:items="using:CDPIUI.Helper.Items"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:models="using:CDPIUI.ViewModels"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
     >
 
     <template:TemplateWindow.SystemBackdrop>

@@ -1,8 +1,8 @@
-using CDPI_UI.Default;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.ViewModels;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using Windows.UI;
 using WinUI3Localizer;
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     public sealed partial class ConfigTestWindow : TemplateWindow
     {

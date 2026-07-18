@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     internal class NativeHelper
     {

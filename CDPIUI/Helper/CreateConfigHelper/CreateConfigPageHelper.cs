@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Items;
+﻿using CDPIUI.Helper.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace CDPI_UI.Helper.CreateConfigHelper
+namespace CDPIUI.Helper.CreateConfigHelper
 {
     public partial class CreateConfigPageHelper
     {

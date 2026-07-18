@@ -1,7 +1,7 @@
-﻿using CDPI_UI.Common;
-using CDPI_UI.Controls.Dialogs.ComponentSettings;
-using CDPI_UI.DataModel;
-using CDPI_UI.Helper.Items;
+﻿using CDPIUI.Common;
+using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.DataModel;
+using CDPIUI.Helper.Items;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,9 +22,9 @@ using System.Threading.Tasks;
 using Unidecode.NET;
 using Windows.Devices.Printers;
 using WinUI3Localizer;
-using static CDPI_UI.Common.CertificateCheck;
+using static CDPIUI.Common.CertificateCheck;
 
-namespace CDPI_UI.Helper.Static
+namespace CDPIUI.Helper.Static
 {
     public static partial class Utils
     {

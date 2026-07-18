@@ -1,6 +1,6 @@
-using CDPI_UI.Controls.Dialogs.Universal;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,7 +26,7 @@ using Windows.UI.Text;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views;
+namespace CDPIUI.Views;
 
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class SettingsManager
     {

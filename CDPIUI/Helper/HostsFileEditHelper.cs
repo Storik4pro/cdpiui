@@ -1,5 +1,5 @@
-﻿using CDPI_UI.Controls.Dialogs.ComponentSettings;
-using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     internal class HostsFileEditHelper
     {

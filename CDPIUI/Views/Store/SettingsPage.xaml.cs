@@ -1,9 +1,9 @@
-using CDPI_UI.Controls.Dialogs.Store;
-using CDPI_UI.Helper;
-using CDPI_UI.Messages;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.Store.Settings;
-using CDPI_UI.Views.Store.Settings.Memory;
+using CDPIUI.Controls.Dialogs.Store;
+using CDPIUI.Helper;
+using CDPIUI.Messages;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.Store.Settings;
+using CDPIUI.Views.Store.Settings.Memory;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -32,7 +32,7 @@ using ImageSource = Microsoft.UI.Xaml.Media.ImageSource;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.Store
+namespace CDPIUI.Views.Store
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

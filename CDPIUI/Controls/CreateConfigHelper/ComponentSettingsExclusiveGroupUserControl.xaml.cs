@@ -1,5 +1,5 @@
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.CreateConfigHelper;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,7 +22,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.CreateConfigHelper
+namespace CDPIUI.Controls.CreateConfigHelper
 {
     public sealed partial class ComponentSettingsExclusiveGroupUserControl : UserControl
     {

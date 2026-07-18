@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentDialog
     l:Uids.Uid="CommunityContentDialog"
-    x:Class="CDPI_UI.Controls.Dialogs.MainPage.CommunityContentDialog"
+    x:Class="CDPIUI.Controls.Dialogs.MainPage.CommunityContentDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPI_UI.Controls.Dialogs.MainPage"
+    xmlns:local="using:CDPIUI.Controls.Dialogs.MainPage"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:viewmodels="using:CDPI_UI.ViewModels"
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
     PrimaryButtonText="OK"
     Style="{ThemeResource DefaultContentDialogStyle}">
 

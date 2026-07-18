@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CDPI_UI.Helper.CreateConfigUtil.GoodCheck
+namespace CDPIUI.Helper.CreateConfigUtil.GoodCheck
 {
     public class StrategyModel
     {

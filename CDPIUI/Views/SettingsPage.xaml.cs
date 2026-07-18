@@ -1,12 +1,12 @@
-using CDPI_UI.Controls.Dialogs.ComponentSettings;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Properties;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.Settings;
-using CDPI_UI.Views.Store;
-using CDPI_UI.Views.Store.Settings;
-using CDPI_UI.Views.Store.Settings.Memory;
+using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
+using CDPIUI.Properties;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.Settings;
+using CDPIUI.Views.Store;
+using CDPIUI.Views.Store.Settings;
+using CDPIUI.Views.Store.Settings.Memory;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -28,12 +28,12 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.Static.UIHelper;
+using static CDPIUI.Helper.Static.UIHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views
+namespace CDPIUI.Views
 {
     public class GridColumnsCountModel
     {

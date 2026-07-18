@@ -1,6 +1,6 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -20,12 +20,12 @@ using TextDecorations = Windows.UI.Text.TextDecorations;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.UI.Xaml.Application;
 using WinUI3Localizer;
-using CDPI_UI.Default;
+using CDPIUI.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.CreateConfigUtil;
+namespace CDPIUI.Views.CreateConfigUtil;
 
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.

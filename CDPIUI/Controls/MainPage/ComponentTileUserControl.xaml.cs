@@ -1,10 +1,10 @@
-using CDPI_UI.Controls.Dialogs.ComponentSettings;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.Components;
-using CDPI_UI.Views.CreateConfigUtil;
+using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.Components;
+using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -29,14 +29,14 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.Static.UIHelper;
+using static CDPIUI.Helper.Static.UIHelper;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using ToolTipService = Microsoft.UI.Xaml.Controls.ToolTipService;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.MainPage;
+namespace CDPIUI.Controls.MainPage;
 
 public enum ComponentState
 {

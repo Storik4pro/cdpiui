@@ -1,6 +1,6 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Views;
-using CDPI_UI.Views.Components;
+using CDPIUI.Helper;
+using CDPIUI.Views;
+using CDPIUI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Input;
@@ -29,7 +29,7 @@ using WinRT.Interop;
 using WinUIEx;
 
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

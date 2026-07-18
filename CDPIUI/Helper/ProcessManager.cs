@@ -14,10 +14,10 @@ using Microsoft.Win32.SafeHandles;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Devices.Power;
-using CDPI_UI;
-using CDPI_UI.Helper.Static;
+using CDPIUI;
+using CDPIUI.Helper.Static;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public partial class ProcessManager
     {

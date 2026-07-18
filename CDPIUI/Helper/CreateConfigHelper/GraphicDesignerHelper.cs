@@ -1,5 +1,5 @@
-﻿using CDPI_UI.Helper.Static;
-using CDPI_UI.Views.CreateConfigHelper;
+﻿using CDPIUI.Helper.Static;
+using CDPIUI.Views.CreateConfigHelper;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper.CreateConfigHelper
+namespace CDPIUI.Helper.CreateConfigHelper
 {
 
     public class GraphicDesignerHelper

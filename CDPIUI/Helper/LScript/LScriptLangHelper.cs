@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
@@ -12,9 +12,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using WinUI3Localizer;
-using static CDPI_UI.Helper.MsiInstallerHelper;
+using static CDPIUI.Helper.MsiInstallerHelper;
 
-namespace CDPI_UI.Helper.LScript
+namespace CDPIUI.Helper.LScript
 {
     public class LScriptLangHelper
     {

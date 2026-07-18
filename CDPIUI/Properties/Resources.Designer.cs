@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CDPI_UI.Properties {
+namespace CDPIUI.Properties {
     using System;
     
     

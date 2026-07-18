@@ -1,8 +1,8 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigHelper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Views.Components;
-using CDPI_UI.Views.CreateConfigHelper;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigHelper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Views.Components;
+using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,7 +25,7 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Dialogs.ComponentSettings
+namespace CDPIUI.Controls.Dialogs.ComponentSettings
 {
     public sealed partial class ConnectTelegramProxyContentDialog : ContentDialog
     {

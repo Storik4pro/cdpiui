@@ -1,5 +1,5 @@
-﻿using CDPI_UI.Helper.Static;
-using CDPI_UI.Messages;
+﻿using CDPIUI.Helper.Static;
+using CDPIUI.Messages;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -16,9 +16,9 @@ using Windows.Graphics;
 using Windows.Storage;
 using WinRT.Interop;
 using WinUIEx;
-using static CDPI_UI.Win32;
+using static CDPIUI.Win32;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class WindowHelper
     {

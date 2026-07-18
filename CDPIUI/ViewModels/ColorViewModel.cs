@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public class ColorViewModel
     {

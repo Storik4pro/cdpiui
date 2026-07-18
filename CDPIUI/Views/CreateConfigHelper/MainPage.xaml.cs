@@ -1,7 +1,7 @@
-using CDPI_UI.Controls.Dialogs.CreateConfigHelper;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Views.CreateConfigUtil;
+using CDPIUI.Controls.Dialogs.CreateConfigHelper;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,7 +23,7 @@ using Application = Microsoft.UI.Xaml.Application;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.CreateConfigHelper
+namespace CDPIUI.Views.CreateConfigHelper
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

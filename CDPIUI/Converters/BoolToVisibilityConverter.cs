@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Converters
+namespace CDPIUI.Converters
 {
     public class BoolToVisibilityConverter : IValueConverter
     {

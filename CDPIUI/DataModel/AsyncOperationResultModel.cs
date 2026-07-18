@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.DataModel
+namespace CDPIUI.DataModel
 {
     public class AsyncOperationResultModel
     {

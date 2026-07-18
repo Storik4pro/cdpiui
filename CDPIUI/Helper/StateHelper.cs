@@ -1,4 +1,4 @@
-﻿using CDPI_UI.ViewModels;
+﻿using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public enum SupportedVersionControls
     {

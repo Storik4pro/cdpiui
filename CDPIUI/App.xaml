@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Application
-    x:Class="CDPI_UI.App"
+    x:Class="CDPIUI.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPI_UI">
+    xmlns:local="using:CDPIUI">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Items;
+﻿using CDPIUI.Helper.Items;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
-using static CDPI_UI.Helper.StoreHelper;
+using static CDPIUI.Helper.StoreHelper;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class DatabaseStoreItem
     {

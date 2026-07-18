@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Windows.UI;
 
-namespace CDPI_UI.ViewModels
+namespace CDPIUI.ViewModels
 {
     public class ViewStoreItemModel
     {

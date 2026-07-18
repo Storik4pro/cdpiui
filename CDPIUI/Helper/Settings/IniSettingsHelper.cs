@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper.Settings
+namespace CDPIUI.Helper.Settings
 {
     // ChatGPT -> piece of shit. 
 

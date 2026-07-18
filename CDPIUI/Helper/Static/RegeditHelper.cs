@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper.Static
+namespace CDPIUI.Helper.Static
 {
     public static class RegeditHelper
     {

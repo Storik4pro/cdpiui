@@ -12,15 +12,15 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper;
 using WinUI3Localizer;
-using CDPI_UI.Helper.LScript;
+using CDPIUI.Helper.LScript;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Controls.Troubleshooting;
+namespace CDPIUI.Controls.Troubleshooting;
 
 public sealed partial class DiagnosticResultUserControl : UserControl
 {

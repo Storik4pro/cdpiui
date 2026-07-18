@@ -1,8 +1,8 @@
-using CDPI_UI.Default;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.Store;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Store;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -32,7 +32,7 @@ using WinUIEx;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Messages
+namespace CDPIUI.Messages
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

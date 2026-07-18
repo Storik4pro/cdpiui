@@ -13,9 +13,9 @@ using System.Windows.Media;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Documents;
 using WinUI3Localizer;
-using CDPI_UI.Controls.Universal;
+using CDPIUI.Controls.Universal;
 
-namespace CDPI_UI.Controls.Dialogs.Universal
+namespace CDPIUI.Controls.Dialogs.Universal
 {
     internal class ErrorContentDialog
     {

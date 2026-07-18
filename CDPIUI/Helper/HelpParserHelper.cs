@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper.Static;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     public class HelpChapterItem
     {

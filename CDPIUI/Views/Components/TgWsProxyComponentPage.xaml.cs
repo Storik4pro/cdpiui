@@ -1,13 +1,13 @@
-using CDPI_UI.Controls.Dialogs.ComponentSettings;
-using CDPI_UI.Controls.Universal;
-using CDPI_UI.Extensions;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigHelper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.UserExperience;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.CreateConfigHelper;
+using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Controls.Universal;
+using CDPIUI.Extensions;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigHelper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.UserExperience;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -39,7 +39,7 @@ using Application = Microsoft.UI.Xaml.Application;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.Components
+namespace CDPIUI.Views.Components
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

@@ -1,5 +1,5 @@
-﻿using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Common
+namespace CDPIUI.Common
 {
     public class CertificateNotTrusted : System.Exception
     {

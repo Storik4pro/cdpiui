@@ -17,7 +17,7 @@ using Microsoft.UI;
 using System.Text;
 using Microsoft.UI.System;
 using Windows.UI;
-using CDPI_UI.Helper;
+using CDPIUI.Helper;
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using CommunityToolkit.WinUI.Behaviors;
@@ -31,19 +31,19 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
 using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using CDPI_UI.Controls.Dialogs;
+using CDPIUI.Controls.Dialogs;
 using WinUIEx;
 using WinUI3Localizer;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper.Static;
 using WindowId = Microsoft.UI.WindowId;
 using Microsoft.UI.Windowing;
-using CDPI_UI.Default;
-using CDPI_UI.Controls.Dialogs.Universal;
+using CDPIUI.Default;
+using CDPIUI.Controls.Dialogs.Universal;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

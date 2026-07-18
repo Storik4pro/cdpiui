@@ -1,6 +1,6 @@
-﻿using CDPI_UI.Common;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
+﻿using CDPIUI.Common;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
-using static CDPI_UI.Helper.ErrorsHelper;
+using static CDPIUI.Helper.ErrorsHelper;
 
-namespace CDPI_UI.Helper.Store
+namespace CDPIUI.Helper.Store
 {
     public class LocalItemInitModel
     {

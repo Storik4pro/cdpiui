@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Extensions;
+﻿using CDPIUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPI_UI.Helper.Static
+namespace CDPIUI.Helper.Static
 {
     public static class FlashlightHelper
     {

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="CDPI_UI.Views.Settings.PersonalizePage"
+    x:Class="CDPIUI.Views.Settings.PersonalizePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPI_UI.Views.Settings"
+    xmlns:local="using:CDPIUI.Views.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:viewmodels="using:CDPI_UI.ViewModels"
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:conv="using:CDPI_UI.Converters"
+    xmlns:conv="using:CDPIUI.Converters"
     xmlns:media="using:Microsoft.UI.Xaml.Media">
     
     <Page.Resources>

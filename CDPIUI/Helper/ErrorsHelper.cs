@@ -1,4 +1,4 @@
-﻿using CDPI_UI.Common;
+﻿using CDPIUI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,10 +11,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 using Windows.Web;
-using static CDPI_UI.Helper.ErrorsHelper;
+using static CDPIUI.Helper.ErrorsHelper;
 using static System.Net.WebRequestMethods;
 
-namespace CDPI_UI.Helper
+namespace CDPIUI.Helper
 {
     #region CustomExceptions
     public class ApplicationFilesDamagedException : System.Exception

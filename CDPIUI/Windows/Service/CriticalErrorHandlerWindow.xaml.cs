@@ -1,6 +1,6 @@
-using CDPI_UI.Default;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Static;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,7 +26,7 @@ using WinRT.Interop;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI
+namespace CDPIUI
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

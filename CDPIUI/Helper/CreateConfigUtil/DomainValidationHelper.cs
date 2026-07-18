@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CDPI_UI.Helper.CreateConfigUtil
+namespace CDPIUI.Helper.CreateConfigUtil
 {
     public static class DomainValidationHelper
     {

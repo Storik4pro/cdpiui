@@ -18,7 +18,7 @@ using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI;
+namespace CDPIUI;
 
 public class GlyphToFontIconConverter : IValueConverter
 {

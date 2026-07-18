@@ -1,7 +1,7 @@
-﻿using CDPI_UI.DataModel;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.CreateConfigUtil.GoodCheck;
-using CDPI_UI.Views;
+﻿using CDPIUI.DataModel;
+using CDPIUI.Helper;
+using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -24,7 +24,7 @@ using WinUIEx;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI;
+namespace CDPIUI;
 
 /// <summary>
 /// An empty window that can be used on its own or navigated to within a Frame.

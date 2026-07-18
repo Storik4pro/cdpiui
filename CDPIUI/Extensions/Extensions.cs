@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 
-namespace CDPI_UI.Extensions
+namespace CDPIUI.Extensions
 {
     static class Extensions
     {

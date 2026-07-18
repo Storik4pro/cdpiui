@@ -1,13 +1,13 @@
-using CDPI_UI.Controls.MainPage;
-using CDPI_UI.Default;
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.Items;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
-using CDPI_UI.Helper.ViewModels;
-using CDPI_UI.ViewModels;
-using CDPI_UI.Views.Components;
-using CDPI_UI.Views.CreateConfigUtil;
+using CDPIUI.Controls.MainPage;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.Items;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.ViewModels;
+using CDPIUI.ViewModels;
+using CDPIUI.Views.Components;
+using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -46,7 +46,7 @@ using Page = Microsoft.UI.Xaml.Controls.Page;
 using UserControl = Microsoft.UI.Xaml.Controls.UserControl;
 
 
-namespace CDPI_UI.Views
+namespace CDPIUI.Views
 {
     
     public sealed partial class MainPage : Page

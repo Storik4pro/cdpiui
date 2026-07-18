@@ -1,6 +1,6 @@
-using CDPI_UI.Helper;
-using CDPI_UI.Helper.LScript;
-using CDPI_UI.Helper.Static;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
 using Markdig.Renderers.Normalize;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,7 +23,7 @@ using WinUI3Localizer;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPI_UI.Views.Store
+namespace CDPIUI.Views.Store
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
