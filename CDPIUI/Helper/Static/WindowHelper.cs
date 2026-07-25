@@ -1,25 +1,21 @@
-﻿using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Static;
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Static;
 using CDPIUI.Messages;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Windows.Graphics;
-using Windows.Storage;
 using WinRT.Interop;
 using WinUIEx;
 using static CDPIUI.Win32;
 
-namespace CDPIUI.Helper
+namespace CDPIUI.Helper.Static
 {
     public class WindowHelper
     {
@@ -99,7 +95,7 @@ namespace CDPIUI.Helper
             }
             if (width != -1 || height != -1)
             {
-                appWindow.Resize(new Windows.Graphics.SizeInt32((int)Math.Round(width * GetScaleFactor(window)), (int)Math.Round(height * GetScaleFactor(window))));
+                appWindow.Resize(new SizeInt32((int)Math.Round(width * GetScaleFactor(window)), (int)Math.Round(height * GetScaleFactor(window))));
             }
 
             
@@ -248,9 +244,9 @@ namespace CDPIUI.Helper
 
         public static bool TrySetMicaBackdrop(bool useMicaAlt, Window window, FrameworkElement mainFrameElement = null)
         {
-            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && System.Environment.OSVersion.Version.Build >= 22000)
+            if (Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() && Environment.OSVersion.Version.Build >= 22000)
             {
-                Microsoft.UI.Xaml.Media.MicaBackdrop micaBackdrop = new Microsoft.UI.Xaml.Media.MicaBackdrop();
+                MicaBackdrop micaBackdrop = new MicaBackdrop();
                 micaBackdrop.Kind = useMicaAlt ? Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt : Microsoft.UI.Composition.SystemBackdrops.MicaKind.Base;
                 window.SystemBackdrop = micaBackdrop;
                 if (mainFrameElement != null) mainFrameElement.Style = (Style)((App)Application.Current).Resources["TransparentGridStyle"];
@@ -266,7 +262,7 @@ namespace CDPIUI.Helper
 
         public static void SetWindowBorderMargin(Window window)
         {
-            if (System.Environment.OSVersion.Version.Build >= 22000) return;
+            if (Environment.OSVersion.Version.Build >= 22000) return;
 
             var handle = WindowNative.GetWindowHandle(window);
             var margins = new MARGINS { cxLeftWidth = 0, cxRightWidth = 0, cyBottomHeight = 0, cyTopHeight = 2 };

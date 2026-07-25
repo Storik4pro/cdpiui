@@ -1,6 +1,6 @@
+using CDPIUI.AddOns.GoodCheck;
 using CDPIUI.Controls.Dialogs.Universal;
 using CDPIUI.Helper;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -93,7 +93,7 @@ public sealed partial class ViewOutputPage : Page
 
     private void ConnectHandlers()
     {
-        GoodCheckOperationModel model = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId);
+        GoodCheckOperationModel model = GoodCheckProcessService.Instance.GetOperationById(CurrentId);
 
         if (model!=null && model.OperationType == GoodCheckOperationType.WorkInProgress || model.OperationType == GoodCheckOperationType.Wait)
         {
@@ -110,14 +110,14 @@ public sealed partial class ViewOutputPage : Page
         {
             StopLogging();
         }
-        GoodCheckProcessHelper.Instance.OperationOutputAdded += (tuple) =>
+        GoodCheckProcessService.Instance.OperationOutputAdded += (tuple) =>
         {
             if (tuple.Item1 == CurrentId)
             {
                 AppendLogLine(tuple.Item2);
             }
         };
-        GoodCheckProcessHelper.Instance.OperationTypeChanged += (tuple) =>
+        GoodCheckProcessService.Instance.OperationTypeChanged += (tuple) =>
         {
             if (tuple.Item1 == CurrentId)
             {
@@ -167,7 +167,7 @@ public sealed partial class ViewOutputPage : Page
             {
                 _logLines.Clear();
 
-                GoodCheckOperationModel model = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId);
+                GoodCheckOperationModel model = GoodCheckProcessService.Instance.GetOperationById(CurrentId);
                 if (model != null && model.Output != null)
                 {
                     AppendToRichTextBlock(model.Output);
@@ -256,7 +256,7 @@ public sealed partial class ViewOutputPage : Page
         {
             string filename = _dialog.FileName;
 
-            string text = GoodCheckProcessHelper.Instance.GetOperationById(CurrentId).Output;
+            string text = GoodCheckProcessService.Instance.GetOperationById(CurrentId).Output;
             try
             {
                 File.WriteAllText(filename, text);
@@ -290,12 +290,12 @@ public sealed partial class ViewOutputPage : Page
 
     private void ProcessControl_Click(object sender, RoutedEventArgs e)
     {
-        GoodCheckProcessHelper.Instance.RemoveFromQueueOrStopOperation(CurrentId);
+        GoodCheckProcessService.Instance.RemoveFromQueueOrStopOperation(CurrentId);
     }
 
     private void ProcessExit_Click(object sender, RoutedEventArgs e)
     {
-        GoodCheckProcessHelper.Instance.Stop();
+        GoodCheckProcessService.Instance.Stop();
     }
 
     private void EnableAutoScrollButton_Click(object sender, RoutedEventArgs e)

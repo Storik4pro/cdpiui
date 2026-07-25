@@ -1,7 +1,7 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using CDPIUI.Views;
 using CDPIUI.Views.Components;
@@ -117,9 +117,9 @@ namespace CDPIUI
             {
                 if (args.InvokedItemContainer.Tag.ToString().StartsWith("CDPIUI.Views.Components."))
                 {
-                    string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPIUI.Views.Components.", "");
+                    // string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPIUI.Views.Components.", "");
 
-                    NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
+                    // NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
 
                     return;
                 }
@@ -191,7 +191,7 @@ namespace CDPIUI
                     /*
                     NavView.SelectedItem = NavView.MenuItems
                                 .OfType<NavigationViewItem>()
-                                .First(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
+                                .First(i => i.version.Equals(ContentFrame.SourcePageType.FullName.ToString()));
                     */
                 }
                 catch (Exception ex) { Debug.WriteLine(ex); }

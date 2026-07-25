@@ -1,4 +1,5 @@
-﻿using CDPIUI.TrayIcon.Helper;
+﻿using CDPIUI.Shared;
+using CDPIUI.TrayIcon.Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -130,7 +131,7 @@ namespace CDPIUI.TrayIcon.Controls
 
         private void SetFont()
         {
-            IconGlyph.Font = new Font(Utils.IsOsSupportedNewGlyph() ? "Segoe Fluent Icons" : "Segoe MDL2 Assets", IconGlyph.Font.SizeInPoints);
+            IconGlyph.Font = new Font(SharedUtils.IsOsSupportedNewGlyph() ? "Segoe Fluent Icons" : "Segoe MDL2 Assets", IconGlyph.Font.SizeInPoints);
         }
 
         private void ModernButtonUserControl_MouseClick(object? sender, MouseEventArgs e)

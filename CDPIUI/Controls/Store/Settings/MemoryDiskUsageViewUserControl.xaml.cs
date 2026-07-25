@@ -1,7 +1,6 @@
 using CDPIUI.Extensions;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
 using CDPIUI.Views.Store.Settings;
 using CDPIUI.Views.Store.Settings.Memory;
 using CommunityToolkit.WinUI.Controls;
@@ -26,6 +25,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Shared.Basic.Filesystem;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -120,8 +122,8 @@ namespace CDPIUI.Controls.Store.Settings
         public async void Init()
         {
             MemoryViewItemModels.Clear();
-            string appDir = StateHelper.Instance.workDirectory;
-            string dataDir = StateHelper.GetDataDirectory();
+            string appDir = CDPIUI.Core.Data.Directories.CurrentDirectory;
+            string dataDir = CDPIUI.Core.Data.Directories.DataDirectory;
 
             DriveInfo appDirDriveInfo = new(appDir);
             DriveInfo dataDirDriveInfo = new(dataDir);
@@ -133,26 +135,26 @@ namespace CDPIUI.Controls.Store.Settings
 
             if (Path.Combine(appDir) == Path.Combine(dataDir) && appDirDriveInfo.VolumeLabel == DiskLetter)
             {
-                appDirSize = await Utils.GetDirectorySize(appDir);
+                appDirSize = await FileSystemService.GetDirectorySize(appDir, Logger.Instance);
                 usedDriveInfo = appDirDriveInfo;
                 usedDir = appDir;
             }
             else if (appDirDriveInfo.VolumeLabel == dataDirDriveInfo.VolumeLabel && appDirDriveInfo.VolumeLabel == DiskLetter)
             {
-                appDirSize = await Utils.GetDirectorySize(appDir) + await Utils.GetDirectorySize(dataDir);
+                appDirSize = await FileSystemService.GetDirectorySize(appDir, Logger.Instance) + await FileSystemService.GetDirectorySize(dataDir, Logger.Instance);
                 usedDriveInfo = appDirDriveInfo;
                 usedDir = dataDir;
-                CreateTileForMemoryUsageCategory(await Utils.GetDirectorySize(appDir), appDirSize, MemoryUsageCategories.Application);
+                CreateTileForMemoryUsageCategory(await FileSystemService.GetDirectorySize(appDir, Logger.Instance), appDirSize, MemoryUsageCategories.Application);
             }
             else if (appDirDriveInfo.VolumeLabel == DiskLetter)
             {
-                appDirSize = await Utils.GetDirectorySize(appDir);
+                appDirSize = await FileSystemService.GetDirectorySize(appDir, Logger.Instance);
                 usedDriveInfo = appDirDriveInfo;
                 usedDir = appDir;
             }
             else if (dataDirDriveInfo.VolumeLabel == DiskLetter)
             {
-                appDirSize = await Utils.GetDirectorySize(dataDir);
+                appDirSize = await FileSystemService.GetDirectorySize(dataDir, Logger.Instance);
                 usedDriveInfo = dataDirDriveInfo;
                 usedDir = dataDir;
             }
@@ -184,8 +186,8 @@ namespace CDPIUI.Controls.Store.Settings
             MainProgressBar.Maximum = totalBytesSize;
             MainProgressBar.Value = dirSize;
 
-            UsedMemoryTextBlock.Text = string.Format(localizer.GetLocalizedString("UsedMemory"), Utils.FormatSize(dirSize));
-            FreeMemoryTextBlock.Text = string.Format(localizer.GetLocalizedString("FreeMemory"), Utils.FormatSize((long)totalFreeMemory));
+            UsedMemoryTextBlock.Text = string.Format(localizer.GetLocalizedString("UsedMemory"), UnitsParser.FormatSize(dirSize));
+            FreeMemoryTextBlock.Text = string.Format(localizer.GetLocalizedString("FreeMemory"), UnitsParser.FormatSize((long)totalFreeMemory));
         }
 
         private async Task CreateTilesForCategories(string directory, long totalSize)
@@ -196,7 +198,7 @@ namespace CDPIUI.Controls.Store.Settings
             foreach (var dir in dirInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
             {
                 string relpath = Path.GetRelativePath(directory, dir.FullName);
-                long size = await Utils.GetDirectorySize(dir.FullName);
+                long size = await FileSystemService.GetDirectorySize(dir.FullName, Logger.Instance);
 
                 otherSize -= size;
 
@@ -214,7 +216,7 @@ namespace CDPIUI.Controls.Store.Settings
                     foreach (var storeDir in dir.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
                     {
                         string st_relpath = Path.GetRelativePath(dir.FullName, storeDir.FullName);
-                        long st_size = await Utils.GetDirectorySize(storeDir.FullName);
+                        long st_size = await FileSystemService.GetDirectorySize(storeDir.FullName, Logger.Instance);
                         if (st_relpath.StartsWith("Items"))
                         {
                             CreateTileForMemoryUsageCategory(st_size, totalSize, MemoryUsageCategories.StoreItems);
@@ -253,7 +255,7 @@ namespace CDPIUI.Controls.Store.Settings
 
                 DisplayName = localizer.GetLocalizedString($"MemoryUsageCategory{category}DisplayName"),
                 DisplayDescription = localizer.GetLocalizedString($"MemoryUsageCategory{category}Description"),
-                DisplayMemoryUsageText = $"{Utils.FormatSize(size)}/{Utils.FormatSize(totalSize)}",
+                DisplayMemoryUsageText = $"{UnitsParser.FormatSize(size)}/{UnitsParser.FormatSize(totalSize)}",
                 IconGlyph = CategoryGlyphPairs.GetValueOrDefault(category),
 
                 CurrentValue = size,
@@ -270,7 +272,7 @@ namespace CDPIUI.Controls.Store.Settings
                 if (settingsCard.Tag is MemoryUsageCategories category)
                 {
                     var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-                    window.NavigateSubPage(CategoryPageTypePairs.GetValueOrDefault(category), Utils.FormatSize((long)MemoryViewItemModels.FirstOrDefault(x => x.Category == category)?.CurrentValue), new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    window.NavigateSubPage(CategoryPageTypePairs.GetValueOrDefault(category), UnitsParser.FormatSize((long)MemoryViewItemModels.FirstOrDefault(x => x.Category == category)?.CurrentValue), new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
                 }
             }
         }

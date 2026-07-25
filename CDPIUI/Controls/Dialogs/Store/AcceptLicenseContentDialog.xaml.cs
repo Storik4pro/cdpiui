@@ -1,4 +1,5 @@
-using CDPIUI.Helper;
+using CDPIUI.Core.Store.ViewModels;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
@@ -16,7 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using static CDPIUI.Helper.StoreHelper;
+using static CDPIUI.Core.Store.StoreHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,7 +26,7 @@ namespace CDPIUI.Controls.Dialogs.Store
 {
     public sealed partial class AcceptLicenseContentDialog : ContentDialog
     {
-        public List<License> Licenses = [];
+        public List<ItemLicenseModel> Licenses = [];
 
         public AcceptLicenseContentDialog()
         {
@@ -47,7 +48,7 @@ namespace CDPIUI.Controls.Dialogs.Store
             else
             {
                 string _url = LScriptLangHelper.ExecuteScriptUnsafe(url);
-                Utils.OpenFileInDefaultApp(_url);
+                ShellHelper.OpenFileInDefaultApp(_url);
             }
         }
     }

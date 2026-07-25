@@ -1,4 +1,5 @@
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Core.Proxy;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -110,7 +111,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             ErrorHappens = false;
             HeaderModels.Clear();
 
-            var (groups, componentId) = BasicGoodCheckHelper.LoadGroupsFromFile(fileName);
+            var (groups, componentId) = GoodCheckResultViewHelper.LoadGroupsFromFile(fileName);
             ComponentId = componentId;
 
             if (groups == null)
@@ -212,7 +213,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 {
                     if (strategy.Flag)
                     {
-                        list.Add(new(Utils.ReplaseIp(strategy.Strategy), sitelistName, item.Directory, false, [], Guid.NewGuid()));
+                        list.Add(new(ProxyHelper.ReplaseIp(strategy.Strategy), sitelistName, item.Directory, false, [], Guid.NewGuid()));
                     }
                 }
             }

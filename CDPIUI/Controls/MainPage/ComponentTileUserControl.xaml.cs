@@ -1,7 +1,13 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Components;
 using CDPIUI.Views.CreateConfigUtil;
@@ -29,7 +35,7 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPIUI.Helper.Static.UIHelper;
+using static CDPIUI.Core.Static.UIHelper;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using ToolTipService = Microsoft.UI.Xaml.Controls.ToolTipService;
 
@@ -90,7 +96,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         ViewSettingsButtonClickCommand = new RelayCommand(p => ViewSettingsButtonClick());
         ToggleProcessButtonClickCommand = new RelayCommand(p => ToggleProcessButtonClick());
 
-        TasksHelper.Instance.TaskStateUpdated += TaskUpdated;
+        ComponentTasksManager.Instance.TaskStateUpdated += TaskUpdated;
 
         CheckVisualState();
 
@@ -101,7 +107,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         ConfigSettingsListView.ItemsSource = ConfigSettingsList;
         AdditionalFeaturesListView.ItemsSource = AvailableFeaturesList;
 
-        StatusFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
+        StatusFontIcon.Glyph = SharedUtils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
     }
 
     public void CheckVisualState()
@@ -240,14 +246,14 @@ public sealed partial class ComponentTileUserControl : UserControl
         }
     }
 
-    private async Task<ProcessManager> GetProcessManager()
+    private async Task<ProcessService> GetProcessManager()
     {
-        return (await TasksHelper.Instance.GetTaskFromId(StoreId))?.ProcessManager;
+        return (await ComponentTasksManager.Instance.GetTaskFromId(StoreId))?.ProcessManager;
     }
 
     private async void PreferTaskStateActions()
     {
-        bool isRunned = await TasksHelper.Instance.IsTaskRunned(StoreId);
+        bool isRunned = await ComponentTasksManager.Instance.IsTaskRunned(StoreId);
 
         if (isRunned)
         {
@@ -265,15 +271,15 @@ public sealed partial class ComponentTileUserControl : UserControl
 
     private async void ToggleProcessButtonClick()
     {
-        bool isRunned = await TasksHelper.Instance.IsTaskRunned(StoreId);
+        bool isRunned = await ComponentTasksManager.Instance.IsTaskRunned(StoreId);
 
         if (!isRunned)
         {
-            TasksHelper.Instance.CreateAndRunNewTask(StoreId);
+            ComponentTasksManager.Instance.CreateAndRunNewTask(StoreId);
         }
         else
         {
-            await TasksHelper.Instance.StopTask(StoreId);
+            await ComponentTasksManager.Instance.StopTask(StoreId);
         }
     }
 
@@ -284,14 +290,14 @@ public sealed partial class ComponentTileUserControl : UserControl
 
     private async Task<ComponentState> GetComponentState()
     {
-        ProcessManager processManager = await GetProcessManager();
+        ProcessService processManager = await GetProcessManager();
         if (processManager == null) return ComponentState.SetupRequired;
 
-        if (processManager.isErrorHappens)
+        if (processManager.IsErrorHappens)
         {
             return ComponentState.ExitedWithException;
         }
-        else if (processManager.processState)
+        else if (processManager.IsProcessRunning)
         {
             return ComponentState.Runned;
         }
@@ -412,7 +418,7 @@ public sealed partial class ComponentTileUserControl : UserControl
 
             InitConfigSettings();
 
-            if ((oldCfg != sel.file_name || oldId != sel.packId) && await TasksHelper.Instance.IsTaskRunned(StoreId)) await TasksHelper.Instance.RestartTask(StoreId);
+            if ((oldCfg != sel.file_name || oldId != sel.packId) && await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) await ComponentTasksManager.Instance.RestartTask(StoreId);
         }
     }
 
@@ -450,7 +456,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(StoreId);
         componentHelper.GetConfigHelper().ChangeVariableValue(sel.file_name, sel.packId, id, value);
 
-        if (await TasksHelper.Instance.IsTaskRunned(StoreId)) _ = TasksHelper.Instance.RestartTask(StoreId);
+        if (await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) _ = ComponentTasksManager.Instance.RestartTask(StoreId);
     }
 
     private async void AvailableFeaturesButton_Click(object sender, RoutedEventArgs e)

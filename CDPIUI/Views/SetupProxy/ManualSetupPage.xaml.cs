@@ -1,5 +1,6 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Proxy;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -78,7 +79,7 @@ namespace CDPIUI.Views.SetupProxy
             PortValue.Text = SettingsManager.Instance.GetValue<string>("PROXY", "port");
             string proxyType = SettingsManager.Instance.GetValue<string>("PROXY", "proxyType");
 
-            if (proxyType == StateHelper.ProxySetupTypes.AsInConfig.ToString())
+            if (proxyType == ProxySetupTypes.AsInConfig.ToString())
             {
                 UseConfigSettings.IsChecked = true;
             }
@@ -109,23 +110,23 @@ namespace CDPIUI.Views.SetupProxy
 
                 if ((bool)UseConfigSettings.IsChecked)
                 {
-                    SettingsManager.Instance.SetValue("PROXY", "proxyType", StateHelper.ProxySetupTypes.AsInConfig.ToString());
+                    SettingsManager.Instance.SetValue("PROXY", "proxyType", ProxySetupTypes.AsInConfig.ToString());
                 }
                 else
                 {
                     SettingsManager.Instance.SetValue("PROXY", "IPAddress", IPValue.Text);
                     SettingsManager.Instance.SetValue("PROXY", "port", PortValue.Text);
-                    SettingsManager.Instance.SetValue("PROXY", "proxyType", StateHelper.ProxySetupTypes.NoActions.ToString());
+                    SettingsManager.Instance.SetValue("PROXY", "proxyType", ProxySetupTypes.NoActions.ToString());
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                Logger.Instance.CreateErrorLog(nameof(Helper.Static.RegeditHelper), ex.Message);
+                Logger.Instance.CreateErrorLog(nameof(WindowsNativeProxySettingsService), ex.Message);
                 _ = new ContentDialog()
                 {
                     Title = localizer.GetLocalizedString("ErrorOccurred"),
-                    Content = string.Format(localizer.GetLocalizedString("ExceptionProxySet"), $"HKEY_CURRENT_USER/{Helper.Static.RegeditHelper.InternetSettingsKeyPath}", ex.Message),
+                    Content = string.Format(localizer.GetLocalizedString("ExceptionProxySet"), $"HKEY_CURRENT_USER/{WindowsNativeProxySettingsService.InternetSettingsKeyPath}", ex.Message),
                     CloseButtonText = "OK",
                     Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
                     XamlRoot = this.XamlRoot

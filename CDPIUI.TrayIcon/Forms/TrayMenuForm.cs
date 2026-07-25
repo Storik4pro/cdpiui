@@ -1,6 +1,8 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
+﻿using CDPIUI.Shared.Pipe.Models;
 using CDPIUI.TrayIcon.Controls;
 using CDPIUI.TrayIcon.Helper;
+using CDPIUI.TrayIcon.Helper.Basic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -111,7 +113,7 @@ namespace CDPIUI.TrayIcon.Forms
         private void ExitButton_MouseClick(object? sender, EventArgs e)
         {
             HandleEventHappens();
-            _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
+            _ = PipeHelper.SendApplicationPacket(ApplicationMessageIds.CloseApplicationUI);
             this.Dispose();
             Application.Exit();
         }
@@ -119,10 +121,8 @@ namespace CDPIUI.TrayIcon.Forms
         private async void MaximizeButton_MouseClick(object? sender, EventArgs e)
         {
             HandleEventHappens();
-            if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN"))
-            {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
-            }
+
+            await PipeHelper.SendOpenWindowPacket("MainWindow", true);
         }
 
         private void HandleEventHappens()
@@ -172,7 +172,7 @@ namespace CDPIUI.TrayIcon.Forms
                             Name = task.Id,
                             DisplayText = LocaleHelper.GetLocalizedComponentName(task.Id),
                             ComponentId = task.Id,
-                            IsRunned = task.ProcessManager.GetState(),
+                            IsRunned = task.ProcessManager.IsProcessRunning,
                             IsSetupComplete = task.IsSetupComplete ?? true,
                             Width = targetWidth,
                             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
@@ -247,10 +247,7 @@ namespace CDPIUI.TrayIcon.Forms
                 {
                     case "OpenStoreButton":
                         HandleEventHappens();
-                        if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_STORE"))
-                        {
-                            RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-store");
-                        }
+                        await PipeHelper.SendOpenWindowPacket("StoreWindow", true);
                         break;
                 }
             }

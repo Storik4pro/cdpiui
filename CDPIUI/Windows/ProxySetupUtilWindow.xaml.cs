@@ -1,6 +1,5 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -21,6 +20,7 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using CDPIUI.Helper.Native;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

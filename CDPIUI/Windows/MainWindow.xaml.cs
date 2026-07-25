@@ -1,5 +1,8 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Views;
 using CDPIUI.Views.Components;
 using Microsoft.UI;
@@ -89,19 +92,19 @@ namespace CDPIUI
             GoodbyeDPINavigationViewItem.Visibility = Visibility.Collapsed;
             SpoofDPINavigationViewItem.Visibility = Visibility.Collapsed;
 
-            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("Zapret")))
+            if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.Zapret]))
             {
                 ZapretNavigationViewItem.Visibility = Visibility.Visible;
             }
-            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("ByeDPI")))
+            if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI]))
             {
                 ByeDPINavigationViewItem.Visibility = Visibility.Visible;
             }
-            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")))
+            if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI]))
             {
                 GoodbyeDPINavigationViewItem.Visibility = Visibility.Visible;
             }
-            if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("SpoofDPI")))
+            if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.SpoofDPI]))
             {
                 SpoofDPINavigationViewItem.Visibility = Visibility.Visible;
             }
@@ -179,9 +182,9 @@ namespace CDPIUI
             {
                 if (args.InvokedItemContainer.Tag.ToString().StartsWith("CDPI_UI.Views.Components."))
                 {
-                    string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPI_UI.Views.Components.", "");
+                    //string componentName = args.InvokedItemContainer.Tag.ToString().Replace("CDPI_UI.Views.Components.", "");
 
-                    NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
+                    //NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue(componentName), args.RecommendedNavigationTransitionInfo);
 
                     return;
                 }

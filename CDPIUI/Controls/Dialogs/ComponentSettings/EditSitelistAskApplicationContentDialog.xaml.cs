@@ -1,5 +1,7 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.System;
+using CDPIUI.Shared.Extentions;
 using CDPIUI.Helper.Static;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -29,11 +31,7 @@ using WinUI3Localizer;
 
 namespace CDPIUI.Controls.Dialogs.ComponentSettings;
 
-public enum TextFileOpenModes
-{
-    FollowSystem,
-    UserChoose
-}
+
 
 public sealed partial class EditSitelistAskApplicationContentDialog : ContentDialog
 {
@@ -60,7 +58,7 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
             var bi = new BitmapImage();
             bi.SetSource(iconThumbnail);
             PreviousAppIcon.Source = bi;
-            PreviousChoiceApplication.Text = Utils.FirstCharToUpper(Path.GetFileNameWithoutExtension(appPath));
+            PreviousChoiceApplication.Text = Path.GetFileNameWithoutExtension(appPath).FirstCharToUpper();
         }
         else
         {
@@ -87,7 +85,7 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
             SettingsManager.Instance.SetValue("FILEOPENACTIONS", "applicationPath", appPath);
             SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.UserChoose);
             if (!string.IsNullOrEmpty(FilePath))
-                Utils.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
+                ShellHelper.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
             IsSuccess = true;
             this.Hide();
         }
@@ -101,8 +99,8 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
     {
         SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.FollowSystem);
         if (!string.IsNullOrEmpty(FilePath))
-            if (UseNotepadAsDefault) Utils.RunApp("notepad.exe", $"\"{FilePath}\"", UseUAC);
-            else Utils.OpenFileInDefaultApp(FilePath, UseUAC);
+            if (UseNotepadAsDefault) ShellHelper.RunApp("notepad.exe", $"\"{FilePath}\"", UseUAC);
+            else ShellHelper.OpenFileInDefaultApp(FilePath, UseUAC);
         IsSuccess = true;
         this.Hide();
     }
@@ -112,7 +110,7 @@ public sealed partial class EditSitelistAskApplicationContentDialog : ContentDia
         SettingsManager.Instance.SetValue("FILEOPENACTIONS", "mode", (int)TextFileOpenModes.UserChoose);
         string appPath = SettingsManager.Instance.GetValue<string>("FILEOPENACTIONS", "applicationPath");
         if (!string.IsNullOrEmpty(FilePath))
-            Utils.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
+            ShellHelper.RunApp(appPath, $"\"{FilePath}\"", UseUAC);
         IsSuccess = true;
         this.Hide();
     }

@@ -1,5 +1,6 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -376,7 +377,7 @@ public sealed partial class ComponentSettingUserControl : UserControl
         }
         else
         {
-            Utils.OpenFile(TextValue.Replace("\"", ""));
+            ShellHelper.OpenFile(TextValue.Replace("\"", ""));
         }
         
     }

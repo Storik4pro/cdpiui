@@ -1,5 +1,5 @@
+using CDPIUI.AddOns.Troubleshooting;
 using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Troubleshooting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -19,7 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using static CDPIUI.Helper.Troubleshooting.TroubleshootingHelper;
+using static CDPIUI.AddOns.Troubleshooting.TroubleshootingService;
 using static System.Windows.Forms.AxHost;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -65,7 +65,7 @@ public sealed partial class WorkPage : Page
         DiagnosticResultListView.ItemsSource = DisplayDiagnosticResultsCollection;
         FixResultListView.ItemsSource = FixResults;
 
-        TroubleshootingHelper.Instance.CurrentStateChanged += TroubleshootingHelper_BasicDialogStateChanged;
+        TroubleshootingService.Instance.CurrentStateChanged += TroubleshootingHelper_BasicDialogStateChanged;
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -193,11 +193,11 @@ public sealed partial class WorkPage : Page
     {
         GetReadyForCheck();
 
-        DiagnosticResults = await TroubleshootingHelper.Instance.RunBasicDiagnostic();
+        DiagnosticResults = await TroubleshootingService.Instance.RunBasicDiagnostic();
 
         CheckViewResultActions();
 
-        DisplayDiagnosticResults<RunBasicDialogStates>((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults, TroubleshootingHelper.BasicDiagnosticStateModelPairs);
+        DisplayDiagnosticResults<RunBasicDialogStates>((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults, TroubleshootingService.BasicDiagnosticStateModelPairs);
 
         CheckCompleteActions();
     }
@@ -206,7 +206,7 @@ public sealed partial class WorkPage : Page
     {
         GetReadyForFix();
 
-        var result = await TroubleshootingHelper.Instance.FixAllBasicErrors((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults);
+        var result = await TroubleshootingService.Instance.FixAllBasicErrors((Dictionary<RunBasicDialogStates, bool>)DiagnosticResults);
 
         FixViewResultActions();
 
@@ -219,11 +219,11 @@ public sealed partial class WorkPage : Page
     {
         GetReadyForCheck();
 
-        DiagnosticResults = await TroubleshootingHelper.Instance.RunStoreDiagnostic();
+        DiagnosticResults = await TroubleshootingService.Instance.RunStoreDiagnostic();
 
         CheckViewResultActions();
 
-        DisplayDiagnosticResults<StoreCheckStates>((Dictionary<StoreCheckStates, bool>)DiagnosticResults, TroubleshootingHelper.StoreDiagnosticStateModelPairs);
+        DisplayDiagnosticResults<StoreCheckStates>((Dictionary<StoreCheckStates, bool>)DiagnosticResults, TroubleshootingService.StoreDiagnosticStateModelPairs);
 
         CheckCompleteActions();
     }
@@ -232,7 +232,7 @@ public sealed partial class WorkPage : Page
     {
         GetReadyForFix();
 
-        var result = await TroubleshootingHelper.Instance.FixAllStoreErrors((Dictionary<StoreCheckStates, bool>)DiagnosticResults);
+        var result = await TroubleshootingService.Instance.FixAllStoreErrors((Dictionary<StoreCheckStates, bool>)DiagnosticResults);
 
         FixViewResultActions();
 

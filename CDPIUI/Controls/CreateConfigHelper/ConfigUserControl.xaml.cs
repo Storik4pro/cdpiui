@@ -1,6 +1,8 @@
 using CDPIUI.Controls.Store;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,8 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using CDPIUI.Shared.Extentions;
 using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -118,7 +119,9 @@ namespace CDPIUI.Controls.CreateConfigHelper
             get { return (string)GetValue(TargetComponentIdProperty); }
             set { 
                 SetValue(TargetComponentIdProperty, value);
-                ComponentNameTextBlock.Text = StateHelper.Instance.ComponentIdPairs.TryGetOrDefault(TargetComponentId);
+                ComponentNameTextBlock.Text = 
+                    DatabaseHelper.Instance.GetItemById(TargetComponentId)?.ShortName ?? 
+                    HardcodedItemIds.ComponentIds.GetKeyByValue(TargetComponentId).ToString();
             }
         }
 

@@ -1,5 +1,8 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -69,16 +72,14 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
         private void InitDialog()
         {
             List<ViewComponentModel> components = new();
-            foreach (var component in StateHelper.Instance.ComponentIdPairs)
+            foreach (var component in HardcodedItemIds.ComponentIds)
             {
-                if (component.Key == "ASGKOI001")
-                    continue;
                 components.Add(new()
                 {
-                    StoreId = component.Key,
-                    DisplayName = component.Value,
+                    StoreId = component.Value,
+                    DisplayName = component.Key.ToString(),
                     ImageSource = 
-                        new BitmapImage(Helper.Static.UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(DatabaseHelper.Instance.GetItemById(component.Key)?.IconPath ?? string.Empty)))
+                        new BitmapImage(Core.Static.UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(DatabaseHelper.Instance.GetItemById(component.Value)?.IconPath ?? string.Empty)))
                 });
             }
             ComponentChooseComboBox.ItemsSource = components;

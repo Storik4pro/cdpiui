@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 
-namespace CDPIUI.Helper.Static
+namespace CDPIUI.Core.Static
 {
     public static class FlashlightHelper
     {

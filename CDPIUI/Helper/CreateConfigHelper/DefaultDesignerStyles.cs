@@ -13,11 +13,11 @@ namespace CDPIUI.Helper.CreateConfigHelper
     {
         public DarkDefaultHighlighter()
         {
-            this.Name = "CMD Prompt";
-            this.Author = "Storik4";
-            this.Filter = [];
-            this.Description = "Syntax highlighting for CMD";
-            this.Highlights =
+            Name = "CMD Prompt";
+            Author = "Storik4";
+            Filter = [];
+            Description = "Syntax highlighting for CMD";
+            Highlights =
             [
                 new SyntaxHighlights("(\\*)", "#dd0077", "#dd0077"),
                 new SyntaxHighlights("(%.+?%)", "#5fe354", "#5fe354"),
@@ -32,11 +32,11 @@ namespace CDPIUI.Helper.CreateConfigHelper
     {
         public LightDefaultHighlighter()
         {
-            this.Name = "CMD Prompt";
-            this.Author = "Storik4";
-            this.Filter = [];
-            this.Description = "Syntax highlighting for CMD";
-            this.Highlights =
+            Name = "CMD Prompt";
+            Author = "Storik4";
+            Filter = [];
+            Description = "Syntax highlighting for CMD";
+            Highlights =
             [
                 new SyntaxHighlights("(:.*)", "#00C000", "#00C000"),
                 new SyntaxHighlights("(\\*)", "#dd0077", "#dd0077"),

@@ -1,8 +1,12 @@
 using CDPIUI.Controls.CreateConfigHelper;
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Controls.Dialogs.Universal;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -37,7 +41,7 @@ namespace CDPIUI.Views.CreateConfigHelper
     {
         private string KitId = string.Empty;
         private readonly ObservableCollection<ViewConfigInKitModel> Configs = [];
-        private ConfigHelper ConfigHelper = null;
+        private ConfigurationService ConfigHelper = null;
 
         private readonly ILocalizer localizer = Localizer.Get();
 
@@ -139,7 +143,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                         DisplayName = item.name,
                         UsedSiteLists = usedSiteLists,
                         ExcludedSiteLists = excludedSiteLists,
-                        LastEditTime = ConfigHelper.GetLastEditTimeFromConfigFile(item.file_name, item.packId),
+                        LastEditTime = ConfigurationService.GetLastEditTimeFromConfigFile(item.file_name, item.packId),
                     });
                 });
             }
@@ -201,7 +205,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
             if (item != null)
             {
-                Utils.OpenFolderInExplorer(ConfigHelper.GetItemFolderFromPackId(KitId));
+                ShellHelper.LookupDirectory(ConfigurationService.GetItemFolderFromPackId(KitId));
             }
         }
 
@@ -241,7 +245,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 }
                 else
                 {
-                    string errorCode = await ConfigHelper.SaveConfigItem(configItem.file_name, configItem.packId, configItem);
+                    string errorCode = await ConfigurationService.SaveConfigItem(configItem.file_name, configItem.packId, configItem);
                     if (!string.IsNullOrEmpty(errorCode)) 
                     {
                         ShowErrorDialog(string.Format(localizer.GetLocalizedString("SaveConfigException"), errorCode), localizer.GetLocalizedString("SomethingWentWrong"));
@@ -300,7 +304,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             if (result.Mode == SaveConfigKitAsModes.SaveForMe)
             {
                 string newPackId = $"{Guid.NewGuid()}_FM";
-                string directory = ConfigHelper.GetItemFolderFromPackId(newPackId);
+                string directory = ConfigurationService.GetItemFolderFromPackId(newPackId);
                 string lstFile = directory;
 
                 ConfigPackMakeHelper.ConfigPackInitModel templateModel = new()
@@ -316,12 +320,12 @@ namespace CDPIUI.Views.CreateConfigHelper
                     return ConfigPackMakeHelper.CreateConfigPack(templateModel, ConfigHelper.GetConfigItems(), directory, autoImport:true).Result;
                 });
 
-                if (operationResult?.IsSuccess != true)
+                if (operationResult?.Success != true)
                 {
                     ErrorContentDialog errorDialog = new() { };
                     await errorDialog.ShowErrorDialogAsync(
-                        content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), directory, operationResult?.ErrorCode),
-                        errorDetails: operationResult?.ErrorMessage,
+                        content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), directory, operationResult?.Error.ErrorCode),
+                        errorDetails: operationResult?.Error.FriendlyDescription,
                         xamlRoot: this.Content.XamlRoot);
                 }
             }
@@ -355,12 +359,12 @@ namespace CDPIUI.Views.CreateConfigHelper
                         return ConfigPackMakeHelper.CreateConfigPack(templateModel, ConfigHelper.GetConfigItems(), filename).Result;
                     });
 
-                    if (operationResult?.IsSuccess != true)
+                    if (operationResult?.Success != true)
                     {
                         ErrorContentDialog errorDialog = new() { };
                         await errorDialog.ShowErrorDialogAsync(
-                            content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), _dialog.FileName, operationResult?.ErrorCode),
-                            errorDetails: operationResult?.ErrorMessage,
+                            content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), _dialog.FileName, operationResult?.Error.ErrorCode),
+                            errorDetails: operationResult?.Error.FriendlyDescription,
                             xamlRoot: this.Content.XamlRoot);
                     }
 

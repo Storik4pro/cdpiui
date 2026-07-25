@@ -1,30 +1,20 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using CDPIUI.Shared;
+using CDPIUI.Shared.Pipe;
+using CDPIUI.Shared.Pipe.Models;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Pipes;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CDPIUI.TrayIcon.Helper.Basic
 {
-    public class PipeServer : IDisposable
+    public class PipeServer : PipeServiceBase
     {
-        private string _pipeName;
-        private int _maxServerInstances;
-        private CancellationTokenSource? _cts;
+        private int _maxServerInstances = 1;
         private Task? _listenerTask;
 
-        private NamedPipeServerStream? _pipeServerStream;
-        private StreamString? _streamString;
-
         private bool IsAuthorized = false;
-
-        public Action? Disconnected;
 
         private static PipeServer? _instance;
         private static readonly object _lock = new object();
@@ -41,50 +31,26 @@ namespace CDPIUI.TrayIcon.Helper.Basic
             }
         }
 
-        public PipeServer()
+        public PipeServer() 
         {
-            _pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}";
-            _maxServerInstances = 1;
+            Logger = Basic.Logger.Instance;
         }
 
-        public void Init(string pipeName = "{C9253A32-C9BB-496F-A700-43268B370236}", int maxServerInstances = 1)
-        {
-            _pipeName = pipeName;
-            _maxServerInstances = Math.Max(1, maxServerInstances);
-        }
+        public void Init() { }
 
         public void Start()
         {
-            if (_cts != null) throw new InvalidOperationException("Server already started");
+            if (CancellationToken != null) throw new InvalidOperationException("Server already started");
+            CreateCancellationToken();
 
-            _cts = new CancellationTokenSource();
-            _listenerTask = Task.Run(() => ListenLoopAsync(_cts.Token));
+            _listenerTask = Task.Run(() => ListenLoopAsync());
         }
 
-        public async Task StopAsync()
-        {
-            if (_cts == null) return;
-            _cts.Cancel();
-            try
-            {
-                if (_listenerTask != null) await _listenerTask.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) { }
-            finally
-            {
-                _cts.Dispose();
-                _cts = null;
-                _listenerTask = null;
+        
 
-                _pipeServerStream?.Dispose();
-                _pipeServerStream = null;
-                _streamString = null;
-            }
-        }
-
-        private async Task ListenLoopAsync(CancellationToken token)
+        private async Task ListenLoopAsync()
         {
-            while (!token.IsCancellationRequested)
+            while (!(CancellationToken?.IsCancellationRequested ?? true))
             {
                 IsAuthorized = false;
                 try
@@ -101,8 +67,8 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                     var everyone = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
                     ps.AddAccessRule(new PipeAccessRule(everyone, PipeAccessRights.ReadWrite, AccessControlType.Allow));
 
-                    _pipeServerStream = NamedPipeServerStreamAcl.Create(
-                        _pipeName,
+                    PipeStream = NamedPipeServerStreamAcl.Create(
+                        SharedConstants.PipeName,
                         PipeDirection.InOut,
                         _maxServerInstances,
                         PipeTransmissionMode.Byte,
@@ -113,18 +79,19 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                 }
                 catch (Exception ex)
                 {
-                    Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe create error: {ex.Message}");
+                    Logger?.CreateErrorLog(nameof(PipeServer), $"Pipe create error: {ex.Message}");
                     Process.GetCurrentProcess().Kill();
                     return;
-                    
                 }
 
                 try
                 {
                     Console.WriteLine("WAIT");
-                    await _pipeServerStream.WaitForConnectionAsync(token);
+                    await ((NamedPipeServerStream)PipeStream).WaitForConnectionAsync(CancellationToken ?? default);
 
-                    await HandleClientAsync(token);
+                    int threadId = Thread.CurrentThread.ManagedThreadId;
+                    Logger?.CreateDebugLog(nameof(PipeServer), $"Client connected on thread[{threadId}].");
+                    await HandleConnectionAsync();
                 }
                 catch (OperationCanceledException)
                 {
@@ -132,411 +99,74 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                 }
                 catch (IOException ex)
                 {
-                    Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe accept or communication error: {ex.Message}");
+                    Logger?.CreateErrorLog(nameof(PipeServer), $"Pipe accept or communication error: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Logger?.CreateErrorLog(nameof(PipeServer), $"Pipe failure: {ex.Message}");
                 }
                 finally
                 {
-                    Disconnected?.Invoke();
-                    _pipeServerStream?.Dispose();
-                    _pipeServerStream = null;
-                    _streamString = null;
+                    if (PipeStream.IsConnected)
+                    {
+                        ((NamedPipeServerStream)PipeStream).Disconnect();
+                    }
+
+                    NotifyDisconnected();
+                    PipeStream?.Dispose();
+                    PipeStream = null;
+                    StreamString = null;
+
+                    Logger?.CreateDebugLog(nameof(PipeServer), $"Client handler finished.");
                 }
             }
         }
 
-        private async Task HandleClientAsync(CancellationToken token)
+        protected override async Task RunMessageActions(IPipeMessage message)
         {
-            if (_pipeServerStream == null) return;
-
-            int threadId = Thread.CurrentThread.ManagedThreadId;
-            Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client connected on thread[{threadId}].");
-
-            _streamString = new StreamString(_pipeServerStream);
-            await _streamString.WriteStringAsync("CONNECT:OK");
-            try
+            if (message is ServiceMessageModel messageModel)
             {
-                while (_pipeServerStream.IsConnected && !token.IsCancellationRequested)
+                if (messageModel.MessageType == ServiceMessageIds.RequestAuth)
                 {
-                    string message;
-                    try
-                    {
-                        message = await _streamString.ReadStringAsync(token);
-                        Debug.WriteLine(message);
-                        _ = RunMessageActions(message);
-                    }
-                    catch (EndOfStreamException)
-                    {
-                        Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client disconnected on thread[{threadId}].");
-                        break;
-                    }
-
-                    if (string.IsNullOrEmpty(message))
-                    {
-                        continue;
-                    }
-                }
-            }
-            catch (IOException e)
-            {
-                Logger.Instance.CreateErrorLog(nameof(PipeServer), $"Pipe communication error (thread[{threadId}]): {e.Message}");
-            }
-            finally
-            {
-                try
-                {
-                    if (_pipeServerStream.IsConnected)
-                    {
-                        _pipeServerStream.WaitForPipeDrain();
-                        _pipeServerStream.Disconnect();
-                    }
-                }
-                catch { }
-
-                Logger.Instance.CreateDebugLog(nameof(PipeServer), $"Client handler on thread[{threadId}] finished.");
-            }
-        }
-
-        private async Task RunMessageActions(string message)
-        {
-            // MessageBox.Show(message);
-
-            if (message.StartsWith("PIPE:"))
-            {
-                if (message.StartsWith("PIPE:CONNECT"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    if (result[0] == Secret.AuthGuid)
+                    Debug.WriteLine(messageModel.MessageData["GUID"]);
+                    if (messageModel.MessageData != null && messageModel.MessageData["GUID"] == Secret.AuthGuid)
                     {
                         IsAuthorized = true;
-                        _ = SendMessage("PIPE:AUTH_OK");
+                        _ = SendMessageAsync(ServiceMessageModel.AuthSuccessful().ToString());
                     }
                     else
                     {
                         IsAuthorized = false;
-                        _ = SendMessage("PIPE:AUTH_ERR");
+                        _ = SendMessageAsync(ServiceMessageModel.AuthFailure().ToString());
                     }
                 }
             }
-            else if (!IsAuthorized)
+
+            if (!IsAuthorized)
             {
-                Console.WriteLine("ERR, not authorized");
+                Logger?.CreateWarningLog(nameof(PipeServer), "Authorization failed.");
                 return;
             }
-            else if (message.StartsWith("CONPTY:"))
-            {
-                if (message.StartsWith("CONPTY:START"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 3)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    TasksHelper.Instance.CreateAndRunNewTask(result[0], result[1], result[2]);
-                }
-                else if (message.StartsWith("CONPTY:STOPSERVICE"))
-                {
-                    TasksHelper.Instance.StopService();
-                }
-                else if (message.StartsWith("CONPTY:STOP"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1) return;
 
-                    _ = TasksHelper.Instance.StopTask(result[0]);
-                }
-                else if (message.StartsWith("CONPTY:RESTART"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1) return;
-
-                    _ = TasksHelper.Instance.RestartTask(result[0]);
-                }
-                else if (message.StartsWith("CONPTY:GETOUTPUT"))
-                {
-                    TasksHelper.Instance.SendAllTasksOutput();
-                }
-                else if (message.StartsWith("CONPTY:GETSTATE"))
-                {
-                    TasksHelper.Instance.SendAllTasksState();
-                }
-                else if (message.StartsWith("CONPTY:PROCESSCHANGED"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1) return;
-
-                    TasksHelper.Instance.SetIsStartArgsChangedProperty(result[0], true);
-                }
-            }
-            else if (message.StartsWith("GOODCHECK:"))
-            {
-                if (message.StartsWith("GOODCHECK:START"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 3)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    _ = GoodCheckProcessHelper.Instance.StartAsync(result[0], result[1], result[2]);
-                    TasksHelper.Instance.ApplyStatusToAllTasks(false);
-
-                }
-                else if (message.StartsWith("GOODCHECK:STOP"))
-                {
-                    GoodCheckProcessHelper.Instance.Stop();
-                    TasksHelper.Instance.ApplyStatusToAllTasks(true);
-                }
-            }
-            else if (message.StartsWith("SETTINGS:"))
-            {
-                if (message.StartsWith("SETTINGS:ADD_TO_AUTORUN"))
-                {
-                    if (!AutoStartManager.AddToAutorun())
-                    {
-                        _ = SendMessage("SETTINGS:AUTORUN_FALSE");
-                        NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("Autorun"), LocaleHelper.GetLocaleString("AutorunERR"), "OPEN_AUTORUN_ERROR");
-                    }
-                }
-                else if (message.StartsWith("SETTINGS:REMOVE_FROM_AUTORUN"))
-                {
-                    AutoStartManager.RemoveFromAutorun();
-                }
-                else if (message.StartsWith("SETTINGS:RELOAD"))
-                {
-                    SettingsManager.Instance.Reload();
-                }
-                else if (message.StartsWith("SETTINGS:COMPONENT_READY"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Debug.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-
-                    TasksHelper.Instance.AddNewTask(result[0]);
-                    TasksHelper.Instance.SetTaskStatus(result[0], true);
-                }
-                else if (message.StartsWith("SETTINGS:COMPONENT_SETUP_NOT_FINISHED"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Debug.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    TasksHelper.Instance.AddNewTask(result[0]);
-                    TasksHelper.Instance.SetTaskStatus(result[0], false);
-                }
-                else if (message.StartsWith("SETTINGS:COMPONENT_NOT_INSTALLED"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Debug.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-
-                    _ = TasksHelper.Instance.StopAndRemoveTaskAsync(result[0]);
-                }
-            }
-            else if (message.StartsWith("UTILS:GRANT_ACCESS"))
-            {
-                var result = ScriptHelper.GetArgsFromString(message);
-                if (result.Length < 1)
-                {
-                    Debug.WriteLine($"ERR, {message} => args exception");
-                    return;
-                }
-                Utils.GrantAccess(result[0], true);
-            }
-            else if (message.StartsWith("UPDATE:"))
-            {
-                if (message.StartsWith("UPDATE:BEGIN"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    Utils.StartUpdate(result[0]);
-                }
-                else if (message.StartsWith("UPDATE:AVAILABLE"))
-                {
-                    NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("UpdateAvailable"), "UPDATE:OPEN_DOWNLOAD_PAGE");
-                }
-            }
-            else if (message.StartsWith("MSI:"))
-            {
-                if (message.StartsWith("MSI:BEGIN"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 2)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    MsiInstallerHelper.Instance.AddToQueue(result[0], result[1]);
-                }
-                else if (message.StartsWith("MSI:KILL"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    MsiInstallerHelper.Instance.RemoveFromQueue(result[0]);
-                }
-            }
-            else if (message.StartsWith("PROXY:"))
-            {
-                if (message.StartsWith("PROXY:INIT"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 2)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    TasksHelper.Instance.InitProxyOnTask(result[0], result[1]);
-                }
-                else if (message.StartsWith("PROXY:SETUP"))
-                {
-
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 4)
-                    {
-                        Debug.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    TasksHelper.Instance.EnableProxyOnTask(result[0], result[1], result[2], result[3]);
-                }
-                else if (message.StartsWith("PROXY:CLEAN"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1) return;
-
-                    TasksHelper.Instance.CleanProxyOnTask(result[0]);
-                }
-            }
-            else if (message.StartsWith("NOTIFY:"))
-            {
-                if (message.StartsWith("NOTIFY:PROXY_SETUP_REQUIRED"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    NotifyHelper.ShowMessage("CDPI UI", string.Format(LocaleHelper.GetLocaleString("ProxySetupAsk"), result[0]), "OPEN_PROXY_SETUP");
-                }
-                else if (message.StartsWith("NOTIFY:CCA"))
-                {
-                    var result = ScriptHelper.GetArgsFromString(message);
-                    if (result.Length < 1)
-                    {
-                        Console.WriteLine($"ERR, {message} => args exception");
-                        return;
-                    }
-                    NotifyHelper.ShowMessage(LocaleHelper.GetLocaleString("CompatibilityCheckAssistant"),
-                        string.Format(LocaleHelper.GetLocaleString("ConfigRequiredNewestVersionOfComponent"), result[0]), "OPEN_BEGIN_STORE_UPDATE_CHECK");
-                }
-            }
-            else if (message.StartsWith("APPLICATION:"))
-            {
-                if (message.StartsWith("APPLICATION:HARD_RESTART"))
-                {
-                    await SendMessage("MAIN:EXIT_ALL");
-                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "");
-                    NotifyHelper.Instance.Dispose();
-                    Application.Exit();
-                }
-            }
-                Debug.WriteLine("RELEASE");
-
+            await CommandsHandler.HandleCommandAsync(message);
         }
 
-        private readonly SemaphoreSlim _sendLock = new SemaphoreSlim(1, 1);
-
-        public async Task<bool> SendMessage(string message)
+        public override async void Dispose()
         {
-            Debug.WriteLine($"{message}");
-            if (_pipeServerStream == null || !_pipeServerStream.IsConnected || _streamString == null)
-                return false;
-
-            await _sendLock.WaitAsync();
             try
             {
-                if (_pipeServerStream == null || !_pipeServerStream.IsConnected || _streamString == null)
-                    return false;
-
-                await _streamString.WriteStringAsync(message);
-
-                return true;
+                if (_listenerTask != null) await _listenerTask.ConfigureAwait(false);
             }
-            catch { return false; }
+            catch (OperationCanceledException) { }
             finally
             {
-                _sendLock.Release();
+                base.Dispose();
             }
         }
 
-        public void Dispose()
-        {
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                _cts.Dispose();
-                _cts = null;
-            }
-        }
     }
 
-    public class StreamString
-    {
-        private readonly Stream ioStream;
-        private readonly Encoding streamEncoding = Encoding.Unicode;
-
-        public StreamString(Stream ioStream)
-        {
-            this.ioStream = ioStream ?? throw new ArgumentNullException(nameof(ioStream));
-        }
-
-        public async Task<string> ReadStringAsync(CancellationToken token = default)
-        {
-            byte[] lenBuffer = new byte[2];
-            await ioStream.ReadAsync(lenBuffer, 0, 2, token).ConfigureAwait(false);
-
-            int len = lenBuffer[0] * 256 + lenBuffer[1];
-
-            byte[] inBuffer = new byte[len];
-            await ioStream.ReadAsync(inBuffer, 0, len, token).ConfigureAwait(false);
-
-            return streamEncoding.GetString(inBuffer);
-        }
-
-        public async Task<int> WriteStringAsync(string outString, CancellationToken token = default)
-        {
-            byte[] outBuffer = streamEncoding.GetBytes(outString ?? string.Empty);
-            int len = Math.Min(outBuffer.Length, ushort.MaxValue);
-
-            byte[] header = new byte[2] { (byte)(len / 256), (byte)(len & 255) };
-            await ioStream.WriteAsync(header, 0, 2, token).ConfigureAwait(false);
-            await ioStream.WriteAsync(outBuffer, 0, len, token).ConfigureAwait(false);
-            await ioStream.FlushAsync(token).ConfigureAwait(false);
-
-            return len + 2;
-        }
-    }
+    
 
     public class ScriptHelper
     {

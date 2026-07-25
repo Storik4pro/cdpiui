@@ -1,4 +1,10 @@
-﻿using CDPIUI.Helper.Basic;
+﻿using CDPIUI.Core.Basic;
+using CDPIUI.Core.Communication;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.Static;
 using System;
 using System.Collections.Generic;
@@ -7,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI.Helper.Items
+namespace CDPIUI.Core.Items
 {
     public class CompatibilityCheckHelper
     {
@@ -39,7 +45,7 @@ namespace CDPIUI.Helper.Items
 
                 foreach (var component in components)
                 {
-                    ConfigHelper configHelper = component.GetConfigHelper();
+                    ConfigurationService configHelper = component.GetConfigHelper();
 
                     foreach (var config in configHelper.GetConfigItems())
                     {
@@ -50,7 +56,7 @@ namespace CDPIUI.Helper.Items
                             string requiredVersion = config.target[1];
                             string installedVersion = databaseItem.CurrentVersion;
 
-                            if (Utils.CompareVersionStrings(requiredVersion, installedVersion) == 1)
+                            if (VersionHelper.CompareVersionStrings(requiredVersion, installedVersion) == 1)
                             {
                                 if (!outdatedComponents.Contains(config.target[0]))
                                 {
@@ -63,7 +69,11 @@ namespace CDPIUI.Helper.Items
 
                 foreach (var component in outdatedComponents)
                 {
-                    await PipeClient.Instance.SendMessage($"NOTIFY:CCA({StateHelper.Instance.ComponentIdPairs.FirstOrDefault(x => x.Key == component).Value})");
+                    await PipeHelper.SendNotificationPacket(Shared.Pipe.Models.NotificationsMessageIds.CompatibilityCheckAssistant,
+                        new()
+                        {
+                            { "componentName", HardcodedItemIds.ComponentIds.FirstOrDefault(x => x.Value == component).Key.ToString() }
+                        });
                 }
             }
             catch (Exception ex)

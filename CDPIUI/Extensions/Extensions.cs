@@ -17,14 +17,7 @@ namespace CDPIUI.Extensions
 
         public static string ColorToHex(this Color c) => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
 
-        public static void AddRange<T>(this ICollection<T> target, IEnumerable<T> source)
-        {
-            ArgumentNullException.ThrowIfNull(target);
-            ArgumentNullException.ThrowIfNull(source);
-            foreach (var element in source)
-                if (!target.Contains(element))
-                    target.Add(element);
-        }
+        
 
         public static int RemoveAll<T>(this ObservableCollection<T> coll, Func<T, bool> condition)
         {

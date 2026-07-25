@@ -1,7 +1,11 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration.Helpers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -106,15 +110,15 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
                 if (Path.GetExtension(file).Equals(".txt", StringComparison.CurrentCultureIgnoreCase))
                 {
                     convDir = Path.Combine(
-                        ConfigHelper.GetItemFolderFromPackId(StateHelper.LocalUserItemsId),
-                        StateHelper.LocalUserItemSiteListsFolder,
+                        ConfigurationService.GetItemFolderFromPackId(SharedConstants.LocalUserItemsId),
+                        SharedConstants.LocalUserItemSiteListsFolder,
                         $"{ConfigName.Unidecode().Replace(" ", "_")}_converted_{secondsSinceEpoch}");
                 }
                 else
                 {
                     convDir = Path.Combine(
-                        ConfigHelper.GetItemFolderFromPackId(StateHelper.LocalUserItemsId),
-                        StateHelper.LocalUserItemBinsFolder,
+                        ConfigurationService.GetItemFolderFromPackId(SharedConstants.LocalUserItemsId),
+                        SharedConstants.LocalUserItemBinsFolder,
                         $"{ConfigName.Unidecode().Replace(" ", "_")}_converted_{secondsSinceEpoch}");
                 }
                 if (!Directory.Exists(convDir))
@@ -194,8 +198,8 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
                         model.FilePath,
                         "$GETCURRENTDIR()/" +
                         Path.Combine(
-                            Utils.GetFolderNamesUpTo(
-                                model.ConvertDirectoryPath, StateHelper.LocalUserItemsId), Path.GetFileName(filepath)
+                            FileSystemService.GetFolderNamesUpTo(
+                                model.ConvertDirectoryPath, SharedConstants.LocalUserItemsId), Path.GetFileName(filepath)
                                 )
                         );
 
@@ -204,7 +208,7 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
                 }
                 catch (Exception ex)
                 {
-                    ShowDialog($"{ErrorsHelper.GetPrettyErrorCode("AUTOCORRECT", ex)}:\n" + ex.Message);
+                    ShowDialog($"{ErrorsHelper.Convertor.GetPrettyErrorCode("AUTOCORRECT", ex)}:\n" + ex.Message);
                     Result = CreateConfigResult.Canceled;
                     return;
                 }

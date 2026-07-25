@@ -1,6 +1,4 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,6 +19,11 @@ using Windows.Foundation.Collections;
 using WinUI3Localizer;
 using WinUIEx;
 using static System.Net.Mime.MediaTypeNames;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Shared.Basic.Filesystem;
+using CDPIUI.Core.System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -79,7 +82,7 @@ namespace CDPIUI
         private void InitHelp()
         {
             HelpNavigationView.MenuItems.Clear();
-            var items = HelpParserHelper.GetHelpItemsForLanguage(Utils.GetStoreLikeLocale());
+            var items = HelpParser.GetHelpItemsForLanguage(StoreLocalizationHelper.GetStoreLikeLocale());
 
             if (items == null)
             {
@@ -210,7 +213,7 @@ namespace CDPIUI
 
             if (Path.Exists(tag) && File.Exists(tag))
             {
-                MarkdownTextBlock.Text = Utils.LoadAllTextFromFile(tag);
+                MarkdownTextBlock.Text = ShellHelper.LoadAllTextFromFile(tag);
             }
             else if (tag == "AboutHelp")
             {

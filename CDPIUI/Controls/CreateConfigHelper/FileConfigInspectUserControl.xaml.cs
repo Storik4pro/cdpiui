@@ -1,6 +1,9 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -103,7 +106,7 @@ namespace CDPIUI.Controls
 
         private void Hyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
         {
-            Utils.OpenFileInDefaultApp(AutoCorrectFilePath);
+            ShellHelper.OpenFileInDefaultApp(AutoCorrectFilePath);
         }
 
         private ILocalizer localizer = Localizer.Get();
@@ -125,7 +128,7 @@ namespace CDPIUI.Controls
                 ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
                 return;
             }
-            string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
+            string lastSegment = FileSystemService.GetFolderNamesUpTo(ConvertFolderPath, SharedConstants.LocalUserItemsId);
 
             ChangeFilePathCommandParameter = Tuple.Create(FilePath, $"$GETCURRENTDIR()/{lastSegment}/{Path.GetFileName(FilePath)}");
             if (ChangeFilePathCommand != null && ChangeFilePathCommand.CanExecute(ChangeFilePathCommandParameter))
@@ -158,7 +161,7 @@ namespace CDPIUI.Controls
                         ShowDialog("ERR_AUTOCORRECT_IO:\n" + ex.Message);
                         return;
                     }
-                    string lastSegment = Utils.GetFolderNamesUpTo(ConvertFolderPath, StateHelper.LocalUserItemsId);
+                    string lastSegment = FileSystemService.GetFolderNamesUpTo(ConvertFolderPath, SharedConstants.LocalUserItemsId);
 
                     ChangeFilePathCommandParameter = Tuple.Create(FilePath, $"$GETCURRENTDIR()/{lastSegment}/{Path.GetFileName(openFileDialog.FileName)}");
                     if (ChangeFilePathCommand != null && ChangeFilePathCommand.CanExecute(ChangeFilePathCommandParameter))

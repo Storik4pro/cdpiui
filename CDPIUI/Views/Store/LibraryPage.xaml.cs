@@ -1,5 +1,8 @@
 using CDPIUI.Controls.Store.Settings;
-using CDPIUI.Helper;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
@@ -83,7 +86,7 @@ namespace CDPIUI.Views.Store
 
             foreach (DatabaseStoreItem item in databaseStoreItems)
             {
-                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, Utils.GetStoreLikeLocale());
+                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, StoreLocalizationHelper.GetStoreLikeLocale());
                 title = title.StartsWith("slocale:")? item.ShortName : title;
 
                 string category = localizer.GetLocalizedString(item.Type);

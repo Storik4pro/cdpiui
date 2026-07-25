@@ -123,20 +123,21 @@ namespace CDPIUI.TrayIcon.Controls
         {
             EventHappens?.Invoke();
 
-            if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_COMPONENT_SETTINGS({ComponentId})"))
+            await PipeHelper.SendOpenWindowPacket("MainWindow", new() 
             {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-component-settings={ComponentId}");
-            }
+                { "page", "Components.DefaultComponentSettingsPage" },
+                { "componentId", ComponentId },
+            }, true);
         }
 
         private async void OpenPseudoConsoleButton_Clicked(object? sender, EventArgs e)
         {
             EventHappens?.Invoke();
 
-            if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({ComponentId})")) 
+            await PipeHelper.SendOpenWindowPacket("ViewWindow", new()
             {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-pseudoconsole={ComponentId}");
-            }
+                { "componentId", ComponentId },
+            }, true);
         }
 
         private async void ComponentWorkButton_Clicked(object? sender, EventArgs e)

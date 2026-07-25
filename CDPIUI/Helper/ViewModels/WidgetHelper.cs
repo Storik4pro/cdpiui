@@ -1,16 +1,12 @@
 ﻿using CDPIUI.Controls.Dialogs.MainPage;
 using CDPIUI.Default;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinUI3Localizer;
 
 namespace CDPIUI.Helper.ViewModels

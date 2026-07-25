@@ -1,4 +1,5 @@
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -101,7 +102,7 @@ namespace CDPIUI
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            Utils.OpenFileInDefaultApp(FilePath);
+            ShellHelper.OpenFileInDefaultApp(FilePath);
         }
 
         private void StrategyChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)

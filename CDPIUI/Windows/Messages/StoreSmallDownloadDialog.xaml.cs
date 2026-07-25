@@ -1,8 +1,5 @@
 using CDPIUI.Controls.Dialogs.Store;
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -25,6 +22,13 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.Core.Store.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,10 +45,10 @@ namespace CDPIUI.Messages
         private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
         private Action<Tuple<string, double>> _itemDownloadSpeedChangedHandler;
         private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
-        private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
+        private Action<Tuple<string, ErrorModel>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
 
-        private Helper.StoreHelper.RepoCategoryItem item;
+        private RepoItemModel item;
 
         public StoreSmallDownloadDialog()
         {
@@ -105,21 +109,21 @@ namespace CDPIUI.Messages
 
         private void LoadItemInfo()
         {
-            item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(StoreId);
+            item = StoreHelper.Instance.GetItemInfoFromStoreId(StoreId);
 
             if (item == null) return;
 
             ConnectHandlers();
             CheckCurrentStatus();
 
-            ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemName"), item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale()));
+            ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemName"), item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale()));
             ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(item.icon)));
             DeveloperTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallDeveloperText"), item.developer);
             CategoryTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallCategoryText"), StoreHelper.Instance.GetLocalizedStoreItemName(
                     StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
-                    Utils.GetStoreLikeLocale()
+                    StoreLocalizationHelper.GetStoreLikeLocale()
                 ));
-            ItemSmallDescriptionTextBlock.Text = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
+            ItemSmallDescriptionTextBlock.Text = LScriptLangHelper.ExecuteScript(item.small_description, StoreLocalizationHelper.GetStoreLikeLocale());
 
             ToggleItemLoadingMode(false);
 
@@ -301,7 +305,7 @@ namespace CDPIUI.Messages
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                     return;
 
-                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}";
+                CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}";
             };
 
             StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
@@ -309,7 +313,7 @@ namespace CDPIUI.Messages
             _itemInstallingErrorHappensHandler = (data) =>
             {
                 string operationId = data.Item1;
-                string errorCode = data.Item2;
+                string errorCode = data.Item2.ErrorCode;
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                     return;
@@ -337,7 +341,7 @@ namespace CDPIUI.Messages
             DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
             CancelButton.Content = "OK";
 
-            ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemNameComplete"), item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale()));
+            ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemNameComplete"), item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale()));
         }
         
     }

@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /CDPIUI/Helper/Secret.cs
 /CDPIUI/RemoteDebug.txt
 /CDPIUI.TrayIcon/Helper/Secret.cs
+/CDPIUI.Shared/Secrets/Secret.cs

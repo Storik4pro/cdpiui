@@ -1,5 +1,8 @@
 using CDPIUI.Controls.Dialogs.Store;
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Features;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Repository;
 using CDPIUI.Messages;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Store.Settings;
@@ -168,7 +171,7 @@ namespace CDPIUI.Views.Store
 
                 if (Path.GetExtension(filePath) == ".cdpipatch")
                 {
-                    ApplicationUpdateHelper.Instance.InstallApplicationUpdateFromFile(filePath);
+                    ApplicationUpdate.Instance.InstallApplicationUpdateFromFile(filePath);
                 }
                 else
                 {

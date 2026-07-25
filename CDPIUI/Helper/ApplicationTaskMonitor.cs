@@ -1,4 +1,5 @@
-﻿using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+﻿using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Core.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +60,13 @@ namespace CDPIUI.Helper
         /*
         public static bool IsComponentProcessRunned()
         {
-            return ProcessManager.Instance.processState;
+            return ProcessManager.Instance.IsProcessRunning;
         }
         */
 
         public static bool IsGoodCheckRunned()
         {
-            return GoodCheckProcessHelper.Instance.IsRunned();
+            return GoodCheckProcessService.Instance.IsRunned();
         }
 
         public static bool IsStoreWorking()

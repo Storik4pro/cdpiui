@@ -1,4 +1,4 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using CDPIUI.Helper.ViewModels;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;

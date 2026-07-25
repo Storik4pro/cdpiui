@@ -1,5 +1,10 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.System;
+using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using CDPIUI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -118,7 +123,7 @@ namespace CDPIUI.Controls.Store.Settings
             get { return (double)GetValue(SizeTextProperty); }
             set { 
                 SetValue(SizeTextProperty, value);
-                SizeTextBlock.Text = Utils.FormatSize((long)value);
+                SizeTextBlock.Text = UnitsParser.FormatSize((long)value);
             }
         }
 
@@ -140,7 +145,7 @@ namespace CDPIUI.Controls.Store.Settings
                 SetupMenuFlyuoutItem.IsEnabled = false;
             }
 
-            if (databaseStoreItem.Id == StateHelper.LocalUserItemsId || databaseStoreItem.Id == StateHelper.ApplicationStoreId)
+            if (databaseStoreItem.Id == SharedConstants.LocalUserItemsId || databaseStoreItem.Id == SharedConstants.ApplicationStoreId)
             {
                 SetupMenuFlyuoutItem.IsEnabled = false;
                 DeleteButton.IsEnabled = false;
@@ -159,7 +164,7 @@ namespace CDPIUI.Controls.Store.Settings
         {
             try
             {
-                Helper.Static.Utils.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(StoreId).Directory);
+                ShellHelper.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(StoreId).Directory);
             }
             catch
             {

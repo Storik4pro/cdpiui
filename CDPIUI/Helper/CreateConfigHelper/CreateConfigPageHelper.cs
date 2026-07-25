@@ -1,4 +1,5 @@
-﻿using CDPIUI.Helper.Items;
+﻿using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Store.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace CDPIUI.Helper.CreateConfigHelper
+namespace CDPIUI.Core.CreateConfigHelper
 {
     public partial class CreateConfigPageHelper
     {

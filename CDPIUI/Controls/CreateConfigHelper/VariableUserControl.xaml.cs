@@ -1,5 +1,5 @@
 using CDPIUI.Controls.Dialogs;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;

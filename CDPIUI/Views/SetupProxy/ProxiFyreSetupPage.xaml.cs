@@ -1,7 +1,10 @@
 using CDPIUI.Controls.Dialogs.ProxySetupUtil;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Data;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.JSON;
+using CDPIUI.Core.Proxy;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -29,6 +32,7 @@ using Windows.Foundation.Metadata;
 using Windows.Storage.Pickers;
 using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
+using SelectedApplicationInfo = CDPIUI.Controls.Dialogs.ProxySetupUtil.SelectedApplicationInfo;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -55,8 +59,8 @@ namespace CDPIUI.Views.SetupProxy
 
     public sealed partial class ProxiFyreSetupPage : Page
     {
-        private List<ApplicationInfo> WhiteList = [];
-        private List<ApplicationInfo> BlackList = [];
+        private List<SelectedApplicationInfo> WhiteList = [];
+        private List<SelectedApplicationInfo> BlackList = [];
 
         private ILocalizer localizer = Localizer.Get();
 
@@ -173,7 +177,7 @@ namespace CDPIUI.Views.SetupProxy
 
         private void GetSettings()
         {
-            string dir = Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, AddOnId);
+            string dir = Path.Combine(Directories.StoreItemsDirectory, AddOnId);
             if (!Path.Exists(dir))
                 return; // TODO: show error message
             string settingsFile = Path.Combine(dir, "app-config.json");
@@ -190,7 +194,7 @@ namespace CDPIUI.Views.SetupProxy
                 string readyToCompareIpAddr = GetProxyIpString(
                     SettingsManager.Instance.GetValue<string>("PROXY", "IPAddress"), SettingsManager.Instance.GetValue<string>("PROXY", "port"));
 
-                ProxiFyreSettings settings = Utils.LoadJson<ProxiFyreSettings>(settingsFile);
+                ProxiFyreSettings settings = JSONConvertor.LoadJson<ProxiFyreSettings>(settingsFile);
                 ProxiFyreProxyGroup proxyGroup = settings.proxies.FirstOrDefault(x => x.socks5ProxyEndpoint == readyToCompareIpAddr);
                 if (proxyGroup is null && settings.proxies.Count > 0)
                 {
@@ -237,7 +241,7 @@ namespace CDPIUI.Views.SetupProxy
 
         private bool SaveSettings()
         {
-            string dir = Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName, AddOnId);
+            string dir = Path.Combine(Directories.StoreItemsDirectory, AddOnId);
             if (!Path.Exists(dir))
                 return false; // TODO: show error message
             string settingsFile = Path.Combine(dir, "app-config.json");
@@ -251,7 +255,7 @@ namespace CDPIUI.Views.SetupProxy
             }
             else
             {
-                settings = Utils.LoadJson<ProxiFyreSettings>(settingsFile);
+                settings = JSONConvertor.LoadJson<ProxiFyreSettings>(settingsFile);
             }
 
             string readyToCompareIpAddr = GetProxyIpString(IPValue.Text, PortValue.Text);
@@ -299,13 +303,13 @@ namespace CDPIUI.Views.SetupProxy
             Logger.Instance.CreateDebugLog(nameof(ProxiFyreSetupPage), jsonString);
             File.WriteAllText(settingsFile, jsonString);
 
-            SettingsManager.Instance.SetValue("PROXY", "proxyType", StateHelper.ProxySetupTypes.ProxiFyre.ToString());
+            SettingsManager.Instance.SetValue("PROXY", "proxyType", ProxySetupTypes.ProxiFyre.ToString());
 
 
             return true;
         }
 
-        private List<string> GetAppNamesFromModel(List<ApplicationInfo> info)
+        private List<string> GetAppNamesFromModel(List<SelectedApplicationInfo> info)
         {
             List<string> apps = [];
             foreach (var app in info)

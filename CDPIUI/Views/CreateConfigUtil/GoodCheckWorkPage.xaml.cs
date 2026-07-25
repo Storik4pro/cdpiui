@@ -1,6 +1,4 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,7 +19,12 @@ using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.UI.Xaml.Application;
 using WinUI3Localizer;
 using CDPIUI.Default;
-using CDPIUI.Helper.Basic;
+using CDPIUI.Core.Basic;
+using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.Data;
+using CDPIUI.Core.System;
+using CDPIUI.Helper.Parsers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -55,11 +58,11 @@ public sealed partial class GoodCheckWorkPage : Page
         _uiDispatcher = DispatcherQueue.GetForCurrentThread();
 
         TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Indeterminate);
-        GoodCheckProcessHelper.Instance.AllComplete += AllCompletedActions;
+        GoodCheckProcessService.Instance.AllComplete += AllCompletedActions;
 
-        SiteListProgressText.Text = GoodCheckProcessHelper.Instance.CurrentSiteList;
-        GoodStrategyCount.Text = GoodCheckProcessHelper.Instance.CorrectCount.ToString();
-        BadStrategyCount.Text += GoodCheckProcessHelper.Instance.IncorrectCount.ToString();
+        SiteListProgressText.Text = GoodCheckProcessService.Instance.CurrentSiteList;
+        GoodStrategyCount.Text = GoodCheckProcessService.Instance.CorrectCount.ToString();
+        BadStrategyCount.Text += GoodCheckProcessService.Instance.IncorrectCount.ToString();
 
 
         ConnectHandlers();
@@ -81,12 +84,12 @@ public sealed partial class GoodCheckWorkPage : Page
         if (CreateConfigUtilWindow.Instance != null)
             TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
 
-        GoodCheckProcessHelper.Instance.Kill();
+        GoodCheckProcessService.Instance.Kill();
     }
 
     private void ConnectHandlers()
     {
-        GoodCheckProcessHelper.Instance.CurrentSiteListChanged += (name) =>
+        GoodCheckProcessService.Instance.CurrentSiteListChanged += (name) =>
         {
             CurrentSiteListText(name);
 
@@ -96,7 +99,7 @@ public sealed partial class GoodCheckWorkPage : Page
             _initialEstimatedSecondsPerOperation = 0.0;
 
         };
-        GoodCheckProcessHelper.Instance.ProgressChanged += (tuple) =>
+        GoodCheckProcessService.Instance.ProgressChanged += (tuple) =>
         {
             int.TryParse(tuple.Item1, out int current);
             int.TryParse(tuple.Item2, out int all);
@@ -114,11 +117,11 @@ public sealed partial class GoodCheckWorkPage : Page
             TemplateWindow.ToggleLoadingState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal, current, all);
             SetSiteListProgressText($"{percent:F0}% [{current}/{all}]");
         };
-        GoodCheckProcessHelper.Instance.CorrectCountChanged += (count) =>
+        GoodCheckProcessService.Instance.CorrectCountChanged += (count) =>
         {
             SetCorrectCountText(count.ToString());
         };
-        GoodCheckProcessHelper.Instance.IncorrectCountChanged += (count) =>
+        GoodCheckProcessService.Instance.IncorrectCountChanged += (count) =>
         {
             SetIncorrectCountText(count.ToString());
         };
@@ -209,7 +212,7 @@ public sealed partial class GoodCheckWorkPage : Page
             _initialEstimatedSecondsPerOperation = etaSecondsCurrent * 1.05;
         }
 
-        var idx = GoodCheckProcessHelper.Instance.CurrentSiteListIndex;
+        var idx = GoodCheckProcessService.Instance.CurrentSiteListIndex;
         int currentOpIndex = idx != null ? idx.Item1 : 1;
         int totalOps = idx != null ? Math.Max(1, idx.Item2) : 1;
 
@@ -239,8 +242,8 @@ public sealed partial class GoodCheckWorkPage : Page
         }
 
         string speedText = _speedElementsPerSec > 0 ? $"{_speedElementsPerSec:F3} e/s" : "—";
-        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? localizer.GetLocalizedString("Calculating") : Utils.ConvertMinutesToPrettyText((etaSecondsCurrent / 60.0));
-        string allTimeText = double.IsInfinity(allSecondsRemaining) ? localizer.GetLocalizedString("Calculating") : Utils.ConvertMinutesToPrettyText((allSecondsRemaining / 60.0));
+        string etaCurrentText = double.IsInfinity(etaSecondsCurrent) ? localizer.GetLocalizedString("Calculating") : UnitsParser.ConvertMinutesToPrettyText((etaSecondsCurrent / 60.0));
+        string allTimeText = double.IsInfinity(allSecondsRemaining) ? localizer.GetLocalizedString("Calculating") : UnitsParser.ConvertMinutesToPrettyText((allSecondsRemaining / 60.0));
 
         TimeText.Text = etaCurrentText;
         AllTimeText.Text = allTimeText;
@@ -278,27 +281,24 @@ public sealed partial class GoodCheckWorkPage : Page
 
     private void ViewLogHyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
     {
-        string localAppData = StateHelper.GetDataDirectory();
         string dirName = Path.Combine(
-            localAppData,
-            StateHelper.StoreDirName,
-            StateHelper.StoreItemsDirName,
+            Directories.StoreItemsDirectory,
             AddOnId,
             "Logs");
 
-        Utils.OpenFileInDefaultApp($"{dirName}");
+        ShellHelper.OpenFileInDefaultApp($"{dirName}");
     }
 
     private void KillProc_Click(object sender, RoutedEventArgs e)
     {
         GoodCheckProcessKillFlyout.Hide();
-        GoodCheckProcessHelper.Instance.RemoveFromQueueOrStopOperation(GoodCheckProcessHelper.Instance.CurrentOperationId);
+        GoodCheckProcessService.Instance.RemoveFromQueueOrStopOperation(GoodCheckProcessService.Instance.CurrentOperationId);
     }
 
     private void EndAll_Click(object sender, RoutedEventArgs e)
     {
         GoodCheckProcessKillFlyout.Hide();
-        GoodCheckProcessHelper.Instance.Stop();
+        GoodCheckProcessService.Instance.Stop();
     }
 
     private async void ForwardButton_Click(object sender, RoutedEventArgs e)

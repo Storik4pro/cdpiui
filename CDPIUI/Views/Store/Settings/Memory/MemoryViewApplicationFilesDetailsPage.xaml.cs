@@ -1,4 +1,5 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -100,7 +101,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
 
         private void ViewAppDirButton_Click(object sender, RoutedEventArgs e)
         {
-            Utils.OpenFolderInExplorer(StateHelper.Instance.workDirectory);
+            ShellHelper.LookupDirectory(CDPIUI.Core.Data.Directories.CurrentDirectory);
         }
     }
 }

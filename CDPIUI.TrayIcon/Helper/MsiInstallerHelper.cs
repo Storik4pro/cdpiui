@@ -1,4 +1,5 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
+﻿using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.TrayIcon.Helper.Basic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,7 +67,8 @@ namespace CDPIUI.TrayIcon.Helper
                 _pendingOps.Add(operationId);
             }
 
-            _ = PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.GettingReady})");
+            _ = PipeHelper
+                .SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.GettingReady);
 
             TryStartNext();
         }
@@ -87,7 +89,8 @@ namespace CDPIUI.TrayIcon.Helper
                     }
                     catch (Exception ex)
                     {
-                        Logger.Instance?.CreateErrorLog(nameof(MsiInstallerHelper), $"Failed to kill process for {operationId}: {ex.Message}");
+                        Logger.Instance?.CreateErrorLog(
+                            nameof(MsiInstallerHelper), $"Failed to kill process for {operationId}: {ex.Message}");
                     }
                 }
                 else if (_pendingOps.Contains(operationId))
@@ -112,12 +115,14 @@ namespace CDPIUI.TrayIcon.Helper
 
             if (removedFromWaiting)
             {
-                _ = PipeServer.Instance.SendMessage($"MSI:REMOVED({operationId})");
+                _ = PipeHelper
+                    .SendMsiInstallationPacket(MSIInstallationMessageIds.RemoveOperationId, operationId);
             }
 
             if (wasRunning)
             {
-                _ = PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
+                _ = PipeHelper
+                    .SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.ExceptionHappens);
                 Logger.Instance?.CreateErrorLog(nameof(MsiInstallerHelper), $"Installation for {operationId} was cancelled by RemoveFromQueue.");
             }
 
@@ -155,7 +160,8 @@ namespace CDPIUI.TrayIcon.Helper
         {
             try
             {
-                await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.Installing})");
+                _ = PipeHelper
+                    .SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.Installing);
 
                 lock (_lock)
                 {
@@ -167,7 +173,7 @@ namespace CDPIUI.TrayIcon.Helper
 
                 if (_currentProcess == null)
                 {
-                    await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
+                    _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.ExceptionHappens);
                     Logger.Instance.CreateErrorLog(nameof(MsiInstallerHelper), $"UNKNOWN");
                     throw new NullReferenceException();
                 }
@@ -177,15 +183,15 @@ namespace CDPIUI.TrayIcon.Helper
 
                 if (exitCode == 3010)
                 {
-                    await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.CompleteRestartRequest})");
+                    _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.CompleteRestartRequest);
                 }
                 else if (exitCode == 0 || exitCode == 1603)
                 {
-                    await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.Complete})");
+                    _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.Complete);
                 }
                 else
                 {
-                    await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
+                    _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.ExceptionHappens);
                     Logger.Instance.CreateErrorLog(nameof(MsiInstallerHelper), $"Cannot install package {exitCode}");
 
                     NotifyHelper.ShowMessage(
@@ -197,7 +203,7 @@ namespace CDPIUI.TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                await PipeServer.Instance.SendMessage($"MSI:SETSTATUS({operationId}$SEPARATOR{(int)MsiState.ExceptionHappens})");
+                _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.ExceptionHappens);
                 Logger.Instance.CreateErrorLog(nameof(MsiInstallerHelper), $"Exception while installing {filePath}: {ex}");
 
                 NotifyHelper.ShowMessage(

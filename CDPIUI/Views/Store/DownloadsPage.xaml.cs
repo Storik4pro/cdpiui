@@ -1,4 +1,7 @@
-using CDPIUI.Helper;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Queue;
+using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
@@ -144,11 +147,11 @@ namespace CDPIUI.Views.Store
 
             downloadItemModel.StoreId = item.store_id;
             downloadItemModel.OperationId = StoreHelper.Instance.GetCurrentQueueOperationId();
-            downloadItemModel.Title = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
+            downloadItemModel.Title = StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale());
             downloadItemModel.Developer = item.developer;
 
             if (item.category_id != null) 
-                downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, Utils.GetStoreLikeLocale());
+                downloadItemModel.Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name, StoreLocalizationHelper.GetStoreLikeLocale());
 
             downloadItemModel.ImageSource = image;
             downloadItemModel.CardBackgroundBrush = solidColorBrush;
@@ -163,13 +166,13 @@ namespace CDPIUI.Views.Store
             downloads.Clear();
             UpdateCurrentDownloadItem();
 
-            Queue<StoreHelper.QueueItem> queueItems = StoreHelper.Instance.GetQueue();
+            Queue<QueueItemModel> queueItems = StoreHelper.Instance.GetQueue();
 
             List<string> opIds = [];
 
             Debug.WriteLine($"QUEUE UPDATE {queueItems.Count}");
 
-            foreach (StoreHelper.QueueItem item in queueItems)
+            foreach (QueueItemModel item in queueItems)
             {
                 opIds.Add(item.OperationId); 
                 Debug.WriteLine($"{item.ItemId}");
@@ -188,18 +191,18 @@ namespace CDPIUI.Views.Store
                 {
                     StoreId = storeItem.store_id,
                     OperationId = item.OperationId,
-                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     Developer = storeItem.developer,
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
                 };
                 downloads.Add(downloadItem);
             }
 
-            List<StoreHelper.QueueItem> failureItems = StoreHelper.Instance.GetFailedToInstallItems();
+            List<QueueItemModel> failureItems = StoreHelper.Instance.GetFailedToInstallItems();
 
-            foreach (StoreHelper.QueueItem item in failureItems)
+            foreach (QueueItemModel item in failureItems)
             {
                 opIds.Add(item.OperationId);
                 Debug.WriteLine($">>> {item.ItemId}");
@@ -217,9 +220,9 @@ namespace CDPIUI.Views.Store
                 {
                     StoreId = storeItem.store_id,
                     OperationId = item.OperationId,
-                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     Developer = storeItem.developer,
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
                     IsErrorHappens = true
@@ -246,9 +249,9 @@ namespace CDPIUI.Views.Store
                 DownloadItemModel downloadItem = new()
                 {
                     StoreId = item.StoreId,
-                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, Utils.GetStoreLikeLocale()),
+                    Title = StoreHelper.Instance.GetLocalizedStoreItemName(storeItem.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     Developer = storeItem.developer,
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, Utils.GetStoreLikeLocale()),
+                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(StoreHelper.Instance.GetCategoryFromStoreId(storeItem.category_id).name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
                     CurrentVersion = item.CurrentVersion,

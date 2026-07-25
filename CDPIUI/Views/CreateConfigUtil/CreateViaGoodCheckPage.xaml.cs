@@ -1,9 +1,13 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.CreateConfigUtil;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Data;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.Settings;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared.Extentions;
+using CDPIUI.Shared;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Windowing;
@@ -32,8 +36,9 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPIUI.Helper.Static.UIHelper;
+using static CDPIUI.Core.Static.UIHelper;
 using Application = Microsoft.UI.Xaml.Application;
+using CDPIUI.Shared.Basic.Filesystem;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -102,7 +107,7 @@ namespace CDPIUI.Views.CreateConfigUtil
             {
                 ComponentId = componentId;
 
-                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+                if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI])
                 {
                     ChangeModeComboBox.IsEnabled = false;
                 }
@@ -190,7 +195,7 @@ namespace CDPIUI.Views.CreateConfigUtil
 
             SetLoadingMode(true, isIndeterminate: true, cancellationAvailable: false, headerText: localizer.GetLocalizedString("WorkingOnIt"));
 
-            List<SiteListElement> siteLists = await SiteListHelper.Instance.GetAllAvailableSiteListTemplatesAsync();
+            List<SiteListElement> siteLists = await SiteListHelper.GetAllAvailableSiteListTemplatesAsync();
 
             await Task.Delay(1000); //For testing only
 
@@ -199,7 +204,7 @@ namespace CDPIUI.Views.CreateConfigUtil
             SwitchState(States.SiteListsSettings);
             GoForwardButton.IsEnabled = false;
 
-            StrategiesLists = BasicGoodCheckHelper.GetAvailableStrategiesLists(ComponentId);
+            StrategiesLists = GoodCheckResultViewHelper.GetAvailableStrategiesLists(ComponentId);
             
             StrategiesListCombobox.ItemsSource = StrategiesLists; // TODO: rase exception if elements count zero
 
@@ -268,11 +273,9 @@ namespace CDPIUI.Views.CreateConfigUtil
 
         private void LoadGoodCheckSettings()
         {
-            string localAppData = StateHelper.GetDataDirectory();
+            string localAppData = CDPIUI.Core.Data.Directories.DataDirectory;
             string targetFolder = Path.Combine(
-                localAppData, 
-                StateHelper.StoreDirName, 
-                StateHelper.StoreItemsDirName, 
+                Directories.StoreItemsDirectory, 
                 AddOnId,
                 "config.ini");
 
@@ -285,11 +288,11 @@ namespace CDPIUI.Views.CreateConfigUtil
             if (IniSettingsHelper is null)
                 IniSettingsHelper = new(targetFolder, System.Text.Encoding.UTF8);
 
-            if (ComponentId == StateHelper.Instance.FindKeyByValue("ByeDPI") && resolverItems.FirstOrDefault(x => x.Id != "curl") != null)
+            if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI] && resolverItems.FirstOrDefault(x => x.Id != "curl") != null)
                 resolverItems.Remove(resolverItems.FirstOrDefault(x => x.Id != "curl"));
 
             PValue.Text = SettingsManager.Instance.GetValue<string>(["ADDONS", AddOnId], "passesValue");
-            ResolverComboBox.SelectedIndex = ComponentId == StateHelper.Instance.FindKeyByValue("ByeDPI") ? 0 :
+            ResolverComboBox.SelectedIndex = ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI] ? 0 :
                 SettingsManager.Instance.GetValue<bool>(["ADDONS", AddOnId], "useCurl") ? 1 : 0;
 
             ConnectionTimeout.Text = IniSettingsHelper.GetValue<string>("General", "ConnectionTimeout");
@@ -318,11 +321,9 @@ namespace CDPIUI.Views.CreateConfigUtil
 
         private void SaveGoodCheckSettings()
         {
-            string localAppData = StateHelper.GetDataDirectory();
+            string localAppData = CDPIUI.Core.Data.Directories.DataDirectory;
             string targetFolder = Path.Combine(
-                localAppData,
-                StateHelper.StoreDirName,
-                StateHelper.StoreItemsDirName,
+                Directories.StoreItemsDirectory,
                 AddOnId,
                 "config.ini");
 
@@ -355,29 +356,29 @@ namespace CDPIUI.Views.CreateConfigUtil
             IniSettingsHelper.SetValue<string>("Fakes", "PayloadTCP", PayloadTCP.Text);
             IniSettingsHelper.SetValue<string>("Fakes", "PayloadUDP", PayloadUDP.Text);
 
-            string itemsFolder = Path.Combine(localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName);
+            string itemsFolder = Directories.StoreItemsDirectory;
 
             try
             {
-                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("Zapret")))
+                if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.Zapret]))
                 {
-                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("Zapret")));
-                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("Zapret")).Executable + ".exe");
+                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretFolder", Path.Combine(itemsFolder, HardcodedItemIds.ComponentIds[Core.Store.Data.Components.Zapret]));
+                    IniSettingsHelper.SetValue<string>("Zapret", "ZapretExecutableName", DatabaseHelper.Instance.GetItemById(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.Zapret]).Executable + ".exe");
                 }
-                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")))
+                if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI]))
                 {
-                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("GoodbyeDPI")));
-                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("GoodbyeDPI")).Executable + ".exe");
+                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIFolder", Path.Combine(itemsFolder, HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI]));
+                    IniSettingsHelper.SetValue<string>("GoodbyeDPI", "GoodbyeDPIExecutableName", DatabaseHelper.Instance.GetItemById(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI]).Executable + ".exe");
                 }
-                if (DatabaseHelper.Instance.IsItemInstalled(StateHelper.Instance.FindKeyByValue("ByeDPI")))
+                if (DatabaseHelper.Instance.IsItemInstalled(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI]))
                 {
-                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIFolder", Path.Combine(itemsFolder, StateHelper.Instance.FindKeyByValue("ByeDPI")));
-                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIExecutableName", DatabaseHelper.Instance.GetItemById(StateHelper.Instance.FindKeyByValue("ByeDPI")).Executable + ".exe");
+                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIFolder", Path.Combine(itemsFolder, HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI]));
+                    IniSettingsHelper.SetValue<string>("ByeDPI", "ByeDPIExecutableName", DatabaseHelper.Instance.GetItemById(HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI]).Executable + ".exe");
                 }
             }
             catch (Exception ex)
             {
-                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessHelper), $"Cannot set settings. Exception is {ex}");
+                Logger.Instance.CreateErrorLog(nameof(GoodCheckProcessService), $"Cannot set settings. Exception is {ex}");
                 ShowErrorDialod(localizer.GetLocalizedString("GoodCheckComponentDirsSetException"));
             }
             IniSettingsHelper.Save();
@@ -416,18 +417,18 @@ namespace CDPIUI.Views.CreateConfigUtil
                 }
             }
 
-            GoodCheckProcessHelper.Instance.InitGoodCheck(
+            GoodCheckProcessService.Instance.InitGoodCheck(
                 ComponentId,
                 (bool)ChangeModeComboBox.IsChecked ? GoodCheckProcessMode.AnyAsAny : GoodCheckProcessMode.AllAsOne,
                 listModels
                 );
 
-            GoodCheckProcessHelper.Instance.ErrorHappens += (e) =>
+            GoodCheckProcessService.Instance.ErrorHappens += (e) =>
             {
                 Logger.Instance.CreateErrorLog(nameof(CreateViaGoodCheck), $"{e}");
             };
 
-            GoodCheckProcessHelper.Instance.Start();
+            GoodCheckProcessService.Instance.Start();
         }
 
 
@@ -533,17 +534,15 @@ namespace CDPIUI.Views.CreateConfigUtil
                 return;
             }
 
-            string localAppData = StateHelper.GetDataDirectory();
-            string targetFolder = Path.Combine(
-                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.LocalUserItemsId, StateHelper.LocalUserItemSiteListsFolder);
+            string targetFolder = Path.Combine(Directories.StoreItemsDirectory, SharedConstants.LocalUserItemsId, SharedConstants.LocalUserItemSiteListsFolder);
 
-            string newFilePath = Utils.CopyTxtWithUniqueName(filePath, targetFolder);
+            string newFilePath = FileSystemService.CopyTxtWithUniqueName(filePath, targetFolder);
 
             SiteListElement siteListElement = new()
             {
                 Directory = newFilePath,
                 Name = Path.GetFileName(newFilePath),
-                PackId = StateHelper.LocalUserItemsId,
+                PackId = SharedConstants.LocalUserItemsId,
                 PackName = localizer.GetLocalizedString("LocalData"),
             };
 
@@ -593,19 +592,19 @@ namespace CDPIUI.Views.CreateConfigUtil
         {
             if (tagElement == null) return Task.CompletedTask;
 
-            DispatcherQueue.TryEnqueue(() =>
+            DispatcherQueue.TryEnqueue((DispatcherQueueHandler)(() =>
             {
                 var target = SelectedSitelistStackPanel.Children
                              .OfType<GoodCheckSitelistButton>()
-                             .FirstOrDefault(c => c.Tag is SiteListElement se && ReferenceEquals(se, tagElement));
+                             .FirstOrDefault((Func<GoodCheckSitelistButton, bool>)(c => c.Tag is SiteListElement se && ReferenceEquals((object)se, tagElement)));
 
                 if (target == null)
                 {
-                    var normalized = Helper.Static.Utils.NormalizeDirectory(tagElement.Directory);
+                    var normalized = FileSystemService.NormalizeDirectory(tagElement.Directory);
                     target = SelectedSitelistStackPanel.Children
                              .OfType<GoodCheckSitelistButton>()
-                             .FirstOrDefault(c => c.Tag is SiteListElement se &&
-                                                  string.Equals(Helper.Static.Utils.NormalizeDirectory(se.Directory), normalized, StringComparison.OrdinalIgnoreCase));
+                             .FirstOrDefault((Func<GoodCheckSitelistButton, bool>)(c => c.Tag is SiteListElement se &&
+                                                  string.Equals(FileSystemService.NormalizeDirectory((string)se.Directory), normalized, StringComparison.OrdinalIgnoreCase)));
                 }
 
                 if (target == null) return;
@@ -616,7 +615,7 @@ namespace CDPIUI.Views.CreateConfigUtil
                     SelectedSitelistStackPanel.Children.Remove(target);
                 }
                 catch { }              
-            });
+            }));
 
             return Task.CompletedTask;
         }
@@ -855,8 +854,8 @@ namespace CDPIUI.Views.CreateConfigUtil
             {
                 Title = localizer.GetLocalizedString("ContinuationImpossible"),
                 Content = string.IsNullOrEmpty(message) ?
-                    string.Format(localizer.GetLocalizedString("AddOnNotInstalled"), 
-                    StateHelper.Instance.ComponentIdPairs.GetValueOrDefault(AddOnId), AddOnId) : message,
+                    string.Format(localizer.GetLocalizedString("AddOnNotInstalled"),
+                    HardcodedItemIds.AddOnsIds.GetKeyByValue(AddOnId), AddOnId) : message,
                 PrimaryButtonText = "OK",
                 XamlRoot = this.XamlRoot,
             };

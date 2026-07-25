@@ -36,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CDPIUI.Infrastructure\CDPIUI.Infrastructure.csproj" />
     <ProjectReference Include="..\CDPIUI.Shared\CDPIUI.Shared.csproj" />
   </ItemGroup>
 	<ItemGroup>

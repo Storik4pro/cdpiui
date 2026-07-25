@@ -1,5 +1,7 @@
-using CDPIUI.Helper;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -106,7 +108,7 @@ public sealed partial class StoreAskForSubItemInstallUserControl : UserControl
 
     private void SetStatus(bool isInstalled)
     {
-        StatusFontIcon.Glyph = isInstalled ? "\uE930" : Utils.IsOsSupportedNewGlyph() ? "\uEBD3" : "\uE896";
+        StatusFontIcon.Glyph = isInstalled ? "\uE930" : SharedUtils.IsOsSupportedNewGlyph() ? "\uEBD3" : "\uE896";
     }
 
     private void Button_Click(object sender, RoutedEventArgs e)

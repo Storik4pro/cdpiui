@@ -11,7 +11,7 @@
     xmlns:winex="using:WinUIEx"
     xmlns:l="using:WinUI3Localizer"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:items="using:CDPIUI.Helper.Items"
+    xmlns:items="using:CDPIUI.Core.ComponentServices.Helpers.Configuration"
     xmlns:template="using:CDPIUI.Default"
     xmlns:models="using:CDPIUI.ViewModels"
     xmlns:wc="using:CDPIUI.Controls.WindowControls"

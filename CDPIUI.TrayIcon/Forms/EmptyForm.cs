@@ -93,7 +93,7 @@ namespace CDPIUI.TrayIcon.Forms
                 case PowerModes.Resume:
                     foreach (var task in TasksHelper.Instance.Tasks)
                     {
-                        if (task.ProcessManager.GetState())
+                        if (task.ProcessManager.IsProcessRunning)
                         {
                             await TasksHelper.Instance.RestartTask(task.Id);
                         }
@@ -110,7 +110,7 @@ namespace CDPIUI.TrayIcon.Forms
 
             foreach (var task in TasksHelper.Instance.Tasks)
             {
-                if (task.ProcessManager.GetState())
+                if (task.ProcessManager.IsProcessRunning)
                 {
                     rt++;
                 }
@@ -147,7 +147,7 @@ namespace CDPIUI.TrayIcon.Forms
             int cnt = 0;
             foreach (var task in TasksHelper.Instance.Tasks)
             {
-                if (task.ProcessManager.GetState())
+                if (task.ProcessManager.IsProcessRunning)
                 {
                     result += $"{LocaleHelper.GetLocalizedComponentName(task.Id)}, ";
                     cnt++;
@@ -282,10 +282,7 @@ namespace CDPIUI.TrayIcon.Forms
 
         private static async void MaximizeApp()
         {
-            if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN"))
-            {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
-            }
+            await PipeHelper.SendOpenWindowPacket("MainWindow", true);
         }
 
         private void EmptyForm_Disposed(object? sender, EventArgs e)

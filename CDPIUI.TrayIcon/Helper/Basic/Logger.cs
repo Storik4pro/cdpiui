@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CDPIUI.TrayIcon.Helper.Basic
 {
-    public class Logger : LoggerBase, ILoggerInterface
+    public class Logger : LoggerBase, ILogger
     {
         private static Logger? _instance;
         private static readonly object _lock = new();

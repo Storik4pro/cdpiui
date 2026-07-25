@@ -1,6 +1,10 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Features;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -202,11 +206,11 @@ public sealed partial class AutorunPage : Page
         {
             if (AutorunToggleSwitch.IsOn)
             {
-                AutoStartManager.AddToAutorun();
+                ApplicationAutorunManager.AddToAutorun();
             }
             else
             {
-                AutoStartManager.RemoveFromAutorun();
+                ApplicationAutorunManager.RemoveFromAutorun();
             }
         }
     }
@@ -216,7 +220,7 @@ public sealed partial class AutorunPage : Page
         if (value)
         {
             AutorunWarningInfoBar.IsOpen = true;
-            foreach (var id in StateHelper.Instance.ComponentIdPairs.Keys)
+            foreach (var id in HardcodedItemIds.ComponentIds.Values)
             {
                 if (SettingsManager.Instance.GetValue<bool>(["CONFIGS", id], "usedForAutorun"))
                 {

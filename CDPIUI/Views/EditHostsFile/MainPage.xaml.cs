@@ -13,10 +13,13 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Windows.UI;
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using WinUI3Localizer;
 using CDPIUI.Controls.Dialogs.Universal;
 using System.Diagnostics;
+using CDPIUI.Core.Basic;
+using CDPIUI.AddOns.HostsFileEditor;
+using CDPIUI.Helper.AddOns;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -125,11 +128,11 @@ public sealed partial class MainPage : Page
         string result = "ERR_FLASHLIGHT_BISY";
         try
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditHelper.AddDomains());
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditService.AddDomains());
         }
         catch (Exception ex)
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", ex);
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", ex);
         }
         finally
         {
@@ -154,11 +157,11 @@ public sealed partial class MainPage : Page
         string result = "ERR_FLASHLIGHT_BISY";
         try
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditHelper.RemoveDomains());
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditService.RemoveDomains());
         }
         catch (Exception ex)
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", ex);
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", ex);
         }
         finally
         {
@@ -182,11 +185,11 @@ public sealed partial class MainPage : Page
         string result = "ERR_FLASHLIGHT_BISY";
         try
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditHelper.RestoreDomains());
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", await HostsFileEditService.RestoreDomains());
         }
         catch (Exception ex)
         {
-            result = ErrorsHelper.GetPrettyErrorCode("HOSTEDIT", ex);
+            result = ErrorsHelper.Convertor.GetPrettyErrorCode("HOSTEDIT", ex);
         }
         finally
         {

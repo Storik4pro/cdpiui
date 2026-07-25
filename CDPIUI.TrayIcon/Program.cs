@@ -9,6 +9,7 @@ using System.Resources;
 using System.Windows.Forms;
 using Windows.Foundation.Collections;
 using Application = System.Windows.Forms.Application;
+using CDPIUI.Shared.Pipe.Models;
 
 class Programm
 {
@@ -93,10 +94,7 @@ class Programm
 
     private static async void AskStartupActions()
     {
-        if (!await PipeServer.Instance.SendMessage("CONPTY:GET_ALL_STARTUP_STRINGS"))
-        {
-            RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --get-all-startup-insructions --exit-after-action");
-        }
+        await PipeHelper.SendConPTYPacket(CONPTYMessageIds.GetAllStartupStrings, string.Empty, openIfNotConnected: true);
     }
 
     private static void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat toastArgs)
@@ -121,10 +119,7 @@ class Programm
         await Task.Delay(TimeSpan.FromMinutes(30));
         if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates"))
         {
-            if (! await PipeServer.Instance.SendMessage("UPDATE:CHECK"))
-            {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --check-program-updates --exit-after-action");
-            }
+            await PipeHelper.SendCheckUpdatesPacket();
         }
     }
 
@@ -133,10 +128,7 @@ class Programm
         await Task.Delay(TimeSpan.FromMinutes(60));
         if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "compatibilityCheck"))
         {
-            if (!await PipeServer.Instance.SendMessage("COMPATIBILITYCHECK:BEGIN"))
-            {
-                RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--create-no-window --begin-compatibility-check --exit-after-action");
-            }
+            await PipeHelper.SendCompatibilityCheckPacket();
         }
     }
 }

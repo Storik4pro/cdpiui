@@ -1,4 +1,7 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.System;
+using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -107,7 +110,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
         private void ViewAppDirButton_Click(object sender, RoutedEventArgs e)
         {
             ErrorTextBlock.Text = string.Format(localizer.GetLocalizedString("ErrorHappensWhileCleanup"), "DIR_CLEANUP_UNKNOWN");
-            Utils.OpenFolderInExplorer(Path.Combine(StateHelper.GetDataDirectory(), "Logs"));
+            ShellHelper.LookupDirectory(Path.Combine(CDPIUI.Core.Data.Directories.DataDirectory, "Logs"));
         }
 
         private async void CleanupDirButton_Click(object sender, RoutedEventArgs e)
@@ -116,13 +119,13 @@ namespace CDPIUI.Views.Store.Settings.Memory
             CleanupDirButton.IsEnabled = false;
             try
             {
-                Directory.Delete(Path.Combine(StateHelper.GetDataDirectory(), "Logs"), true);
-                MemoryTextBlock.Text = Utils.FormatSize(0);
+                Directory.Delete(Path.Combine(CDPIUI.Core.Data.Directories.DataDirectory, "Logs"), true);
+                MemoryTextBlock.Text = UnitsParser.FormatSize(0);
             }
             catch (Exception ex) 
             {
                 ErrorStackPanel.Visibility = Visibility.Visible;
-                ErrorTextBlock.Text = string.Format(localizer.GetLocalizedString("ErrorHappensWhileCleanup"), ErrorsHelper.GetPrettyErrorCode("DIR_CLEANUP", ex));
+                ErrorTextBlock.Text = string.Format(localizer.GetLocalizedString("ErrorHappensWhileCleanup"), ErrorsHelper.Convertor.GetPrettyErrorCode("DIR_CLEANUP", ex));
                 CleanupDirButton.IsEnabled = true;
             }
             await Task.CompletedTask;

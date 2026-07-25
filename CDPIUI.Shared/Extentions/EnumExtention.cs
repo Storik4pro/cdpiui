@@ -11,7 +11,7 @@ namespace CDPIUI.Shared.Extentions
             return (T)Enum.Parse(typeof(T), value, true);
         }
 
-        public static T ToEnum<T>(this string value, T defaultValue) where T : struct 
+        public static T ToEnum<T>(this string? value, T defaultValue) where T : struct 
         {
             if (string.IsNullOrEmpty(value))
             {

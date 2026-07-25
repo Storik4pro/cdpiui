@@ -1,5 +1,9 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using Markdig.Syntax.Inlines;
 using Microsoft.UI.Xaml;
@@ -102,7 +106,7 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
                             Title = Path.GetFileName(file),
                             Developer = $"{item.ShortName} – {item.Developer}",
                             FileName = file,
-                            Size = Utils.FormatSize(Utils.GetFileSize(file))
+                            Size = UnitsParser.FormatSize(FileSystemService.GetFileSize(file, Logger.Instance))
                         });
                     }
                 }
@@ -119,7 +123,7 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
                     Title = Path.GetFileName(item),
                     Developer = Path.GetFullPath(item),
                     FileName = item,
-                    Size = Utils.FormatSize(Utils.GetFileSize(item))
+                    Size = UnitsParser.FormatSize(FileSystemService.GetFileSize(item, Logger.Instance))
                 });
             }
             RecentFilesNotFoundPlaceholder.Visibility = ManualSiteListModels.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -163,7 +167,7 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
                 Title = Path.GetFileName(filePath),
                 Developer = Path.GetFullPath(filePath),
                 FileName = filePath,
-                Size = Utils.FormatSize(Utils.GetFileSize(filePath))
+                Size = UnitsParser.FormatSize(FileSystemService.GetFileSize(filePath, Logger.Instance))
             };
             ManualSiteListModels.Add(model);
 

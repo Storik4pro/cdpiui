@@ -1,4 +1,6 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
+﻿using CDPIUI.Shared;
+using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.TrayIcon.Helper.Basic;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,6 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using CDPIUI.Shared;
 
 namespace CDPIUI.TrayIcon.Helper
 {
@@ -58,7 +59,7 @@ namespace CDPIUI.TrayIcon.Helper
             if (Path.GetExtension(targetFile).ToLower() == ".msi")
             {
                 RunHelper.Run("msiexec.exe", $"/i \"{targetFile}\" /qn+");
-                _ = PipeServer.Instance.SendMessage("MAIN:EXIT_ALL");
+                _ = PipeHelper.SendApplicationPacket(ApplicationMessageIds.CloseApplicationUI);
                 NotifyHelper.Instance.Dispose();
                 Application.Exit();
             }
@@ -76,17 +77,6 @@ namespace CDPIUI.TrayIcon.Helper
                 return new Bitmap(resource);
             }
             return null;
-        }
-
-        public static bool IsOsSupportedNewGlyph()
-        {
-            Debug.WriteLine(Environment.OSVersion.ToString());
-            var version1 = Environment.OSVersion.Version;
-            string v2 = "10.0.22000.194";
-
-            var version2 = new Version(v2);
-            if (version1 >= version2) return true;
-            return false;
         }
 
         public static float GetScalingFactorForMainDisplay()
@@ -117,14 +107,14 @@ namespace CDPIUI.TrayIcon.Helper
                         )
                     );
                 dInfo.SetAccessControl(dSecurity);
-                if (conptySignal) await PipeServer.Instance.SendMessage("UTILS:GRANT_ACCESS(true)");
+                if (conptySignal) await PipeHelper.SendGrantAcessPacket(true);
             }
             catch (Exception ex)
             {
                 Logger.Instance.CreateErrorLog(nameof(Utils), $"Cannot grant access for \"{file}\". Exception message: {ex.Message}");
             }
 
-            if (conptySignal) await PipeServer.Instance.SendMessage("UTILS:GRANT_ACCESS(false)");
+            if (conptySignal) await PipeHelper.SendGrantAcessPacket(false);
         }
     }
 }

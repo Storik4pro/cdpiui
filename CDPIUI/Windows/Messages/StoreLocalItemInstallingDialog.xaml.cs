@@ -1,8 +1,6 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
-using CDPIUI.Helper.Store;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -28,6 +26,12 @@ using Windows.UI.WindowManagement;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Shared.PrettyErrorConvertionService;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -49,7 +53,7 @@ namespace CDPIUI.Messages
         private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
         private Action<Tuple<string, double>> _itemDownloadSpeedChangedHandler;
         private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
-        private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
+        private Action<Tuple<string, ErrorModel>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
 
         private bool IsErrorHappens = false;
@@ -120,7 +124,7 @@ namespace CDPIUI.Messages
                     StoreId = model.StoreId;
                     bool isInstalled = DatabaseHelper.Instance.IsItemInstalled(StoreId);
 
-                    Name = model.ShortName ?? StoreHelper.Instance.GetLocalizedStoreItemName(model.Name, Utils.GetStoreLikeLocale());
+                    Name = model.ShortName ?? StoreHelper.Instance.GetLocalizedStoreItemName(model.Name, StoreLocalizationHelper.GetStoreLikeLocale());
 
                     ItemNameTextBlock.Text = string.Format(isInstalled ? localizer.GetLocalizedString("StoreSmallUpdateItemName") : localizer.GetLocalizedString("StoreSmallInstallItemName"), Name);
                     ItemImage.Source = new BitmapImage(UIHelper.GetUriFromString(model.ReadyToUseIcon ?? LScriptLangHelper.ExecuteScript(model.Icon)));
@@ -141,7 +145,7 @@ namespace CDPIUI.Messages
 
                         if (!string.IsNullOrEmpty(curV) && !string.IsNullOrEmpty(iV))
                         {
-                            if (Utils.CompareVersionStrings(curV, iV) >= 0)
+                            if (VersionHelper.CompareVersionStrings(curV, iV) >= 0)
                             {
                                 ErrorHappens(localizer.GetLocalizedString("ItemAlreadyInstalledWarn"));
                             }
@@ -280,7 +284,7 @@ namespace CDPIUI.Messages
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                     return;
 
-                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}";
+                CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}";
             };
 
             StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
@@ -288,7 +292,7 @@ namespace CDPIUI.Messages
             _itemInstallingErrorHappensHandler = (data) =>
             {
                 string operationId = data.Item1;
-                string errorCode = data.Item2;
+                string errorCode = data.Item2.ErrorCode;
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                     return;

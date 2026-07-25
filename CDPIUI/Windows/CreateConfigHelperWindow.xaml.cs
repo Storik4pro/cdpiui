@@ -1,9 +1,8 @@
 using CDPIUI.Controls.CreateConfigHelper;
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
 using CDPIUI.Views.CreateConfigHelper;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;
@@ -36,6 +35,10 @@ using WinUIEx;
 using static CDPIUI.Win32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = Microsoft.UI.Xaml.Application;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -260,7 +263,7 @@ namespace CDPIUI
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     filePath = openFileDialog.FileName;
-                    var (configItem, errorHappens) = ConfigHelper.LoadConfigFromFile(filePath);
+                    var (configItem, errorHappens) = ConfigurationService.LoadConfigFromFile(filePath);
                     ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGIMPORT", configItem, errorHappens, filePath), new DrillInNavigationTransitionInfo());
                 }
                 else

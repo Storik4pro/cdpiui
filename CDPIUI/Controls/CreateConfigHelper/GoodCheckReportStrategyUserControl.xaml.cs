@@ -1,6 +1,6 @@
 using CDPIUI.Controls.Dialogs;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.Items;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -162,21 +162,21 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
     {
         if (!isRunned)
         {
-            await TasksHelper.Instance.StopTask(ComponentId);
+            await ComponentTasksManager.Instance.StopTask(ComponentId);
 
-            TasksHelper.Instance.TaskStateUpdated += ProcessManager_onProcessStateChanged;
+            ComponentTasksManager.Instance.TaskStateUpdated += ProcessManager_onProcessStateChanged;
 
-            TasksHelper.Instance.CreateAndRunNewTask(ComponentId, Args);
+            ComponentTasksManager.Instance.CreateAndRunNewTask(ComponentId, Args);
 
         }
         else
         {
-            await TasksHelper.Instance.StopTask(ComponentId);
+            await ComponentTasksManager.Instance.StopTask(ComponentId);
             PlayIconButton.Checked = false;
             PlayToolTip.Content = localizer.GetLocalizedString("TestThis");
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
-            TasksHelper.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
+            ComponentTasksManager.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
         }
     }
 
@@ -197,7 +197,7 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
             if (!IsPointerOnControl)
                 PlayIconButton.Visibility = Visibility.Collapsed;
             isRunned = false;
-            TasksHelper.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
+            ComponentTasksManager.Instance.TaskStateUpdated -= ProcessManager_onProcessStateChanged;
         }
     }
 

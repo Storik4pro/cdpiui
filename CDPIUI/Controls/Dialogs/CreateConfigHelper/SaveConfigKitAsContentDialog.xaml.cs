@@ -1,7 +1,7 @@
 using CDPIUI.Extensions;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.Static;
 using CDPIUI.Views.CreateConfigHelper;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Xaml;
@@ -20,6 +20,9 @@ using System.Linq;
 using System.Windows.Forms;
 using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Shared;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -92,7 +95,7 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
 
         private void SetDefaultValues()
         {
-            IdTextBox.Text = SettingsManager.Instance.GetValueOrDefault("CONFIGKIT", "lastUsedId", defaultValue: Utils.GenerateNewId());
+            IdTextBox.Text = SettingsManager.Instance.GetValueOrDefault("CONFIGKIT", "lastUsedId", defaultValue: SharedUtils.GenerateNewId());
             DisplayNameTextBox.Text = string.IsNullOrEmpty(DisplayName) ? SettingsManager.Instance.GetValueOrDefault<string>("CONFIGKIT", "lastUsedDisplayName", defaultValue:string.Empty) : DisplayName;
             EasyModeDisplayNameTextBox.Text = DisplayNameTextBox.Text;
             VersionTextBox.Text = "0.0.0";
@@ -116,7 +119,7 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
 
         private void GenerateNewId_Click(object sender, RoutedEventArgs e)
         {
-            IdTextBox.Text = Utils.GenerateNewId();
+            IdTextBox.Text = SharedUtils.GenerateNewId();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -178,9 +181,9 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
             if ((string)SelectorBar1.SelectedItem?.Tag == "SaveForDistribute")
             {
                 return
-                    Utils.IsIdCorrect(IdTextBox.Text) &&
+                    VersionHelper.IsIdCorrect(IdTextBox.Text) &&
                     !string.IsNullOrEmpty(DisplayNameTextBox.Text) &&
-                    Utils.IsVersionCorrect(VersionTextBox.Text) &&
+                    VersionHelper.IsVersionCorrect(VersionTextBox.Text) &&
                     !string.IsNullOrEmpty(DeveloperTextBox.Text);
             }
             else

@@ -17,7 +17,7 @@ using Microsoft.UI;
 using System.Text;
 using Microsoft.UI.System;
 using Windows.UI;
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using CommunityToolkit.WinUI.Behaviors;
@@ -34,11 +34,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using CDPIUI.Controls.Dialogs;
 using WinUIEx;
 using WinUI3Localizer;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core.Static;
 using WindowId = Microsoft.UI.WindowId;
 using Microsoft.UI.Windowing;
 using CDPIUI.Default;
 using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -101,9 +106,9 @@ namespace CDPIUI
             ConnectHandlers();
         }
 
-        private async Task<ProcessManager> GetProcessManager()
+        private async Task<ProcessService> GetProcessManager()
         {
-            ProcessManager processManager = (await TasksHelper.Instance.GetTaskFromId(Id))?.ProcessManager;
+            ProcessService processManager = (await ComponentTasksManager.Instance.GetTaskFromId(Id))?.ProcessManager;
             if (processManager == null) return null;
             return processManager;
         }
@@ -113,15 +118,15 @@ namespace CDPIUI
             var processManager = await GetProcessManager();
             if (processManager == null) return;
             processManager.OutputReceived += OnProcessOutputReceived;
-            processManager.onProcessStateChanged += ChangeProcessStatus;
+            processManager.ProcessStateChanged += ChangeProcessStatus;
             processManager.ErrorHappens += ErrorHappens;
             processManager.ProcessNameChanged += ProcessManager_ProcessNameChanged;
 
-            if (processManager.isErrorHappens)
+            if (processManager.IsErrorHappens)
             {
-                if (processManager.LatestErrorMessage.Count >= 2)
+                if (processManager.LastError != null)
                 {
-                    ErrorHappens(processManager.LatestErrorMessage[0], processManager.LatestErrorMessage[1]);
+                    ErrorHappens(processManager.LastError);
                 }
                 else
                 {
@@ -131,7 +136,7 @@ namespace CDPIUI
             }
             else
             {
-                ChangeIcon(processManager.processState);
+                ChangeIcon(processManager.IsProcessRunning);
                 await processManager.GetReady(true);
             }
         }
@@ -141,7 +146,7 @@ namespace CDPIUI
             var processManager = await GetProcessManager();
             if (processManager == null) return;
             processManager.OutputReceived -= OnProcessOutputReceived;
-            processManager.onProcessStateChanged -= ChangeProcessStatus;
+            processManager.ProcessStateChanged -= ChangeProcessStatus;
             processManager.ErrorHappens -= ErrorHappens;
             processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
         }
@@ -154,7 +159,7 @@ namespace CDPIUI
                 {
                     var processManager = await GetProcessManager();
                     StatusMessage.Message = string.Format(
-                        processManager.processState ? localizer.GetLocalizedString("ProcessStartedMessageMessage") : localizer.GetLocalizedString("ProcessStoppedMessageMessage"), 
+                        processManager.IsProcessRunning ? localizer.GetLocalizedString("ProcessStartedMessageMessage") : localizer.GetLocalizedString("ProcessStoppedMessageMessage"), 
                         GetProcessName()
                         );
                 }
@@ -283,6 +288,10 @@ namespace CDPIUI
             
         }
 
+        private void ErrorHappens(ErrorModel model)
+        {
+            ErrorHappens(model.ErrorCode, model.Object);
+        }
         private void ErrorHappens(string error, string _object = "process")
         {
             ChangeIcon(false);
@@ -341,7 +350,7 @@ namespace CDPIUI
 
         private async void ProcessControl_Click(object sender, RoutedEventArgs e)
         {
-            if (GetProcessManager().Result.processState)
+            if (GetProcessManager().Result.IsProcessRunning)
             {
                 await GetProcessManager().Result.StopProcess();
             } else
@@ -449,7 +458,7 @@ namespace CDPIUI
             {
                 try
                 {
-                    await ProcessManager.StopService();
+                    await ProcessService.StopService();
                 } catch (Exception ex)
                 {
                     ErrorContentDialog _dialog = new ErrorContentDialog { };
@@ -467,7 +476,7 @@ namespace CDPIUI
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView"))
             {
-                return ProcessManager.ReplacePath(text);
+                return ProcessService.ReplacePath(text);
             }
             else
             {

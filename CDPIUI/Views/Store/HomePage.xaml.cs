@@ -1,3 +1,8 @@
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
@@ -48,6 +53,14 @@ namespace CDPIUI;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
+public class UICategoryData
+{
+    public string StoreId { get; set; }
+    public string Type { get; set; }
+    public string Name { get; set; }
+
+    public ObservableCollection<UIElement> Items { get; set; }
+}
 public sealed partial class HomePage : Page
 {
     private double _largeElementWidth;
@@ -111,14 +124,15 @@ public sealed partial class HomePage : Page
 
     private ILocalizer localizer = Localizer.Get();
 
+    // Database update started event will be removed. 
+
     public HomePage()
     {
         InitializeComponent();
 
         // SetupLayout();
 
-        Helper.StoreHelper.Instance.StoreInternalErrorHappens += StoreHelper_ErrorHappens;
-        Helper.StoreHelper.Instance.UpdatingDatabaseStarted += StoreHelper_UpdatingDatabaseStarted;
+        StoreHelper.Instance.StoreInternalErrorHappens += StoreHelper_ErrorHappens;
         UpdateStoreDatabase();
 
         StoreScrollViewer.SizeChanged += OnContainerSizeChanged;
@@ -136,7 +150,6 @@ public sealed partial class HomePage : Page
         base.OnNavigatedFrom(e);
 
         StoreHelper.Instance.StoreInternalErrorHappens -= StoreHelper_ErrorHappens;
-        StoreHelper.Instance.UpdatingDatabaseStarted -= StoreHelper_UpdatingDatabaseStarted;
         this.LayoutUpdated -= HomePage_LayoutUpdated;
         StoreScrollViewer.SizeChanged -= OnContainerSizeChanged;
 
@@ -186,14 +199,14 @@ public sealed partial class HomePage : Page
         
     }
 
-    private List<UICategoryData> CreateCategoriesList(List<Helper.StoreHelper.RepoCategory> values)
+    private List<UICategoryData> CreateCategoriesList(List<RepoCategoryModel> values)
     {
         List<UICategoryData> categoryDatas = new List<UICategoryData>();
 
-        foreach (Helper.StoreHelper.RepoCategory category in values)
+        foreach (RepoCategoryModel category in values)
         {
             ObservableCollection<UIElement> categoryItems = new ObservableCollection<UIElement>();
-            foreach (Helper.StoreHelper.RepoCategoryItem repoCategoryItem in category.items)
+            foreach (RepoItemModel repoCategoryItem in category.items)
             {
                 if (category.type == "basic_category")
                 {
@@ -201,8 +214,8 @@ public sealed partial class HomePage : Page
                         UIHelper.CreateLargeButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource:LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
-                            price:Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
-                            title:Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
+                            price: DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
+                            title: StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                             backgroundColor:repoCategoryItem.background,
                             action: StoreItemButton_Click
                         )
@@ -214,8 +227,8 @@ public sealed partial class HomePage : Page
                         UIHelper.CreateSmallButton(
                             storeId:repoCategoryItem.store_id,
                             imageSource: LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
-                            price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
-                            title: Helper.StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, Utils.GetStoreLikeLocale()),
+                            price: DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
+                            title: StoreHelper.Instance.GetLocalizedStoreItemName(repoCategoryItem.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                             developer: repoCategoryItem.developer,
                             backgroundColor:repoCategoryItem.background,
                             action: StoreItemButton_Click
@@ -228,7 +241,7 @@ public sealed partial class HomePage : Page
             {
                 StoreId = category.store_id,
                 Type = category.type,
-                Name = Helper.StoreHelper.Instance.GetLocalizedStoreItemName(category.name, Utils.GetStoreLikeLocale()),
+                Name = StoreHelper.Instance.GetLocalizedStoreItemName(category.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                 Items = categoryItems,
             };
 
@@ -317,17 +330,10 @@ public sealed partial class HomePage : Page
 
         SetupElementsWidth();
     }
-    
-
-    private void StoreHelper_UpdatingDatabaseStarted()
-    {
-        LoadingGrid.Visibility = Visibility.Visible;
-        StoreScrollViewer.Visibility = Visibility.Collapsed;
-    }
 
     private async void UpdateStoreDatabase()
     {
-        bool result = await Helper.StoreHelper.Instance.LoadAllStoreDatabase();
+        bool result = await StoreHelper.Instance.LoadAllStoreDatabase();
         // bool result = true;
         if (result)
         {

@@ -1,4 +1,8 @@
-using CDPIUI.Helper;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Static;
 using Markdig.Renderers.Normalize;
@@ -60,7 +64,7 @@ namespace CDPIUI.Views.Store
 
         private async void LoadCategory()
         {
-            bool result = await Helper.StoreHelper.Instance.LoadAllStoreDatabase(forseSync:false);
+            bool result = await StoreHelper.Instance.LoadAllStoreDatabase(forseSync:false);
             // bool result = true;
             if (result)
             {
@@ -77,7 +81,7 @@ namespace CDPIUI.Views.Store
             }
         }
 
-        private bool CreateCategoriesList(List<Helper.StoreHelper.RepoCategory> values)
+        private bool CreateCategoriesList(List<RepoCategoryModel> values)
         {
             var category = values.FirstOrDefault(c => c.store_id == CategoryId);
 
@@ -88,15 +92,15 @@ namespace CDPIUI.Views.Store
                 return false;
             }
 
-            CategoryTitleTextBlock.Text = Helper.StoreHelper.Instance.GetLocalizedStoreItemName(category.name, Utils.GetStoreLikeLocale());
+            CategoryTitleTextBlock.Text = StoreHelper.Instance.GetLocalizedStoreItemName(category.name, StoreLocalizationHelper.GetStoreLikeLocale());
 
-            foreach (Helper.StoreHelper.RepoCategoryItem repoCategoryItem in category.items)
+            foreach (RepoItemModel repoCategoryItem in category.items)
             {
                 _tiles.Add(
                     UIHelper.CreateLargeButton(
                         storeId: repoCategoryItem.store_id,
                         imageSource: LScriptLangHelper.ExecuteScript(repoCategoryItem.icon),
-                        price: Helper.DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
+                        price: DatabaseHelper.Instance.IsItemInstalled(repoCategoryItem.store_id) ? localizer.GetLocalizedString("Installed") : localizer.GetLocalizedString("Get"),
                         title: repoCategoryItem.short_name,
                         backgroundColor: repoCategoryItem.background,
                         action: StoreItemButton_Click,

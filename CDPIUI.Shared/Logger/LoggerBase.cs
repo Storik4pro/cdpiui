@@ -13,33 +13,27 @@ namespace CDPIUI.Shared.Logger
     }
 
 
-    public class LoggerBase
+    /// <summary>
+    /// Initialize new logger
+    /// </summary>
+    /// <param name="actualPath">Path, where logs are storaged</param>
+    /// <param name="logLevel">Logging level</param>
+    public class LoggerBase(string? actualPath, LogSelevirity logLevel)
     {
         /// <summary>
         /// Path, where logs are storaged
         /// </summary>
-        public readonly string? ActualPath;
+        public readonly string? ActualPath = actualPath;
 
         /// <summary>
         /// Logging level
         /// </summary>
-        public readonly LogSelevirity? LogLevel;
-
-        /// <summary>
-        /// Initialize new logger
-        /// </summary>
-        /// <param name="actualPath">Path, where logs are storaged</param>
-        /// <param name="logLevel">Logging level</param>
-        public LoggerBase(string actualPath, LogSelevirity logLevel)
-        {
-            ActualPath = actualPath;
-            LogLevel = logLevel;
-        }
-
+        public readonly LogSelevirity? LogLevel = logLevel;
         private static readonly object _logLock = new object();
 
         private void LogWrite(string fileName, string logMessage)
         {
+            if (string.IsNullOrEmpty(ActualPath)) return;
             try
             {
                 string logFileDir = Path.Combine(ActualPath, LoggerResources.LogsFolder);
@@ -76,13 +70,13 @@ namespace CDPIUI.Shared.Logger
                 bool write = true;
                 try
                 {
-                    if (severity - LogLevel < 0)
+                    if (severity - LogLevel <= 0)
                     {
                         write = true;
                     }
                     else
                     {
-                        write = true;
+                        write = false;
                     }
                 }
                 catch { }

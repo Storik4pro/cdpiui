@@ -13,10 +13,10 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System.Windows.Forms;
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using Application = Microsoft.UI.Xaml.Application;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core.Static;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

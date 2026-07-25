@@ -1,15 +1,7 @@
-﻿using CDPIUI.Common;
-using CDPIUI.Default;
-
-//using Windows.ApplicationModel.Activation;
-using CDPIUI.DesktopWap.DataModel;
-using CDPIUI.DesktopWap.Helper;
-//using CDPIUI.Data;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
-using CDPIUI.Helper.Static;
-using CDPIUI.Helper.Store;
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.Store;
 using CDPIUI.Messages;
 using CDPIUI.Views;
 using CDPIUI.Views.Components;
@@ -47,23 +39,23 @@ using WinUIEx;
 using static CDPIUI.Win32;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using WASDK = Microsoft.WindowsAppSDK;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using CDPIUI.Helper;
+using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.Database;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.Communication;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.Features;
+using CDPIUI.Helper.Native;
+using CDPIUI.Default;
+using CDPIUI.Commands;
+using CDPIUI.Shared.Pipe.Models;
 
 namespace CDPIUI
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
 
     public partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-
         public ElementTheme CurrentTheme { get; set; } = ElementTheme.Default;
 
         public List<Window> OpenWindows { get; private set; } = new List<Window>();
@@ -74,11 +66,13 @@ namespace CDPIUI
         public App()
         {
             this.InitializeComponent();
+            PipeClientService.Instance.MessageReceived += (m) => CommandsHandler.HandleCommand(m);
+            CoreErrorsLookupService.Instance.Init();
 
             UpdateThemeForAllWindows(GetThemeFromString(SettingsManager.Instance.GetValue<string>("APPEARANCE", "Theme")));
 
-            PipeClient.Instance.Init();
-            PipeClient.Instance.Connected += PipeConnected;
+            PipeClientService.Instance.Init();
+            PipeClientService.Instance.Connected += PipeConnected;
 
             ApplicationTaskMonitor.Instance.StoreStateChanged += StoreStateChanged;
 
@@ -113,12 +107,21 @@ namespace CDPIUI
         {
             string[] arguments = Environment.GetCommandLineArgs();
 
-            await PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
-            await PipeClient.Instance.SendMessage("CONPTY:GETSTATE");
+            await PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
+            await PipeHelper.SendConPTYPacket(Shared.Pipe.Models.CONPTYMessageIds.GetAllProcessStates);
 
-            TasksHelper.Instance.RequestComponentItemsInit();
+            ComponentTasksManager.Instance.RequestComponentItemsInit();
 
             bool isFileProcessed = await ProcessFiles(arguments);
+            bool isActionPreffered = false;
+
+            string protocolArg = arguments.FirstOrDefault(x => x.StartsWith("----ms-protocol:"));
+
+            if (protocolArg != null)
+            {
+                string value = protocolArg["----ms-protocol:".Length..];
+                isActionPreffered = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+            }
 
             if (!arguments.Contains("--create-no-window"))
             {
@@ -148,7 +151,7 @@ namespace CDPIUI
                 }
                 else
                 {
-                    if (!isFileProcessed) await SafeCreateNewWindow<ModernMainWindow>();
+                    if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
                 }
 
                 if (arguments.Contains("--show-update-page"))
@@ -162,17 +165,17 @@ namespace CDPIUI
             }
             if (arguments.Contains("--get-all-startup-insructions"))
             {
-                TasksHelper.Instance.RunAllPreferredActions();
+                ComponentTasksManager.Instance.RunAllPreferredActions();
             }
             
             if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--get-startup-params")))
             {
                 string _id = Utils.GetValueFromCommmandLineParameter("--get-startup-params");
-                TasksHelper.Instance.CreateAndRunNewTask(_id);
+                ComponentTasksManager.Instance.CreateAndRunNewTask(_id);
             }
             if (arguments.Contains("--check-program-updates"))
             {
-                await ApplicationUpdateHelper.Instance.CheckForUpdates(notify: true);
+                await ApplicationUpdate.Instance.CheckForUpdates(notify: true);
             }
 
             if (OpenWindows.Count > 1 && OpenWindows[0] is PrepareWindow)
@@ -211,7 +214,7 @@ namespace CDPIUI
 
             _ = PipeConnectedActions();
 
-            PipeClient.Instance.Connected -= PipeConnected;
+            PipeClientService.Instance.Connected -= PipeConnected;
         }
 
         public async Task NavigateToUpdatesPage()
@@ -225,7 +228,7 @@ namespace CDPIUI
             string[] arguments = Environment.GetCommandLineArgs();
             _ = SafeCreateNewWindow<PrepareWindow>(!arguments.Contains("--create-no-window"));
 
-            PipeClient.Instance.Start();
+            PipeClientService.Instance.Start();
         }
 
         public async void OpenRequestedFile(AppActivationArguments appActivationArguments)
@@ -245,8 +248,10 @@ namespace CDPIUI
 
         public async void GetReadyFeatures()
         {
-            DatabaseHelper.Instance.QuickRestore();
+            DatabaseInitializationService.QuickRestore();
             await InitializeLocalizer();
+
+            ActivationRegistrationManager.RegisterForProtocolActivation("cdpiui", "ms-appx:///Assets/Square44x44Logo.scale-200.png", "CDPI UI", Environment.ProcessPath);
 
             // await CleanOldWorkDirectoriesAsync();
             await Task.CompletedTask;

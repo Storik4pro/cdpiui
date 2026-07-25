@@ -82,11 +82,11 @@
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
-                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPI_UI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPIUI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem l:Uids.Uid="DownloadsButton" Tag="CDPI_UI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="DownloadsButton" Tag="CDPIUI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon x:Name="DownloadsFontIcon" Glyph="&#xEBD3;" />
                     </NavigationViewItem.Icon>
@@ -95,7 +95,7 @@
                     </NavigationViewItem.InfoBadge>
 
                 </NavigationViewItem>
-                <NavigationViewItem l:Uids.Uid="LibraryButton" Tag="CDPI_UI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="LibraryButton" Tag="CDPIUI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE8F1;" />
                     </NavigationViewItem.Icon>
@@ -108,7 +108,7 @@
                     </NavigationViewItem.Icon>
 
                 </NavigationViewItem>
-                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPI_UI.Views.Store.SettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPIUI.Views.Store.SettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
 
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;" />

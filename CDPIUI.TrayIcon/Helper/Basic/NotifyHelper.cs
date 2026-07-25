@@ -75,31 +75,28 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                     return;
                 }
 
-                if (!await PipeServer.Instance.SendMessage($"WINDOW:SHOW_PSEUDOCONSOLE({result[0]})"))
-                {
-                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--show-pseudoconsole={result[0]}");
-                }
+                await PipeHelper.SendOpenWindowPacket("ViewWindow", new()
+                { 
+                    { "componentId", result[0] },
+                }, true);
+
                 return;
             }
             switch (action)
             {
                 case "SHOW_MAIN_WINDOW":
-                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN"))
-                    {
-                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
-                    }
+                    await PipeHelper.SendOpenWindowPacket("MainWindow", true);
                     break;
                 case "OPEN_PROXY_SETUP":
-                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_PROXY_SETUP"))
-                    {
-                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-proxy-setup");
-                    }
+                    await PipeHelper.SendOpenWindowPacket("ProxySetupUtilWindow", true);
                     break;
                 case "OPEN_BEGIN_STORE_UPDATE_CHECK":
-                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_BEGIN_STORE_UPDATE_CHECK"))
+                    await PipeHelper.SendOpenWindowPacket("StoreWindow", new()
                     {
-                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-begin-store-update-check");
-                    }
+                        { "page", "DownloadPage" },
+                        { "isUpdateRequested", "true" },
+
+                    }, true);
                     break;
                 case "LOGGER:OPEN_TRAY_LOG":
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "Logs", "EmptyForm.log"));
@@ -111,10 +108,12 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                     OpenFileInDefaultApp(Path.Combine(Utils.GetDataDirectory(), "update.log"));
                     break;
                 case "UPDATE:OPEN_DOWNLOAD_PAGE":
-                    if (!await PipeServer.Instance.SendMessage("WINDOW:SHOW_MAIN:UPDATE_PAGE"))
+                    await PipeHelper.SendOpenWindowPacket("MainWindow", new()
                     {
-                        RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), "--show-update-page");
-                    }
+                        { "page", "DownloadPage" },
+                        { "isUpdateRequested", "true" },
+
+                    }, true);
                     break;
                 
 

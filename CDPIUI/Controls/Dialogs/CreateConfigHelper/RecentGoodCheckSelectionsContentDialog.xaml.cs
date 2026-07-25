@@ -1,6 +1,8 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Data;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -56,9 +58,7 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
 
         private void InitDialog()
         {
-            string localAppData = StateHelper.GetDataDirectory();
-            string targetFolder = Path.Combine(
-                localAppData, StateHelper.StoreDirName, StateHelper.StoreItemsDirName, StateHelper.Instance.FindKeyByValue("GoodCheck"), "Reports");
+            string targetFolder = Path.Combine(Directories.StoreItemsDirectory, HardcodedItemIds.AddOnsIds[Core.Store.Data.AddOns.GoodCheck], "Reports");
 
             ReportModels.Clear();
             GetReportFiles(targetFolder);

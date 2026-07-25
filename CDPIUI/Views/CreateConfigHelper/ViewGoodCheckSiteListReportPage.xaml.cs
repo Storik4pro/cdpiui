@@ -1,6 +1,6 @@
-using CDPIUI.Helper;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
-using CDPIUI.Helper.Static;
+using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

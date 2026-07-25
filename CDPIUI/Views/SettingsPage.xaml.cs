@@ -1,5 +1,7 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Communication;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using CDPIUI.Properties;
 using CDPIUI.ViewModels;
@@ -28,7 +30,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using static CDPIUI.Helper.Static.UIHelper;
+using static CDPIUI.Core.Static.UIHelper;
+using CDPIUI.Shared.Extentions;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -137,7 +140,7 @@ namespace CDPIUI.Views
             OpenComponentSiteListToEditCard.Description =
                 string.Format(localizer.GetLocalizedString(
                     "OpenComponentSiteListToEditCardDescription"),
-                    mode == (int)TextFileOpenModes.UserChoose ? Utils.FirstCharToUpper(Path.GetFileNameWithoutExtension(appPath)) : localizer.GetLocalizedString("FollowSystem"));
+                    mode == (int)TextFileOpenModes.UserChoose ? Path.GetFileNameWithoutExtension(appPath).FirstCharToUpper() : localizer.GetLocalizedString("FollowSystem"));
         }
 
         
@@ -167,26 +170,26 @@ namespace CDPIUI.Views
         private void ProcessStateToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "procState", ProcessStateToast.IsChecked);
-            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
         }
 
         private void AppRunnedInTrayToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "trayHide", AppRunnedInTrayToast.IsChecked);
-            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
 
         }
 
         private void AppUpdatesToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "appUpdates", AppUpdatesToast.IsChecked);
-            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
         }
 
         private void StoreUpdatesToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "storeUpdates", StoreUpdatesToast.IsChecked);
-            _ = PipeClient.Instance.SendMessage("SETTINGS:RELOAD");
+            _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

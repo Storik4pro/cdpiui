@@ -1,5 +1,4 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -21,6 +20,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUIEx;
+using CDPIUI.Core.Communication;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,7 +44,7 @@ namespace CDPIUI
 
             this.Closed += CriticalErrorHandlerWindow_Closed;
 
-            PipeClient.Instance.Connected += PipeConnected;
+            PipeClientService.Instance.Connected += PipeConnected;
 
             string[] arguments = Environment.GetCommandLineArgs();
 
@@ -57,7 +57,7 @@ namespace CDPIUI
         }
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)
         {
-            if (!PipeClient.Instance.IsConnected)
+            if (!PipeClientService.Instance.IsConnected)
                 args.Handled = true;
         }
     }

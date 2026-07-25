@@ -1,29 +1,22 @@
 ﻿using CDPIUI.Controls.WindowControls;
-using CDPIUI.DesktopWap.Helper;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using WinRT.Interop;
 using WinUIEx;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using Application = Microsoft.UI.Xaml.Application;
 using Size = System.Windows.Size;
+using CDPIUI.Helper.Static;
+using System.Collections.Specialized;
+using CDPIUI.Helper.Native;
 
 namespace CDPIUI.Default
 {
@@ -182,6 +175,11 @@ namespace CDPIUI.Default
             }
 
             UpdateWindowMinSize();
+        }
+
+        public void NavigateToPageWithParameter(Type page, NameValueCollection @params = null)
+        {
+            MainFrame?.Navigate(page, @params);
         }
 
         private void SetTitleBarMode(TitleBarModes mode)

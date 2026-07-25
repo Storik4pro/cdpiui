@@ -1,5 +1,7 @@
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Proxy;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -121,7 +123,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 ComponentId = items.Item1;
                 _parameter = items;
 
-                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI"))
+                if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI])
                 {
                     WarningGrid.Visibility = Visibility.Visible;
                 }
@@ -189,7 +191,7 @@ namespace CDPIUI.Views.CreateConfigHelper
         {
             if (_dragSource == "Left")
             {
-                if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI") && RightItems.Count >= 1)
+                if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI] && RightItems.Count >= 1)
                 {
                     e.AcceptedOperation = DataPackageOperation.None;
                     return;
@@ -222,7 +224,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 {
                     string idText = e.DataView.Properties.Title;
 
-                    if (ComponentId == StateHelper.Instance.FindKeyByValue("GoodbyeDPI") && RightItems.Count >= 1)
+                    if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI] && RightItems.Count >= 1)
                     {
                         return;
                     }
@@ -235,7 +237,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                             DragItem item = new(sourceLeft.Args,
                                 sourceLeft.SiteListName,
                                 sourceLeft.Directory,
-                                StateHelper.Instance.FindKeyByValue("ByeDPI") == ComponentId,
+                                HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI] == ComponentId,
                                 [ChooseGroupModeContentDialog.ByeDPIGroupModes.None],
                                 parsedId);
                             RightItems.Add(item);
@@ -261,7 +263,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         private void CheckRightItemsSort()
         {
-            if (StateHelper.Instance.FindKeyByValue("ByeDPI") != ComponentId) return;
+            if (HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI] != ComponentId) return;
             if (RightItems.Count > 0)
             {
                 var firstItem = RightItems.First();
@@ -320,7 +322,7 @@ namespace CDPIUI.Views.CreateConfigHelper
         {
             string startupString = string.Empty;
 
-            if (StateHelper.Instance.FindKeyByValue("Zapret") == ComponentId)
+            if (HardcodedItemIds.ComponentIds[Core.Store.Data.Components.Zapret] == ComponentId)
             {
                 foreach (var item in RightItems)
                 {
@@ -331,7 +333,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                     startupString += _str;
                 }
             }
-            else if (StateHelper.Instance.FindKeyByValue("ByeDPI") == ComponentId)
+            else if (HardcodedItemIds.ComponentIds[Core.Store.Data.Components.ByeDPI] == ComponentId)
             {
                 foreach (var item in RightItems)
                 {
@@ -341,7 +343,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                         _str = $"-A{ConvertModesToString(item.Modes)} ";
                     }
 
-                    _str += $"-H=\"{Path.Combine(item.Directory, item.SiteListName)}\" {Utils.ReplaseIp(item.Args)} ";
+                    _str += $"-H=\"{Path.Combine(item.Directory, item.SiteListName)}\" {ProxyHelper.ReplaseIp(item.Args)} ";
                     startupString += _str;
                 }
             }
@@ -351,7 +353,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 {
                     string _str = "";
 
-                    _str += $"--blacklist=\"{Path.Combine(item.Directory, item.SiteListName)}\" {Utils.ReplaseIp(item.Args)} ";
+                    _str += $"--blacklist=\"{Path.Combine(item.Directory, item.SiteListName)}\" {ProxyHelper.ReplaseIp(item.Args)} ";
                     startupString += _str;
                 }
             }

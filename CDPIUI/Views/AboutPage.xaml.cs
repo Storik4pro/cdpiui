@@ -1,5 +1,10 @@
-﻿using CDPIUI.Helper;
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Features;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -77,23 +82,23 @@ namespace CDPIUI.Views
         {
             InitializeComponent();
 
-            SetUpdateButtonStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
-            SetBadgeStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
-            SetCurrentVersion(StateHelper.Instance.Version);
+            SetUpdateButtonStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
+            SetBadgeStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
+            SetCurrentVersion(ApplicationInfo.Version);
 
-            if (ApplicationUpdateHelper.Instance.ErrorHappened)
+            if (ApplicationUpdate.Instance.ErrorHappened)
             {
-                SetServerVersion(ApplicationUpdateHelper.Instance.ErrorInfo);
+                SetServerVersion(ApplicationUpdate.Instance.ErrorInfo);
                 SetBadgeStatus(BadgeStatus.Error);
             }
             else
             {
-                SetServerVersion(ApplicationUpdateHelper.Instance.ServerVersion);
+                SetServerVersion(ApplicationUpdate.Instance.ServerVersion);
             }
 
-            ApplicationUpdateHelper.Instance.ErrorHappens += ApplicationUpdateHelper_ErrorHappens;
-            ApplicationUpdateHelper.Instance.CheckForUpdatesCompleted += ApplicationUpdateHelper_CheckForUpdatesCompleted;
-            ApplicationUpdateHelper.Instance.CheckForUpdatesStarted += ApplicationUpdateHelper_CheckForUpdatesStarted;
+            ApplicationUpdate.Instance.ErrorHappens += ApplicationUpdateHelper_ErrorHappens;
+            ApplicationUpdate.Instance.CheckForUpdatesCompleted += ApplicationUpdateHelper_CheckForUpdatesCompleted;
+            ApplicationUpdate.Instance.CheckForUpdatesStarted += ApplicationUpdateHelper_CheckForUpdatesStarted;
 
             RepoRun.Text = UrlOpenHelper.MainRepoUrl;
 
@@ -117,9 +122,9 @@ namespace CDPIUI.Views
         {
             _ = DispatcherQueue.TryEnqueue(() =>
             {
-                SetUpdateButtonStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
+                SetUpdateButtonStatus(ApplicationUpdate.Instance.IsUpdateAvailable? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
                 SetBadgeStatus(BadgeStatus.Error);
-                SetServerVersion(ApplicationUpdateHelper.Instance.ErrorInfo);
+                SetServerVersion(ApplicationUpdate.Instance.ErrorInfo);
             });
         }
 
@@ -135,9 +140,9 @@ namespace CDPIUI.Views
         {
             _ = DispatcherQueue.TryEnqueue(() =>
             {
-                SetUpdateButtonStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
-                SetBadgeStatus(ApplicationUpdateHelper.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
-                SetServerVersion(ApplicationUpdateHelper.Instance.ServerVersion);
+                SetUpdateButtonStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
+                SetBadgeStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);
+                SetServerVersion(ApplicationUpdate.Instance.ServerVersion);
             });
         }
 
@@ -191,7 +196,7 @@ namespace CDPIUI.Views
 
         private void SetCurrentVersion(string version)
         {
-            CurrentVersionTextBlock.Text = string.Format(localizer.GetLocalizedString("CurrentVersion"), version) + (Utils.IsApplicationBuildAsMsi ? " MSI-BUILD" : " PORTABLE-BUILD");
+            CurrentVersionTextBlock.Text = string.Format(localizer.GetLocalizedString("CurrentVersion"), version) + (State.IsApplicationBuildAsMsi ? " MSI-BUILD" : " PORTABLE-BUILD");
         }
         private void SetServerVersion(string version)
         {
@@ -215,17 +220,17 @@ namespace CDPIUI.Views
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ApplicationUpdateHelper.Instance.IsUpdateAvailable)
+            if (ApplicationUpdate.Instance.IsUpdateAvailable)
             {
                 SetUpdateButtonStatus(UpdateButtonStatus.Work);
                 SetBadgeStatus(BadgeStatus.Work);
-                StoreHelper.Instance.AddItemToQueue(StateHelper.ApplicationStoreId, ApplicationUpdateHelper.Instance.ServerVersion);
+                StoreHelper.Instance.AddItemToQueue(SharedConstants.ApplicationStoreId, ApplicationUpdate.Instance.ServerVersion);
             }
             else
             {
                 SetUpdateButtonStatus(UpdateButtonStatus.Work);
                 SetBadgeStatus(BadgeStatus.Work);
-                bool result = await ApplicationUpdateHelper.Instance.CheckForUpdates();
+                bool result = await ApplicationUpdate.Instance.CheckForUpdates();
             }
         }
 

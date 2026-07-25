@@ -1,4 +1,5 @@
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -33,7 +34,7 @@ public sealed partial class WelcomePlaceholderUserControl : UserControl
         FirstStepsHyperlink.Content = localizer.GetLocalizedString("/Help/FirstSteps");
         AddingCustomSiteListsToConfigHyperlink.Content = localizer.GetLocalizedString("/Help/AddingCustomSiteListsToConfig");
 
-        StarsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
+        StarsFontIcon.Glyph = SharedUtils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
     }
 
     private async void ShowDialog(string message, string title)

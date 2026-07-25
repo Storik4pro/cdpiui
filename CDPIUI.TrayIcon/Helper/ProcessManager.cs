@@ -1,4 +1,6 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
+﻿using CDPIUI.Shared.ComponentsTask;
+using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.TrayIcon.Helper.Basic;
 using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using System.Net;
@@ -6,12 +8,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using CDPIUI.Shared.Extentions;
+using CDPIUI.Shared.Pipe.Models;
 
 namespace CDPIUI.TrayIcon.Helper
 {
-    public class ProcessManager
+    public class ProcessManager : IProcessService
     {
-        public required string Id;
+        public string Id { get; set; } = string.Empty;
+        public string ProcessName { get; private set; } = string.Empty;
 
         private bool useProxy = false;
         private string proxyType = string.Empty;
@@ -22,10 +27,14 @@ namespace CDPIUI.TrayIcon.Helper
         private string? Executable;
         private string? Args;
 
-        public Action<Tuple<string, bool>>? ProcessStateChanged;
-        public string ProcessName = string.Empty;
-
+        public event Action<Tuple<string, bool>>? ProcessStateChanged;
         
+        public bool IsProcessRunning => conPTYHelper?.processState ?? false;
+
+        public bool IsErrorHappens => throw new NotImplementedException();
+        public ErrorModel? LastError => throw new NotImplementedException();
+
+
         private ConPTYHelper conPTYHelper;
         private ConPTYHelper proxiFyreHelper;
         
@@ -43,11 +52,15 @@ namespace CDPIUI.TrayIcon.Helper
             proxiFyreHelper.OutputAdded += PFSendOutput;
             proxiFyreHelper.ErrorHappens += PFShowErrorMessage;
             proxiFyreHelper.ProcessStateChanged += PFChangeProcessState;
-        }       
+        }
 
         public bool IsProcessInfoChanged = false;
 
-
+        public event Action<ErrorModel>? ErrorHappens;
+        public event Action<string>? OutputReceived;
+        public event Action<string>? ProcessNameChanged;
+        [Obsolete("Not supported on server side.")]
+        public event Action<string>? ShowErrorMessageWindow;
 
         public void InitProxy(string path)
         {
@@ -109,10 +122,7 @@ namespace CDPIUI.TrayIcon.Helper
             }
             else
             {
-                if (!await PipeServer.Instance.SendMessage($"CONPTY:GET_STARTUP_STRING({Id})"))
-                {
-                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--create-no-window --get-startup-params={Id} --exit-after-action");
-                }
+                await PipeHelper.SendConPTYPacket(CONPTYMessageIds.GetStartupString, Id, openIfNotConnected: true);
             }
         }
         
@@ -127,8 +137,8 @@ namespace CDPIUI.TrayIcon.Helper
             var workingDirectory = Path.GetDirectoryName(exePath);
 
             ProcessName = Path.GetFileName(exePath);
-            await PipeServer.Instance.SendMessage($"CONPTY:MARKED_CLEAN({Id})");
-            await PipeServer.Instance.SendMessage($"CONPTY:MARKED_STARTED({Id})");
+            await PipeHelper.SendConPTYPacket(CONPTYMessageIds.CleanOutputForId, Id);
+            await PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStarted, Id);
 
             SendNowSelectedComponentName();
 
@@ -137,7 +147,10 @@ namespace CDPIUI.TrayIcon.Helper
 
         public void SendNowSelectedComponentName()
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_PROCNAME({Id}$SEPARATOR{ProcessName})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ChangeProcessIdExecutable, Id, new()
+            { 
+                {"processName", ProcessName }
+            });
         }
 
        
@@ -223,21 +236,20 @@ namespace CDPIUI.TrayIcon.Helper
 
         public void SendDefaultProcessOutput()
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_FULLOUTPUT({Id}$SEPARATOR{proxiFyreHelper.GetDefaultOutput()}\n{conPTYHelper.GetDefaultOutput()})");
-        }
-        public bool GetState()
-        {
-            return conPTYHelper.processState;
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ProcessIdFullOutput, Id, new()
+            {
+                { "output", $"{proxiFyreHelper.GetDefaultOutput()}\n{conPTYHelper.GetDefaultOutput()}" }
+            });
         }
         public void SendState()
         {
             if (conPTYHelper.processState)
             {
-                _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STARTED({Id})");
+                _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStarted, Id);
             }
             else
             {
-                _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id})");
+                _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id);
             }
         }
 
@@ -257,7 +269,7 @@ namespace CDPIUI.TrayIcon.Helper
 
             if (string.IsNullOrEmpty(proxyServer))
             {
-                ShowErrorMessage(Tuple.Create($"Internal error -> IP_INCORRECT", nameof(StartSystemProxy)));
+                ShowErrorMessage(Tuple.Create(PrettyErrorCode.IP_INCORRECT, nameof(StartSystemProxy)));
                 return;
             }
             try
@@ -266,7 +278,7 @@ namespace CDPIUI.TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(Tuple.Create($"Internal error -> {ex.Message}", nameof(RegeditHelper)));
+                ShowErrorMessage(Tuple.Create(ErrorHelper.Convertor.GetPrettyErrorCode(nameof(ConPTYHelper), ex).ToEnum<PrettyErrorCode>(), nameof(RegeditHelper)));
                 Logger.Instance.CreateErrorLog(nameof(ProcessManager), $"{ex.Message}");
             }
         }
@@ -279,7 +291,7 @@ namespace CDPIUI.TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(Tuple.Create($"Internal error -> {ex.Message}", nameof(RegeditHelper)));
+                ShowErrorMessage(Tuple.Create(ErrorHelper.Convertor.GetPrettyErrorCode(nameof(RegeditHelper), ex).ToEnum<PrettyErrorCode>(), nameof(RegeditHelper)));
                 Logger.Instance.CreateErrorLog(nameof(ProcessManager), $"{ex.Message}");
             }
         }
@@ -287,13 +299,19 @@ namespace CDPIUI.TrayIcon.Helper
         #region MessageHandler
         private void SendStopMessage(string output = "Process will be stopped by user")
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_MESSAGE({Id}$SEPARATOR{output})");
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ProcessIdNewOutput, Id, new()
+            {
+                { "output", $"{output}" }
+            });
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id);
             _ = StopProxy();
         }
         private void SendOutput(string output)
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_MESSAGE({Id}$SEPARATOR{output})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ProcessIdNewOutput, Id, new()
+            {
+                { "output", $"{output}" }
+            });
         }
         private void ChangeProcessState(bool isRunned)
         {
@@ -302,37 +320,53 @@ namespace CDPIUI.TrayIcon.Helper
             Debug.WriteLine($"Process state is {isRunned}");
             if (isRunned == false)
             {
-                _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id})");
+                _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id);
                 _ = StopProxy();
             }
         }
-        private void ShowErrorMessage(Tuple<string, string> tuple)
+        private void ShowErrorMessage(Tuple<PrettyErrorCode, string> tuple)
         {
-            string message = tuple.Item1;
+            PrettyErrorCode message = tuple.Item1;
             string _object = tuple.Item2;
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id}$SEPARATOR{message}$SEPARATOR{_object})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id, new()
+            {
+                { "errorHappens", "true" },
+                { "errorMessage", message.ToString() },
+                { "errorObject", _object },
+            });
             _ = StopProxy();
         }
 
         private void PFSendStopMessage(string output = "Process will be stopped by user")
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_MESSAGE({Id}$SEPARATOR{output})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ProcessIdNewOutput, Id, new()
+            {
+                { "output", $"{output}" }
+            });
             _ = conPTYHelper.StopProcess();
         }
         private void PFSendOutput(string output)
         {
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_MESSAGE({Id}$SEPARATOR{output})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.ProcessIdNewOutput, Id, new()
+            {
+                { "output", $"{output}" }
+            });
         }
         private void PFChangeProcessState(bool isRunned)
         {
             ProcessStateChanged?.Invoke(Tuple.Create(Id, isRunned));
             if (isRunned == false) _ = conPTYHelper.StopProcess();
         }
-        private void PFShowErrorMessage(Tuple<string, string> tuple)
+        private void PFShowErrorMessage(Tuple<PrettyErrorCode, string> tuple)
         {
-            string message = tuple.Item1;
+            PrettyErrorCode message = tuple.Item1;
             string _object = tuple.Item2;
-            _ = PipeServer.Instance.SendMessage($"CONPTY:MARKED_STOPPED({Id}$SEPARATOR{message}$SEPARATOR{_object})");
+            _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id, new()
+            {
+                { "errorHappens", "true" },
+                { "errorMessage", message.ToString() },
+                { "errorObject", _object },
+            });
             _ = conPTYHelper.StopProcess();
         }
 

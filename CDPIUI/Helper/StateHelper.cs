@@ -10,14 +10,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI.Helper
+namespace CDPIUI.Core
 {
-    public enum SupportedVersionControls
-    {
-        None,
-        GitHub,
-        GitLab
-    }
+    
 
     internal class StateHelper
     {
@@ -41,14 +36,7 @@ namespace CDPIUI.Helper
 
         // Enums
 
-        public enum ProxySetupTypes
-        {
-            None,
-            AllSystem,
-            ProxiFyre,
-            NoActions,
-            AsInConfig,
-        }
+        
 
         
 
@@ -66,13 +54,6 @@ namespace CDPIUI.Helper
 
         // Local
 
-        public const string ApplicationStoreId = "CDPIUIAppSt";
-
-        public const string LocalUserItemsId = "LocalUserStorage";
-        public const string LocalUserItemSiteListsFolder = "List";
-        public const string LocalUserItemBinsFolder = "Bin";
-        public const string LocalUserItemLocFolder = "Loc";
-
         public const string SettingsDir = "Settings";
 
         // Repository
@@ -89,7 +70,6 @@ namespace CDPIUI.Helper
 
         public Dictionary<string, string> ComponentIdPairs = new();
         public static List<string> GoodCheckSupportedComponents = ["CSZTBN012", "CSGIVS036", "CSBIHA024"];
-        public static List<string> ProxyLikeComponents = ["CSSIXC048", "CSBIHA024", "CSNIG9025"];
 
         public bool isCheckedComponentsUpdateComplete = false;
         public string lastComponentsUpdateError = "";
@@ -97,7 +77,6 @@ namespace CDPIUI.Helper
         
 
         public string Version;
-        public static bool IsPreview = true;
 
         private StateHelper()
         {
@@ -132,71 +111,6 @@ namespace CDPIUI.Helper
         public string FindKeyByValue(string value)
         {
             return ComponentIdPairs.FirstOrDefault(kvp => kvp.Value == value).Key;
-        }
-
-        public static string GetDataDirectory(bool getCurrent = false)
-        {
-            try
-            {
-                var procPath = Environment.ProcessPath;
-                if (HasWritePermission(Path.GetDirectoryName(procPath))|| getCurrent)
-                    return Path.GetDirectoryName(procPath)!;
-                else
-                {
-                    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                    var targetFolder = Path.Combine(localAppData, "CDPIUI");
-                    if (!Directory.Exists(targetFolder))
-                        Directory.CreateDirectory(targetFolder);
-                    return targetFolder;
-                }
-            }
-            catch (Exception ex) 
-            {
-                Logger.Instance.RaiseCriticalException(nameof(GetDataDirectory), ex);
-                return "";
-            }
-        }
-
-        private static bool HasWritePermission(string directory)
-        {
-            var testFile = Path.Combine(directory, $".write_test_{Guid.NewGuid():N}.tmp");
-            try
-            {
-                using (var fs = new FileStream(testFile, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-                {
-                    fs.WriteByte(0x0);
-                    fs.Flush();
-                }
-
-                File.Delete(testFile);
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return false;
-            }
-            catch (IOException)
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.RaiseCriticalException(nameof(HasWritePermission), ex);
-                return false;
-            }
-            finally
-            {
-                try
-                {
-                    if (File.Exists(testFile))
-                        File.Delete(testFile);
-                }
-                catch { }
-            }
         }
     }
 }

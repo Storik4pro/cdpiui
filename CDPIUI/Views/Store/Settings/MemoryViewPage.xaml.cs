@@ -1,4 +1,4 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -105,8 +105,8 @@ namespace CDPIUI.Views.Store.Settings
         {
             MemoryDisks.Clear();
 
-            string appDir = StateHelper.Instance.workDirectory;
-            string dataDir = StateHelper.GetDataDirectory();
+            string appDir = CDPIUI.Core.Data.Directories.CurrentDirectory;
+            string dataDir = CDPIUI.Core.Data.Directories.DataDirectory;
 
             DriveInfo appDirDriveInfo = new(appDir);
             DriveInfo dataDirDriveInfo = new(dataDir);

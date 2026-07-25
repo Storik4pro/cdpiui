@@ -1,5 +1,6 @@
-﻿using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
+﻿using CDPIUI.Core.Basic;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
 using Microsoft.UI;
@@ -23,7 +24,7 @@ using Windows.UI.Core;
 using WinUI3Localizer;
 using Padding = System.Windows.Forms.Padding;
 
-namespace CDPIUI.Helper.Static
+namespace CDPIUI.Core.Static
 {
     public static class UIHelper
     {
@@ -464,7 +465,7 @@ namespace CDPIUI.Helper.Static
         public static Uri GetUriFromString(string input)
         {
             
-            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(StateHelper.Instance.workDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(CDPIUI.Core.Data.Directories.CurrentDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
             {
                 return result;
             }
@@ -491,7 +492,7 @@ namespace CDPIUI.Helper.Static
             }
         }
 
-        // https://github.com/FrozenAssassine/Fastedit/blob/v2.9.1/Fastedit/Helper/KeyHelper.cs
+        // https://github.com/FrozenAssassine/Fastedit/blob/v2.9.1/Fastedit/Core/KeyHelper.cs
         public static bool IsKeyPressed(VirtualKey key)
         {
             return Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(key).HasFlag(CoreVirtualKeyStates.Down);

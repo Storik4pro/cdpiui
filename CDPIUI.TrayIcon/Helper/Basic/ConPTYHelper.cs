@@ -1,13 +1,10 @@
-﻿using CDPIUI.TrayIcon.Helper.Basic;
+﻿using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.TrayIcon.Helper.Basic;
 using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using CDPIUI.Shared.Extentions;
 
 namespace CDPIUI.TrayIcon.Helper
 {
@@ -21,15 +18,13 @@ namespace CDPIUI.TrayIcon.Helper
         private CancellationTokenSource? _cancellationTokenSource;
         private PROCESS_INFORMATION _processInfo;
         private IntPtr _pseudoConsoleHandle = IntPtr.Zero;
-        private IntPtr _hInputRead = IntPtr.Zero;
         private IntPtr _hInputWrite = IntPtr.Zero;
         private IntPtr _hOutputRead = IntPtr.Zero;
-        private IntPtr _hOutputWrite = IntPtr.Zero;
 
         private readonly StringBuilder _outputDefaultBuffer;
 
         public Action<bool>? ProcessStateChanged;
-        public Action<Tuple<string, string>>? ErrorHappens;
+        public Action<Tuple<PrettyErrorCode, string>>? ErrorHappens;
         public Action<string>? ProcessExited;
         public Action<string>? OutputAdded;
 
@@ -37,25 +32,25 @@ namespace CDPIUI.TrayIcon.Helper
 
         private StopActionCallers StopActionCaller = StopActionCallers.Unknown;
 
-        static readonly Dictionary<string, string> errorMappings = new()
+        static readonly Dictionary<string, PrettyErrorCode> errorMappings = new()
         {
-            { "Error opening filter", "FILTER_OPEN_ERROR" },
-            { "unknown option", "PARAMETER_ERROR" },
-            { "hostlists load failed", "HOSTLIST_LOAD_ERROR" },
-            { "must specify port filter", "PORT_FILTER_ERROR" },
-            { "must specify port or/and partial raw filter", "PORT_FILTER_WRONG_VALUE_ERROR" },
-            { "ERROR:", "UNKNOWN_ERROR" },
-            { "Component not installed correctly", "COMPONENT_INSTALL_ERROR" },
-            { "error", "UNKNOWN_ERROR" },
-            { "invalid value", "INVALID_VALUE_ERROR" },
-            { "nvalid value", "INVALID_VALUE_ERROR" },
-            { "option requires an argument", "INVALID_VALUE_ERROR" },
-            { "--debug=0|1|syslog|@<filename>", "PARAMETER_ERROR" },
-            { "already running", "ALREADY_RUNNING_WARN" },
-            { "could not read", "FILE_READ_ERROR" },
-            { "flag provided but not defined:", "PARAMETER_ERROR" },
-            { "cannot create", "ACCESS_DENIED" },
-            { "cannot access", "ACCESS_DENIED" }
+            { "Error opening filter", PrettyErrorCode.FILTER_OPEN_ERROR },
+            { "unknown option",  PrettyErrorCode.PARAMETER_ERROR },
+            { "hostlists load failed",  PrettyErrorCode.HOSTLIST_LOAD_ERROR },
+            { "must specify port filter",  PrettyErrorCode.PORT_FILTER_ERROR },
+            { "must specify port or/and partial raw filter",  PrettyErrorCode.PORT_FILTER_WRONG_VALUE_ERROR },
+            { "ERROR:",  PrettyErrorCode.UNKNOWN },
+            { "Component not installed correctly",  PrettyErrorCode.COMPONENT_INSTALL_ERROR },
+            { "error",  PrettyErrorCode.UNKNOWN },
+            { "invalid value",  PrettyErrorCode.INVALID_VALUE_ERROR },
+            { "nvalid value",  PrettyErrorCode.INVALID_VALUE_ERROR },
+            { "option requires an argument", PrettyErrorCode.INVALID_VALUE_ERROR },
+            { "--debug=0|1|syslog|@<filename>",  PrettyErrorCode.PARAMETER_ERROR },
+            { "already running",  PrettyErrorCode.ALREADY_RUNNING_WARN },
+            { "could not read",  PrettyErrorCode.FILE_READ_ERROR },
+            { "flag provided but not defined:",  PrettyErrorCode.PARAMETER_ERROR },
+            { "cannot create",  PrettyErrorCode.ACCESS_DENIED },
+            { "cannot access",  PrettyErrorCode.ACCESS_DENIED }
         };
 
         public bool processState { get; private set; } = false;
@@ -110,7 +105,7 @@ namespace CDPIUI.TrayIcon.Helper
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Unexpected error while trying to start process: {ex.Message}", _object: "console");
+                ShowErrorMessage(ErrorHelper.Convertor.GetPrettyErrorCode(nameof(ConPTYHelper), ex).ToEnum<PrettyErrorCode>(), _object: "console");
                 SendStopMessage("Unexpected error happens while trying to stop process");
 
                 processState = false;
@@ -129,7 +124,7 @@ namespace CDPIUI.TrayIcon.Helper
             IntPtr hOutputRead = IntPtr.Zero;
             IntPtr hOutputWrite = IntPtr.Zero;
 
-            string lastError = string.Empty;
+            PrettyErrorCode lastError = PrettyErrorCode.SUCCESS;
 
             try
             {
@@ -257,12 +252,12 @@ namespace CDPIUI.TrayIcon.Helper
             {
                 
                 Logger.Instance.CreateInfoLog(nameof(ConPTYHelper), $"Process will be stopped {lastError}.");
-                if (!string.IsNullOrEmpty(lastError) && StopActionCaller == StopActionCallers.Unknown) ShowErrorMessage(lastError);
+                if (lastError != PrettyErrorCode.SUCCESS && StopActionCaller == StopActionCallers.Unknown) ShowErrorMessage(lastError);
             }
             catch (Exception ex)
             {
                 if (ex.Message != "External component has thrown an exception.")
-                    ShowErrorMessage($"{ex.Message}", _object: "console");
+                    ShowErrorMessage(ErrorHelper.Convertor.GetPrettyErrorCode(nameof(ConPTYHelper), ex).ToEnum<PrettyErrorCode>(), _object: "console");
 
             }
             finally
@@ -366,10 +361,10 @@ namespace CDPIUI.TrayIcon.Helper
             ProcessExited?.Invoke($"\n[PSEUDOCONSOLE]{preffix} {output}");
         }
 
-        private void ShowErrorMessage(string message, string _object = "process")
+        private void ShowErrorMessage(PrettyErrorCode errorCode, string _object = "process")
         {
-            Logger.Instance.CreateWarningLog(nameof(ProcessManager), $"CONPTY error: {message} object: {_object}");
-            ErrorHappens?.Invoke(Tuple.Create(message, _object));
+            Logger.Instance.CreateWarningLog(nameof(ProcessManager), $"CONPTY error: {errorCode} object: {_object}");
+            ErrorHappens?.Invoke(Tuple.Create(errorCode, _object));
         }
 
         public string GetDefaultOutput()

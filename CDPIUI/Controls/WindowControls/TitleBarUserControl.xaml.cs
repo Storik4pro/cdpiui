@@ -12,8 +12,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using CDPIUI.Helper;
+using CDPIUI.Core;
 using Microsoft.UI.Xaml.Media.Imaging;
+using CDPIUI.Shared;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,7 +24,7 @@ namespace CDPIUI.Controls.WindowControls;
 public sealed partial class TitleBarUserControl : UserControl
 {
 
-    public Visibility PreviewHintVisibility { get; private set; } = StateHelper.IsPreview ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility PreviewHintVisibility { get; private set; } = SharedConstants.IsPreview ? Visibility.Visible : Visibility.Collapsed;
 
 
     

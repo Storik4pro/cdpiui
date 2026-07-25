@@ -1,4 +1,5 @@
 ﻿using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using CDPIUI.Views.CreateConfigHelper;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace CDPIUI.Helper.CreateConfigHelper
         {
             Tuple.Create("--port", string.Empty, true, "1443"),
             Tuple.Create("--host", string.Empty, true, "127.0.0.1"),
-            Tuple.Create("--secret", string.Empty, true, Utils.GetRandomHexNumber(32)),
+            Tuple.Create("--secret", string.Empty, true, SharedUtils.GetRandomHexNumber(32)),
             Tuple.Create("--dc-ip", string.Empty, true, "2:149.154.167.220"),
             Tuple.Create("--buf-kb", string.Empty, true, "256"),
             Tuple.Create("--pool-size", string.Empty, true, "4"),

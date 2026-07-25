@@ -1,7 +1,10 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Items;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.Features;
+using CDPIUI.Core.Items;
+using CDPIUI.Core.Static;
+using CDPIUI.Core.Store.Database;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Components;
 using Microsoft.UI.Xaml;
@@ -173,7 +176,7 @@ public sealed partial class SmallComponentTileUserControl : UserControl
     private void SmallComponentTileUserControl_Unloaded(object sender, RoutedEventArgs e)
     {
         this.ActualThemeChanged -= SmallComponentTileUserControl_ActualThemeChanged;
-        TasksHelper.Instance.TaskStateUpdated -= TaskUpdated;
+        ComponentTasksManager.Instance.TaskStateUpdated -= TaskUpdated;
         this.Unloaded -= SmallComponentTileUserControl_Unloaded;
         this.SizeChanged -= SmallComponentTileUserControl_SizeChanged;
     }
@@ -191,7 +194,7 @@ public sealed partial class SmallComponentTileUserControl : UserControl
 
     private void Init()
     {
-        TasksHelper.Instance.TaskStateUpdated += TaskUpdated;
+        ComponentTasksManager.Instance.TaskStateUpdated += TaskUpdated;
 
         if (DatabaseHelper.Instance.IsItemInstalled(StoreId))
         {
@@ -209,9 +212,9 @@ public sealed partial class SmallComponentTileUserControl : UserControl
         ShowMoreSettingsToolTip.Text = IsOpened ? localizer.GetLocalizedString("ShowLessComponentSettingsText") : localizer.GetLocalizedString("ShowMoreComponentSettingsText");
     }
 
-    private async Task<ProcessManager> GetProcessManager()
+    private async Task<ProcessService> GetProcessManager()
     {
-        return (await TasksHelper.Instance.GetTaskFromId(StoreId))?.ProcessManager;
+        return (await ComponentTasksManager.Instance.GetTaskFromId(StoreId))?.ProcessManager;
     }
 
     private async void CheckComponentState()
@@ -221,14 +224,14 @@ public sealed partial class SmallComponentTileUserControl : UserControl
 
     private async Task<ComponentState> GetComponentState()
     {
-        ProcessManager processManager = await GetProcessManager();
+        ProcessService processManager = await GetProcessManager();
         if (processManager == null) return ComponentState.SetupRequired;
 
-        if (processManager.isErrorHappens)
+        if (processManager.IsErrorHappens)
         {
             return ComponentState.ExitedWithException;
         }
-        else if (processManager.processState)
+        else if (processManager.IsProcessRunning)
         {
             return ComponentState.Runned;
         }
@@ -276,7 +279,7 @@ public sealed partial class SmallComponentTileUserControl : UserControl
 
     private async void PreferTaskStateActions()
     {
-        bool isRunned = await TasksHelper.Instance.IsTaskRunned(StoreId);
+        bool isRunned = await ComponentTasksManager.Instance.IsTaskRunned(StoreId);
 
         if (isRunned)
         {
@@ -319,15 +322,15 @@ public sealed partial class SmallComponentTileUserControl : UserControl
 
     private async void PlayButton_Click(object sender, RoutedEventArgs e)
     {
-        bool isRunned = await TasksHelper.Instance.IsTaskRunned(StoreId);
+        bool isRunned = await ComponentTasksManager.Instance.IsTaskRunned(StoreId);
 
         if (!isRunned)
         {
-            TasksHelper.Instance.CreateAndRunNewTask(StoreId);
+            ComponentTasksManager.Instance.CreateAndRunNewTask(StoreId);
         }
         else
         {
-            await TasksHelper.Instance.StopTask(StoreId);
+            await ComponentTasksManager.Instance.StopTask(StoreId);
         }
     }
 
@@ -348,6 +351,6 @@ public sealed partial class SmallComponentTileUserControl : UserControl
     private void AutorunCheckBox_Click(object sender, RoutedEventArgs e)
     {
         SettingsManager.Instance.SetValue<bool>(["CONFIGS", StoreId], "usedForAutorun", (bool)AutorunCheckBox.IsChecked);
-        if ((bool)AutorunCheckBox.IsChecked) AutoStartManager.AddToAutorun();
+        if ((bool)AutorunCheckBox.IsChecked) ApplicationAutorunManager.AddToAutorun();
     }
 }

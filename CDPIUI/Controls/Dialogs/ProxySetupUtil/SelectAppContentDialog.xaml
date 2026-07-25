@@ -39,7 +39,7 @@
             <ListView x:Name="SelectedApplicationsListView" Margin="0 0 0 0" SelectionMode="None" Padding="0"
                       ItemContainerStyle="{StaticResource ListViewItemStretchStyle}" Grid.Row="1">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:ApplicationInfo">
+                    <DataTemplate x:DataType="local:SelectedApplicationInfo">
                         <lcontrol:ApplicationUserControl 
                             DisplayName="{x:Bind DisplayName, Mode=OneWay}"
                             FullPath="{x:Bind FullPath, Mode=OneWay}"

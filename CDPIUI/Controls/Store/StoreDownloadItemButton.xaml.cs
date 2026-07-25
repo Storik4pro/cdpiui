@@ -1,6 +1,8 @@
 using CDPIUI.Controls.Dialogs.Universal;
-using CDPIUI.Helper;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Views.Store;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using Microsoft.UI;
@@ -328,10 +330,10 @@ namespace CDPIUI.Controls.Store
             StoreHelper.Instance.ItemActionsStopped -= StoreHelper_ItemActionsStopped;
         }
 
-        private void StoreHelper_ItemInstallingErrorHappens(Tuple<string, string> obj)
+        private void StoreHelper_ItemInstallingErrorHappens(Tuple<string, ErrorModel> obj)
         {
             string operationId = obj.Item1;
-            string errorCode = obj.Item2;
+            string errorCode = obj.Item2.ErrorCode;
 
             if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                 return;
@@ -385,7 +387,7 @@ namespace CDPIUI.Controls.Store
             if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                 return;
 
-            SpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
+            SpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}, ";
         }
 
         private void StoreHelper_ItemDownloadProgressChanged(Tuple<string, double> obj)
@@ -408,7 +410,7 @@ namespace CDPIUI.Controls.Store
             if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
                 return;
 
-            TimeTextBlock.Text = Utils.ConvertMinutesToPrettyText(time.Minutes);
+            TimeTextBlock.Text = UnitsParser.ConvertMinutesToPrettyText(time.Minutes);
         }
 
         private void PreferItemDownloadingStateActions(string state)

@@ -1,6 +1,8 @@
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Helper;
 using CDPIUI.Helper.CreateConfigHelper;
-using CDPIUI.Helper.Items;
 using CDPIUI.Views.Components;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -29,7 +31,7 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
 {
     public sealed partial class ConnectTelegramProxyContentDialog : ContentDialog
     {
-        private static string ComponentId = StateHelper.Instance.FindKeyByValue("TgWsProxy");
+        private static string ComponentId = HardcodedItemIds.ComponentIds[Components.TgWsProxy];
 
         public ConnectTelegramProxyContentDialog()
         {
@@ -103,7 +105,7 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
         {
             this.Hide();
             ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-            window.NavView_Navigate(typeof(ViewComponentSettingsPage), StateHelper.Instance.FindKeyByValue("TgWsProxy"), new DrillInNavigationTransitionInfo());
+            window.NavView_Navigate(typeof(ViewComponentSettingsPage), ComponentId, new DrillInNavigationTransitionInfo());
         }
     }
 }

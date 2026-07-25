@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using CDPIUI.Helper.Static;
+using CDPIUI.Core.System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,7 +55,7 @@ public sealed partial class GoodCheckSitelistButton : UserControl
 
     private void EditButton_Click(object sender, RoutedEventArgs e)
     {
-        Utils.OpenFileInDefaultApp(FilePath);
+        ShellHelper.OpenFileInDefaultApp(FilePath);
     }
 
     private void RemoveButton_Click(object sender, RoutedEventArgs e)

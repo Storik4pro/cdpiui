@@ -1,6 +1,5 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,6 +20,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper;
+using CDPIUI.Core.System;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -62,7 +64,7 @@ namespace CDPIUI
 
             string additionalInfo =
                 $"Application: CDPI UI\n" +
-                $"Version: {StateHelper.Instance.Version}\n" +
+                $"Version: {ApplicationInfo.Version}\n" +
                 $"System: {Environment.OSVersion.ToString()}\n" +
                 $"Architecture: {RuntimeInformation.OSArchitecture.ToString()}";
             AdditionalTextBlock.Text = additionalInfo;
@@ -132,7 +134,7 @@ namespace CDPIUI
 
         private void OpenLogFolder_Click(object sender, RoutedEventArgs e)
         {
-            Utils.OpenFolderInExplorer(Path.Combine(StateHelper.GetDataDirectory(), "Logs"));
+            ShellHelper.LookupDirectory(Path.Combine(CDPIUI.Core.Data.Directories.DataDirectory, "Logs"));
         }
     }
 }

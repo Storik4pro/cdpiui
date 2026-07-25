@@ -1,6 +1,4 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -21,6 +19,10 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
+using CDPIUI.Shared.PrettyErrorConvertionService;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -59,7 +61,7 @@ public sealed partial class StoreWindow : TemplateWindow
 
     private void SetDownloadsFontIcon()
     {
-        DownloadsFontIcon.Glyph = Utils.IsOsSupportedNewGlyph() ? "\uEBD3" : "\uE896";
+        DownloadsFontIcon.Glyph = SharedUtils.IsOsSupportedNewGlyph() ? "\uEBD3" : "\uE896";
     }
 
     private void StoreHelper_QueueUpdated()
@@ -74,7 +76,7 @@ public sealed partial class StoreWindow : TemplateWindow
         }
     }
 
-    private void Instance_ItemInstallingErrorHappens(Tuple<string, string> obj)
+    private void Instance_ItemInstallingErrorHappens(Tuple<string, ErrorModel> obj)
     {
         /*
         var dialog = new ContentDialog

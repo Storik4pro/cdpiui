@@ -49,7 +49,7 @@ namespace CDPIUI.TrayIcon.Helper
 
             _cancellationTokenSource = new();
             _cancellationToken = _cancellationTokenSource.Token;
-            await PipeServer.Instance.SendMessage($"GOODCHECK:RUNNED({operationId})");
+            await PipeHelper.SendGoodCheckPacket(Shared.Pipe.Models.GoodCheckMessageIds.Runned, operationId);
             TasksHelper.Instance.ApplyStatusToAllTasks(true);
 
 
@@ -95,7 +95,7 @@ namespace CDPIUI.TrayIcon.Helper
             }, _cancellationToken)).ConfigureAwait(false);
 
             TryKillProcess(Process);
-            await PipeServer.Instance.SendMessage($"GOODCHECK:DIED({operationId})");
+            await PipeHelper.SendGoodCheckPacket(Shared.Pipe.Models.GoodCheckMessageIds.Died, operationId);
             TasksHelper.Instance.ApplyStatusToAllTasks(true);
             return true;
         }
@@ -134,7 +134,8 @@ namespace CDPIUI.TrayIcon.Helper
 
         private void HandleProcessException(string error, string operationId)
         {
-            _ = PipeServer.Instance.SendMessage($"GOODCHECK:DIEDVIAERR({operationId}$SEPARATOR{error})");
+
+            _ = PipeHelper.SendGoodCheckPacket(Shared.Pipe.Models.GoodCheckMessageIds.DiedViaError, operationId, error);
         }
 
         #region WinAPI

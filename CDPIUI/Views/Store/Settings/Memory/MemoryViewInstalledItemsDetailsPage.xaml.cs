@@ -1,8 +1,7 @@
 using CDPIUI.Controls.Store.Settings;
 using CDPIUI.Extensions;
-using CDPIUI.Helper;
-using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -24,6 +23,16 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Static;
+using CDPIUI.Core.Data;
+using CDPIUI.Shared;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Shared.Basic.Filesystem;
+using CDPIUI.Core.Basic;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -127,9 +136,9 @@ namespace CDPIUI.Views.Store.Settings.Memory
 
             foreach (DatabaseStoreItem item in databaseStoreItems)
             {
-                if (item.Id == StateHelper.ApplicationStoreId) continue;
+                if (item.Id == SharedConstants.ApplicationStoreId) continue;
 
-                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, Utils.GetStoreLikeLocale());
+                string title = StoreHelper.Instance.GetLocalizedStoreItemName(item.Name, StoreLocalizationHelper.GetStoreLikeLocale());
                 title = title.StartsWith("slocale:") ? item.ShortName : title;
 
                 string category = localizer.GetLocalizedString(item.Type);
@@ -149,7 +158,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
                     Category = category,
                     ImageSource = image,
                     CardBackgroundBrush = solidColorBrush,
-                    Size = await Utils.GetDirectorySize(item.Directory)
+                    Size = await FileSystemService.GetDirectorySize(item.Directory)
                 };
                 LibraryItems.Add(libraryItemModel);
             }
@@ -174,7 +183,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
 
         private async void CalcSize()
         {
-            MemoryTextBlock.Text = Utils.FormatSize(await Utils.GetDirectorySize(Path.Combine(StateHelper.GetDataDirectory(), StateHelper.StoreDirName, StateHelper.StoreItemsDirName)));
+            MemoryTextBlock.Text = UnitsParser.FormatSize(await FileSystemService.GetDirectorySize(Directories.StoreItemsDirectory, Logger.Instance));
         }
 
 

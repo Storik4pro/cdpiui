@@ -1,8 +1,16 @@
 using CDPIUI.Controls.Dialogs.Store;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Core.Store.ViewModels;
+using CDPIUI.Core.System;
 using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
+using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Views.Components;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using CommunityToolkit.WinUI.Animations.Expressions;
@@ -42,7 +50,7 @@ namespace CDPIUI.Views.Store
     public sealed partial class ItemViewPage : Page
     {
         private string _storeId;
-        private Helper.StoreHelper.RepoCategoryItem item;
+        private RepoItemModel item;
 
         private MarkdownConfig _config;
 
@@ -59,7 +67,7 @@ namespace CDPIUI.Views.Store
         private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
         private Action<Tuple<string, double>> _itemDownloadSpeedChangedHandler;
         private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
-        private Action<Tuple<string, string>> _itemInstallingErrorHappensHandler;
+        private Action<Tuple<string, ErrorModel>> _itemInstallingErrorHappensHandler;
         private Action<string> _itemActionsStoppedHandler;
 
         private ObservableCollection<AdditionalItemInfoModel> AdditionalItemInfoModels = [];
@@ -101,26 +109,26 @@ namespace CDPIUI.Views.Store
                 ConnectHandlers();
                 CheckCurrentStatus();
 
-                item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
+                item = StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
 
-                if (item == null || storeId == StateHelper.ApplicationStoreId)
+                if (item == null || storeId == SharedConstants.ApplicationStoreId)
                 {
                     return;
                 }
 
-                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, Utils.GetStoreLikeLocale());
+                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale());
                 ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(item.icon)));
                 ItemDeveloper.Text = item.developer;
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
                 StarCount.Text = item.stars ?? "NaN";
                 ItemCategoryButton.Content = StoreHelper.Instance.GetLocalizedStoreItemName(
                     StoreHelper.Instance.GetCategoryFromStoreId(item.category_id)?.name?? string.Empty,
-                    Utils.GetStoreLikeLocale()
+                    StoreLocalizationHelper.GetStoreLikeLocale()
                 );
-                SmallDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale());
-                ItemFullDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.description, Utils.GetStoreLikeLocale());
+                SmallDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.small_description, StoreLocalizationHelper.GetStoreLikeLocale());
+                ItemFullDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.description, StoreLocalizationHelper.GetStoreLikeLocale());
                 ItemWarningAera.Visibility = item.display_warning ? Visibility.Visible : Visibility.Collapsed;
-                ItemWarningText.Text = LScriptLangHelper.ExecuteScript(item.warning_text, Utils.GetStoreLikeLocale());
+                ItemWarningText.Text = LScriptLangHelper.ExecuteScript(item.warning_text, StoreLocalizationHelper.GetStoreLikeLocale());
 
                 if (DatabaseHelper.Instance.IsItemInstalled(storeId))
                 {
@@ -159,7 +167,7 @@ namespace CDPIUI.Views.Store
 
         private void LoadAdvancedItemInfo()
         {
-            item = Helper.StoreHelper.Instance.GetItemInfoFromStoreId(_storeId);
+            item = StoreHelper.Instance.GetItemInfoFromStoreId(_storeId);
             AdditionalItemInfoModels.Clear();
             if (item == null)
             {
@@ -228,7 +236,7 @@ namespace CDPIUI.Views.Store
 
         private bool IsItemSupported()
         {
-            Version curVer = new Version(StateHelper.Instance.Version);
+            Version curVer = new Version(ApplicationInfo.Version);
             Version minV = new Version(item.target_minversion);
 
             if (curVer < minV) return false;
@@ -260,17 +268,17 @@ namespace CDPIUI.Views.Store
             });
         }
 
-        private void CreateLinks(List<StoreHelper.Link> links)
+        private void CreateLinks(List<Link> links)
         {
             LinksStackPanel.Children.Clear();
 
             ObservableCollection<StoreItemLinkButton> linkButtons = new ObservableCollection<StoreItemLinkButton>();
 
-            foreach (StoreHelper.Link link in links)
+            foreach (Link link in links)
             {
                 linkButtons.Add(new StoreItemLinkButton
                 {
-                    Text = StoreHelper.Instance.GetLocalizedStoreItemName(link.name, Utils.GetStoreLikeLocale()),
+                    Text = StoreHelper.Instance.GetLocalizedStoreItemName(link.name, StoreLocalizationHelper.GetStoreLikeLocale()),
                     Url = link.url,
                 });
             }
@@ -387,7 +395,7 @@ namespace CDPIUI.Views.Store
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
 
-                CurrentStatusSpeedTextBlock.Text = $"{Utils.FormatSpeed(speed)}, ";
+                CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}, ";
             };
 
             StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
@@ -395,7 +403,7 @@ namespace CDPIUI.Views.Store
             _itemInstallingErrorHappensHandler = (data) =>
             {
                 string operationId = data.Item1;
-                string errorCode = data.Item2;
+                string errorCode = data.Item2.ErrorCode;
 
                 if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
                     return;
@@ -501,7 +509,7 @@ namespace CDPIUI.Views.Store
 
         private async void ItemActionButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Helper.DatabaseHelper.Instance.IsItemInstalled(_storeId))
+            if (!DatabaseHelper.Instance.IsItemInstalled(_storeId))
             {
                 InstallingItemActions();
             }
@@ -581,10 +589,10 @@ namespace CDPIUI.Views.Store
                 {
                     Id = item.store_id,
                     Name = item.short_name,
-                    Description = LScriptLangHelper.ExecuteScript(item.small_description, Utils.GetStoreLikeLocale()),
+                    Description = LScriptLangHelper.ExecuteScript(item.small_description, StoreLocalizationHelper.GetStoreLikeLocale()),
                     Category = StoreHelper.Instance.GetLocalizedStoreItemName(
                         StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
-                        Utils.GetStoreLikeLocale()),
+                        StoreLocalizationHelper.GetStoreLikeLocale()),
                     ImageSource = LScriptLangHelper.ExecuteScript(item.icon),
                     Developer = item.developer
                 });
@@ -623,7 +631,7 @@ namespace CDPIUI.Views.Store
         {
             try
             {
-                Utils.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(item.store_id).Directory);
+                ShellHelper.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(item.store_id).Directory);
             }
             catch
             {

@@ -32,7 +32,7 @@ public enum SelectAppContentDialogResult
     UniversalApp
 }
 
-public class ApplicationInfo
+public class SelectedApplicationInfo
 {
     public string DisplayName { get; set; }
     public string FullPath { get; set; }
@@ -48,14 +48,14 @@ public sealed partial class SelectAppContentDialog : ContentDialog
         UniversalApp
     }
     public ICommand RemoveAppClickCommand { get; }
-    public ObservableCollection<ApplicationInfo> _applications { get; private set; } = [];
+    public ObservableCollection<SelectedApplicationInfo> _applications { get; private set; } = [];
 
     private ILocalizer localizer = Localizer.Get();
-    public SelectAppContentDialog(List<ApplicationInfo> applications)
+    public SelectAppContentDialog(List<SelectedApplicationInfo> applications)
     {
         InitializeComponent();
         this.DataContext = this;
-        RemoveAppClickCommand = new RelayCommand(p => RemoveApp((ApplicationInfo)p));
+        RemoveAppClickCommand = new RelayCommand(p => RemoveApp((SelectedApplicationInfo)p));
 
         AuditVisibility();
 
@@ -197,7 +197,7 @@ public sealed partial class SelectAppContentDialog : ContentDialog
 
     }
 
-    private void RemoveApp(ApplicationInfo model)
+    private void RemoveApp(SelectedApplicationInfo model)
     {
         _applications.Remove(model);
     }

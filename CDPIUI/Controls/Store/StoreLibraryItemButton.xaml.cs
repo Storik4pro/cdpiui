@@ -1,4 +1,9 @@
-using CDPIUI.Helper;
+using CDPIUI.Core;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.System;
+using CDPIUI.Helper.Static;
+using CDPIUI.Shared;
 using CDPIUI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -126,7 +131,7 @@ namespace CDPIUI.Controls.Store
                 ReinstallButton.IsEnabled = false;
             }
 
-            if (databaseStoreItem.Id == StateHelper.LocalUserItemsId || databaseStoreItem.Id == StateHelper.ApplicationStoreId)
+            if (databaseStoreItem.Id == SharedConstants.LocalUserItemsId || databaseStoreItem.Id == SharedConstants.ApplicationStoreId)
             {
                 DeleteButton.IsEnabled = false;
                 ReinstallButton.IsEnabled = false;
@@ -177,7 +182,7 @@ namespace CDPIUI.Controls.Store
         {
             try
             {
-                Helper.Static.Utils.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(StoreId).Directory);
+                ShellHelper.OpenFileInDefaultApp(DatabaseHelper.Instance.GetItemById(StoreId).Directory);
             }
             catch
             {

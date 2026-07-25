@@ -1,6 +1,5 @@
 ﻿using CDPIUI.DataModel;
-using CDPIUI.Helper;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
+using CDPIUI.Core;
 using CDPIUI.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -20,6 +19,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUIEx;
+using CDPIUI.AddOns.GoodCheck;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,7 +62,7 @@ public sealed partial class ViewGoodCheckOutputWindow : WindowEx
 
     private void ConnectHandlers()
     {
-        GoodCheckProcessHelper.Instance.OperationsListChanged += () =>
+        GoodCheckProcessService.Instance.OperationsListChanged += () =>
         {
             SetOperationPages();
         };
@@ -70,7 +70,7 @@ public sealed partial class ViewGoodCheckOutputWindow : WindowEx
 
     private void SetOperationPages()
     {
-        List<GoodCheckOperationModel> operations = GoodCheckProcessHelper.Instance.GetCurrentOperations();
+        List<GoodCheckOperationModel> operations = GoodCheckProcessService.Instance.GetCurrentOperations();
 
         foreach (GoodCheckOperationModel op in operations)
         {

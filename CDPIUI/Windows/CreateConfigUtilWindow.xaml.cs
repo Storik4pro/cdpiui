@@ -1,7 +1,6 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.CreateConfigUtil.GoodCheck;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Static;
 using CDPIUI.Messages;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;
@@ -27,6 +26,7 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
+using CDPIUI.AddOns.GoodCheck;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -107,7 +107,7 @@ namespace CDPIUI
                 };
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
-                    GoodCheckProcessHelper.Instance.Stop();
+                    GoodCheckProcessService.Instance.Stop();
                     this.Close();
                 }
             }
@@ -127,9 +127,9 @@ namespace CDPIUI
         {
             if (isDialogOpened)
             {
-                GoodCheckProcessHelper.Instance.Stop();
+                GoodCheckProcessService.Instance.Stop();
             }
-            else if (GoodCheckProcessHelper.Instance.IsRunned())
+            else if (GoodCheckProcessService.Instance.IsRunned())
             {
                 AskForExit();
                 args.Handled = true;
@@ -142,7 +142,7 @@ namespace CDPIUI
 
         ~CreateConfigUtilWindow()
         {
-            if (!GoodCheckProcessHelper.Instance.IsRunned())
+            if (!GoodCheckProcessService.Instance.IsRunned())
             {
                 Instance = null;
             }

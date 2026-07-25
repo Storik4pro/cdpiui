@@ -7,7 +7,7 @@
     xmlns:local="using:CDPIUI.Views.CreateConfigHelper"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:modal="using:CDPIUI.Helper.CreateConfigUtil.GoodCheck"
+    xmlns:modal="using:CDPIUI.Core.CreateConfigUtil.GoodCheck"
     mc:Ignorable="d"
     xmlns:lcontrol="using:CDPIUI"
     xmlns:l="using:WinUI3Localizer">

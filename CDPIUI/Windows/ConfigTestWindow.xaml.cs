@@ -1,8 +1,7 @@
 using CDPIUI.Default;
-using CDPIUI.Helper;
-using CDPIUI.Helper.Basic;
-using CDPIUI.Helper.Items;
-using CDPIUI.Helper.Static;
+using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,6 +16,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI;
 using WinUI3Localizer;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Helper.AddOns;
+using CDPIUI.Helper.Static;
+using CDPIUI.Helper.Parsers;
 
 namespace CDPIUI
 {
@@ -105,7 +111,7 @@ namespace CDPIUI
                 ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(entry.StoreId);
                 if (componentHelper == null) return new List<ConfigItem>();
 
-                ConfigHelper configHelper = componentHelper.GetConfigHelper();
+                ConfigurationService configHelper = componentHelper.GetConfigHelper();
                 if (configHelper == null) return new List<ConfigItem>();
 
                 return configHelper.GetConfigItems().Where(c => c != null && !c.MarkAsRemoved).ToList();
@@ -155,7 +161,7 @@ namespace CDPIUI
 
             PresetTestType testType = DpiTestRadio.IsChecked == true ? PresetTestType.DpiChecker : PresetTestType.Standard;
 
-            ProcessManager processManager = (await TasksHelper.Instance.GetTaskFromId(entry.StoreId))?.ProcessManager;
+            ProcessService processManager = (await ComponentTasksManager.Instance.GetTaskFromId(entry.StoreId))?.ProcessManager;
             if (processManager == null)
             {
                 AppendLine(new TestLogSegment($"[{localizer.GetLocalizedString("PT_Warn")}] ", TestLogColor.Yellow),
@@ -239,14 +245,14 @@ namespace CDPIUI
 
                 if (restartIfRunning)
                 {
-                    if (await TasksHelper.Instance.IsTaskRunned(TestedComponentId))
-                        await TasksHelper.Instance.RestartTask(TestedComponentId);
+                    if (await ComponentTasksManager.Instance.IsTaskRunned(TestedComponentId))
+                        await ComponentTasksManager.Instance.RestartTask(TestedComponentId);
                     else
-                        TasksHelper.Instance.CreateAndRunNewTask(TestedComponentId);
+                        ComponentTasksManager.Instance.CreateAndRunNewTask(TestedComponentId);
                 }
-                else if (await TasksHelper.Instance.IsTaskRunned(TestedComponentId))
+                else if (await ComponentTasksManager.Instance.IsTaskRunned(TestedComponentId))
                 {
-                    await TasksHelper.Instance.RestartTask(TestedComponentId);
+                    await ComponentTasksManager.Instance.RestartTask(TestedComponentId);
                 }
             }
             catch (Exception ex)
@@ -314,7 +320,7 @@ namespace CDPIUI
             if (p.EstimatedRemaining.HasValue && p.CompletedPresets > 0 && p.CompletedPresets < p.TotalPresets)
             {
                 var eta = p.EstimatedRemaining.Value;
-                ProgressEtaTextBlock.Text = Utils.ConvertMinutesToPrettyText(eta.Minutes);
+                ProgressEtaTextBlock.Text = UnitsParser.ConvertMinutesToPrettyText(eta.Minutes);
                 
             }
             else
