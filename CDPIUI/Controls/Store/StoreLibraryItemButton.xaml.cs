@@ -4,7 +4,7 @@ using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.Static;
 using CDPIUI.Shared;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -152,7 +153,12 @@ namespace CDPIUI.Controls.Store
             if (databaseStoreItem.Type == "component")
             {
                 ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-                window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+                window.NavView_Navigate(typeof(ViewComponentSettingsPage),
+                    new NameValueCollection()
+                    {
+                        { "componentId", StoreId }
+                    }
+                    , new DrillInNavigationTransitionInfo());
             }
             else if (databaseStoreItem.Type == "configlist")
             {
