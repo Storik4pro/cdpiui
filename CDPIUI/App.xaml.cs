@@ -4,7 +4,6 @@ using CDPIUI.Core.Items;
 using CDPIUI.Core.Store;
 using CDPIUI.Messages;
 using CDPIUI.Views;
-using CDPIUI.Views.Components;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -123,60 +122,15 @@ namespace CDPIUI
                 isActionPreffered = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
             }
 
-            if (!arguments.Contains("--create-no-window"))
-            {
-                if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole")))
-                {
-                    string id = Utils.GetValueFromCommmandLineParameter("--show-pseudoconsole");
-                    var window = await UnsafeCreateNewWindow<ViewWindow>(id: id);
-                }
-                else if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--show-component-settings")))
-                {
-                    string id = Utils.GetValueFromCommmandLineParameter("--show-component-settings");
-                    var window = await SafeCreateNewWindow<ModernMainWindow>();
-                    window.NavView_Navigate(typeof(ViewComponentSettingsPage), id, new DrillInNavigationTransitionInfo());
-                }
-                else if (arguments.Contains("--show-proxy-setup"))
-                {
-                    await SafeCreateNewWindow<ProxySetupUtilWindow>();
-                }
-                else if (arguments.Contains("--show-store"))
-                {
-                    StoreWindow window = await SafeCreateNewWindow<StoreWindow>();
-                }
-                else if (arguments.Contains("--show-begin-store-update-check"))
-                {
-                    StoreWindow window = await SafeCreateNewWindow<StoreWindow>();
-                    window.NavigateSubPage(typeof(Views.Store.DownloadsPage), "BEGIN_UPDATE", new DrillInNavigationTransitionInfo());
-                }
-                else
-                {
-                    if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
-                }
+            string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
 
-                if (arguments.Contains("--show-update-page"))
-                {
-                    await NavigateToUpdatesPage();
-                }
-            }
-            if (arguments.Contains("--begin-compatibility-check"))
+            if (directArgs != null)
             {
-                await CompatibilityCheckHelper.Instance.BeginCheck();
+                string value = directArgs["--direct:".Length..];
+                isActionPreffered = CoreCommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
             }
-            if (arguments.Contains("--get-all-startup-insructions"))
-            {
-                ComponentTasksManager.Instance.RunAllPreferredActions();
-            }
-            
-            if (!string.IsNullOrEmpty(Utils.GetValueFromCommmandLineParameter("--get-startup-params")))
-            {
-                string _id = Utils.GetValueFromCommmandLineParameter("--get-startup-params");
-                ComponentTasksManager.Instance.CreateAndRunNewTask(_id);
-            }
-            if (arguments.Contains("--check-program-updates"))
-            {
-                await ApplicationUpdate.Instance.CheckForUpdates(notify: true);
-            }
+
+            if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
 
             if (OpenWindows.Count > 1 && OpenWindows[0] is PrepareWindow)
             {
@@ -231,9 +185,16 @@ namespace CDPIUI
             PipeClientService.Instance.Start();
         }
 
-        public async void OpenRequestedFile(AppActivationArguments appActivationArguments)
+        public async void PrefferRequestedActions(AppActivationArguments appActivationArguments)
         {
             bool result = false;
+
+            if (appActivationArguments.Kind is ExtendedActivationKind.Protocol &&
+                appActivationArguments.Data is IProtocolActivatedEventArgs protocolActivatedEventArgs)
+            {
+                string value = protocolActivatedEventArgs.Uri.ToString();
+                result = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+            }
 
             if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
                 appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)

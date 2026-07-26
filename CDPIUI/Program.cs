@@ -69,7 +69,7 @@ namespace CDPIUI
                         var app = (App)Application.Current;
                         if (app != null)
                         {
-                            app.OpenRequestedFile(args);
+                            app.PrefferRequestedActions(args);
                             
                         }
                     }
