@@ -33,6 +33,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\find_error.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\github.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -63,6 +66,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Store.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\telegram.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Troubleshooting.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -70,6 +76,12 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\LockScreenLogo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Preview\MainPageMarkup">
+        <File Source="$(var.SourceDir)\Assets\Preview\MainPageMarkup\ClassicMarkup.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Preview\MainPageMarkup">
+        <File Source="$(var.SourceDir)\Assets\Preview\MainPageMarkup\ModernMarkup.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\SplashScreen.scale-200.png" KeyPath="yes" />
@@ -117,6 +129,12 @@
         <File Source="$(var.SourceDir)\CDPIUI_TrayIcon.exe" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.AddOns.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CDPIUI.deps.json" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
@@ -130,6 +148,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CDPIUI.runtimeconfig.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.Shared.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\Collections.Pooled.dll" KeyPath="yes" />
@@ -722,6 +743,9 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
         <File Source="$(var.SourceDir)\Strings\en-us\UIHelper.resw" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Widgets.resw" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\Flashlight.resw" KeyPath="yes" />
       </Component>
@@ -745,6 +769,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\UIHelper.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Widgets.resw" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\System.CodeDom.dll" KeyPath="yes" />
