@@ -1,8 +1,10 @@
+using CDPIUI.Controls.Default;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Specialized;
 using Windows.Foundation.Metadata;
 using Windows.UI.Popups;
 using WinRT.Interop;
@@ -16,23 +18,20 @@ namespace CDPIUI.Views.Troubleshooting;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainPage : Page
+public sealed partial class MainPage : TemplatePage
 {
     private ILocalizer localizer = Localizer.Get();
     public MainPage()
     {
         InitializeComponent();
+
+        IsBackwardAnimationToPageAvailable = true;
+        ElementToAnimateBackwardConnectedAnimation = ActionButtonsGrid;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-
-        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-        if (backAnim != null)
-        {
-            backAnim.TryStart(ActionButtonsGrid);
-        }
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -41,14 +40,7 @@ public sealed partial class MainPage : Page
 
         try
         {
-            var animq = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", ActionButtonsGrid);
-
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                animq.Configuration = new BasicConnectedAnimationConfiguration();
-            }
-            
+            PrepareToConnectedForwardAnimate(ActionButtonsGrid);            
         }
         catch { }
     }
@@ -74,7 +66,9 @@ public sealed partial class MainPage : Page
 
     private void NotOneConfigDoesWorkCard_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(WorkPage), NavigationParameters.BeginBasicCheck, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+        Frame.Navigate(typeof(WorkPage), 
+            new NameValueCollection() { {"action", NavigationParameters.BeginBasicCheck.ToString() } }, 
+            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
     }
 
     private void MyProblemNotInListCard_Click(object sender, RoutedEventArgs e)
@@ -93,7 +87,9 @@ public sealed partial class MainPage : Page
 
     private void StoreCannotLoadCard_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(WorkPage), NavigationParameters.BeginStoreRepoCheck, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+        Frame.Navigate(typeof(WorkPage),
+            new NameValueCollection() { { "action", NavigationParameters.BeginStoreRepoCheck.ToString() } }
+            , new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
     }
 
     private void ApplicationCannotDownloadUpdateCard_Click(object sender, RoutedEventArgs e)

@@ -32,6 +32,7 @@ using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using static CDPIUI.Core.Static.UIHelper;
 using CDPIUI.Shared.Extentions;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -53,7 +54,7 @@ namespace CDPIUI.Views
         public string Id { get; set; }
         public string DisplayName { get; set; }
     }
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : TemplatePage
     {
         
         private ObservableCollection<LanguageSelectModel> languages = [];
@@ -69,6 +70,11 @@ namespace CDPIUI.Views
         public SettingsPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+            IsBackwardAnimationToPageAvailable = true;
+            ElementToAnimateBackwardConnectedAnimation = NavGrid;
 
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
 
@@ -108,29 +114,9 @@ namespace CDPIUI.Views
             });
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            try
-            {
-                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-                anim?.TryStart(NavGrid);
-                var backanim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-                backanim?.TryStart(NavGrid);
-            }
-            catch { }
-        }
-
         private void PrepareAnimate()
         {
-            var anim = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
-
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                anim.Configuration = new BasicConnectedAnimationConfiguration();
-            }
+            PrepareToConnectedForwardAnimate(NavGrid);
         }
 
         private void UpdateTextFileOpenSettings()

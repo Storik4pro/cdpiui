@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,7 +34,7 @@ namespace CDPIUI.Views.Store
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CategoryViewPage : Page
+    public sealed partial class CategoryViewPage : TemplatePage
     {
         private string CategoryId = string.Empty;
 
@@ -42,6 +44,10 @@ namespace CDPIUI.Views.Store
         public CategoryViewPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = CategoryTitleTextBlock;
+
             StaggeredRepeater.ItemsSource = _tiles;
         }
 
@@ -49,16 +55,14 @@ namespace CDPIUI.Views.Store
         {
             base.OnNavigatedTo(e);
 
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
+            if (Parameter != null)
             {
-                anim.TryStart(CategoryTitleTextBlock);
-            }
-
-            if (e.Parameter is string categoryId)
-            {
-                CategoryId = categoryId;
-                LoadCategory();
+                var categoryId = Parameter.Get("categoryId");
+                if (!string.IsNullOrEmpty(categoryId))
+                {
+                    CategoryId = categoryId;
+                    LoadCategory();
+                }
             }
         }
 
@@ -116,10 +120,13 @@ namespace CDPIUI.Views.Store
         {
             if (button.StoreId is string sid)
             {
-                ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("ForwardConnectedAnimation", button.imageElement);
+                PrepareToConnectedForwardAnimate(button.imageElement);
 
-                StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), sid, new SuppressNavigationTransitionInfo());
+                StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection()
+                {
+                    { "itemId", sid }
+                }, 
+                new SuppressNavigationTransitionInfo());
             }
         }
 

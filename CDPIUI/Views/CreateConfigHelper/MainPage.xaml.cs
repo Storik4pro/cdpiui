@@ -1,7 +1,9 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Core;
 using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.JSON;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,6 +15,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -29,7 +32,7 @@ namespace CDPIUI.Views.CreateConfigHelper
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : TemplatePage
     {
         public MainPage()
         {
@@ -38,6 +41,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
             Frame.BackStack.Clear();
         }
 
@@ -70,7 +74,15 @@ namespace CDPIUI.Views.CreateConfigHelper
                 {
                     filePath = openFileDialog.FileName;
                     var (configItem, errorHappens) = ConfigurationService.LoadConfigFromFile(filePath);
-                    Frame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGIMPORT", configItem, errorHappens, filePath), new DrillInNavigationTransitionInfo());
+                    Frame.Navigate(typeof(CreateNewConfigPage), 
+                        new NameValueCollection()
+                        {
+                            { "type", "CFGIMPORT" },
+                            { "configItem", JSONConvertor.SerializeObject(configItem) },
+                            { "errorHappens", errorHappens.ToString() },
+                            { "filePath", filePath }
+                        }, 
+                        new DrillInNavigationTransitionInfo());
                 }
                 else
                 {
@@ -89,7 +101,13 @@ namespace CDPIUI.Views.CreateConfigHelper
             if (dialog.SelectedConfigResult == SelectResult.Selected)
             {
                 ConfigItem configItem = dialog.SelectedConfigItem;
-                Frame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+                Frame.Navigate(typeof(CreateNewConfigPage), 
+                    new NameValueCollection()
+                    {
+                        { "type", "CFGEDIT" },
+                        { "configItem", JSONConvertor.SerializeObject(configItem) }
+                    }, 
+                    new DrillInNavigationTransitionInfo());
             }
         }
 
@@ -103,7 +121,13 @@ namespace CDPIUI.Views.CreateConfigHelper
             if (dialog.SelectedResult == SelectResult.Selected)
             {
                 string directory = dialog.SelectedReport;
-                Frame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, directory), new DrillInNavigationTransitionInfo());
+                Frame.Navigate(typeof(ViewGoodCheckReportPage), 
+                    new NameValueCollection()
+                    {
+                        { "type", NavigationState.LoadFileFromPath.ToString() },
+                        { "directory", directory }
+                    }
+                    , new DrillInNavigationTransitionInfo());
             }
         }
 

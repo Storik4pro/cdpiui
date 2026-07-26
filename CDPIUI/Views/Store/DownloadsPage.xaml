@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="RootPage"
     x:Class="CDPIUI.Views.Store.DownloadsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,31 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:lcontrols="using:CDPIUI.Controls.Store"
     mc:Ignorable="d"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WindowStates">
-                <VisualState x:Name="SmallState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
-                        <Setter Target="MainStackPanel.Width" Value="auto" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="WideState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1975"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
-                        <Setter Target="MainStackPanel.Width" Value="1860" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <ScrollViewer Padding="20">
             <StackPanel x:Name="MainStackPanel">
                 <Grid>
@@ -95,4 +74,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</Page>
+</tpl:TemplatePage>

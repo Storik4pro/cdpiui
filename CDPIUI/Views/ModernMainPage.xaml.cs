@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +27,7 @@ using Windows.UI.Popups;
 using Windows.UI.StartScreen;
 using WinRT.Interop;
 using WinUI3Localizer;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,7 +45,7 @@ public class ComponentTileModel
     public double Height;
 }
 
-public sealed partial class ModernMainPage : Page, INotifyPropertyChanged
+public sealed partial class ModernMainPage : TemplatePage, INotifyPropertyChanged
 {
     public ObservableCollection<ComponentTileModel> TileModels = [];
 

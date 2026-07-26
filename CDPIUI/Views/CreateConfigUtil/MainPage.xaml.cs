@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
@@ -16,6 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -31,7 +33,7 @@ namespace CDPIUI.Views.CreateConfigUtil
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : TemplatePage
     {
         private ObservableCollection<ViewComponentModel> items = [];
         private List<string> supportedComponents = ["Zapret", "GoodbyeDPI", "ByeDPI"];
@@ -60,8 +62,14 @@ namespace CDPIUI.Views.CreateConfigUtil
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            TargetId = e.Parameter as string;
-            if (!string.IsNullOrEmpty(TargetId))  ComponentChooseComboBox.SelectedItem = items.FirstOrDefault(x => x.StoreId == e.Parameter as string) ?? items.First();
+
+            if (Parameter != null)
+            {
+                TargetId = Parameter.Get("componentId");
+                if (!string.IsNullOrEmpty(TargetId)) 
+                    ComponentChooseComboBox.SelectedItem = 
+                        items.FirstOrDefault(x => x.StoreId == TargetId) ?? items.First();
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -104,12 +112,16 @@ namespace CDPIUI.Views.CreateConfigUtil
             if (!DatabaseHelper.Instance.IsItemInstalled("ASGKOI001"))
             {
                 var window = await((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASGKOI001");
-                window.SetItemToViewId("ASGKOI001");
                 return;
             }
 
             SettingsManager.Instance.SetValue<string>("AUTOSELECTION", "lastComponentSelectedId", ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
-            Frame.Navigate(typeof(CreateViaGoodCheck), ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId, new SuppressNavigationTransitionInfo());
+            Frame.Navigate(typeof(CreateViaGoodCheck), 
+                new NameValueCollection()
+                {
+                    {"componentId", ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId }
+                }, 
+                new SuppressNavigationTransitionInfo());
         }
 
         private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
@@ -157,7 +169,7 @@ namespace CDPIUI.Views.CreateConfigUtil
         private async void GetNewComponentsFromStoreButton_Click(object sender, RoutedEventArgs e)
         {
             var window =  await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(CategoryViewPage), "C001CS", new DrillInNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(CategoryViewPage), new NameValueCollection() { { "categoryId", "C001CS" } }, new DrillInNavigationTransitionInfo());
         }
     }
 }

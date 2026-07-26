@@ -26,6 +26,8 @@ using CDPIUI.Core.Store.Data;
 using CDPIUI.Shared.Extentions;
 using CDPIUI.Shared.Models;
 using CDPIUI.Core.System;
+using System.Collections.Specialized;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -40,7 +42,7 @@ namespace CDPIUI.Views.Main.Components
         public string packName { get; set; }
     }
 
-    public sealed partial class DefaultComponentSettingsPage : Page
+    public sealed partial class DefaultComponentSettingsPage : TemplatePage
     {
         private string ComponentId = string.Empty;
         private ObservableCollection<ComboboxItem> _comboboxItems = new();
@@ -67,16 +69,17 @@ namespace CDPIUI.Views.Main.Components
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is string id && !string.IsNullOrEmpty(id))
+            if (Parameter != null)
             {
-                ComponentId = id;
+                ComponentId = Parameter.Get("componentId") ?? string.Empty;
             }
 
             DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(ComponentId);
             string componentName = databaseStoreItem != null ? databaseStoreItem.ShortName : ComponentId;
-
+            
             var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
             Task.Run(() => InitPage(item));
+            
         }
 
 
@@ -487,7 +490,7 @@ namespace CDPIUI.Views.Main.Components
                     break;
                 case "CFGGOODCHECK":
                     CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
-                    gwindow.NavigateToPage<CreateViaGoodCheck>(ComponentId);
+                    gwindow.NavigateToPage<CreateViaGoodCheck>(new NameValueCollection() { { "componentId", ComponentId } });
                     break;
                 case "HELPOFFLINE":
                     OfflineHelpWindow offlineHelpWindow = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();

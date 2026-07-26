@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Class="CDPIUI.Views.Troubleshooting.WorkPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:tcontrols="using:CDPIUI.Controls.Troubleshooting">
+    xmlns:tcontrols="using:CDPIUI.Controls.Troubleshooting"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -149,4 +150,4 @@
             </Grid>
         </Grid>
     </Grid>
-</Page>
+</tpl:TemplatePage>

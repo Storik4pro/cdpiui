@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.ProxySetupUtil;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
@@ -57,7 +58,7 @@ namespace CDPIUI.Views.SetupProxy
         public List<string> excludes { get; set; } = [];
     }
 
-    public sealed partial class ProxiFyreSetupPage : Page
+    public sealed partial class ProxiFyreSetupPage : TemplatePage
     {
         private List<SelectedApplicationInfo> WhiteList = [];
         private List<SelectedApplicationInfo> BlackList = [];
@@ -85,7 +86,8 @@ namespace CDPIUI.Views.SetupProxy
             InitializeComponent();
             this.DataContext = this;
 
-
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = ActionButtonsGrid;
 
             proxiFyreModes.Add(new ProxiFyreModeElement()
             {
@@ -116,34 +118,18 @@ namespace CDPIUI.Views.SetupProxy
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(ActionButtonsGrid);
-            }
         }
 
         private void GoBackButton_Click(object sender, RoutedEventArgs e)
         {
-            var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("BackwardConnectedAnimation", ActionButtonsGrid);
-
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                anim.Configuration = new DirectConnectedAnimationConfiguration();
-            }
+            PrepareToConnectedBackwardAnimate(ActionButtonsGrid, new DirectConnectedAnimationConfiguration());
             if (Frame.CanGoBack)
                 Frame.GoBack();
         }
 
         private void Navigate<T>() where T : Page
         {
-            var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", ActionButtonsGrid);
-
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                anim.Configuration = new DirectConnectedAnimationConfiguration();
-            }
+            PrepareToConnectedForwardAnimate(ActionButtonsGrid, new DirectConnectedAnimationConfiguration());
 
             Frame.Navigate(typeof(T), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }

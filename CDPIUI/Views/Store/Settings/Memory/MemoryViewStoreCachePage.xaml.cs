@@ -1,7 +1,9 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -14,6 +16,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -31,31 +34,26 @@ namespace CDPIUI.Views.Store.Settings.Memory
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MemoryViewStoreCachePage : Page
+    public sealed partial class MemoryViewStoreCachePage : TemplatePage
     {
         private ILocalizer localizer = Localizer.Get();
         public MemoryViewStoreCachePage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+
             BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
 
             CreateBreadcrumbBarNavigation();
+
+            CalcSize();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(NavGrid);
-            }
-
-            if (e.Parameter is string param)
-            {
-                MemoryTextBlock.Text = param;
-            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -66,13 +64,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
             {
                 if (SettingsPage.MemoryNavigationSupportedPages.Contains(e.SourcePageType))
                 {
-                    var animq = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("BackwardConnectedAnimation", NavGrid);
-
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        animq.Configuration = new BasicConnectedAnimationConfiguration();
-                    }
+                    PrepareToConnectedBackwardAnimate(NavGrid);
                 }
             }
             catch { }
@@ -103,7 +95,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
         private void BreadcrumbBar_ItemClicked(BreadcrumbBar sender, BreadcrumbBarItemClickedEventArgs args)
         {
             var item = (BreadcrumbBarModel)args.Item;
-            Frame.Navigate(item.Tag, null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            Frame.Navigate(item.Tag, new NameValueCollection(), new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
 
         private async void CleanupDirButton_Click(object sender, RoutedEventArgs e)
@@ -112,7 +104,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
             CleanupDirButton.IsEnabled = false;
             try
             {
-                Directory.Delete(Path.Combine(CDPIUI.Core.Data.Directories.DataDirectory, "Store", "Cache", "Repo"), true);
+                Directory.Delete(Path.Combine(CDPIUI.Core.Data.Directories.StoreRepoCacheDirectory), true);
                 MemoryTextBlock.Text = UnitsParser.FormatSize(0);
             }
             catch (Exception ex)
@@ -122,6 +114,13 @@ namespace CDPIUI.Views.Store.Settings.Memory
                 CleanupDirButton.IsEnabled = true;
             }
             await Task.CompletedTask;
+        }
+
+        private async void CalcSize()
+        {
+            MemoryTextBlock.Text = UnitsParser.FormatSize(
+                await FileSystemService.GetDirectorySize(CDPIUI.Core.Data.Directories.StoreRepoCacheDirectory,
+                Logger.Instance));
         }
     }
 }

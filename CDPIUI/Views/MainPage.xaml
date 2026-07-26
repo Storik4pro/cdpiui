@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="RootPage"
     x:Class="CDPIUI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,11 +14,12 @@
     xmlns:viewmodels="using:CDPIUI.ViewModels"
     xmlns:conv="using:CDPIUI.Converters"
     xmlns:mpcontrols="using:CDPIUI.Controls.MainPage"
-    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
-    <Page.Resources>
+    <tpl:TemplatePage.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
-    </Page.Resources>
+    </tpl:TemplatePage.Resources>
 
     <Grid x:Name="RootGrid">
         <VisualStateManager.VisualStateGroups>
@@ -82,5 +83,4 @@
         </ScrollViewer>
 
     </Grid>
-
-</Page>
+</tpl:TemplatePage>

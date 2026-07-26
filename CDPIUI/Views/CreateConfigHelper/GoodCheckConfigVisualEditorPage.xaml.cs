@@ -1,5 +1,7 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Core;
+using CDPIUI.Core.JSON;
 using CDPIUI.Core.Proxy;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Helper.Static;
@@ -15,6 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -67,12 +70,10 @@ namespace CDPIUI.Views.CreateConfigHelper
         public override string ToString() => Args;
     }
 
-    public sealed partial class GoodCheckConfigVisualEditorPage : Page
+    public sealed partial class GoodCheckConfigVisualEditorPage : TemplatePage
     {
         public ObservableCollection<DragItem> LeftItems { get; } = new ObservableCollection<DragItem>();
         public ObservableCollection<DragItem> RightItems { get; } = new ObservableCollection<DragItem>();
-
-        private object _parameter = null;
 
         private DragItem _draggedItem;
         private string _dragSource;
@@ -104,13 +105,16 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         private void GoodCheckConfigVisualEditorPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_parameter is Tuple<string, List<DragItem>> items) 
+            if (Parameter != null)
             {
-                foreach (var item in items.Item2)
+                List<DragItem> items = JSONConvertor.DeserializeObject<List<DragItem>>(Parameter.Get("items"));
+
+                foreach (var item in items)
                 {
                     LeftItems.Add(item);
                 }
             }
+
             this.Loaded -= GoodCheckConfigVisualEditorPage_Loaded;
         }
 
@@ -118,10 +122,14 @@ namespace CDPIUI.Views.CreateConfigHelper
         {
             base.OnNavigatedTo(e);
 
+            if (Parameter != null)
+            {
+
+            }
+
             if (e.Parameter is Tuple<string, List<DragItem>> items)
             {
-                ComponentId = items.Item1;
-                _parameter = items;
+                ComponentId = Parameter.Get("componentId");
 
                 if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI])
                 {
@@ -359,7 +367,14 @@ namespace CDPIUI.Views.CreateConfigHelper
             }
             Debug.WriteLine(startupString);
 
-            Frame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGSTRING", startupString, ComponentId), new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(CreateNewConfigPage), 
+                new NameValueCollection()
+                {
+                    { "type", "CFGSTRING" },
+                    { "startupString", startupString },
+                    { "componentId", ComponentId }
+                }, 
+                new DrillInNavigationTransitionInfo());
         }
 
         private string ConvertModesToString(List<ChooseGroupModeContentDialog.ByeDPIGroupModes> modes)

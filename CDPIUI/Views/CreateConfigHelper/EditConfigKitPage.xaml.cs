@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Controls;
 
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
+using CDPIUI.Controls.Default;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,7 +39,7 @@ namespace CDPIUI.Views.CreateConfigHelper
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class EditConfigKitPage : Page
+    public sealed partial class EditConfigKitPage : TemplatePage
     {
         private string KitId = string.Empty;
         private readonly ObservableCollection<ViewConfigInKitModel> Configs = [];
@@ -51,8 +53,6 @@ namespace CDPIUI.Views.CreateConfigHelper
         public ICommand RenameConfigCommand { get; }
         public ICommand EditConfigCommand { get; }
         public ICommand OpenDirectoryCommand { get; }
-
-        private object NavigationParameter = null;
 
         public EditConfigKitPage()
         {
@@ -84,7 +84,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            NavigationParameter = e.Parameter;
+            // support both NameValueCollection and legacy string parameter
 
             var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
 
@@ -100,7 +100,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         private async void LoadedActions()
         {
-            if (NavigationParameter is string kitId && KitId != kitId)
+            if (Parameter != null && Parameter.Get("kitId") is string kitId && KitId != kitId)
             {
                 KitId = kitId;
                 await Task.Run(() => LoadConfigItems());
@@ -196,7 +196,12 @@ namespace CDPIUI.Views.CreateConfigHelper
             if (item != null)
             {
                 ConfigItem configItem = ConfigHelper.GetConfigItem(item.FileName, item.PackId);
-                Frame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGRETURNEDITED", configItem), new DrillInNavigationTransitionInfo());
+                var nvc = new NameValueCollection
+                {
+                    { "mode", "CFGRETURNEDITED" },
+                    { "configItem", CDPIUI.Core.JSON.JSONConvertor.SerializeObject(configItem) }
+                };
+                Frame.Navigate(typeof(CreateNewConfigPage), nvc, new DrillInNavigationTransitionInfo());
             }
         }
         private void OpenConfigDirectory(Tuple<string, OpenFileDirectoryTypes> parameter)
@@ -261,7 +266,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             ComponentItemsLoaderHelper.Instance.Init(forse: true);
 
             if (Frame.CanGoBack) Frame.GoBack();
-            else Frame.Navigate(typeof(CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
+            else Frame.Navigate(typeof(CreateConfigHelper.MainPage), new NameValueCollection(), new DrillInNavigationTransitionInfo());
         }
 
         private async void ShowErrorDialog(string message, string title)

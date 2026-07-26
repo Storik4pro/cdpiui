@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +27,7 @@ using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 using WinUI3Localizer;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,7 +37,7 @@ namespace CDPIUI.Views.Settings;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class AutorunPage : Page
+public sealed partial class AutorunPage : TemplatePage
 {
     private ObservableCollection<BreadcrumbBarModel> BreadcrumbBarModels = [];
     private readonly ObservableCollection<ViewComponentModel> ComponentModels = new();
@@ -45,6 +47,11 @@ public sealed partial class AutorunPage : Page
     public AutorunPage()
     {
         InitializeComponent();
+
+        IsBackwardAnimationToPageAvailable = true;
+        ElementToAnimateBackwardConnectedAnimation = NavGrid;
+        IsForwardAnimationToPageAvailable = true;
+        ElementToAnimateForwardConnectedAnimation = NavGrid;
 
         BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
         CreateBreadcrumbBarNavigation();
@@ -123,18 +130,6 @@ public sealed partial class AutorunPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-
-        var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-        if (anim != null)
-        {
-            anim.TryStart(NavGrid);
-        }
-
-        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-        if (backAnim != null)
-        {
-            backAnim.TryStart(NavGrid);
-        }
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -150,13 +145,7 @@ public sealed partial class AutorunPage : Page
         {
             if (SettingsPage.MainSettingsNavigationSupportedPages.Contains(e.SourcePageType))
             {
-                var animq = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
-
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                {
-                    animq.Configuration = new BasicConnectedAnimationConfiguration();
-                }
+                PrepareToConnectedForwardAnimate(NavGrid);
             }
         }
         catch { }

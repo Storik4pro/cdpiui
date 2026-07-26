@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,6 +40,7 @@ using WinUI3Localizer;
 using static CDPIUI.Core.Static.UIHelper;
 using Application = Microsoft.UI.Xaml.Application;
 using CDPIUI.Shared.Basic.Filesystem;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,7 +56,7 @@ namespace CDPIUI.Views.CreateConfigUtil
         public string SiteListFilePath { get; set; }
         public string StrategiesListFilePath { get; set; }
     }
-    public sealed partial class CreateViaGoodCheck : Page
+    public sealed partial class CreateViaGoodCheck : TemplatePage
     {
         private readonly DispatcherQueue _uiDispatcher;
 
@@ -103,10 +105,14 @@ namespace CDPIUI.Views.CreateConfigUtil
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.Parameter is string componentId)
-            {
-                ComponentId = componentId;
 
+            if (Parameter != null)
+            {
+                ComponentId = Parameter.Get("componentId");
+            }
+
+            if (!string.IsNullOrEmpty(ComponentId))
+            {
                 if (ComponentId == HardcodedItemIds.ComponentIds[Core.Store.Data.Components.GoodbyeDPI])
                 {
                     ChangeModeComboBox.IsEnabled = false;

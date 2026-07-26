@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Class="CDPIUI.Views.Main.Components.DefaultComponentSettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,11 +9,12 @@
     mc:Ignorable="d"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:lcontrols="using:CDPIUI">
+    xmlns:lcontrols="using:CDPIUI"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
-    <Page.Resources>
+    <tpl:TemplatePage.Resources>
         <x:Double x:Key="SettingsCardSpacing">4</x:Double>
-    </Page.Resources>
+    </tpl:TemplatePage.Resources>
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -136,4 +137,4 @@
             </Grid>
         </ScrollViewer>
     </Grid>
-</Page>
+</tpl:TemplatePage>

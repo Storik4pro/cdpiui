@@ -12,6 +12,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
+using CDPIUI.Controls.Default;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,7 +38,7 @@ namespace CDPIUI.Views
     {
         public string Name { get; set; }
     }
-    public sealed partial class AboutPage : Page
+public sealed partial class AboutPage : TemplatePage
     {
         private enum UpdateButtonStatus
         {
@@ -109,18 +111,22 @@ namespace CDPIUI.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.Parameter is string param)
+
+            if (Parameter != null)
             {
-                if (param == "START_CHECK")
+                if( bool.TryParse(Parameter.Get("isUpdateRequested"), out var isUpdateRequested))
                 {
-                    UpdateButton_Click(null, null);
+                    if (isUpdateRequested)
+                    {
+                        UpdateButton_Click(null, null);
+                    }
                 }
             }
         }
 
         private void ApplicationUpdateHelper_ErrorHappens()
         {
-            _ = DispatcherQueue.TryEnqueue(() =>
+            _ = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
             {
                 SetUpdateButtonStatus(ApplicationUpdate.Instance.IsUpdateAvailable? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
                 SetBadgeStatus(BadgeStatus.Error);
@@ -130,7 +136,7 @@ namespace CDPIUI.Views
 
         private void ApplicationUpdateHelper_CheckForUpdatesStarted()
         {
-            _ = DispatcherQueue.TryEnqueue(() =>
+            _ = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
             {
                 SetUpdateButtonStatus(UpdateButtonStatus.Work);
                 SetBadgeStatus(BadgeStatus.Work);
@@ -138,7 +144,7 @@ namespace CDPIUI.Views
         }
         private void ApplicationUpdateHelper_CheckForUpdatesCompleted()
         {
-            _ = DispatcherQueue.TryEnqueue(() =>
+            _ = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
             {
                 SetUpdateButtonStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? UpdateButtonStatus.ActionInstallAsk : UpdateButtonStatus.Ready);
                 SetBadgeStatus(ApplicationUpdate.Instance.IsUpdateAvailable ? BadgeStatus.NewVersionAvailable : BadgeStatus.NewestInstalled);

@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs;
 using CDPIUI.Core;
 using CDPIUI.Core.Static;
@@ -34,7 +35,7 @@ namespace CDPIUI.Views.Settings;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class PersonalizePage : Page
+public sealed partial class PersonalizePage : TemplatePage
 {
     private ObservableCollection<BreadcrumbBarModel> BreadcrumbBarModels = [];
 
@@ -53,6 +54,11 @@ public sealed partial class PersonalizePage : Page
     {
         InitializeComponent();
 
+        IsBackwardAnimationToPageAvailable = true;
+        ElementToAnimateBackwardConnectedAnimation = NavGrid;
+        IsForwardAnimationToPageAvailable = true;
+        ElementToAnimateForwardConnectedAnimation = NavGrid;
+
         BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
         CreateBreadcrumbBarNavigation();
 
@@ -65,6 +71,8 @@ public sealed partial class PersonalizePage : Page
         
         SystemColorBorder.Background = new SolidColorBrush(UISettings.GetColorValue(UIColorType.Accent));
         UISettings.ColorValuesChanged += HandleAccentChanged;
+
+
     }
 
     private void InitSettings()
@@ -226,18 +234,6 @@ public sealed partial class PersonalizePage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-
-        var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-        if (anim != null)
-        {
-            anim.TryStart(NavGrid);
-        }
-
-        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-        if (backAnim != null)
-        {
-            backAnim.TryStart(NavGrid);
-        }
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -252,13 +248,7 @@ public sealed partial class PersonalizePage : Page
         {
             if (SettingsPage.MainSettingsNavigationSupportedPages.Contains(e.SourcePageType))
             {
-                var animq = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
-
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                {
-                    animq.Configuration = new BasicConnectedAnimationConfiguration();
-                }
+                PrepareToConnectedForwardAnimate(NavGrid);
             }
         }
         catch { }

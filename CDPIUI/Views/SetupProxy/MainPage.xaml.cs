@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Messages;
 using Microsoft.UI.Xaml;
@@ -25,21 +26,19 @@ namespace CDPIUI.Views.SetupProxy;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainPage : Page
+public sealed partial class MainPage : TemplatePage
 {
     public MainPage()
     {
         InitializeComponent();
+
+        IsBackwardAnimationToPageAvailable = true;
+        ElementToAnimateBackwardConnectedAnimation = ActionButtonsGrid;
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-        if (anim != null)
-        {
-            anim.TryStart(ActionButtonsGrid);
-        }
     }
 
     private void SetupForSystemCard_Click(object sender, RoutedEventArgs e)
@@ -49,12 +48,7 @@ public sealed partial class MainPage : Page
 
     private void Navigate<T>() where T : Page
     {
-        var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", ActionButtonsGrid);
-
-        if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-        {
-            anim.Configuration = new DirectConnectedAnimationConfiguration();
-        }
+        PrepareToConnectedForwardAnimate(ActionButtonsGrid, new DirectConnectedAnimationConfiguration());
 
         Frame.Navigate(typeof(T), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
     }
@@ -79,7 +73,6 @@ public sealed partial class MainPage : Page
         if (!DatabaseHelper.Instance.IsItemInstalled("ASPEWK002"))
         {
             var window = await ((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASPEWK002");
-            window.SetItemToViewId("ASPEWK002");
         }
         else
         {

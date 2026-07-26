@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,6 +32,7 @@ using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
 using ImageSource = Microsoft.UI.Xaml.Media.ImageSource;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,7 +50,7 @@ namespace CDPIUI.Views.Store
         public SupportedVersionControls Id { get; set; }
     }
 
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : TemplatePage
     {
         public static readonly List<Type> MemoryNavigationSupportedPages = [
             typeof(SettingsPage),
@@ -65,6 +67,11 @@ namespace CDPIUI.Views.Store
         public SettingsPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+            IsBackwardAnimationToPageAvailable = true;
+            ElementToAnimateBackwardConnectedAnimation = NavGrid;
 
             VersionControlTypeComboBox.ItemsSource = VersionControlModels;
             LoadVersionControlInfo();
@@ -87,15 +94,6 @@ namespace CDPIUI.Views.Store
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            try
-            {
-                var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-                anim?.TryStart(NavGrid);
-                var backanim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-                backanim?.TryStart(NavGrid);
-            }
-            catch { }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -184,15 +182,10 @@ namespace CDPIUI.Views.Store
         private async void MemoryManagentSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            var anim = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
 
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                anim.Configuration = new BasicConnectedAnimationConfiguration();
-            }
+            PrepareToConnectedForwardAnimate(NavGrid);
 
-            window.NavigateSubPage(typeof(MemoryViewPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            window.NavigateSubPage(typeof(MemoryViewPage), new NameValueCollection(), new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }
 }

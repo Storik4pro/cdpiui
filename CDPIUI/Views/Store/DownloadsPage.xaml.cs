@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +25,7 @@ using System.Security.Cryptography;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,7 +46,7 @@ namespace CDPIUI.Views.Store
         public Brush CardBackgroundBrush { get; set; }
         public bool IsErrorHappens { get; set; } = false;
     }
-    public sealed partial class DownloadsPage : Page
+    public sealed partial class DownloadsPage : TemplatePage
     {
         private ObservableCollection<DownloadItemModel> downloads = [];
         private ObservableCollection<DownloadItemModel> updates = [];
@@ -81,9 +83,10 @@ namespace CDPIUI.Views.Store
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is string action)
+            // support NameValueCollection or legacy string parameter
+            if (Parameter != null && bool.TryParse(Parameter.Get("isUpdateRequested"), out var isUpdateRequested))
             {
-                if (action == "BEGIN_UPDATE")
+                if (isUpdateRequested)
                 {
                     if (!StoreHelper.Instance.IsNowUpdatesChecked)
                         StoreHelper.Instance.CheckUpdates();

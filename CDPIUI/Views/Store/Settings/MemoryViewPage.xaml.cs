@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -32,7 +33,7 @@ namespace CDPIUI.Views.Store.Settings
     {
         public string DiskLetter { get; set; }
     }
-    public sealed partial class MemoryViewPage : Page
+    public sealed partial class MemoryViewPage : TemplatePage
     {
         private ObservableCollection<MemoryDiskViewModel> MemoryDisks = [];
 
@@ -40,6 +41,11 @@ namespace CDPIUI.Views.Store.Settings
         public MemoryViewPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+            IsBackwardAnimationToPageAvailable = true;
+            ElementToAnimateBackwardConnectedAnimation = NavGrid;
 
             BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
             DiskInfoListView.ItemsSource = MemoryDisks;
@@ -51,18 +57,6 @@ namespace CDPIUI.Views.Store.Settings
         {
             base.OnNavigatedTo(e);
 
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(NavGrid);
-            }
-
-            var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-            if (backAnim != null)
-            {
-                backAnim.TryStart(NavGrid);
-            }
-
             CreateDiskView();
         }
 
@@ -73,13 +67,7 @@ namespace CDPIUI.Views.Store.Settings
             {
                 if (SettingsPage.MemoryNavigationSupportedPages.Contains(e.SourcePageType))
                 {
-                    var animq = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("ForwardConnectedAnimation", NavGrid);
-
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        animq.Configuration = new BasicConnectedAnimationConfiguration();
-                    }
+                    PrepareToConnectedForwardAnimate(NavGrid);
                 }
             }
             catch { }

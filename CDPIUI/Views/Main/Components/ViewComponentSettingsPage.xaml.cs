@@ -1,6 +1,8 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.MainPage;
 using CDPIUI.Core.Items;
+using CDPIUI.Core.JSON;
 using CDPIUI.Core.Static;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.LScript;
@@ -21,6 +23,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -38,14 +41,14 @@ using static CDPIUI.Core.Static.UIHelper;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPIUI.Views.Components
+namespace CDPIUI.Views.Main.Components
 {
     public class ComponentPageNavigationModel
     {
         public string Id { get; set; }
         public Action<ComponentPageNavigationModel> GoBackSignal { get; set; }
     }
-    public sealed partial class ViewComponentSettingsPage : Page
+    public sealed partial class ViewComponentSettingsPage : TemplatePage
     {
         private string ComponentId = string.Empty;
 
@@ -56,8 +59,6 @@ namespace CDPIUI.Views.Components
 
         public ICommand ShowComponentSettingsClickCommand { get; }
 
-        private bool IsAnimated = false;
-
         private ILocalizer localizer = Localizer.Get();
 
         public ViewComponentSettingsPage()
@@ -66,19 +67,16 @@ namespace CDPIUI.Views.Components
             PageContentFrame.IsNavigationStackEnabled = false;
 
             ShowComponentSettingsClickCommand = new RelayCommand(p => NavigateBackWithParameter());
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = ComponentTileUserControl;
         }
 
         private void NavigateBackWithParameter()
         {
             if (IsAnimated)
             {
-                var anim = ConnectedAnimationService.GetForCurrentView()
-                        .PrepareToAnimate("BackwardConnectedAnimation", ComponentTileUserControl);
-
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                {
-                    anim.Configuration = new BasicConnectedAnimationConfiguration();
-                }
+                PrepareToConnectedBackwardAnimate(ComponentTileUserControl);
             }
 
             if (Frame.CanGoBack)
@@ -100,11 +98,9 @@ namespace CDPIUI.Views.Components
         {
             base.OnNavigatedTo(e);
 
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            IsAnimated = anim?.TryStart(ComponentTileUserControl) ?? false;
-
-            if (e.Parameter is string id && !string.IsNullOrEmpty(id))
+            if (Parameter != null)
             {
+                var id = Parameter.Get("componentId");
                 if (ComponentSettingsPageTypePairs.TryGetValue(id, out Type type))
                 {
                     ComponentPageNavigationModel model = new()
@@ -112,11 +108,11 @@ namespace CDPIUI.Views.Components
                         Id = id,
                     };
                     model.GoBackSignal += NavigateBack;
-                    PageContentFrame.Navigate(type, model);
+                    PageContentFrame.Navigate(type, new NameValueCollection() { { "model", JSONConvertor.SerializeObject(model) } });
                 }
                 else
                 {
-                    PageContentFrame.Navigate(typeof(DefaultComponentSettingsPage), e.Parameter);
+                    PageContentFrame.Navigate(typeof(DefaultComponentSettingsPage), Parameter);
                 }
 
                 ComponentId = id;

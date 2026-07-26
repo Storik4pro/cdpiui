@@ -1,7 +1,9 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.Store;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Core.Store.ViewModels;
@@ -11,7 +13,7 @@ using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
 using CDPIUI.Shared;
 using CDPIUI.Shared.PrettyErrorConvertionService;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
 using CommunityToolkit.WinUI.Animations.Expressions;
 using Microsoft.UI.Xaml;
@@ -26,6 +28,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -47,7 +50,7 @@ namespace CDPIUI.Views.Store
         public string DisplayName { get; set; }
         public string DisplayValue { get; set; }
     }
-    public sealed partial class ItemViewPage : Page
+    public sealed partial class ItemViewPage : TemplatePage
     {
         private string _storeId;
         private RepoItemModel item;
@@ -77,6 +80,10 @@ namespace CDPIUI.Views.Store
         public ItemViewPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = ItemImage;
+
             _config = new MarkdownConfig();
 
             AdvancedInfoListView.ItemsSource = AdditionalItemInfoModels;
@@ -95,34 +102,29 @@ namespace CDPIUI.Views.Store
         {
             base.OnNavigatedTo(e);
 
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(ItemImage);
-            }
 
-
-            if (e.Parameter is string storeId)
+            // support NameValueCollection or legacy string parameter
+            if (Parameter != null && Parameter.Get("itemId") != null)
             {
-                _storeId = storeId;
+                _storeId = Parameter.Get("itemId");
 
                 ConnectHandlers();
                 CheckCurrentStatus();
 
-                item = StoreHelper.Instance.GetItemInfoFromStoreId(storeId);
+                item = StoreHelper.Instance.GetItemInfoFromStoreId(_storeId);
 
-                if (item == null || storeId == SharedConstants.ApplicationStoreId)
+                if (item == null || _storeId == SharedConstants.ApplicationStoreId)
                 {
                     return;
                 }
 
-                ItemName.Text = item.short_name?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale());
+                ItemName.Text = item.short_name ?? StoreHelper.Instance.GetLocalizedStoreItemName(item.name, StoreLocalizationHelper.GetStoreLikeLocale());
                 ItemImage.Source = new BitmapImage(new Uri(LScriptLangHelper.ExecuteScript(item.icon)));
                 ItemDeveloper.Text = item.developer;
                 Logger.Instance.CreateDebugLog(nameof(ItemViewPage), item.category_id);
                 StarCount.Text = item.stars ?? "NaN";
                 ItemCategoryButton.Content = StoreHelper.Instance.GetLocalizedStoreItemName(
-                    StoreHelper.Instance.GetCategoryFromStoreId(item.category_id)?.name?? string.Empty,
+                    StoreHelper.Instance.GetCategoryFromStoreId(item.category_id)?.name ?? string.Empty,
                     StoreLocalizationHelper.GetStoreLikeLocale()
                 );
                 SmallDescriptionText.Text = LScriptLangHelper.ExecuteScript(item.small_description, StoreLocalizationHelper.GetStoreLikeLocale());
@@ -130,7 +132,7 @@ namespace CDPIUI.Views.Store
                 ItemWarningAera.Visibility = item.display_warning ? Visibility.Visible : Visibility.Collapsed;
                 ItemWarningText.Text = LScriptLangHelper.ExecuteScript(item.warning_text, StoreLocalizationHelper.GetStoreLikeLocale());
 
-                if (DatabaseHelper.Instance.IsItemInstalled(storeId))
+                if (DatabaseHelper.Instance.IsItemInstalled(_storeId))
                 {
                     ItemActionButton.IsEnabled = item.type == "component";
                     ItemActionButtonText.Text = localizer.GetLocalizedString("Setup");
@@ -149,15 +151,12 @@ namespace CDPIUI.Views.Store
 
                 if (item.links?.Count > 0)
                     CreateLinks(item.links);
-                else 
+                else
                     LinksGrid.Visibility = Visibility.Collapsed;
 
                 loaded = true;
 
                 LoadAdvancedItemInfo();
-
-
-
             }
             else
             {
@@ -492,7 +491,7 @@ namespace CDPIUI.Views.Store
 
         private void ItemCategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), item.category_id, new SuppressNavigationTransitionInfo());
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), new NameValueCollection() { { "categoryId", item.category_id } }, new SuppressNavigationTransitionInfo());
         }
 
         private async void ItemWarningButton_Click(object sender, RoutedEventArgs e)
@@ -517,7 +516,12 @@ namespace CDPIUI.Views.Store
             {
                 ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
 
-                window.NavView_Navigate(typeof(ViewComponentSettingsPage), _storeId, new DrillInNavigationTransitionInfo());
+                window.NavView_Navigate(typeof(ViewComponentSettingsPage), 
+                    new NameValueCollection()
+                    {
+                        { "componentId", _storeId }
+                    }, 
+                    new DrillInNavigationTransitionInfo());
             }
         }
 

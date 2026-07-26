@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="RootPage"
     x:Class="CDPIUI.Views.CreateConfigHelper.CreateNewConfigPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -12,9 +12,10 @@
     xmlns:lcontrol="using:CDPIUI"
     xmlns:textcontrolbox="using:TextControlBoxNS"
     xmlns:ucontrols="using:CDPIUI.Controls.Universal"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
-    <Page.Resources>
+    <tpl:TemplatePage.Resources>
         <Style x:Key="ListViewItemStretchStyle" TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Margin" Value="0" />
@@ -62,7 +63,7 @@
         <Style x:Name="MicaStyle" TargetType="Grid">
             <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
         </Style>
-    </Page.Resources>
+    </tpl:TemplatePage.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -283,4 +284,4 @@
             </Grid>
         </Grid>
     </Grid>
-</Page>
+</tpl:TemplatePage>

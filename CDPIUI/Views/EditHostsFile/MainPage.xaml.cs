@@ -20,6 +20,7 @@ using System.Diagnostics;
 using CDPIUI.Core.Basic;
 using CDPIUI.AddOns.HostsFileEditor;
 using CDPIUI.Helper.AddOns;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,7 +30,7 @@ namespace CDPIUI.Views.EditHostsFile;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class MainPage : Page
+public sealed partial class MainPage : TemplatePage
 {
     private ILocalizer localizer = Localizer.Get();
     public MainPage()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="MainPage"
     x:Class="CDPIUI.Views.CreateConfigHelper.EditConfigKitPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,7 +11,8 @@
     xmlns:l="using:WinUI3Localizer"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:lcontrols="using:CDPIUI.Controls.CreateConfigHelper"
-    xmlns:viewmodels="using:CDPIUI.ViewModels">
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -166,4 +167,4 @@
             </Grid>
         </Grid>
     </Grid>
-</Page>
+</tpl:TemplatePage>

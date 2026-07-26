@@ -42,16 +42,18 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Helper.Static;
 using CDPIUI.Shared;
 using CDPIUI.Controls.MainPage;
+using CDPIUI.Controls.Default;
+using CDPIUI.Core.JSON;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace CDPIUI.Views.Components
+namespace CDPIUI.Views.Main.Components
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class TgWsProxyComponentPage : Page
+    public sealed partial class TgWsProxyComponentPage : TemplatePage
     {
         private readonly string DefaultTgWsProxyStartString = 
             $"--host=127.0.0.1 --port=1443 --secret={SharedUtils.GetRandomHexNumber(32)} --dc-ip=2:149.154.167.220 --dc-ip=4:149.154.167.220 --buf-kb=256 --pool-size=4 --log-max-mb=5";
@@ -100,10 +102,11 @@ namespace CDPIUI.Views.Components
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is ComponentPageNavigationModel model)
+            if (Parameter != null)
             {
-                ComponentId = model.Id;
-                Model = model;
+                
+                Model = JSONConvertor.DeserializeObject<ComponentPageNavigationModel>(Parameter.Get("model"));
+                ComponentId = Model.Id;
             }
 
             var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Class="CDPIUI.Views.Settings.AutorunPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,11 +10,12 @@
     xmlns:conv="using:CDPIUI.Converters"
     xmlns:viewmodels="using:CDPIUI.ViewModels"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
-    <Page.Resources>
+    <tpl:TemplatePage.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
-    </Page.Resources>
+    </tpl:TemplatePage.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -123,5 +124,5 @@
 
             </StackPanel>
         </ScrollViewer>
-    </Grid>
-</Page>
+        </Grid>
+</tpl:TemplatePage>

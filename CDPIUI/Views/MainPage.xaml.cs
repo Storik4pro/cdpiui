@@ -1,28 +1,28 @@
 using CDPIUI.Controls.MainPage;
 using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using Page = Microsoft.UI.Xaml.Controls.Page;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store;
 using CDPIUI.Helper.LScript;
+using CDPIUI.Controls.Default;
 
 
 namespace CDPIUI.Views
 {
     
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : TemplatePage
     {
         private ObservableCollection<ViewStoreItemModel> Components = [];
         
@@ -45,6 +45,8 @@ namespace CDPIUI.Views
 
             StoreHelper.Instance.ItemActionsStopped += Instance_ItemActionsStopped;
             StoreHelper.Instance.ItemRemoved += Instance_ItemRemoved;
+
+            IsBackwardAnimationToPageAvailable = true;
         }
 
         private void Instance_ItemRemoved(string obj)
@@ -94,8 +96,6 @@ namespace CDPIUI.Views
 
         private void TryAnimate()
         {
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-            if (StoredElement != null) anim?.TryStart(StoredElement);
             StoredElement = null;
         }
 
@@ -105,15 +105,14 @@ namespace CDPIUI.Views
             if (item is FrameworkElement fw)
             {
                 StoredElement = fw;
-                var anim = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("ForwardConnectedAnimation", fw);
-
-                if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                {
-                    anim.Configuration = new BasicConnectedAnimationConfiguration();
-                }
+                ElementToAnimateBackwardConnectedAnimation = StoredElement;
+                PrepareToConnectedForwardAnimate(fw);
             }
-            Frame.Navigate(typeof(ViewComponentSettingsPage), ((ViewStoreItemModel)p).StoreId, new DrillInNavigationTransitionInfo());
+            var nvc = new NameValueCollection
+            {
+                { "componentId", ((ViewStoreItemModel)p).StoreId }
+            };
+            Frame.Navigate(typeof(ViewComponentSettingsPage), nvc, new DrillInNavigationTransitionInfo());
         }
 
         private void MainListView_Loaded(object sender, RoutedEventArgs e)

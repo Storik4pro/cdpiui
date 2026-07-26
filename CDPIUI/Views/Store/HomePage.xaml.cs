@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,6 +46,7 @@ using Thickness = Microsoft.UI.Xaml.Thickness;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using Visibility = Microsoft.UI.Xaml.Visibility;
 using Window = Microsoft.UI.Xaml.Window;
+using CDPIUI.Controls.Default;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -61,7 +63,7 @@ public class UICategoryData
 
     public ObservableCollection<UIElement> Items { get; set; }
 }
-public sealed partial class HomePage : Page
+public sealed partial class HomePage : TemplatePage
 {
     private double _largeElementWidth;
     public double LargeElementWidth
@@ -255,26 +257,26 @@ public sealed partial class HomePage : Page
     {
         if (sender is StoreItemLargeButton btn && btn.StoreId is string sid)
         {
-            ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", btn.imageElement);
+            PrepareToConnectedForwardAnimate(btn.imageElement);
 
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), sid, new SuppressNavigationTransitionInfo());
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), 
+                new NameValueCollection() { {"itemId", sid } }, new SuppressNavigationTransitionInfo());
         }
         else if (sender is StoreItemSmallButton smallBtn && smallBtn.StoreId is string smallSid)
         {
-            ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("ForwardConnectedAnimation", smallBtn.imageElement);
+            PrepareToConnectedForwardAnimate(smallBtn.imageElement);
 
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), smallSid, new SuppressNavigationTransitionInfo());
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), 
+                new NameValueCollection() { { "itemId", smallSid } }, new SuppressNavigationTransitionInfo());
         }
     }
 
     private void CategoryHeaderClick(StoreCategoryButton sender)
     {
-        var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", sender.textElement);
-        anim.Configuration = new DirectConnectedAnimationConfiguration();
+        PrepareToConnectedForwardAnimate(sender.textElement, new DirectConnectedAnimationConfiguration());
 
-        StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), sender.Id, new SuppressNavigationTransitionInfo());
+        StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.CategoryViewPage), 
+            new NameValueCollection() { { "categoryId", sender.Id } }, new SuppressNavigationTransitionInfo());
 
     }
 

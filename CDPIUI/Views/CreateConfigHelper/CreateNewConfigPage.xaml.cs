@@ -23,6 +23,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using System.Collections.Specialized;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -49,6 +50,7 @@ using WinUI3Localizer;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 using Color = Windows.UI.Color;
 using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -168,7 +170,7 @@ public enum PageOpenModes
 
 
 
-public sealed partial class CreateNewConfigPage : Page
+public sealed partial class CreateNewConfigPage : TemplatePage
 {
     private List<string> DesignerSupportedComponentIds = ["CSSIXC048", "CSGIVS036", "CSNIG9025"];
     
@@ -190,8 +192,6 @@ public sealed partial class CreateNewConfigPage : Page
     public ICommand GraphicDesignerSelectedGuidChangedCommand { get; }
     public ObservableCollection<GraphicDesignerSettingItemModel> DesignerSettingItemModels { get; } = [];
     public ObservableCollection<GraphicDesignerExclusiveSettingItemModel> DesignerExclusiveSettingItemModels { get; } = [];
-
-    private object navigationParameter;
 
     private ConfigItem ConfigItem;
 
@@ -304,9 +304,9 @@ public sealed partial class CreateNewConfigPage : Page
     {
         EditItemId = SharedConstants.LocalUserItemsId;
 
-        if (navigationParameter != null) RunOnNavigatedToActions(navigationParameter);
+        if (Parameter != null) RunOnNavigatedToActions(Parameter);
         AuditSaveAvailable();
-        navigationParameter = null;
+        Parameter = null;
         this.Loaded -= CreateNewConfigPage_Loaded;
     }
 
@@ -321,49 +321,69 @@ public sealed partial class CreateNewConfigPage : Page
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        navigationParameter = e.Parameter;
     }
 
     private void RunOnNavigatedToActions(object args)
     {
-        if (args is Tuple<string, ConfigItem, bool, string> tuple)
+        if (args is NameValueCollection collection)
         {
-            string operationType = tuple.Item1;
-            ConfigItem = tuple.Item2;
-            bool errorHappens = tuple.Item3;
+            string operationType = collection.Get("type");
+            if (operationType == "CFGSTRING") 
+            { 
+                string startupString = collection.Get("startupString");
+                string componentId = collection.Get("componentId");
 
-            PageTitleTextBlock.Text = localizer.GetLocalizedString("ImportConfigFromFile");
-            if (ConfigItem.target != null)
-            {
                 ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
                     .Cast<ComponentModel>()
-                    .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                    .FirstOrDefault(c => c.Id == componentId);
+
+                PageOpenMode = PageOpenModes.CreateConfigFromString;
+                AddWrap(startupString);
+
+                ConfigItem = new()
+                {
+                    startup_string = startupString,
+                };
+                AskAutoFillFiles(
+                    ConfigItem,
+                    LScriptLangHelper.ExecuteScript(
+                        "$GETCURRENTDIR()", 
+                    callItemId: SharedConstants.LocalUserItemsId), 
+                    AskAutoFillMode.Quiet);
             }
-
-            AddWrap();
-
-            LoadVars(tuple.Item2);
-
-            AskAutoFillFiles(tuple.Item2, tuple.Item4);
-        }
-        else if (args is Tuple<string, ConfigItem> editCfgTuple)
-        {
-            string operationType = editCfgTuple.Item1;
-            ConfigItem = editCfgTuple.Item2;
-
-            if (ConfigItem == null) return;
-
-            PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
-            if (ConfigItem.target != null)
+            else if (operationType == "CFGIMPORT")
             {
-                ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
-                    .Cast<ComponentModel>()
-                    .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                ConfigItem = JSONConvertor.DeserializeObject<ConfigItem>(collection.Get("configItem"));
+                bool errorHappens = bool.Parse(collection.Get("errorHappens"));
+                string filePath = collection.Get("filePath");
+
+                PageTitleTextBlock.Text = localizer.GetLocalizedString("ImportConfigFromFile");
+                if (ConfigItem.target != null)
+                {
+                    ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                        .Cast<ComponentModel>()
+                        .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                }
+
+                AddWrap();
+
+                LoadVars(ConfigItem);
+
+                AskAutoFillFiles(ConfigItem, filePath);
             }
-            ComponentChooseComboBox.IsEnabled = false;
-
-            if (operationType == "CFGEDIT")
+            else if (operationType == "CFGEDIT")
             {
+                ConfigItem = JSONConvertor.DeserializeObject<ConfigItem>(collection.Get("configItem"));
+
+                PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
+                if (ConfigItem.target != null)
+                {
+                    ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                        .Cast<ComponentModel>()
+                        .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                }
+                ComponentChooseComboBox.IsEnabled = false;
+
                 PageOpenMode = PageOpenModes.EditConfig;
                 if (ConfigItem.packId != SharedConstants.LocalUserItemsId)
                 {
@@ -375,52 +395,49 @@ public sealed partial class CreateNewConfigPage : Page
                     DisplayNameTextBox.Text = $"{ConfigItem.name}";
                 }
 
-                if (editCfgTuple.Item2.packId != SharedConstants.LocalUserItemsId)
+                if (ConfigItem.packId != SharedConstants.LocalUserItemsId)
                 {
                     AskAutoFillFiles(
-                        editCfgTuple.Item2,
-                        LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: editCfgTuple.Item2.packId), AskAutoFillMode.Quiet);
+                        ConfigItem,
+                        LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", 
+                        callItemId: ConfigItem.packId), AskAutoFillMode.Quiet);
                 }
+
+                LoadVars(ConfigItem);
+                LoadConditions(ConfigItem);
+
+                AddWrap();
+            }
+            else if (operationType == "CFGCREATEBYID")
+            {
+                string componentId = collection.Get("componentId");
+
+                ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                    .Cast<ComponentModel>()
+                    .FirstOrDefault(c => c.Id == componentId);
             }
             else if (operationType == "CFGRETURNEDITED")
             {
+                PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
+                if (ConfigItem.target != null)
+                {
+                    ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
+                        .Cast<ComponentModel>()
+                        .FirstOrDefault(c => c.Id == ConfigItem.target[0]);
+                }
+                ComponentChooseComboBox.IsEnabled = false;
+
                 PageOpenMode = PageOpenModes.EditConfigNoSave;
                 EditItemId = ConfigItem.packId;
 
                 DisplayNameTextBox.Text = ConfigItem.name;
                 SaveButtonText.Text = localizer.GetLocalizedString("Save");
+
+                LoadVars(ConfigItem);
+                LoadConditions(ConfigItem);
+
+                AddWrap();
             }
-
-            LoadVars(ConfigItem);
-            LoadConditions(ConfigItem);
-
-            AddWrap();
-        }
-        else if (args is Tuple<string, string, string> createNewFromString)
-        {
-            ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
-                    .Cast<ComponentModel>()
-                    .FirstOrDefault(c => c.Id == createNewFromString.Item3);
-
-            if (createNewFromString.Item1 == "CFGSTRING")
-            {
-                PageOpenMode = PageOpenModes.CreateConfigFromString;
-                AddWrap(createNewFromString.Item2);
-            }
-
-            ConfigItem = new()
-            {
-                startup_string = createNewFromString.Item2,
-            };
-            AskAutoFillFiles(
-                ConfigItem,
-                LScriptLangHelper.ExecuteScript("$GETCURRENTDIR()", callItemId: SharedConstants.LocalUserItemsId), AskAutoFillMode.Quiet);
-        }
-        else if (args is Tuple<string, string> createNewConfig)
-        {
-            ComponentChooseComboBox.SelectedItem = ComponentChooseComboBox.Items
-                    .Cast<ComponentModel>()
-                    .FirstOrDefault(c => c.Id == createNewConfig.Item2);
         }
         CheckViewType();
     }

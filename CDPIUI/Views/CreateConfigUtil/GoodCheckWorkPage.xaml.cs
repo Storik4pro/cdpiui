@@ -25,6 +25,7 @@ using CDPIUI.Helper.Static;
 using CDPIUI.Core.Data;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.Parsers;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,7 +35,7 @@ namespace CDPIUI.Views.CreateConfigUtil;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class GoodCheckWorkPage : Page
+public sealed partial class GoodCheckWorkPage : TemplatePage
 {
     private DateTime _lastProgressTime = DateTime.MinValue;
     private int _lastProgressCount = 0;

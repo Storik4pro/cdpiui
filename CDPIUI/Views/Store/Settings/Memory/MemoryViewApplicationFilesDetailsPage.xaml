@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Class="CDPIUI.Views.Store.Settings.Memory.MemoryViewApplicationFilesDetailsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:viewmodels="using:CDPIUI.ViewModels">
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -59,4 +60,4 @@
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</Page>
+</tpl:TemplatePage>

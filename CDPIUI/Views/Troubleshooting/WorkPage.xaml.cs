@@ -1,4 +1,5 @@
 using CDPIUI.AddOns.Troubleshooting;
+using CDPIUI.Controls.Default;
 using CDPIUI.Helper.LScript;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -20,6 +21,7 @@ using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
 using static CDPIUI.AddOns.Troubleshooting.TroubleshootingService;
+using CDPIUI.Shared.Extentions;
 using static System.Windows.Forms.AxHost;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -51,7 +53,7 @@ public class DiagnosticResultModel
     public string HelpUrl { get; set; }
 }
 
-public sealed partial class WorkPage : Page
+public sealed partial class WorkPage : TemplatePage
 {
     private ILocalizer localizer = Localizer.Get();
 
@@ -61,6 +63,9 @@ public sealed partial class WorkPage : Page
     public WorkPage()
     {
         InitializeComponent();
+
+        IsForwardAnimationToPageAvailable = true;
+        ElementToAnimateForwardConnectedAnimation = ActionButtonsGrid;
 
         DiagnosticResultListView.ItemsSource = DisplayDiagnosticResultsCollection;
         FixResultListView.ItemsSource = FixResults;
@@ -74,14 +79,7 @@ public sealed partial class WorkPage : Page
 
         try
         {
-            var animq = ConnectedAnimationService.GetForCurrentView()
-                .PrepareToAnimate("BackwardConnectedAnimation", ActionButtonsGrid);
-
-            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-            {
-                animq.Configuration = new BasicConnectedAnimationConfiguration();
-            }
-
+            PrepareToConnectedBackwardAnimate(ActionButtonsGrid);
         }
         catch { }
     }
@@ -90,10 +88,12 @@ public sealed partial class WorkPage : Page
     {
         base.OnNavigatedTo(e);
 
-        if (e.Parameter is NavigationParameters parameter)
+        if (Parameter != null)
         {
-            navigationParameter = parameter;
-            switch (parameter)
+            NavigationParameters navp = Parameter.Get("action").ToEnum<NavigationParameters>(NavigationParameters.None);
+
+            navigationParameter = navp;
+            switch (navigationParameter)
             {
                 case NavigationParameters.BeginBasicCheck:
                     BeginBasicCheck();
@@ -104,11 +104,6 @@ public sealed partial class WorkPage : Page
             }
         }
 
-        var backAnim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-        if (backAnim != null)
-        {
-            backAnim.TryStart(ActionButtonsGrid);
-        }
     }
 
     private void TroubleshootingHelper_BasicDialogStateChanged(Enum state)

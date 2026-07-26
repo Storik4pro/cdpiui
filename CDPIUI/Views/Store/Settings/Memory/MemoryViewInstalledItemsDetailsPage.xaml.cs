@@ -33,6 +33,7 @@ using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Helper.Parsers;
 using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.Core.Basic;
+using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -42,7 +43,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MemoryViewInstalledItemsDetailsPage : Page
+    public sealed partial class MemoryViewInstalledItemsDetailsPage : TemplatePage
     {
         private ObservableCollection<LibraryItemModel> LibraryItems = [];
 
@@ -50,28 +51,23 @@ namespace CDPIUI.Views.Store.Settings.Memory
         public MemoryViewInstalledItemsDetailsPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+
             BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
             ItemsListView.ItemsSource = LibraryItems;
 
             CreateBreadcrumbBarNavigation();
             StoreHelper.Instance.ItemRemoved += StoreHelper_ItemRemoved;
             StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
+
+            CalcSize();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(NavGrid);
-            }
-
-            if (e.Parameter is string param)
-            {
-                MemoryTextBlock.Text = param;
-            }
 
             LoadItems();
         }
@@ -84,13 +80,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
             {
                 if (SettingsPage.MemoryNavigationSupportedPages.Contains(e.SourcePageType))
                 {
-                    var animq = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("BackwardConnectedAnimation", NavGrid);
-
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        animq.Configuration = new BasicConnectedAnimationConfiguration();
-                    }
+                    PrepareToConnectedBackwardAnimate(NavGrid);
                 }
             }
             catch { }

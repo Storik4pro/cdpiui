@@ -1,8 +1,10 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.Communication;
 using CDPIUI.Helper.Parsers;
 using CDPIUI.Helper.Static;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -32,31 +34,26 @@ namespace CDPIUI.Views.Store.Settings.Memory
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MemoryViewSettingsDetailsPage : Page
+    public sealed partial class MemoryViewSettingsDetailsPage : TemplatePage
     {
         private ILocalizer localizer = Localizer.Get();
         public MemoryViewSettingsDetailsPage()
         {
             InitializeComponent();
+
+            IsForwardAnimationToPageAvailable = true;
+            ElementToAnimateForwardConnectedAnimation = NavGrid;
+
             BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
 
             CreateBreadcrumbBarNavigation();
+
+            CalcSize();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(NavGrid);
-            }
-
-            if (e.Parameter is string param)
-            {
-                MemoryTextBlock.Text = param;
-            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -67,13 +64,7 @@ namespace CDPIUI.Views.Store.Settings.Memory
             {
                 if (SettingsPage.MemoryNavigationSupportedPages.Contains(e.SourcePageType))
                 {
-                    var animq = ConnectedAnimationService.GetForCurrentView()
-                    .PrepareToAnimate("BackwardConnectedAnimation", NavGrid);
-
-                    if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
-                    {
-                        animq.Configuration = new BasicConnectedAnimationConfiguration();
-                    }
+                    PrepareToConnectedBackwardAnimate(NavGrid);
                 }
             }
             catch { }
@@ -131,6 +122,13 @@ namespace CDPIUI.Views.Store.Settings.Memory
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             RemoveFlyout.Hide();
+        }
+
+        private async void CalcSize()
+        {
+            MemoryTextBlock.Text = UnitsParser.FormatSize(
+                await FileSystemService.GetDirectorySize(CDPIUI.Core.Data.Directories.SettingsDirectory,
+                Logger.Instance));
         }
     }
 }

@@ -1,5 +1,7 @@
 using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Controls.Default;
 using CDPIUI.Core;
+using CDPIUI.Core.JSON;
 using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -13,6 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -41,7 +44,7 @@ public class StrategyUIModel
     public bool Flag {  get; set; }
 
 }
-public sealed partial class ViewGoodCheckSiteListReportPage : Page
+public sealed partial class ViewGoodCheckSiteListReportPage : TemplatePage
 {
     private ILocalizer localizer = Localizer.Get();
     
@@ -80,6 +83,8 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
             ContentNotDisplayedStackPanel.Visibility = Visibility.Visible;
         }
 
+        IsForwardAnimationToPageAvailable = true;
+        ElementToAnimateForwardConnectedAnimation = HeaderButton;
         this.Loaded += ViewGoodCheckSiteListReportPage_Loaded;
     }
 
@@ -149,11 +154,11 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
     {
         base.OnNavigatedTo(e);
 
-        if (e.Parameter is Tuple<GoodCheckReportHeaderButton, List<StrategyModel>, string> tuple)
+        if (Parameter != null)
         {
-            var button = tuple.Item1;
-            ComponentId = tuple.Item3;
-            Strategies = tuple.Item2;
+            var button = JSONConvertor.DeserializeObject<GoodCheckReportHeaderButton>(Parameter.Get("button"));
+            ComponentId = Parameter.Get("componentId");
+            Strategies = JSONConvertor.DeserializeObject<List<StrategyModel>>(Parameter.Get("strategies"));
 
             HeaderButton.Header = button.Header;
             HeaderButton.SubHeader = button.SubHeader;
@@ -161,12 +166,6 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
             HeaderButton.SuccessCount = button.SuccessCount;
             HeaderButton.FailureCount = button.FailureCount;
             
-        }
-
-        var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("ForwardConnectedAnimation");
-        if (anim != null)
-        {
-            anim.TryStart(HeaderButton);
         }
     }
 
@@ -176,10 +175,8 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
 
         SuccessStrategiesList.Clear();
         FailureStrategiesList.Clear();
-        
 
-        var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("BackwardConnectedAnimation", HeaderButton);
-        anim.Configuration = new DirectConnectedAnimationConfiguration();
+        PrepareToConnectedBackwardAnimate(HeaderButton);
 
         UIHelper.CleanUp.FrameworkElement(this);
     }
@@ -230,6 +227,11 @@ public sealed partial class ViewGoodCheckSiteListReportPage : Page
 
     private void HeaderClick(object parameter)
     {
-        UIHelper.GoBackWithParameter(Strategies, Frame);
+        UIHelper.GoBackWithParameter(
+            new NameValueCollection() 
+            {
+                { "type", NavigationState.GoBack.ToString() },
+                { "strategies", JSONConvertor.SerializeObject(Strategies) } }
+        , Frame);
     }
 }

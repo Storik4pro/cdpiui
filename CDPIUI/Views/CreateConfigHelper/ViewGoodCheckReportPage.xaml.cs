@@ -1,5 +1,8 @@
 using CDPIUI.AddOns.GoodCheck;
+using CDPIUI.Controls.Default;
+using CDPIUI.Core.JSON;
 using CDPIUI.Core.Proxy;
+using CDPIUI.Shared.Extentions;
 using CDPIUI.Helper.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -14,6 +17,7 @@ using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -33,6 +37,7 @@ namespace CDPIUI.Views.CreateConfigHelper
     {
         None,
         LoadFileFromPath,
+        GoBack,
         
     }
     public class GoodCheckReportHeaderModel
@@ -46,7 +51,7 @@ namespace CDPIUI.Views.CreateConfigHelper
         public List<StrategyModel> Strategies { get; set; }
     }
 
-    public sealed partial class ViewGoodCheckReportPage : Page
+    public sealed partial class ViewGoodCheckReportPage : TemplatePage
     {
         public ICommand HeaderClickCommand { get; }
 
@@ -66,44 +71,48 @@ namespace CDPIUI.Views.CreateConfigHelper
             HeadersListView.ItemsSource = HeaderModels;
 
             HeaderClickCommand = new RelayCommand(p => OpenHeader((GoodCheckReportHeaderButton)p));
+
+            IsBackwardAnimationToPageAvailable = true;
+            ElementToAnimateBackwardConnectedAnimation = _storeditem;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (e.Parameter is Tuple<NavigationState, string> fTuple)
-            {
-                var (navState, filePath) = fTuple;
-                if (navState == NavigationState.LoadFileFromPath)
-                {
-                    LoadHeadersFromFile(filePath);
-                }
-            }
-            else if (e.Parameter is List<StrategyModel> strategyModels) 
-            {
-                int flags = 0;
-                foreach (var strategyModel in strategyModels)
-                {
-                    if (strategyModel.Flag) flags++;
-                }
-                if (_storeditem != null)
-                {
-                    _storeditem.FlagsCount = flags.ToString();
-                    var m = HeaderModels.FirstOrDefault(b => b.Id == _storeditem.Id);
-                    if (m != null)
-                    {
-                        m.Strategies = strategyModels;
-                        m.FlagsCount = flags.ToString();
-                    }
-                }
-            }
 
-            var anim = ConnectedAnimationService.GetForCurrentView().GetAnimation("BackwardConnectedAnimation");
-            if (anim != null)
+            if (Parameter != null)
             {
-                anim.TryStart(_storeditem);
-                _storeditem = null;
+                NavigationState navState = Parameter.Get("type").ToEnum<NavigationState>(NavigationState.None); 
+
+                switch (navState)
+                {
+                    case NavigationState.GoBack:
+                        var strategyModels = JSONConvertor.DeserializeObject<List<StrategyModel>>(Parameter.Get("strategies"));
+
+                        int flags = 0;
+                        foreach (var strategyModel in strategyModels)
+                        {
+                            if (strategyModel.Flag) flags++;
+                        }
+                        if (_storeditem != null)
+                        {
+                            _storeditem.FlagsCount = flags.ToString();
+                            var m = HeaderModels.FirstOrDefault(b => b.Id == _storeditem.Id);
+                            if (m != null)
+                            {
+                                m.Strategies = strategyModels;
+                                m.FlagsCount = flags.ToString();
+                            }
+                        }
+                        break;
+                    case NavigationState.LoadFileFromPath:
+                        string filePath = Parameter.Get("filePath");
+
+                        LoadHeadersFromFile(filePath);
+                        break;
+                }
             }
+            _storeditem = null;
         }
 
         private void LoadHeadersFromFile(string fileName)
@@ -178,7 +187,14 @@ namespace CDPIUI.Views.CreateConfigHelper
 
             var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", button);
             anim.Configuration = new DirectConnectedAnimationConfiguration();
-            Frame.Navigate(typeof(ViewGoodCheckSiteListReportPage), Tuple.Create(button, strategies, ComponentId), new SuppressNavigationTransitionInfo());
+            Frame.Navigate(typeof(ViewGoodCheckSiteListReportPage), 
+                new NameValueCollection()
+                {
+                    { "button", JSONConvertor.SerializeObject(button) },
+                    { "strategies", JSONConvertor.SerializeObject(strategies) },
+                    { "componentId", ComponentId }
+                }, 
+                new SuppressNavigationTransitionInfo());
         }
 
         private void Hyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
@@ -194,13 +210,25 @@ namespace CDPIUI.Views.CreateConfigHelper
                 return;
             }
 
-            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, CreateDragList()), new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), 
+                new NameValueCollection()
+                {
+                    {"componentId", ComponentId },
+                    { "dragList", JSONConvertor.SerializeObject(CreateDragList()) }
+                },
+                new DrillInNavigationTransitionInfo());
         }
 
         private void GoForwardButtonTeachingTip_ActionButtonClick(TeachingTip sender, object args)
         {
             
-            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), Tuple.Create(ComponentId, CreateDragList()), new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(GoodCheckConfigVisualEditorPage), 
+                new NameValueCollection()
+                {
+                    {"componentId", ComponentId },
+                    { "dragList", JSONConvertor.SerializeObject(CreateDragList()) }
+                },
+                new DrillInNavigationTransitionInfo());
         }
 
         private List<DragItem> CreateDragList()

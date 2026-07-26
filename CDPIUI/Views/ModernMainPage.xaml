@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="MainPage"
     x:Class="CDPIUI.Views.ModernMainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -12,7 +12,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid x:Name="RootGrid" Padding="20 0" SizeChanged="RootGrid_SizeChanged">
         <VisualStateManager.VisualStateGroups>
@@ -103,4 +104,4 @@
                          Click="QHyperlinkButton_Click"/>
         </Grid>
     </Grid>
-</Page>
+</tpl:TemplatePage>

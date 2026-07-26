@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page
+<tpl:TemplatePage
     x:Name="RootPage"
     x:Class="CDPIUI.Views.CreateConfigHelper.ViewGoodCheckReportPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,7 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lcontrol="using:CDPIUI"
     mc:Ignorable="d"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -96,4 +97,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-</Page>
+</tpl:TemplatePage>
