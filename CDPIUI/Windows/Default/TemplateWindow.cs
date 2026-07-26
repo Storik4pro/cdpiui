@@ -30,7 +30,7 @@ namespace CDPIUI.Default
         public new AppWindow AppWindow = null;
         public OverlappedPresenter OverlappedPresenter = null;
 
-        public Action NewIdSet;
+        public event Action NewIdSet;
 
         private string WindowTitleProperty = "CDPI UI";
         public string WindowTitle
