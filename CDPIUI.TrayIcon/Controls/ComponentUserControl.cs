@@ -125,7 +125,7 @@ namespace CDPIUI.TrayIcon.Controls
 
             await PipeHelper.SendOpenWindowPacket("MainWindow", new() 
             {
-                { "page", "Components.DefaultComponentSettingsPage" },
+                { "page", "Components.ViewComponentSettingsPage" },
                 { "componentId", ComponentId },
             }, true);
         }
@@ -136,7 +136,7 @@ namespace CDPIUI.TrayIcon.Controls
 
             await PipeHelper.SendOpenWindowPacket("ViewWindow", new()
             {
-                { "componentId", ComponentId },
+                { "id", ComponentId },
             }, true);
         }
 

@@ -77,7 +77,7 @@ namespace CDPIUI.TrayIcon.Helper.Basic
 
                 await PipeHelper.SendOpenWindowPacket("ViewWindow", new()
                 { 
-                    { "componentId", result[0] },
+                    { "id", result[0] },
                 }, true);
 
                 return;
