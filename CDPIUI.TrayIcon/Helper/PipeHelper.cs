@@ -143,7 +143,17 @@ namespace CDPIUI.TrayIcon.Helper
         {
             if (!await PipeServer.Instance.SendMessageAsync(message.ToString()))
             {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri(message.ToString())); // todo: preffer direct launch
+                if (message.Target == PipeMessageTargetIds.Service || 
+                    message.Target == PipeMessageTargetIds.CONPTY || 
+                    message.Target == PipeMessageTargetIds.Settings ||
+                    message.Target == PipeMessageTargetIds.Application)
+                {
+                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--direct:{message.ToString()}");
+                }
+                else 
+                {
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri(message.ToString()));
+                }
             }
 
             return true;
