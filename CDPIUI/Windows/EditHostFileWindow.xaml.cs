@@ -38,6 +38,8 @@ public sealed partial class EditHostFileWindow : TemplateWindow
         IconUri = @"Assets/Icons/EditHostsFile.ico";
         this.CustomTitleBarUserControl = TitleBarUserControl;
 
+        MainFrame = ContentFrame;
+
         ContentFrame.Navigate(typeof(Views.EditHostsFile.MainPage));
 
     }

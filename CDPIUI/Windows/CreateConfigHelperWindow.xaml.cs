@@ -29,6 +29,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using System.Collections.Specialized;
+using CDPIUI.Core.JSON;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
@@ -73,7 +75,7 @@ namespace CDPIUI
 
             Instanse = this;
 
-            ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
+            ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), new NameValueCollection(), new DrillInNavigationTransitionInfo());
             this.Closed += CreateConfigHelperWindow_Closed;
 
             if (this.Content is FrameworkElement fe)
@@ -198,10 +200,10 @@ namespace CDPIUI
         private void HomeItem_Click(object sender, RoutedEventArgs e)
         {
             bool result = RemoveAndGoBackTo(typeof(Views.CreateConfigHelper.MainPage), ContentFrame);
-            if (!result)
-            {
-                ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), null, new DrillInNavigationTransitionInfo());
-            }
+                if (!result)
+                {
+                    ContentFrame.Navigate(typeof(Views.CreateConfigHelper.MainPage), new NameValueCollection(), new DrillInNavigationTransitionInfo());
+                }
         }
 
         public void OpenConfigEditPage(bool skp = false, ConfigItem configItem = null)
@@ -222,7 +224,12 @@ namespace CDPIUI
                         if (dialog.SelectedConfigResult == SelectResult.Selected)
                         {
                             configItem = dialog.SelectedConfigItem;
-                            ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGEDIT", configItem), new DrillInNavigationTransitionInfo());
+                            var _nvc_edit = new NameValueCollection
+                            {
+                                { "mode", "CFGEDIT" },
+                                { "configItem", JSONConvertor.SerializeObject(configItem) }
+                            };
+                            ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_edit, new DrillInNavigationTransitionInfo());
                         }
                     }
 
@@ -233,7 +240,10 @@ namespace CDPIUI
 
         public void CreateNewConfigForComponentId(string componentId)
         {
-            ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGCREATEBYID", componentId), new DrillInNavigationTransitionInfo());
+            var _nvc_createbyid = new NameValueCollection();
+            _nvc_createbyid.Add("mode", "CFGCREATEBYID");
+            _nvc_createbyid.Add("componentId", componentId);
+            ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_createbyid, new DrillInNavigationTransitionInfo());
         }
 
         private void CreateNewConfigButton_Click(object sender, RoutedEventArgs e)
@@ -264,7 +274,14 @@ namespace CDPIUI
                 {
                     filePath = openFileDialog.FileName;
                     var (configItem, errorHappens) = ConfigurationService.LoadConfigFromFile(filePath);
-                    ContentFrame.Navigate(typeof(CreateNewConfigPage), Tuple.Create("CFGIMPORT", configItem, errorHappens, filePath), new DrillInNavigationTransitionInfo());
+                    var _nvc_import = new NameValueCollection
+                    {
+                        { "mode", "CFGIMPORT" },
+                        { "configItem", JSONConvertor.SerializeObject(configItem) },
+                        { "errorHappens", (errorHappens).ToString() },
+                        { "filePath", filePath }
+                    };
+                    ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_import, new DrillInNavigationTransitionInfo());
                 }
                 else
                 {
@@ -280,7 +297,13 @@ namespace CDPIUI
 
         public void OpenGoodCheckReportFromFile(string filePath)
         {
-            ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, filePath), new DrillInNavigationTransitionInfo());
+            ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), 
+                new NameValueCollection()
+                {
+                    { "type", NavigationState.LoadFileFromPath.ToString() },
+                    { "filePath", filePath }
+                },
+                new DrillInNavigationTransitionInfo());
         }
 
         private void OpenGoodCheckReportButton_Click(object sender, RoutedEventArgs e)
@@ -297,7 +320,10 @@ namespace CDPIUI
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     filePath = openFileDialog.FileName;
-                    ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, filePath), new DrillInNavigationTransitionInfo());
+                    var _nvc_report = new NameValueCollection();
+                    _nvc_report.Add("type", NavigationState.LoadFileFromPath.ToString());
+                    _nvc_report.Add("filePath", filePath);
+                    ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), _nvc_report, new DrillInNavigationTransitionInfo());
                 }
                 else
                 {
@@ -317,7 +343,10 @@ namespace CDPIUI
             if (dialog.SelectedResult == SelectResult.Selected)
             {
                 string directory = dialog.SelectedReport;
-                ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), Tuple.Create(NavigationState.LoadFileFromPath, directory), new DrillInNavigationTransitionInfo());
+                    var _nvc_report3 = new NameValueCollection();
+                    _nvc_report3.Add("type", NavigationState.LoadFileFromPath.ToString());
+                    _nvc_report3.Add("filePath", directory);
+                    ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), _nvc_report3, new DrillInNavigationTransitionInfo());
             }
         }
 
@@ -330,19 +359,19 @@ namespace CDPIUI
         private async void ComponentsStore_Click(object sender, RoutedEventArgs e)
         {
             StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C001CS", new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), new NameValueCollection() { { "categoryId", "C001CS" } }, new SuppressNavigationTransitionInfo());
         }
 
         private async void AddOnsStore_Click(object sender, RoutedEventArgs e)
         {
             StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C003AS", new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), new NameValueCollection() { { "categoryId", "C003AS" } }, new SuppressNavigationTransitionInfo());
         }
 
         private async void ConfigsStore_Click(object sender, RoutedEventArgs e)
         {
             StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C002CS", new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), new NameValueCollection() { { "categoryId", "C002CS" } }, new SuppressNavigationTransitionInfo());
         }
 
         private void Store_Click(object sender, RoutedEventArgs e)
@@ -467,13 +496,17 @@ namespace CDPIUI
 
             if (!string.IsNullOrEmpty(dialog.Result))
             {
-                ContentFrame.Navigate(typeof(EditConfigKitPage), dialog.Result, new DrillInNavigationTransitionInfo());
+                var _nvc_kit = new NameValueCollection();
+                _nvc_kit.Add("kitId", dialog.Result);
+                ContentFrame.Navigate(typeof(EditConfigKitPage), _nvc_kit, new DrillInNavigationTransitionInfo());
             }
         }
 
         public void EditConfigKit(string kitId)
         {
-            ContentFrame.Navigate(typeof(EditConfigKitPage), kitId, new DrillInNavigationTransitionInfo());
+            var _nvc_kit2 = new NameValueCollection();
+            _nvc_kit2.Add("kitId", kitId);
+            ContentFrame.Navigate(typeof(EditConfigKitPage), _nvc_kit2, new DrillInNavigationTransitionInfo());
         }
 
         private void BackButton_PointerEntered(object sender, PointerRoutedEventArgs e)

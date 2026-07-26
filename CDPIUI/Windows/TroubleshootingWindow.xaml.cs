@@ -41,6 +41,8 @@ public sealed partial class TroubleshootingWindow : TemplateWindow
 
         DisableResizeFeature();
 
+        MainFrame = ContentFrame;
+
         IconUri = @"Assets/Icons/Troubleshooting.ico";
         this.CustomTitleBarUserControl = TitleBarUserControl;
 

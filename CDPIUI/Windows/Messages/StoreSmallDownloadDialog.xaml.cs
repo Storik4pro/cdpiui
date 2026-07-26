@@ -54,6 +54,8 @@ namespace CDPIUI.Messages
         {
             InitializeComponent();
 
+            NewIdSet += NewIdSeted;
+
             WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
             IconUri = @"Assets/favicon.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
@@ -65,8 +67,15 @@ namespace CDPIUI.Messages
             this.Closed += StoreSmallDownloadDialog_Closed;
         }
 
+        private void NewIdSeted()
+        {
+            SetItemToViewId(Id);
+        }
+
         private void StoreSmallDownloadDialog_Closed(object sender, WindowEventArgs args)
         {
+            NewIdSet -= NewIdSeted;
+
             if (_itemDownloadStageChangedHandler != null)
                 StoreHelper.Instance.ItemDownloadStageChanged -= _itemDownloadStageChangedHandler;
 

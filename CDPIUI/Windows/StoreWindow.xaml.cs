@@ -46,6 +46,8 @@ public sealed partial class StoreWindow : TemplateWindow
 
         Instance = this;
 
+        MainFrame = ContentFrame;
+
         NavView.SelectedItem = NavView.MenuItems[0];
         ContentFrame.Navigate(typeof(HomePage));
 

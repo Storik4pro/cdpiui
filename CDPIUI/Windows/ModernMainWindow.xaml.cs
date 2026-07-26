@@ -4,7 +4,7 @@ using CDPIUI.Core.Basic;
 using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using CDPIUI.Views;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using System.Collections.Specialized;
 using Windows.UI.Popups;
 using WinRT.Interop;
 using WinUI3Localizer;
@@ -49,7 +50,7 @@ namespace CDPIUI
             MainFrame = ContentFrame;
 
             NavView.SelectedItem = NavView.MenuItems[0];
-            ContentFrame.Navigate(GetMainPage());
+            ContentFrame.Navigate(GetMainPage(), new NameValueCollection());
 
             if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
             {
@@ -154,12 +155,12 @@ namespace CDPIUI
                     
                     if (!RemoveAndGoBackTo(GetMainPage(), ContentFrame))
                     {
-                        ContentFrame.Navigate(GetMainPage(), parameter, new DrillInNavigationTransitionInfo());
+                        ContentFrame.Navigate(GetMainPage(), parameter ?? new NameValueCollection(), new DrillInNavigationTransitionInfo());
                     }
                 }
                 else if (!Type.Equals(preNavPageType, navPageType) || Type.Equals(navPageType, typeof(ViewComponentSettingsPage)))
                 {
-                    ContentFrame.Navigate(navPageType, parameter, transitionInfo);
+                    ContentFrame.Navigate(navPageType, parameter ?? new NameValueCollection(), transitionInfo);
                 }
             }
         }
@@ -202,7 +203,7 @@ namespace CDPIUI
         {
             try
             {
-                ContentFrame.Navigate(page, null, new SlideNavigationTransitionInfo() { Effect = effect });
+                ContentFrame.Navigate(page, new NameValueCollection(), new SlideNavigationTransitionInfo() { Effect = effect });
             }
             catch (Exception ex)
             {

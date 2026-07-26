@@ -4,7 +4,7 @@ using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Views;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Input;

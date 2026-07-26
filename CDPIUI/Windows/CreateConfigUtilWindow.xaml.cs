@@ -27,6 +27,7 @@ using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
 using CDPIUI.AddOns.GoodCheck;
+using System.Collections.Specialized;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,7 +48,7 @@ namespace CDPIUI
             set
             {
                 targetStoreId = value;
-                ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), TargetStoreId);
+                ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), new NameValueCollection() { { "componentId", TargetStoreId } });
             }
         }
 
@@ -64,7 +65,9 @@ namespace CDPIUI
 
             Instance = this;
 
-            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), TargetStoreId);
+            MainFrame = ContentFrame;
+
+            ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), new NameValueCollection() { { "componentId", TargetStoreId } });
 
             this.Closed += CreateConfigUtilWindow_Closed;
 

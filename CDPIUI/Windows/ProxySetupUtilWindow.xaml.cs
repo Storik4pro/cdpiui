@@ -41,6 +41,8 @@ namespace CDPIUI
 
             NativeWindowHelper.ForceDisableMaximize(this);
 
+            MainFrame = ContentFrame;
+
             ContentFrame.Navigate(typeof(Views.SetupProxy.MainPage));
         }
     }
