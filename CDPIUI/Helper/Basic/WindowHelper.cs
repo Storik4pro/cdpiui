@@ -44,8 +44,10 @@ namespace CDPIUI.Helper.Basic
 
             if (!string.IsNullOrWhiteSpace(id))
             {
+                var type = GetWindowType(windowName);
+                if (type == null) return;
                 window = await ((App)Application.Current)
-                    .UnsafeCreateNewWindow<ViewWindow>(id: id);
+                    .UnsafeCreateNewWindow(type, id: id);
             }
             else
             {
@@ -58,7 +60,9 @@ namespace CDPIUI.Helper.Basic
             if (!string.IsNullOrWhiteSpace(pageName))
             {
                 if (window is not TemplateWindow baseWindow) return;
+
                 var pType = GetPageType(windowName, pageName);
+                if (pType == null) return;
                 baseWindow.NavigateToPageWithParameter(
                     pType,
                     pageParameters.Count > 0 ? pageParameters : null);
