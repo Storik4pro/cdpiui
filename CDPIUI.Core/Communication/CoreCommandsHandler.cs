@@ -8,9 +8,9 @@ using CDPIUI.Core.ComponentServices;
 
 namespace CDPIUI.Core.Communication
 {
-    internal class CoreCommandsHandler
+    public class CoreCommandsHandler
     {
-        public static void HandleCommand(IPipeMessage message)
+        public static bool HandleCommand(IPipeMessage message)
         {
             switch (message)
             {
@@ -33,7 +33,10 @@ namespace CDPIUI.Core.Communication
                 case ApplicationMessageModel model:
                     HandleApplicationMessage(model);
                     break;
+                default:
+                    return false;
             }
+            return true;
         }
 
         private static void HandleServiceMessage(ServiceMessageModel model)
