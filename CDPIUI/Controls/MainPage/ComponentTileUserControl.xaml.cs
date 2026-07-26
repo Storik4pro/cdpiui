@@ -4,12 +4,13 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.Static;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper;
 using CDPIUI.Helper.Static;
 using CDPIUI.Shared;
 using CDPIUI.ViewModels;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -23,6 +24,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -353,7 +355,12 @@ public sealed partial class ComponentTileUserControl : UserControl
     private async void ViewSettingsButtonClick()
     {
         var window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-        window.NavView_Navigate(typeof(ViewComponentSettingsPage), StoreId, new DrillInNavigationTransitionInfo());
+        window.NavView_Navigate(typeof(ViewComponentSettingsPage), 
+            new NameValueCollection()
+                {
+                    { "componentId", StoreId }
+                }, 
+                new DrillInNavigationTransitionInfo());
     }
 
     private void LoadConfigItems()
@@ -477,7 +484,11 @@ public sealed partial class ComponentTileUserControl : UserControl
                 break;
             case AvailableComponentFeatures.ExploreNewConfigs:
                 StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-                window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C002CS", new SuppressNavigationTransitionInfo());
+                window.NavigateSubPage(typeof(Views.Store.CategoryViewPage),
+                    new NameValueCollection() {
+                        { "categoryId", "C002CS" }
+                    }, 
+                    new SuppressNavigationTransitionInfo());
                 break;
             case AvailableComponentFeatures.VisitForum:
                 UrlOpenHelper.LaunchComponentForumUrl(StoreId);

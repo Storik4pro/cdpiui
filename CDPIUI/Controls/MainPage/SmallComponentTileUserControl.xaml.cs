@@ -6,7 +6,7 @@ using CDPIUI.Core.Items;
 using CDPIUI.Core.Static;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.ViewModels;
-using CDPIUI.Views.Components;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
