@@ -3,8 +3,8 @@ using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Helper;
 using CDPIUI.Helper.CreateConfigHelper;
-using CDPIUI.Views.Components;
 using CDPIUI.Views.CreateConfigHelper;
+using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -105,7 +106,12 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
         {
             this.Hide();
             ModernMainWindow window = await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>();
-            window.NavView_Navigate(typeof(ViewComponentSettingsPage), ComponentId, new DrillInNavigationTransitionInfo());
+            window.NavView_Navigate(typeof(ViewComponentSettingsPage),
+                new NameValueCollection()
+                {
+                    { "componentId", ComponentId }
+                }
+                , new DrillInNavigationTransitionInfo());
         }
     }
 }

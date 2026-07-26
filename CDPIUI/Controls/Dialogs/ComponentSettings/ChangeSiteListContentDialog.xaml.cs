@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -132,7 +133,11 @@ namespace CDPIUI.Controls.Dialogs.ComponentSettings
         private async void ViewInStoreButton_Click(object sender, RoutedEventArgs e)
         {
             var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage), "C004SS", new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.CategoryViewPage),
+                new NameValueCollection() {
+                    { "categoryId", "C004SS" }
+                }, 
+                new SuppressNavigationTransitionInfo());
         }
 
         private void SelectFileManuallyButton_Click(object sender, RoutedEventArgs e)
