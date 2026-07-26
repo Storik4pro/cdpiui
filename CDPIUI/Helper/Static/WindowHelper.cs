@@ -47,7 +47,6 @@ namespace CDPIUI.Helper.Static
         {
             { nameof(PrepareWindow), WindowResizeOptions.AlwaysCenter },
             { nameof(ViewWindow), WindowResizeOptions.ResizeAndPositionUtility },
-            { nameof(ViewGoodCheckOutputWindow), WindowResizeOptions.ResizeAndPositionUtility },
             { nameof(StoreWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(ProxySetupUtilWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(OfflineHelpWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
