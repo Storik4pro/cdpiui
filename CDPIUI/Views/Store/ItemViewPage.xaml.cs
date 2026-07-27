@@ -643,10 +643,10 @@ namespace CDPIUI.Views.Store
             }
         }
 
-        private async void LaunchItemUnsupportedHelp_Click(object sender, RoutedEventArgs e)
+        private void LaunchItemUnsupportedHelp_Click(object sender, RoutedEventArgs e)
         {
-            var window = await((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage("/Store/ItemUnsupportedWarning");
+            Commands.CommandsHandler.HandleCommand(
+                "cdpiui://Help/Store/ItemUnsupportedWarning/");
         }
     }
 }

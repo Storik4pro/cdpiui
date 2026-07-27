@@ -493,11 +493,11 @@ namespace CDPIUI.Views.Main.Components
                     gwindow.NavigateToPage<CreateViaGoodCheck>(new NameValueCollection() { { "componentId", ComponentId } });
                     break;
                 case "HELPOFFLINE":
-                    OfflineHelpWindow offlineHelpWindow = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+                    Commands.CommandsHandler.HandleCommand("cdpiui://Help/");
                     break;
                 case "HELPOFFLINECONFIGCHOOISE":
-                    OfflineHelpWindow offlineHelpWindow1 = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-                    offlineHelpWindow1.NavigateToPage("/Autoselection/BestConfigSelection");
+                    Commands.CommandsHandler.HandleCommand(
+                        "cdpiui://Help/Autoselection/BestConfigSelection/");
                     break;
             }
         }

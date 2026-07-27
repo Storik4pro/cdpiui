@@ -391,10 +391,10 @@ namespace CDPIUI
             UrlOpenHelper.LaunchReportUrl();
         }
 
-        private async void OfflineHelpButton_Click(object sender, RoutedEventArgs e)
+        private void OfflineHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            OfflineHelpWindow window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage($"/Utils/{nameof(CreateConfigHelperWindow)}");
+            Commands.CommandsHandler.HandleCommand(
+                $"cdpiui://Help/Utils/{nameof(CreateConfigHelperWindow)}/");
         }
 
         private void OnlineHelpButton_Click(object sender, RoutedEventArgs e)
@@ -528,10 +528,10 @@ namespace CDPIUI
             }
         }
 
-        private async void CurrentHelpMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        private void CurrentHelpMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage($"/CreateConfigHelper/{ContentFrame.SourcePageType.Name}");
+            Commands.CommandsHandler.HandleCommand(
+                $"cdpiui://Help/CreateConfigHelper/{ContentFrame.SourcePageType.Name}/");
         }
 
         public void SetStatus(bool isWorking = false, string text = "")

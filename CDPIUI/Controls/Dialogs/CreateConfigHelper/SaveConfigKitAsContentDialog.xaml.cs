@@ -145,10 +145,10 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
             this.Hide();
         }
 
-        private async void HelpButton_Click(object sender, RoutedEventArgs e)
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage("/CreateConfigHelper/SaveConfigKitAs");
+            Commands.CommandsHandler.HandleCommand(
+                "cdpiui://Help/CreateConfigHelper/SaveConfigKitAs/");
         }
 
         private void EditImageButton_Click(object sender, RoutedEventArgs e)

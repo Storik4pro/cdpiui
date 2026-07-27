@@ -327,10 +327,10 @@ public sealed partial class WorkPage : TemplatePage
         return url;
     }
 
-    private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
+    private void GetHelpButton_Click(object sender, RoutedEventArgs e)
     {
-        var window = await((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage("/Utils/TroubleshootingUtility");
+        Commands.CommandsHandler.HandleCommand(
+            "cdpiui://Help/Utils/TroubleshootingUtility/");
     }
 
     private void ForwardButton_Click(object sender, RoutedEventArgs e)

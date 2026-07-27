@@ -124,10 +124,10 @@ namespace CDPIUI.Views.CreateConfigUtil
                 new SuppressNavigationTransitionInfo());
         }
 
-        private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
+        private void GetHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = await((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage("/Autoselection/1WhatAutoSelectionIs");
+            Commands.CommandsHandler.HandleCommand(
+                "cdpiui://Help/Autoselection/1WhatAutoSelectionIs/");
         }
 
         private void ComponentChooseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

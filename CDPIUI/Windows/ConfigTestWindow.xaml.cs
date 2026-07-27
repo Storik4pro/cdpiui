@@ -410,10 +410,10 @@ namespace CDPIUI
             return new SolidColorBrush(c);
         }
 
-        private async void HelpHyperLinkButton_Click(object sender, RoutedEventArgs e)
+        private void HelpHyperLinkButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage("/Autoselection/BestConfigSelection");
+            Commands.CommandsHandler.HandleCommand(
+                "cdpiui://Help/Autoselection/BestConfigSelection/");
         }
     }
 

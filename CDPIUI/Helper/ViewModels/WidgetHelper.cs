@@ -83,8 +83,8 @@ namespace CDPIUI.Helper.ViewModels
 
             widgets.Add(
                 CreateWidget(
-                    WidgetType.OpenWindow, 
-                    new LaunchActionWithParameterModel<TemplateWindow>() { Target = typeof(OfflineHelpWindow), Parameter = null }, 
+                    WidgetType.NavigateToPage,
+                    "cdpiui://Help/",
                     "OpenLocalHelp",
                     "OpenLocalHelpDescription", 
                     UIHelper.GetUriFromString("ms-appx:///Assets/Icons/help.ico"),
@@ -146,6 +146,7 @@ namespace CDPIUI.Helper.ViewModels
                         UrlOpenHelper.LaunchUrl((string)actionObject);
                         break;
                     case WidgetType.NavigateToPage:
+                        Commands.CommandsHandler.HandleCommand((string)actionObject);
                         break;
                 }
             }

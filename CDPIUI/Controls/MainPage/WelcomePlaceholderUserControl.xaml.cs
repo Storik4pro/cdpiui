@@ -54,10 +54,10 @@ public sealed partial class WelcomePlaceholderUserControl : UserControl
         await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
     }
 
-    private async void NavigateToHelpUri(string uri)
+    private void NavigateToHelpUri(string uri)
     {
-        OfflineHelpWindow window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage(uri);
+        Commands.CommandsHandler.HandleCommand(
+            $"cdpiui://Help/{uri.Trim('/')}/");
     }
 
     private void LearnMoreAboutUIHyperlink_Click(object sender, RoutedEventArgs e)

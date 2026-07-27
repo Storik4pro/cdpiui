@@ -471,10 +471,10 @@ public sealed partial class HomePage : TemplatePage
         UrlOpenHelper.LaunchReportUrl();
     }
 
-    private async static void OpenHelp(string page)
+    private static void OpenHelp(string page)
     {
-        var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage($"/Store/{page}");
+        Commands.CommandsHandler.HandleCommand(
+            $"cdpiui://Help/Store/{page.Trim('/')}/");
     }
 
     private void OnContainerSizeChanged(object sender, SizeChangedEventArgs e)

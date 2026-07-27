@@ -48,7 +48,7 @@ namespace CDPIUI.Views
 
         private void OfflineHelpSettingsCard_Click(object sender, RoutedEventArgs e)
         {
-            _ = ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
+            Commands.CommandsHandler.HandleCommand("cdpiui://Help/");
         }
 
         private void ProxySettingsCard_Click(object sender, RoutedEventArgs e)

@@ -228,7 +228,8 @@ namespace CDPIUI
             
             if (url.StartsWith("cdpi-wiki"))
             {
-                NavigateToPage(url.Replace("cdpi-wiki://", ""));
+                var helpUrl = url.Replace("cdpi-wiki://", "").Trim('/');
+                Commands.CommandsHandler.HandleCommand($"cdpiui://Help/{helpUrl}/");
             }
             return;
         }

@@ -52,10 +52,10 @@ public sealed partial class MainPage : TemplatePage
         await dlg.ShowAsync();
     }
 
-    private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
+    private void GetHelpButton_Click(object sender, RoutedEventArgs e)
     {
-        var window = await((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage("/Utils/TroubleshootingUtility");
+        Commands.CommandsHandler.HandleCommand(
+            "cdpiui://Help/Utils/TroubleshootingUtility/");
     }
 
     private async void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -78,8 +78,8 @@ public sealed partial class MainPage : TemplatePage
 
     private async void ComponentDoesNotRunCard_Click(object sender, RoutedEventArgs e)
     {
-        var helpWindow = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        helpWindow.NavigateToPage("/TroubleshootingComponentexceptions/BasicTroubleshooting");
+        Commands.CommandsHandler.HandleCommand(
+            "cdpiui://Help/TroubleshootingComponentexceptions/BasicTroubleshooting/");
 
         var window = await((App)Application.Current).SafeCreateNewWindow<TroubleshootingWindow>();
         window.Close();

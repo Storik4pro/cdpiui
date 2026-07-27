@@ -180,12 +180,12 @@ public sealed partial class DiagnosticResultUserControl : UserControl
         FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
     }
 
-    private async void NetHelpAskButton_Click(object sender, RoutedEventArgs e)
+    private void NetHelpAskButton_Click(object sender, RoutedEventArgs e)
     {
         if (HelpUrl.StartsWith("$INTERNAL_HELP"))
         {
-            var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-            window.NavigateToPage($"/{LScriptLangHelper.GetScriptArgs(HelpUrl)}");
+            var helpUrl = LScriptLangHelper.GetScriptArgs(HelpUrl).Trim('/');
+            Commands.CommandsHandler.HandleCommand($"cdpiui://Help/{helpUrl}/");
         }
         else
         {

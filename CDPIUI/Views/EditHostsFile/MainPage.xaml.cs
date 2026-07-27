@@ -111,10 +111,10 @@ public sealed partial class MainPage : TemplatePage
         return Color.FromArgb(255, r, g, b); 
     }
 
-    private async void GetHelpButton_Click(object sender, RoutedEventArgs e)
+    private void GetHelpButton_Click(object sender, RoutedEventArgs e)
     {
-        var window = await ((App)Application.Current).SafeCreateNewWindow<OfflineHelpWindow>();
-        window.NavigateToPage("/Utils/EditHostsFileUtility");
+        Commands.CommandsHandler.HandleCommand(
+            "cdpiui://Help/Utils/EditHostsFileUtility/");
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
