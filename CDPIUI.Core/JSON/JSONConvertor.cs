@@ -10,7 +10,8 @@ namespace CDPIUI.Core.JSON
             return DeserializeObject<T>(json);
         }
 
-        public static T? DeserializeObject<T>(string @object) => JsonConvert.DeserializeObject<T>(@object);
+        public static T? DeserializeObject<T>(string? @object) => 
+            string.IsNullOrEmpty(@object) ? default : JsonConvert.DeserializeObject<T>(@object);
 
         public static string SerializeObject<T>(T obj) => JsonConvert.SerializeObject(obj);
     }
