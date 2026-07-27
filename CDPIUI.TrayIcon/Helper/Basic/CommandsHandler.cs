@@ -113,14 +113,14 @@ namespace CDPIUI.TrayIcon.Helper.Basic
             {
                 case GoodCheckMessageIds.Start:
                     {
-                        var taskId = model.MessageData?["componentId"];
+                        var taskId = model.MessageData?["operationId"];
                         var executable = model.MessageData?["exeFileName"];
                         var arguments = model.MessageData?["args"];
 
                         if (taskId == null || executable == null || arguments == null)
                             return;
 
-                        await GoodCheckProcessHelper.Instance.StartAsync(taskId, executable, arguments);
+                        await GoodCheckProcessHelper.Instance.StartAsync(executable, arguments, taskId);
                         TasksHelper.Instance.ApplyStatusToAllTasks(false);
                         return;
                     }
