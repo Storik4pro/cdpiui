@@ -114,21 +114,26 @@ namespace CDPIUI
             bool isFileProcessed = await ProcessFiles(arguments);
             bool isActionPreffered = false;
 
-            string protocolArg = arguments.FirstOrDefault(x => x.StartsWith("----ms-protocol:"));
-
-            if (protocolArg != null)
+            try
             {
-                string value = protocolArg["----ms-protocol:".Length..];
-                isActionPreffered = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
-            }
 
-            string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
+                string protocolArg = arguments.FirstOrDefault(x => x.StartsWith("----ms-protocol:"));
 
-            if (directArgs != null)
-            {
-                string value = directArgs["--direct:".Length..];
-                isActionPreffered = CoreCommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                if (protocolArg != null)
+                {
+                    string value = protocolArg["----ms-protocol:".Length..];
+                    isActionPreffered = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                }
+
+                string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
+
+                if (directArgs != null)
+                {
+                    string value = directArgs["--direct:".Length..];
+                    isActionPreffered = CoreCommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                }
             }
+            catch { }
 
             if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
 
@@ -211,10 +216,14 @@ namespace CDPIUI
         {
             DatabaseInitializationService.QuickRestore();
             await InitializeLocalizer();
+            ApplicationInfo.Instance.SetLocalization(Localizer.Get().GetCurrentLanguage());
 
-            ActivationRegistrationManager.RegisterForProtocolActivation("cdpiui", "ms-appx:///Assets/Square44x44Logo.scale-200.png", "CDPI UI", Environment.ProcessPath);
+            ActivationRegistrationManager.RegisterForProtocolActivation(
+                "cdpiui", 
+                "ms-appx:///Assets/Square44x44Logo.scale-200.png", 
+                $"CDPI UI – version {ApplicationInfo.Version}", 
+                Environment.ProcessPath);
 
-            // await CleanOldWorkDirectoriesAsync();
             await Task.CompletedTask;
         }
 
@@ -770,103 +779,6 @@ namespace CDPIUI
                 })
                 .Build();
         }
-
-        public static async Task<List<string>> CleanOldWorkDirectoriesAsync(
-            string baseDir = null,
-            CancellationToken cancellationToken = default)
-        {
-            var tempBase = baseDir ?? Path.Combine(Path.GetTempPath(), ".net", "CDPIUI");
-
-            var deleted = new List<string>();
-
-            try
-            {
-                if (!Directory.Exists(tempBase))
-                {
-                    return deleted;
-                }
-
-                var currentWorkDir = AppDomain.CurrentDomain.BaseDirectory;
-                if (string.IsNullOrWhiteSpace(currentWorkDir))
-                {
-                    return deleted;
-                }
-
-                var currentFull = Path.GetFullPath(currentWorkDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-
-                var dirs = Directory.EnumerateDirectories(tempBase);
-
-                foreach (var dir in dirs)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    string dirFull;
-                    try
-                    {
-                        dirFull = Path.GetFullPath(dir);
-                    }
-                    catch (Exception ex)
-                    {
-                        continue;
-                    }
-
-                    if (string.Equals(dirFull, currentFull, StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    bool removed = false;
-                    const int maxAttempts = 3;
-                    for (int attempt = 1; attempt <= maxAttempts && !removed; attempt++)
-                    {
-                        try
-                        {
-                            await Task.Run(() =>
-                            {
-                                Directory.Delete(dirFull, recursive: true);
-                            }, cancellationToken).ConfigureAwait(false);
-
-                            removed = true;
-                            deleted.Add(dirFull);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            if (attempt == maxAttempts)
-                            {
-                                Logger.Instance.CreateWarningLog(nameof(App), $"Exception happens while trying to remove directory {ex.Message}");
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    await Task.Delay(attempt * 200, cancellationToken).ConfigureAwait(false);
-                                }
-                                catch (OperationCanceledException)
-                                {
-                                    throw;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                Logger.Instance.CreateWarningLog(nameof(App), "Cleanup operation was cancelled.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.CreateWarningLog(nameof(App), $"Unexpected error during cleanup: {ex.Message}");
-            }
-
-            return deleted;
-        }
-
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
