@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -480,7 +481,7 @@ namespace CDPIUI.Controls.Store
             ConnectedAnimationService.GetForCurrentView()
                 .PrepareToAnimate("ForwardConnectedAnimation", PART_Image);
 
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), StoreId, new SuppressNavigationTransitionInfo());
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

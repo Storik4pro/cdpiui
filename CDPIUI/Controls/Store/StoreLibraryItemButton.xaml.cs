@@ -144,7 +144,7 @@ namespace CDPIUI.Controls.Store
             ConnectedAnimationService.GetForCurrentView()
                 .PrepareToAnimate("ForwardConnectedAnimation", PART_Image);
 
-            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), StoreId, new SuppressNavigationTransitionInfo());
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
         }
 
         private async void ActionButton_Click(object sender, RoutedEventArgs e)
