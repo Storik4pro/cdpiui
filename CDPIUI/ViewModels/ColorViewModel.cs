@@ -1,4 +1,4 @@
-﻿using CDPIUI.Core.Static;
+﻿using CDPIUI.Helper;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;

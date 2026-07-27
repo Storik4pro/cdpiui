@@ -10,7 +10,7 @@ using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Parsers;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Views.Main.Components;

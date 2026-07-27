@@ -1,6 +1,6 @@
 using CDPIUI.Default;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
+
 using CDPIUI.Messages;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;

@@ -3,10 +3,10 @@ using CDPIUI.Controls.Dialogs.ProxySetupUtil;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.Data;
-using CDPIUI.Core.Items;
+
 using CDPIUI.Core.JSON;
 using CDPIUI.Core.Proxy;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

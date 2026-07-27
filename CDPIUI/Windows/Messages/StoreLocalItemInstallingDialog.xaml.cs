@@ -1,11 +1,11 @@
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Default;
+using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper.Parsers;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;

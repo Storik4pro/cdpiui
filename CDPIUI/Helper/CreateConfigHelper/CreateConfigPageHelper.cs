@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace CDPIUI.Core.CreateConfigHelper
+namespace CDPIUI.Helper.CreateConfigHelper
 {
     public partial class CreateConfigPageHelper
     {

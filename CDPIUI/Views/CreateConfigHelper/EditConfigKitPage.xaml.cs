@@ -7,7 +7,7 @@ using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

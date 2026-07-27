@@ -1,7 +1,7 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.System;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

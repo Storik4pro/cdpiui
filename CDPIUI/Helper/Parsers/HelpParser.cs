@@ -1,5 +1,5 @@
 ﻿using CDPIUI.Core.Data;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared.Basic.Filesystem;
 using System.Collections.Generic;
 using System.IO;

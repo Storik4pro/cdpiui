@@ -4,7 +4,7 @@ using CDPIUI.Core.Basic;
 using CDPIUI.Core.Data;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.Parsers;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;

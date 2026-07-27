@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI.Helper
+namespace CDPIUI.Helper.Basic
 {
     public class ApplicationTaskMonitor
     {

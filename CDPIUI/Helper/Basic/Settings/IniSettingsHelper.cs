@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
-namespace CDPIUI.Helper.Settings
+namespace CDPIUI.Helper.Basic.Settings
 {
     // ChatGPT -> piece of shit. 
 

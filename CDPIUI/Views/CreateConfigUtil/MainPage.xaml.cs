@@ -1,8 +1,8 @@
 using CDPIUI.Controls.Default;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper;
 using CDPIUI.Messages;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Store;

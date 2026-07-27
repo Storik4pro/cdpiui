@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Core.System;
 
 // To learn more about WinUI, the WinUI project structure,

@@ -2,7 +2,7 @@ using CDPIUI.AddOns.GoodCheck;
 using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.JSON;
-using CDPIUI.Core.Static;
+using CDPIUI.Helper;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

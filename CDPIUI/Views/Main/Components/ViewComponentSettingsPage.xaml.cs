@@ -1,10 +1,10 @@
 using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.MainPage;
-using CDPIUI.Core.Items;
+
 using CDPIUI.Core.JSON;
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.CreateConfigUtil;
@@ -36,7 +36,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using static CDPIUI.Core.Static.UIHelper;
+using static CDPIUI.Helper.UIHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

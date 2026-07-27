@@ -20,9 +20,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinRT.Interop;
-using CDPIUI.Helper.Static;
 using CDPIUI.Helper;
 using CDPIUI.Core.System;
+using CDPIUI.Helper.WindowHelper;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -69,7 +69,7 @@ namespace CDPIUI
                 $"Architecture: {RuntimeInformation.OSArchitecture.ToString()}";
             AdditionalTextBlock.Text = additionalInfo;
 
-            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(this);
+            WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(this);
         }
 
         private void CriticalErrorHandlerWindow_Closed(object sender, WindowEventArgs args)

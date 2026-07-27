@@ -3,6 +3,7 @@ using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
@@ -79,7 +80,7 @@ namespace CDPIUI.Controls.Dialogs.CreateConfigHelper
                     StoreId = component.Value,
                     DisplayName = component.Key.ToString(),
                     ImageSource = 
-                        new BitmapImage(Core.Static.UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(DatabaseHelper.Instance.GetItemById(component.Value)?.IconPath ?? string.Empty)))
+                        new BitmapImage(UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(DatabaseHelper.Instance.GetItemById(component.Value)?.IconPath ?? string.Empty)))
                 });
             }
             ComponentChooseComboBox.ItemsSource = components;

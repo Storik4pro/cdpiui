@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Helper.Parsers;
 using CDPIUI.Shared.Basic.Filesystem;
 

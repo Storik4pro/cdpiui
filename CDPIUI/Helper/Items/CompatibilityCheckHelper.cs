@@ -5,7 +5,7 @@ using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
-using CDPIUI.Helper.Static;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI.Core.Items
+namespace CDPIUI.Helper.Items
 {
     public class CompatibilityCheckHelper
     {

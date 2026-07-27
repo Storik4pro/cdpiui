@@ -20,7 +20,7 @@ using WinUI3Localizer;
 using WinUIEx;
 using static System.Net.Mime.MediaTypeNames;
 using CDPIUI.Helper.Parsers;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.Core.System;

@@ -16,7 +16,7 @@ using System.Windows.Forms;
 using CDPIUI.Core;
 using Application = Microsoft.UI.Xaml.Application;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
-using CDPIUI.Core.Static;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

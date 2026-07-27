@@ -1,9 +1,8 @@
 ﻿using CDPIUI.Core;
 using CDPIUI.Core.Features;
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
 using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

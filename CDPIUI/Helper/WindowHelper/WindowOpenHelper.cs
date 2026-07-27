@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CDPIUI.Helper.Basic
+namespace CDPIUI.Helper.WindowHelper
 {
     internal class WindowOpenHelper
     {

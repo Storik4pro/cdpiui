@@ -1,7 +1,6 @@
 using CDPIUI.Extensions;
 using CDPIUI.Core;
-using CDPIUI.Core.Items;
-using CDPIUI.Core.Static;
+
 using CDPIUI.Views.CreateConfigHelper;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Xaml;
@@ -20,9 +19,10 @@ using System.Linq;
 using System.Windows.Forms;
 using WinUI3Localizer;
 using Application = Microsoft.UI.Xaml.Application;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Core.Store;
 using CDPIUI.Shared;
+using CDPIUI.Helper;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 

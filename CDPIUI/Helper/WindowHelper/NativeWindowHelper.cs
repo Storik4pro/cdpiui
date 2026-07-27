@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 
-namespace CDPIUI.Helper.Native
+namespace CDPIUI.Helper.WindowHelper
 {
     /// <summary>
     /// This code copied from https://github.com/microsoft/microsoft-ui-xaml/issues/9427#issuecomment-2504707196.

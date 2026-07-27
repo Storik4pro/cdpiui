@@ -3,11 +3,10 @@ using CDPIUI.Core;
 using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Main.Components;
@@ -37,7 +36,7 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPIUI.Core.Static.UIHelper;
+using static CDPIUI.Helper.UIHelper;
 using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using ToolTipService = Microsoft.UI.Xaml.Controls.ToolTipService;
 

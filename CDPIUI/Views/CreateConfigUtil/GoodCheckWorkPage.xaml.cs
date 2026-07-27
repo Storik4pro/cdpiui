@@ -21,7 +21,7 @@ using WinUI3Localizer;
 using CDPIUI.Default;
 using CDPIUI.Core.Basic;
 using CDPIUI.AddOns.GoodCheck;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Core.Data;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.Parsers;

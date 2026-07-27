@@ -1,10 +1,10 @@
-﻿using CDPIUI.Core.Items;
-using CDPIUI.Shared.Pipe.Models;
-using CDPIUI.Helper.Basic;
+﻿using CDPIUI.Shared.Pipe.Models;
 using CDPIUI.AddOns.GoodCheck;
 using CDPIUI.AddOns.Troubleshooting;
 using CDPIUI.Core.Features;
 using System.Diagnostics;
+using CDPIUI.Helper.WindowHelper;
+using CDPIUI.Helper.Items;
 
 
 namespace CDPIUI.Commands

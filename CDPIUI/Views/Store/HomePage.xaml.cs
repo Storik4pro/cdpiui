@@ -1,11 +1,10 @@
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
+
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

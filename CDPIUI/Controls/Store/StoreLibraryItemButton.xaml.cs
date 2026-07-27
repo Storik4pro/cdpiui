@@ -2,7 +2,7 @@ using CDPIUI.Core;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.Views.Main.Components;
 using Microsoft.UI;

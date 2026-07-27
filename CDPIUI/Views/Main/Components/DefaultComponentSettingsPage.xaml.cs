@@ -16,7 +16,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using WinUI3Localizer;
-using static CDPIUI.Core.Static.UIHelper;
+using static CDPIUI.Helper.UIHelper;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;

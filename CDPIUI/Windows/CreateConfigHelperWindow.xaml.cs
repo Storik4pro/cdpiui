@@ -2,7 +2,6 @@ using CDPIUI.Controls.CreateConfigHelper;
 using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Default;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
 using CDPIUI.Views.CreateConfigHelper;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI;
@@ -34,13 +33,12 @@ using CDPIUI.Core.JSON;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using static CDPIUI.Win32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = Microsoft.UI.Xaml.Application;
-using CDPIUI.Helper.Static;
 using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Helper;
+using CDPIUI.Helper.WindowHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -68,7 +66,7 @@ namespace CDPIUI
             IconUri = @"Assets/Icons/Edit.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
 
-            WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
+            WindowsPositionHelper.TrySetMicaBackdrop(true, this, MainGrid);
 
             MainFrame = ContentFrame;
 

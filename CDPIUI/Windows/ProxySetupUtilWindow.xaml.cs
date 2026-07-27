@@ -20,7 +20,6 @@ using Windows.Foundation.Collections;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using CDPIUI.Helper.Native;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -38,8 +37,6 @@ namespace CDPIUI
             IconUri = @"Assets/Icons/Proxy.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
             DisableResizeFeature();
-
-            NativeWindowHelper.ForceDisableMaximize(this);
 
             MainFrame = ContentFrame;
 

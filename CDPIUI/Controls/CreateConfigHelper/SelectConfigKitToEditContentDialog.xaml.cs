@@ -1,5 +1,5 @@
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;

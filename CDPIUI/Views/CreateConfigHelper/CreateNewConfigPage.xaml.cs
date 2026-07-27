@@ -5,14 +5,13 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
-using CDPIUI.Core.CreateConfigHelper;
 using CDPIUI.Core.JSON;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.CreateConfigHelper;
 using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;

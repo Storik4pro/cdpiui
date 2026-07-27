@@ -4,8 +4,7 @@ using CDPIUI.Core.Basic;
 using CDPIUI.Core.Data;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
-using CDPIUI.Helper.Settings;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared.Extentions;
 using CDPIUI.Shared;
 using CommunityToolkit.WinUI;
@@ -37,10 +36,11 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using static CDPIUI.Core.Static.UIHelper;
+using static CDPIUI.Helper.UIHelper;
 using Application = Microsoft.UI.Xaml.Application;
 using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper.Basic.Settings;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

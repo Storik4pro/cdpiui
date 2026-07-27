@@ -1,5 +1,6 @@
-﻿using CDPIUI.Core.Basic;
-using CDPIUI.Core.Items;
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.LScript;
 using CDPIUI.ViewModels;
@@ -24,7 +25,7 @@ using Windows.UI.Core;
 using WinUI3Localizer;
 using Padding = System.Windows.Forms.Padding;
 
-namespace CDPIUI.Core.Static
+namespace CDPIUI.Helper
 {
     public static class UIHelper
     {
@@ -385,7 +386,7 @@ namespace CDPIUI.Core.Static
             string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
-            Windows.UI.Color color = HexToColorConverter(backgroundColor);
+            Color color = HexToColorConverter(backgroundColor);
 
             storeItemLargeButton = new StoreItemLargeButton
             {
@@ -409,7 +410,7 @@ namespace CDPIUI.Core.Static
             string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
             BitmapImage image = new BitmapImage(new Uri(eImageSource));
 
-            SolidColorBrush solidColorBrush = UIHelper.HexToSolidColorBrushConverter(backgroundColor);
+            SolidColorBrush solidColorBrush = HexToSolidColorBrushConverter(backgroundColor);
 
             storeItemSmallButton = new StoreItemSmallButton
             {
@@ -465,7 +466,7 @@ namespace CDPIUI.Core.Static
         public static Uri GetUriFromString(string input)
         {
             
-            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(CDPIUI.Core.Data.Directories.CurrentDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(Core.Data.Directories.CurrentDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
             {
                 return result;
             }

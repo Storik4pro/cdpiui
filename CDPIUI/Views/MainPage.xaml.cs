@@ -1,5 +1,4 @@
 using CDPIUI.Controls.MainPage;
-using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
@@ -17,6 +16,7 @@ using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper;
 
 
 namespace CDPIUI.Views

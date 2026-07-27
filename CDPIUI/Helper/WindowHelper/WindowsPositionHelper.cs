@@ -1,6 +1,5 @@
 ﻿using CDPIUI.Core;
 using CDPIUI.Core.Basic;
-using CDPIUI.Core.Static;
 using CDPIUI.Messages;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -13,13 +12,12 @@ using System.Runtime.InteropServices;
 using Windows.Graphics;
 using WinRT.Interop;
 using WinUIEx;
-using static CDPIUI.Win32;
 
-namespace CDPIUI.Helper.Static
+namespace CDPIUI.Helper.WindowHelper
 {
-    public class WindowHelper
+    public class WindowsPositionHelper
     {
-        public WindowHelper()
+        public WindowsPositionHelper()
         {
 
         }
@@ -85,7 +83,7 @@ namespace CDPIUI.Helper.Static
 
             WindowsResizeParams.TryGetValue(resizeOptions, out Tuple<WindowPositionVariants, int, int> value);
 
-            if ((width == 0 && height == 0) || width < value.Item2 || height < value.Item3)
+            if (width == 0 && height == 0 || width < value.Item2 || height < value.Item3)
             {
                 if (value == null) return;
 
@@ -127,7 +125,7 @@ namespace CDPIUI.Helper.Static
                     return;
                 }
             }
-            SetWindowPos(hwnd, IntPtr.Zero, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+            SetWindowPos(hwnd, nint.Zero, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
         }
 
         public static void SetCustomWindowSizeAndPositionFromSettings(Window window)
@@ -172,8 +170,8 @@ namespace CDPIUI.Helper.Static
         private static bool TryGetMonitorWorkArea(RECT rect, out RECT workArea)
         {
             workArea = new RECT();
-            IntPtr hMon = MonitorFromRect(ref rect, MONITOR_DEFAULTTONEAREST);
-            if (hMon == IntPtr.Zero) return false;
+            nint hMon = MonitorFromRect(ref rect, MONITOR_DEFAULTTONEAREST);
+            if (hMon == nint.Zero) return false;
 
             MONITORINFO mi = new MONITORINFO();
             mi.cbSize = (uint)Marshal.SizeOf(typeof(MONITORINFO));
@@ -217,7 +215,7 @@ namespace CDPIUI.Helper.Static
                 exWindow.CenterOnScreen();
                 return;
             }
-            IntPtr hWnd = WindowNative.GetWindowHandle(window);
+            nint hWnd = WindowNative.GetWindowHandle(window);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
 
             if (AppWindow.GetFromWindowId(windowId) is AppWindow appWindow &&
@@ -271,7 +269,7 @@ namespace CDPIUI.Helper.Static
 
         public static void SetWindowIcon(Window window, string iconUri)
         {
-            IntPtr handle = WindowNative.GetWindowHandle(window);
+            nint handle = WindowNative.GetWindowHandle(window);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(handle);
             AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.SetIcon(iconUri);
@@ -288,16 +286,16 @@ namespace CDPIUI.Helper.Static
         private const uint SWP_NOZORDER = 0x0004;
 
         [DllImport("user32.dll")]
-        private static extern IntPtr MonitorFromRect([In] ref RECT lprc, uint dwFlags);
+        private static extern nint MonitorFromRect([In] ref RECT lprc, uint dwFlags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+        private static extern bool GetMonitorInfo(nint hMonitor, ref MONITORINFO lpmi);
 
         [DllImport("user32.dll")]
         private static extern int GetSystemMetrics(int nIndex);
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        private static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
         [StructLayout(LayoutKind.Sequential)]
@@ -317,6 +315,18 @@ namespace CDPIUI.Helper.Static
             public RECT rcWork;
             public uint dwFlags;
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MARGINS
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi")]
+        public static extern IntPtr DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
         #endregion
 
     }

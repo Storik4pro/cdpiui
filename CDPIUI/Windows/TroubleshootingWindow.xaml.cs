@@ -1,6 +1,6 @@
 using CDPIUI.Default;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
+
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;

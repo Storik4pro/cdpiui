@@ -1,6 +1,6 @@
 using CDPIUI.Converters;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
+using CDPIUI.Helper;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

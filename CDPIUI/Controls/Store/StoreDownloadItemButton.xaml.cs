@@ -1,7 +1,7 @@
 using CDPIUI.Controls.Dialogs.Universal;
 using CDPIUI.Core.Store;
 using CDPIUI.Helper.Parsers;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Views.Store;
 using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;

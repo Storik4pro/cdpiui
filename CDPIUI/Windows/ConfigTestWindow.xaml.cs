@@ -1,7 +1,6 @@
 using CDPIUI.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
-using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,8 +20,9 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Helper.AddOns;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Helper.Parsers;
+using CDPIUI.Helper;
 
 namespace CDPIUI
 {

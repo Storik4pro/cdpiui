@@ -3,7 +3,7 @@ using CDPIUI.Controls.Default;
 using CDPIUI.Core.JSON;
 using CDPIUI.Core.Proxy;
 using CDPIUI.Shared.Extentions;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

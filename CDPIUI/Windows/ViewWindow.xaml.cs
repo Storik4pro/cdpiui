@@ -34,16 +34,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using CDPIUI.Controls.Dialogs;
 using WinUIEx;
 using WinUI3Localizer;
-using CDPIUI.Core.Static;
+
 using WindowId = Microsoft.UI.WindowId;
 using Microsoft.UI.Windowing;
 using CDPIUI.Default;
 using CDPIUI.Controls.Dialogs.Universal;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Core.Store.Database;
-using CDPIUI.Helper.Static;
 using CDPIUI.Core.ComponentServices;
 using CDPIUI.Helper;
+using CDPIUI.Helper.WindowHelper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -72,7 +72,7 @@ namespace CDPIUI
 
             this.Closed += ViewWindow_Closed;
 
-            WindowHelper.TrySetMicaBackdrop(true, this, MainGrid);
+            WindowsPositionHelper.TrySetMicaBackdrop(true, this, MainGrid);
 
 
             if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))

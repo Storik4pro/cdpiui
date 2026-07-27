@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using CDPIUI.Core.Static;
+
 using WinUI3Localizer;
 using CDPIUI.Helper.LScript;
 using CDPIUI.Helper;

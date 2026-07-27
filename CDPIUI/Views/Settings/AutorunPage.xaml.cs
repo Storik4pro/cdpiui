@@ -1,7 +1,6 @@
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.Features;
-using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
@@ -28,6 +27,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 using WinUI3Localizer;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

@@ -2,7 +2,7 @@ using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.Communication;
 using CDPIUI.Core.System;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Properties;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Settings;
@@ -30,7 +30,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using WinUI3Localizer;
-using static CDPIUI.Core.Static.UIHelper;
+using static CDPIUI.Helper.UIHelper;
 using CDPIUI.Shared.Extentions;
 using CDPIUI.Controls.Default;
 

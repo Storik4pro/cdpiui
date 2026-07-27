@@ -1,6 +1,6 @@
 using CDPIUI.Controls.Dialogs.Q;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
+
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.LScript;

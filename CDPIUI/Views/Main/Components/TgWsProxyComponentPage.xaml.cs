@@ -2,7 +2,6 @@ using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Universal;
 using CDPIUI.Extensions;
 using CDPIUI.Core;
-using CDPIUI.Core.CreateConfigHelper;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -39,7 +38,7 @@ using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.ComponentServices;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.Controls.MainPage;
 using CDPIUI.Controls.Default;

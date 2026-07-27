@@ -1,7 +1,7 @@
 using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
+using CDPIUI.Helper;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

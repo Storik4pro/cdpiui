@@ -1,6 +1,5 @@
 ﻿using CDPIUI.Controls.WindowControls;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -14,9 +13,9 @@ using WinRT.Interop;
 using WinUIEx;
 using Application = Microsoft.UI.Xaml.Application;
 using Size = System.Windows.Size;
-using CDPIUI.Helper.Static;
 using System.Collections.Specialized;
-using CDPIUI.Helper.Native;
+using CDPIUI.Helper;
+using CDPIUI.Helper.WindowHelper;
 
 namespace CDPIUI.Default
 {
@@ -162,7 +161,7 @@ namespace CDPIUI.Default
                 rootElement.RequestedTheme = ((App)Application.Current).CurrentTheme;
             }
 
-            WindowHelper.SetWindowBorderMargin(this);
+            WindowsPositionHelper.SetWindowBorderMargin(this);
 
             TitleBarMode = (TitleBarModes)SettingsManager.Instance.GetValue<int>("APPEARANCE", "titleBarMode");
 
@@ -310,7 +309,7 @@ namespace CDPIUI.Default
             {
                 if (CustomTitleBarUserControl != null) CustomTitleBarUserControl.IconSource = new BitmapImage(new Uri($"ms-appx:///{IconUri}"));
             });
-            WindowHelper.SetWindowIcon(this, IconUri);
+            WindowsPositionHelper.SetWindowIcon(this, IconUri);
         }
 
         private void UpdateWindowMinSize()

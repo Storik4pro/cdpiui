@@ -2,9 +2,9 @@ using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.Features;
-using CDPIUI.Core.Items;
-using CDPIUI.Core.Static;
+
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;

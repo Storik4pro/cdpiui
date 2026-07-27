@@ -2,7 +2,7 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 
-namespace CDPIUI.Helper.Native
+namespace CDPIUI.Helper.WindowHelper
 {
     internal class TitleBarHelper
     {

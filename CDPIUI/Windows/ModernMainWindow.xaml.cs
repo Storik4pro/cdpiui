@@ -1,7 +1,7 @@
 using CDPIUI.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
-using CDPIUI.Core.Static;
+
 using CDPIUI.ViewModels;
 using CDPIUI.Views;
 using CDPIUI.Views.Main.Components;

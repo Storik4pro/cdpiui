@@ -1,7 +1,6 @@
 using CDPIUI.Controls.Store.Settings;
 using CDPIUI.Extensions;
 using CDPIUI.Core;
-using CDPIUI.Core.Static;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,7 +25,7 @@ using WinUI3Localizer;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store;
 using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Core.Data;
 using CDPIUI.Shared;
 using CDPIUI.Core.Store.Repository.Localization;
@@ -34,6 +33,7 @@ using CDPIUI.Helper.Parsers;
 using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.Core.Basic;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

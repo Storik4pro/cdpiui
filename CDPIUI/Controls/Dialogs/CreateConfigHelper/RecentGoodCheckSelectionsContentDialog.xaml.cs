@@ -1,7 +1,7 @@
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.Data;
-using CDPIUI.Core.Items;
+
 using CDPIUI.Core.Store.Data;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;

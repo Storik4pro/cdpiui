@@ -1,6 +1,5 @@
 ﻿using CDPIUI.Core;
 using CDPIUI.Core.Basic;
-using CDPIUI.Core.Items;
 using CDPIUI.Core.Store;
 using CDPIUI.Messages;
 using CDPIUI.Views;
@@ -35,20 +34,16 @@ using WinRT;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using static CDPIUI.Win32;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using WASDK = Microsoft.WindowsAppSDK;
-using CDPIUI.Helper;
 using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.Database;
-using CDPIUI.Helper.Static;
 using CDPIUI.Core.Communication;
 using CDPIUI.Core.ComponentServices;
-using CDPIUI.Core.Features;
-using CDPIUI.Helper.Native;
 using CDPIUI.Default;
 using CDPIUI.Commands;
 using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.Helper.WindowHelper;
 
 namespace CDPIUI
 {
@@ -273,7 +268,7 @@ namespace CDPIUI
 
             var newWindow = (TemplateWindow)Activator.CreateInstance(windowType);
             newWindow.Id = id;
-            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
+            WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
             if (activate) newWindow.Activate();
 
             RegisterWindow(newWindow, isUnsafe: true);
@@ -300,7 +295,7 @@ namespace CDPIUI
 
             var newViewWindow = new TWindow();
             newViewWindow.Id = id;
-            WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
+            WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
             if (activate) newViewWindow.Activate();
 
             RegisterWindow(newViewWindow, isUnsafe:true);
@@ -331,7 +326,7 @@ namespace CDPIUI
 
                 var newWindow = (Window)Activator.CreateInstance(windowType);
 
-                WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
+                WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
                 RegisterWindow(newWindow);
 
                 if (activate) newWindow.Activate();
@@ -363,7 +358,7 @@ namespace CDPIUI
                 }
 
                 var newViewWindow = new TWindow();
-                WindowHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
+                WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
                 RegisterWindow(newViewWindow);
 
                 if (activate) newViewWindow.Activate();
@@ -399,7 +394,7 @@ namespace CDPIUI
 
             try
             {
-                WindowHelper.SaveWindowSizeAndPostionsettings(window);
+                WindowsPositionHelper.SaveWindowSizeAndPostionsettings(window);
             }
             catch { }
         }
@@ -411,7 +406,7 @@ namespace CDPIUI
 
             try
             {
-                WindowHelper.SaveWindowSizeAndPostionsettings(window);
+                WindowsPositionHelper.SaveWindowSizeAndPostionsettings(window);
                 window.Closed -= Window_ClosedHandler;
                 window.SizeChanged -= Window_SizeChanged;
 

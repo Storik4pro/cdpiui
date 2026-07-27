@@ -20,7 +20,7 @@ using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
 using CDPIUI.Core.Store;
-using CDPIUI.Helper.Static;
+
 using CDPIUI.Shared;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 

@@ -1,4 +1,4 @@
-﻿using CDPIUI.Helper.Static;
+﻿
 using CDPIUI.Shared;
 using CDPIUI.Views.CreateConfigHelper;
 using System;
