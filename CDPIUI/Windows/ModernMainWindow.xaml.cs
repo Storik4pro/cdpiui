@@ -59,7 +59,7 @@ namespace CDPIUI
             }
         }
 
-        private static Type GetMainPage()
+        internal static Type GetMainPage()
         {
             if (SettingsManager.Instance.GetValue<string>("APPEARANCE", "mainPageMarkup") == MarkupTypes.Classic.ToString())
             {

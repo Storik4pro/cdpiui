@@ -117,7 +117,7 @@ namespace CDPIUI
                 if (protocolArg != null)
                 {
                     string value = protocolArg["----ms-protocol:".Length..];
-                    isActionPreffered = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                    isActionPreffered = CommandsHandler.HandleCommand(value);
                 }
 
                 string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
@@ -193,7 +193,7 @@ namespace CDPIUI
                 appActivationArguments.Data is IProtocolActivatedEventArgs protocolActivatedEventArgs)
             {
                 string value = protocolActivatedEventArgs.Uri.ToString();
-                result = CommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                result = CommandsHandler.HandleCommand(value);
             }
 
             if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&

@@ -57,6 +57,13 @@ namespace CDPIUI.Helper.WindowHelper
                     .SafeCreateNewWindow(type);
             }
 
+            if (window is OfflineHelpWindow helpWindow &&
+                parameters["helpUrl"] is string helpUrl &&
+                !string.IsNullOrWhiteSpace(helpUrl))
+            {
+                helpWindow.NavigateToPage(helpUrl);
+            }
+
             if (!string.IsNullOrWhiteSpace(pageName))
             {
                 if (window is not TemplateWindow baseWindow) return;
@@ -81,18 +88,42 @@ namespace CDPIUI.Helper.WindowHelper
 
         private static Type GetPageType(string windowName, string pageName)
         {
-            windowName = windowName == "ModernMainWindow" ? "Main" : windowName;
+            var isModernMainWindow = windowName == "ModernMainWindow";
+
+            if (isModernMainWindow && pageName == "HomePage")
+                return ModernMainWindow.GetMainPage();
+
+            windowName = isModernMainWindow ? "Main" : windowName;
             var windowPrefix = windowName.EndsWith("Window", StringComparison.Ordinal)
                 ? windowName[..^"Window".Length]
                 : windowName;
 
-            var fullName = $"CDPIUI.Views.{windowPrefix}.{pageName}";
-            Debug.WriteLine(fullName);
+            var fullNames = new List<string>
+            {
+                $"CDPIUI.Views.{windowPrefix}.{pageName}"
+            };
 
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Select(a => a.GetType(fullName, false))
-                .FirstOrDefault(t => t != null)
-                ?? null;
+            // Main navigation pages live both directly under CDPIUI.Views and
+            // under CDPIUI.Views.Settings, not only under CDPIUI.Views.Main.
+            if (isModernMainWindow)
+                fullNames.Add($"CDPIUI.Views.{pageName}");
+
+            if (windowName == "StoreWindow" && pageName == "HomePage")
+                fullNames.Add($"CDPIUI.{pageName}");
+
+            foreach (var fullName in fullNames)
+            {
+                Debug.WriteLine(fullName);
+
+                var pageType = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType(fullName, false))
+                    .FirstOrDefault(t => t != null);
+
+                if (pageType != null)
+                    return pageType;
+            }
+
+            return null;
         }
     }
 }

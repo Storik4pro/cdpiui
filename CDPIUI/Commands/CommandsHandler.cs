@@ -11,6 +11,12 @@ namespace CDPIUI.Commands
 {
     internal class CommandsHandler
     {
+        public static bool HandleCommand(string commandUri)
+        {
+            var message = CommandUriMapper.ConvertBack(commandUri);
+            return message != null && HandleCommand(message);
+        }
+
         public static bool HandleCommand(IPipeMessage message)
         {
             switch (message)
