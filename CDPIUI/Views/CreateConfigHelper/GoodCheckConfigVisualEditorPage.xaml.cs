@@ -43,7 +43,7 @@ namespace CDPIUI.Views.CreateConfigHelper
         public string Args { get; set; } = args;
         public string SiteListName { get; set; } = siteListName;
         public string Directory { get; set; } = directory;
-        public Guid Id { get; } = guid;
+        public Guid Id { get; set; } = guid;
 
         private bool showGroupModeChooser = showGroupModeChooser;
         public bool ShowGroupModeChooser {
@@ -107,7 +107,7 @@ namespace CDPIUI.Views.CreateConfigHelper
         {
             if (Parameter != null)
             {
-                List<DragItem> items = JSONConvertor.DeserializeObject<List<DragItem>>(Parameter.Get("items"));
+                List<DragItem> items = JSONConvertor.DeserializeObject<List<DragItem>>(Parameter.Get("dragList") ?? string.Empty);
 
                 foreach (var item in items)
                 {
@@ -123,11 +123,6 @@ namespace CDPIUI.Views.CreateConfigHelper
             base.OnNavigatedTo(e);
 
             if (Parameter != null)
-            {
-
-            }
-
-            if (e.Parameter is Tuple<string, List<DragItem>> items)
             {
                 ComponentId = Parameter.Get("componentId");
 
@@ -162,6 +157,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             {
                 try
                 {
+                    Debug.WriteLine(_draggedItem.Id.ToString());
                     e.Data.SetText(_draggedItem.Args.ToString());
                     e.Data.Properties.Title = _draggedItem.Id.ToString();
                     e.Data.RequestedOperation = DataPackageOperation.Copy;
@@ -239,6 +235,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
                     if (Guid.TryParse(idText, out Guid parsedId) && _dragSource == "Left")
                     {
+                        Debug.WriteLine(idText);
                         var sourceLeft = LeftItems.FirstOrDefault(x => x.Id == parsedId);
                         if (sourceLeft != null && RightItems.FirstOrDefault(x=> x.Id == parsedId) == null)
                         {
