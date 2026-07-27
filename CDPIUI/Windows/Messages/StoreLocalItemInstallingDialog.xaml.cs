@@ -1,6 +1,12 @@
-using CDPIUI.Default;
 using CDPIUI.Core.Static;
 using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Default;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Parsers;
+using CDPIUI.Helper.Static;
+using CDPIUI.Shared.PrettyErrorConvertionService;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -14,6 +20,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,12 +33,6 @@ using Windows.UI.WindowManagement;
 using WinRT.Interop;
 using WinUI3Localizer;
 using WinUIEx;
-using CDPIUI.Core.Store.Database;
-using CDPIUI.Helper.LScript;
-using CDPIUI.Helper.Static;
-using CDPIUI.Helper.Parsers;
-using CDPIUI.Core.Store.Repository.Localization;
-using CDPIUI.Shared.PrettyErrorConvertionService;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -196,7 +197,7 @@ namespace CDPIUI.Messages
         private async void ViewInStoreButton_Click(object sender, RoutedEventArgs e)
         {
             StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.ItemViewPage), StoreId, new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
             this.Close();
         }
 

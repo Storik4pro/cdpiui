@@ -29,6 +29,7 @@ using CDPIUI.Helper.Parsers;
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Core.Store.ViewModels;
+using System.Collections.Specialized;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -164,7 +165,7 @@ namespace CDPIUI.Messages
         private async void ViewInStoreButton_Click(object sender, RoutedEventArgs e)
         {
             StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
-            window.NavigateSubPage(typeof(Views.Store.ItemViewPage), StoreId, new SuppressNavigationTransitionInfo());
+            window.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
             this.Close();
         }
 
