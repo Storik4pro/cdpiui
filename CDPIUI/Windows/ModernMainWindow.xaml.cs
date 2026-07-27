@@ -50,6 +50,7 @@ namespace CDPIUI
             MainFrame = ContentFrame;
 
             NavView.SelectedItem = NavView.MenuItems[0];
+            ContentFrame.Navigated += On_Navigated;
             ContentFrame.Navigate(GetMainPage(), new NameValueCollection());
 
             if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
@@ -82,10 +83,6 @@ namespace CDPIUI
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Navigated += On_Navigated;
-
-            NavView.SelectedItem = NavView.MenuItems[0];
-
             if (ContentFrame.CurrentSourcePageType == null)
                 NavView_Navigate(GetMainPage(), null, new EntranceNavigationTransitionInfo());
         }
@@ -184,19 +181,36 @@ namespace CDPIUI
         {
             NavView.IsBackEnabled = ContentFrame.CanGoBack;
 
-            if (ContentFrame.SourcePageType != null)
+            var sourcePageType = ContentFrame.SourcePageType;
+            if (sourcePageType == null) return;
+
+            Debug.WriteLine(sourcePageType.FullName);
+
+            var navigationTag = GetNavigationTag(sourcePageType);
+            var item = NavView.MenuItems
+                .Concat(NavView.FooterMenuItems)
+                .OfType<NavigationViewItem>()
+                .FirstOrDefault(candidate => string.Equals(
+                    candidate.Tag?.ToString(),
+                    navigationTag,
+                    StringComparison.Ordinal));
+
+            if (item != null && !ReferenceEquals(NavView.SelectedItem, item))
+                NavView.SelectedItem = item;
+        }
+
+        private static string GetNavigationTag(Type pageType)
+        {
+            if (pageType == GetMainPage() ||
+                pageType == typeof(ViewComponentSettingsPage))
             {
-                Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
-                try
-                {
-                    /*
-                    NavView.SelectedItem = NavView.MenuItems
-                                .OfType<NavigationViewItem>()
-                                .First(i => i.version.Equals(ContentFrame.SourcePageType.FullName.ToString()));
-                    */
-                }
-                catch (Exception ex) { Debug.WriteLine(ex); }
+                return "MAINPAGE";
             }
+
+            if (SettingsPage.MainSettingsNavigationSupportedPages.Contains(pageType))
+                return typeof(SettingsPage).FullName;
+
+            return pageType.FullName;
         }
 
         public void NavigateSubPage(Type page, SlideNavigationTransitionEffect effect)

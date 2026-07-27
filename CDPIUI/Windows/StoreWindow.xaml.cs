@@ -35,6 +35,7 @@ namespace CDPIUI;
 public sealed partial class StoreWindow : TemplateWindow
 {
     public static StoreWindow Instance { get; private set; }
+    private bool _isSynchronizingNavigationSelection;
 
     private ILocalizer localizer = Localizer.Get();
     public StoreWindow()
@@ -49,6 +50,7 @@ public sealed partial class StoreWindow : TemplateWindow
         MainFrame = ContentFrame;
 
         NavView.SelectedItem = NavView.MenuItems[0];
+        ContentFrame.Navigated += On_Navigated;
         ContentFrame.Navigate(typeof(HomePage));
 
         NavView.SelectionChanged += NavView_SelectionChanged;
@@ -115,9 +117,6 @@ public sealed partial class StoreWindow : TemplateWindow
 
     private void NavView_Loaded(object sender, RoutedEventArgs e)
     {
-        ContentFrame.Navigated += On_Navigated;
-
-        NavView.SelectedItem = NavView.MenuItems[0];
         if (ContentFrame.SourcePageType == null)
             NavView_Navigate(typeof(HomePage), new EntranceNavigationTransitionInfo());
     }
@@ -139,6 +138,9 @@ public sealed partial class StoreWindow : TemplateWindow
     private void NavView_SelectionChanged(NavigationView sender,
                                           NavigationViewSelectionChangedEventArgs args)
     {
+        if (_isSynchronizingNavigationSelection)
+            return;
+
         if (args.IsSettingsSelected == true)
         {
             
@@ -181,25 +183,49 @@ public sealed partial class StoreWindow : TemplateWindow
     {
         NavView.IsBackEnabled = ContentFrame.CanGoBack;
 
-        if (ContentFrame.SourcePageType != null)
+        var sourcePageType = ContentFrame.SourcePageType;
+        if (sourcePageType == null) return;
+
+        Debug.WriteLine(sourcePageType.FullName);
+
+        var navigationPageType = GetNavigationPageType(sourcePageType);
+        var item = NavView.MenuItems
+            .Concat(NavView.FooterMenuItems)
+            .OfType<NavigationViewItem>()
+            .FirstOrDefault(candidate => string.Equals(
+                candidate.Tag?.ToString(),
+                navigationPageType.FullName,
+                StringComparison.Ordinal));
+
+        if (item != null && !ReferenceEquals(NavView.SelectedItem, item))
         {
-            Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
+            _isSynchronizingNavigationSelection = true;
             try
             {
-                var item = NavView.MenuItems
-                            .OfType<NavigationViewItem>()
-                            .FirstOrDefault(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
-                if (item == null)
-                    item = NavView.FooterMenuItems
-                            .OfType<NavigationViewItem>()
-                            .FirstOrDefault(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
-
-                if (item == null) return;
-
-                TitleBarUserControl.ShowControlsContent = false;
+                NavView.SelectedItem = item;
             }
-            catch (Exception ex) { Debug.WriteLine($"==>{ex}"); }
+            finally
+            {
+                _isSynchronizingNavigationSelection = false;
+            }
         }
+
+        TitleBarUserControl.ShowControlsContent =
+            !Type.Equals(sourcePageType, navigationPageType);
+    }
+
+    private static Type GetNavigationPageType(Type pageType)
+    {
+        if (pageType == typeof(Views.Store.ItemViewPage) ||
+            pageType == typeof(Views.Store.CategoryViewPage))
+        {
+            return typeof(HomePage);
+        }
+
+        if (Views.Store.SettingsPage.MemoryNavigationSupportedPages.Contains(pageType))
+            return typeof(Views.Store.SettingsPage);
+
+        return pageType;
     }
 
     public Frame GetCurrentFrame()

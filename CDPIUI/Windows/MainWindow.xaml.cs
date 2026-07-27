@@ -66,6 +66,7 @@ namespace CDPIUI
             ExtendsContentIntoTitleBar = true;
 
             NavView.SelectedItem = NavView.MenuItems[0];
+            ContentFrame.Navigated += On_Navigated;
             ContentFrame.Navigate(typeof(Views.MainPage));
             SetTitleBar(WindowMoveAera);
             NavView.SelectionChanged += NavView_SelectionChanged;
@@ -151,10 +152,6 @@ namespace CDPIUI
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
         {
-            ContentFrame.Navigated += On_Navigated;
-
-            NavView.SelectedItem = NavView.MenuItems[0];
-
             if (ContentFrame.CurrentSourcePageType == null)
                 NavView_Navigate(typeof(Views.MainPage), null, new EntranceNavigationTransitionInfo());
         }
@@ -233,18 +230,29 @@ namespace CDPIUI
         {
             NavView.IsBackEnabled = ContentFrame.CanGoBack;
 
-            if (ContentFrame.SourcePageType != null)
-            {
-                Debug.WriteLine(ContentFrame.SourcePageType.FullName.ToString());
-                try
-                {
-                    NavView.SelectedItem = NavView.MenuItems
-                                .OfType<NavigationViewItem>()
-                                .First(i => i.Tag.Equals(ContentFrame.SourcePageType.FullName.ToString()));
-                    BackButton.Visibility = Visibility.Collapsed;
-                }
-                catch (Exception ex) { Debug.WriteLine(ex);  }
-            }
+            var sourcePageType = ContentFrame.SourcePageType;
+            if (sourcePageType == null) return;
+
+            Debug.WriteLine(sourcePageType.FullName);
+
+            var navigationPageType = SettingsPage.MainSettingsNavigationSupportedPages.Contains(sourcePageType)
+                ? typeof(SettingsPage)
+                : sourcePageType;
+
+            var item = NavView.MenuItems
+                .Concat(NavView.FooterMenuItems)
+                .OfType<NavigationViewItem>()
+                .FirstOrDefault(candidate => string.Equals(
+                    candidate.Tag?.ToString().Replace("CDPI_UI.", "CDPIUI."),
+                    navigationPageType.FullName,
+                    StringComparison.Ordinal));
+
+            if (item != null && !ReferenceEquals(NavView.SelectedItem, item))
+                NavView.SelectedItem = item;
+
+            BackButton.Visibility = item == null
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         public void NavigateSubPage(Type page, SlideNavigationTransitionEffect effect)
