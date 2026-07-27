@@ -125,7 +125,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                     new NameValueCollection()
                     {
                         { "type", NavigationState.LoadFileFromPath.ToString() },
-                        { "directory", directory }
+                        { "filePath", directory }
                     }
                     , new DrillInNavigationTransitionInfo());
             }

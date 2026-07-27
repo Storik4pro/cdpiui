@@ -343,10 +343,13 @@ namespace CDPIUI
             if (dialog.SelectedResult == SelectResult.Selected)
             {
                 string directory = dialog.SelectedReport;
-                    var _nvc_report3 = new NameValueCollection();
-                    _nvc_report3.Add("type", NavigationState.LoadFileFromPath.ToString());
-                    _nvc_report3.Add("filePath", directory);
-                    ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), _nvc_report3, new DrillInNavigationTransitionInfo());
+
+                var _nvc_report3 = new NameValueCollection
+                {
+                    { "type", NavigationState.LoadFileFromPath.ToString() },
+                    { "filePath", directory }
+                };
+                ContentFrame.Navigate(typeof(ViewGoodCheckReportPage), _nvc_report3, new DrillInNavigationTransitionInfo());
             }
         }
 
