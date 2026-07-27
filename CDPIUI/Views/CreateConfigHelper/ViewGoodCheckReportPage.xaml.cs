@@ -73,7 +73,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             HeaderClickCommand = new RelayCommand(p => OpenHeader((GoodCheckReportHeaderButton)p));
 
             IsBackwardAnimationToPageAvailable = true;
-            ElementToAnimateBackwardConnectedAnimation = _storeditem;
+            
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -107,6 +107,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                         break;
                     case NavigationState.LoadFileFromPath:
                         string filePath = Parameter.Get("filePath");
+                        Debug.WriteLine(filePath);
 
                         LoadHeadersFromFile(filePath);
                         break;
@@ -123,6 +124,8 @@ namespace CDPIUI.Views.CreateConfigHelper
             var (groups, componentId) = GoodCheckResultViewHelper.LoadGroupsFromFile(fileName);
             ComponentId = componentId;
 
+            
+
             if (groups == null)
             {
                 // TODO: open error dialog
@@ -131,6 +134,7 @@ namespace CDPIUI.Views.CreateConfigHelper
             int ids = 0;
             foreach (var group in groups)
             {
+
                 int successStrategies = 0;
                 int failureStrategies = 0;
                 int flagCount = 0;
@@ -185,12 +189,17 @@ namespace CDPIUI.Views.CreateConfigHelper
                 strategies = HeaderModels.FirstOrDefault(b => b.Id == button.Id).Strategies;
             }
 
-            var anim = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", button);
-            anim.Configuration = new DirectConnectedAnimationConfiguration();
+            ElementToAnimateBackwardConnectedAnimation = _storeditem;
+            PrepareToConnectedForwardAnimate(button, new DirectConnectedAnimationConfiguration());
+
             Frame.Navigate(typeof(ViewGoodCheckSiteListReportPage), 
                 new NameValueCollection()
                 {
-                    { "button", JSONConvertor.SerializeObject(button) },
+                    { "buttonHeader", button.Header },
+                    { "buttonSubHeader", button.SubHeader },
+                    { "buttonFlagsCount", button.FlagsCount },
+                    { "buttonSuccessCount", button.SuccessCount },
+                    { "buttonFailureCount", button.FailureCount },
                     { "strategies", JSONConvertor.SerializeObject(strategies) },
                     { "componentId", ComponentId }
                 }, 
@@ -241,7 +250,9 @@ namespace CDPIUI.Views.CreateConfigHelper
                 {
                     if (strategy.Flag)
                     {
-                        list.Add(new(ProxyHelper.ReplaseIp(strategy.Strategy), sitelistName, item.Directory, false, [], Guid.NewGuid()));
+                        Guid guid = Guid.NewGuid();
+                        Debug.WriteLine(guid);
+                        list.Add(new(ProxyHelper.ReplaseIp(strategy.Strategy), sitelistName, item.Directory, false, [], guid));
                     }
                 }
             }
