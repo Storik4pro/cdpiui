@@ -152,7 +152,7 @@ namespace CDPIUI.TrayIcon.Helper
                 }
                 else 
                 {
-                    await Windows.System.Launcher.LaunchUriAsync(new Uri(message.ToString()));
+                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"----ms-protocol:{message.ToString()}");
                 }
             }
 
