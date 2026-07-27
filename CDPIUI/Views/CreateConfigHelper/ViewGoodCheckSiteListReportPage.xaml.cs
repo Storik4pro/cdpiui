@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
@@ -124,27 +125,37 @@ public sealed partial class ViewGoodCheckSiteListReportPage : TemplatePage
             window?.SetStatus(false);
     }
 
+    private SemaphoreSlim Semaphore = new(1, 1);
     private async Task LoadResultToCollection(bool isSuccess, ObservableCollection<StrategyUIModel> collection)
     {
-        await Task.Delay(500);
-        foreach (StrategyModel strategy in Strategies)
+        await Semaphore.WaitAsync();
+        try
         {
-            if (float.TryParse(strategy.All, out var all) && int.TryParse(strategy.Success, out var success))
+            DispatcherQueue.TryEnqueue(() => collection.Clear());
+            await Task.Delay(500);
+            foreach (StrategyModel strategy in Strategies)
             {
-
-                bool isCorrect = all != 0 && (success / (all / 100)) >= 65;
-                if ((isCorrect && isSuccess) || (!isCorrect && !isSuccess))
+                if (float.TryParse(strategy.All, out var all) && int.TryParse(strategy.Success, out var success))
                 {
-                    StrategyUIModel strategyUIModel = new()
+
+                    bool isCorrect = all != 0 && (success / (all / 100)) >= 65;
+                    if ((isCorrect && isSuccess) || (!isCorrect && !isSuccess))
                     {
-                        Args = strategy.Strategy,
-                        FailureCount = (all - success).ToString(),
-                        SuccessCount = strategy.Success,
-                        Flag = strategy.Flag,
-                    };
-                    DispatcherQueue.TryEnqueue(() => collection.Add(strategyUIModel));
+                        StrategyUIModel strategyUIModel = new()
+                        {
+                            Args = strategy.Strategy,
+                            FailureCount = (all - success).ToString(),
+                            SuccessCount = strategy.Success,
+                            Flag = strategy.Flag,
+                        };
+                        DispatcherQueue.TryEnqueue(() => collection.Add(strategyUIModel));
+                    }
                 }
             }
+        }
+        finally
+        {
+            Semaphore.Release();
         }
 
         await Task.CompletedTask;
@@ -156,15 +167,14 @@ public sealed partial class ViewGoodCheckSiteListReportPage : TemplatePage
 
         if (Parameter != null)
         {
-            var button = JSONConvertor.DeserializeObject<GoodCheckReportHeaderButton>(Parameter.Get("button"));
             ComponentId = Parameter.Get("componentId");
             Strategies = JSONConvertor.DeserializeObject<List<StrategyModel>>(Parameter.Get("strategies"));
 
-            HeaderButton.Header = button.Header;
-            HeaderButton.SubHeader = button.SubHeader;
-            HeaderButton.FlagsCount = button.FlagsCount;
-            HeaderButton.SuccessCount = button.SuccessCount;
-            HeaderButton.FailureCount = button.FailureCount;
+            HeaderButton.Header = Parameter.Get("buttonHeader");
+            HeaderButton.SubHeader = Parameter.Get("buttonSubHeader");
+            HeaderButton.FlagsCount = Parameter.Get("buttonFlagsCount");
+            HeaderButton.SuccessCount = Parameter.Get("buttonSuccessCount");
+            HeaderButton.FailureCount = Parameter.Get("buttonFailureCount");
             
         }
     }
