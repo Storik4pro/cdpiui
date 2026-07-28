@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Windows.Foundation.Collections;
 using Application = System.Windows.Forms.Application;
 using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.TrayIcon.ConditionalLaunch;
 
 class Programm
 {
@@ -82,11 +83,23 @@ class Programm
 
     public class TrayApplicationContext : ApplicationContext
     {
+        private readonly EmptyForm _trayForm;
+
         public TrayApplicationContext()
         {
-            EmptyForm trayMenuForm = new();
+            _trayForm = new EmptyForm();
 
-            trayMenuForm.AddIcon(notify: true); // TODO: change to false
+            _trayForm.AddIcon(notify: true); // TODO: change to false
+            try
+            {
+                ConditionalLaunchEngine.Instance.Start(_trayForm);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(ConditionalLaunchEngine),
+                    $"Conditional launch engine could not be started: {ex}");
+            }
 
             NotifyHelper.Instance.Init();
         }
