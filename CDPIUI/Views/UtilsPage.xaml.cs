@@ -26,6 +26,11 @@ namespace CDPIUI.Views
             this.InitializeComponent();
         }
 
+        private void ConditionalLaunchSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ConditionalLaunchWindow>();
+        }
+
         private void PseudoconsoleSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<ViewWindow>();
