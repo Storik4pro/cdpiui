@@ -2,6 +2,7 @@
 using CDPIUI.TrayIcon.Helper.Basic;
 using System.Collections.Specialized;
 using static CDPIUI.TrayIcon.Helper.MsiInstallerHelper;
+using CDPIUI.Shared.ConditionalLaunch;
 
 namespace CDPIUI.TrayIcon.Helper
 {
@@ -138,6 +139,28 @@ namespace CDPIUI.TrayIcon.Helper
             return await PipeServer.Instance.SendMessageAsync(model.ToString());
         }
 
+        public static async Task<bool> SendConditionalActionPacket(
+            string operationId,
+            ConditionalAction action)
+        {
+            NameValueCollection data = new()
+            {
+                { "operationId", operationId },
+                { "actionType", action.Type.ToString() }
+            };
+
+            foreach (var parameter in action.Parameters)
+                data[parameter.Name] = parameter.Value;
+
+            ConditionalLaunchMessageModel model = new()
+            {
+                MessageType = ConditionalLaunchMessageIds.ExecuteAction,
+                MessageData = data
+            };
+
+            return await TrySendMessage(model);
+        }
+
 
         private static async Task<bool> TrySendMessage<T>(MessageBaseModel<T> message) where T : Enum 
         {
@@ -146,9 +169,15 @@ namespace CDPIUI.TrayIcon.Helper
                 if (message.Target == PipeMessageTargetIds.Service || 
                     message.Target == PipeMessageTargetIds.CONPTY || 
                     message.Target == PipeMessageTargetIds.Settings ||
-                    message.Target == PipeMessageTargetIds.Application)
+                    message.Target == PipeMessageTargetIds.Application ||
+                    message.Target == PipeMessageTargetIds.ConditionalLaunch)
                 {
-                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"--direct:{message.ToString()}");
+                    var backgroundArgument = message.Target == PipeMessageTargetIds.ConditionalLaunch
+                        ? "--create-no-window --exit-after-conditional-action "
+                        : string.Empty;
+                    RunHelper.RunAsDesktopUser(
+                        Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"),
+                        $"{backgroundArgument}--direct:{message}");
                 }
                 else 
                 {
