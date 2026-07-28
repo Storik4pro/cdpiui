@@ -102,4 +102,9 @@ namespace CDPIUI.Shared.Pipe.Models
     {
         public ApplicationMessageModel() : base(PipeMessageTargetIds.Application) { }
     }
+
+    public class ConditionalLaunchMessageModel : MessageBaseModel<ConditionalLaunchMessageIds>
+    {
+        public ConditionalLaunchMessageModel() : base(PipeMessageTargetIds.ConditionalLaunch) { }
+    }
 }

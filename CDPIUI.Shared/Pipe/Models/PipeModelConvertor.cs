@@ -53,6 +53,9 @@ namespace CDPIUI.Shared.Pipe.Models
                 PipeMessageTargetIds.Application => new ApplicationMessageModel()
                 { MessageType = messageType.ToEnum<ApplicationMessageIds>(), MessageData = parameters },
 
+                PipeMessageTargetIds.ConditionalLaunch => new ConditionalLaunchMessageModel()
+                { MessageType = messageType.ToEnum<ConditionalLaunchMessageIds>(), MessageData = parameters },
+
                 _ => null,
             };
         }

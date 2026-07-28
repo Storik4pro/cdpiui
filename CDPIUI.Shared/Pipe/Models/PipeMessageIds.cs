@@ -17,7 +17,8 @@ namespace CDPIUI.Shared.Pipe.Models
         Proxy,
         CompatibilityCheck,
         Notifications,
-        Application
+        Application,
+        ConditionalLaunch
     }
 
     public enum ServiceMessageIds
@@ -126,5 +127,13 @@ namespace CDPIUI.Shared.Pipe.Models
     {
         HardRestart,
         CloseApplicationUI
+    }
+
+    public enum ConditionalLaunchMessageIds
+    {
+        ExecuteAction,
+        ExecuteTask,
+        ActionCompleted,
+        ReloadTasks
     }
 }
