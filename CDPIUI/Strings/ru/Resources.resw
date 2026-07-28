@@ -693,6 +693,9 @@
   <data name="StoreUpdatesToast.Content" xml:space="preserve">
     <value>Доступны обновления для элементов из Магазина</value>
   </data>
+  <data name="ConditionalLaunchActionToast.Content" xml:space="preserve">
+    <value>Выполнение действия условным запуском</value>
+  </data>
   <data name="StoreUpdatingTextBlock.Text" xml:space="preserve">
     <value>Магазину требуется кое-что обновить, прежде чем вы сможете его использовать. Это не займет много времени</value>
   </data>
@@ -2697,5 +2700,614 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="FontSizeDescription" xml:space="preserve">
     <value>Сейчас выбрано: семейство шрифта {0}, размер {1}</value>
+  </data>
+  <data name="ConditionalLaunchSettingsCard.Header" xml:space="preserve">
+    <value>Условный запуск</value>
+  </data>
+  <data name="ConditionalLaunchSettingsCard.Description" xml:space="preserve">
+    <value>Настроить действия приложения по горячей клавише или другим триггерам</value>
+  </data>
+  <data name="CL_WindowTitle" xml:space="preserve">
+    <value>Условный запуск</value>
+  </data>
+  <data name="CL_EditorCreateTitle" xml:space="preserve">
+    <value>Создание условной задачи</value>
+  </data>
+  <data name="CL_EditorEditTitle" xml:space="preserve">
+    <value>Изменение условной задачи</value>
+  </data>
+  <data name="CL_NewTaskButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Создать задачу (Ctrl+N)</value>
+  </data>
+  <data name="CL_EditTaskButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Свойства (Enter)</value>
+  </data>
+  <data name="CL_RunTaskButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Выполнить выбранную задачу (Ctrl+R)</value>
+  </data>
+  <data name="CL_ImportButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Импортировать задачу из файла...</value>
+  </data>
+  <data name="CL_ExportButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Экспортировать выбранную задачу</value>
+  </data>
+  <data name="CL_DeleteButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить выбранную задачу (Del)</value>
+  </data>
+  <data name="CL_ReloadButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Обновить список задач (F5)</value>
+  </data>
+  <data name="CL_HelpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Справка по условному запуску</value>
+  </data>
+  <data name="CL_EditorHelpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Справка по свойствам задачи</value>
+  </data>
+  <data name="CL_HelpOverviewMenuItem.Text" xml:space="preserve">
+    <value>Как работает условный запуск</value>
+  </data>
+  <data name="CL_HelpCreatingTasksMenuItem.Text" xml:space="preserve">
+    <value>Создание и изменение задач</value>
+  </data>
+  <data name="CL_HelpTriggersAndActionsMenuItem.Text" xml:space="preserve">
+    <value>Триггеры и действия</value>
+  </data>
+  <data name="CL_EditHintText.Text" xml:space="preserve">
+    <value>Выберите задачу для просмотра. Дважды щёлкните, нажмите Enter или откройте меню правой кнопкой мыши.</value>
+  </data>
+  <data name="CL_StopAfterErrorToggle.Header" xml:space="preserve">
+    <value>Останавливать задачу при ошибке действия</value>
+  </data>
+  <data name="CL_StopAfterErrorCheckBox.Content" xml:space="preserve">
+    <value>Останавливать задачу при ошибке действия</value>
+  </data>
+  <data name="CL_TaskNameColumn.Text" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="CL_TaskStatusColumn.Text" xml:space="preserve">
+    <value>Состояние</value>
+  </data>
+  <data name="CL_TaskTriggerColumn.Text" xml:space="preserve">
+    <value>Триггер</value>
+  </data>
+  <data name="CL_TaskPriorityColumn.Text" xml:space="preserve">
+    <value>Приоритет</value>
+  </data>
+  <data name="CL_EmptyTaskListTitle.Text" xml:space="preserve">
+    <value>Задач пока нет</value>
+  </data>
+  <data name="CL_EmptyTaskListDescription.Text" xml:space="preserve">
+    <value>Нажмите кнопку +, чтобы создать первую задачу.</value>
+  </data>
+  <data name="CL_NoSelectionTitle.Text" xml:space="preserve">
+    <value>Выберите задачу</value>
+  </data>
+  <data name="CL_NoSelectionDescription.Text" xml:space="preserve">
+    <value>Здесь появятся её триггеры и последовательность действий.</value>
+  </data>
+  <data name="CL_GeneralTab.Header" xml:space="preserve">
+    <value>Общие</value>
+  </data>
+  <data name="CL_TriggerTab.Header" xml:space="preserve">
+    <value>Триггер</value>
+  </data>
+  <data name="CL_TriggersTab.Header" xml:space="preserve">
+    <value>Триггеры</value>
+  </data>
+  <data name="CL_ActionsTab.Header" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="CL_NameLabel.Text" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="CL_StatusLabel.Text" xml:space="preserve">
+    <value>Состояние</value>
+  </data>
+  <data name="CL_PriorityLabel.Text" xml:space="preserve">
+    <value>Приоритет</value>
+  </data>
+  <data name="CL_FileLabel.Text" xml:space="preserve">
+    <value>Файл задачи</value>
+  </data>
+  <data name="CL_TriggerTypeLabel.Text" xml:space="preserve">
+    <value>Тип триггера</value>
+  </data>
+  <data name="CL_DelayLabel.Text" xml:space="preserve">
+    <value>Задержка</value>
+  </data>
+  <data name="CL_TaskSettingsTitle.Text" xml:space="preserve">
+    <value>Параметры задачи</value>
+  </data>
+  <data name="CL_TaskNameTextBox.Header" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="CL_TaskNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Имя задачи</value>
+  </data>
+  <data name="CL_TaskNameEditorTextBox.PlaceholderText" xml:space="preserve">
+    <value>Имя задачи</value>
+  </data>
+  <data name="CL_TaskEnabledToggle.Header" xml:space="preserve">
+    <value>Включена</value>
+  </data>
+  <data name="CL_TaskEnabledCheckBox.Content" xml:space="preserve">
+    <value>Выполнять задачу при срабатывании триггера</value>
+  </data>
+  <data name="CL_PriorityComboBox.Header" xml:space="preserve">
+    <value>Приоритет</value>
+  </data>
+  <data name="CL_TriggerComboBox.Header" xml:space="preserve">
+    <value>Триггер</value>
+  </data>
+  <data name="CL_GlobalHotKeyTitle.Text" xml:space="preserve">
+    <value>Модификатор</value>
+  </data>
+  <data name="CL_HotKeyComboBox.Header" xml:space="preserve">
+    <value>Клавиша</value>
+  </data>
+  <data name="CL_ProcessConditionTitle.Text" xml:space="preserve">
+    <value>Условие процесса</value>
+  </data>
+  <data name="CL_ProcessNameTextBox.Header" xml:space="preserve">
+    <value>Имя процесса</value>
+  </data>
+  <data name="CL_ProcessNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>example.exe</value>
+  </data>
+  <data name="CL_ProcessDelayNumberBox.Header" xml:space="preserve">
+    <value>Задержка перед срабатыванием триггера (секунды)</value>
+  </data>
+  <data name="CL_ProcessDelayHint.Text" xml:space="preserve">
+    <value>Действие будет отменено, если состояние процесса изменится во время задержки.</value>
+  </data>
+  <data name="CL_TriggerTabHint.Text" xml:space="preserve">
+    <value>Добавьте один или несколько триггеров. Задача запускается при срабатывании любого из них (ИЛИ).</value>
+  </data>
+  <data name="CL_ActionTabHint.Text" xml:space="preserve">
+    <value>Укажите действия, выполняемые при запуске задачи. Действия выполняются сверху вниз.</value>
+  </data>
+  <data name="CL_DetailsColumn.Text" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
+  <data name="CL_OrderColumn.Text" xml:space="preserve">
+    <value>№</value>
+  </data>
+  <data name="CL_ActionColumn.Text" xml:space="preserve">
+    <value>Действие</value>
+  </data>
+  <data name="CL_CreateTriggerButton.Content" xml:space="preserve">
+    <value>Создать...</value>
+  </data>
+  <data name="CL_EditTriggerButton.Content" xml:space="preserve">
+    <value>Изменить...</value>
+  </data>
+  <data name="CL_DeleteTriggerButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="CL_ApplyTriggerButton.Content" xml:space="preserve">
+    <value>Применить триггер</value>
+  </data>
+  <data name="CL_CancelTriggerEditButton.Content" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CL_CreateActionButton.Content" xml:space="preserve">
+    <value>Создать...</value>
+  </data>
+  <data name="CL_EditActionTextButton.Content" xml:space="preserve">
+    <value>Изменить...</value>
+  </data>
+  <data name="CL_DeleteActionButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="CL_OkEditorButton.Content" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="CL_AddTriggerDialogTitle" xml:space="preserve">
+    <value>Добавить триггер</value>
+  </data>
+  <data name="CL_EditTriggerDialogTitle" xml:space="preserve">
+    <value>Изменить триггер</value>
+  </data>
+  <data name="CL_AddActionDialogTitle" xml:space="preserve">
+    <value>Добавить действие</value>
+  </data>
+  <data name="CL_EditActionDialogTitle" xml:space="preserve">
+    <value>Изменить действие</value>
+  </data>
+  <data name="CL_OkButtonText" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="CL_ActionsTitle.Text" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="CL_ActionsOrderHint.Text" xml:space="preserve">
+    <value>Действия выполняются сверху вниз.</value>
+  </data>
+  <data name="CL_MoveActionUpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переместить вверх</value>
+  </data>
+  <data name="CL_MoveActionDownButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переместить вниз</value>
+  </data>
+  <data name="CL_EditActionButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить действие</value>
+  </data>
+  <data name="CL_RemoveActionButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить действие</value>
+  </data>
+  <data name="CL_ActionEditorExpander.Header" xml:space="preserve">
+    <value>Добавить действие</value>
+  </data>
+  <data name="CL_ActionTypeComboBox.Header" xml:space="preserve">
+    <value>Действие</value>
+  </data>
+  <data name="CL_AddActionButton.Content" xml:space="preserve">
+    <value>Добавить действие</value>
+  </data>
+  <data name="CL_CancelActionEditButton.Content" xml:space="preserve">
+    <value>Отменить изменение</value>
+  </data>
+  <data name="CL_SaveTaskButton.Content" xml:space="preserve">
+    <value>Сохранить задачу</value>
+  </data>
+  <data name="CL_CancelEditorButton.Content" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CL_PriorityHigh" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
+  <data name="CL_PriorityDefault" xml:space="preserve">
+    <value>По умолчанию</value>
+  </data>
+  <data name="CL_PriorityLow" xml:space="preserve">
+    <value>Низкий</value>
+  </data>
+  <data name="CL_StatusEnabled" xml:space="preserve">
+    <value>Включена</value>
+  </data>
+  <data name="CL_StatusDisabled" xml:space="preserve">
+    <value>Отключена</value>
+  </data>
+  <data name="CL_StatusConfigured" xml:space="preserve">
+    <value>Настроен</value>
+  </data>
+  <data name="CL_TriggerHotKey" xml:space="preserve">
+    <value>Горячая клавиша</value>
+  </data>
+  <data name="CL_TriggerProcessStarted" xml:space="preserve">
+    <value>При запуске процесса</value>
+  </data>
+  <data name="CL_TriggerProcessStopped" xml:space="preserve">
+    <value>При завершении процесса</value>
+  </data>
+  <data name="CL_ProcessTriggerSummaryFormat" xml:space="preserve">
+    <value>{0}: {1}, {2} с</value>
+  </data>
+  <data name="CL_OrSeparator" xml:space="preserve">
+    <value>ИЛИ</value>
+  </data>
+  <data name="CL_HotKeyLabel" xml:space="preserve">
+    <value>Горячая клавиша</value>
+  </data>
+  <data name="CL_ProcessLabel" xml:space="preserve">
+    <value>Процесс</value>
+  </data>
+  <data name="CL_SecondsFormat" xml:space="preserve">
+    <value>{0} с</value>
+  </data>
+  <data name="CL_NotSaved" xml:space="preserve">
+    <value>Ещё не сохранён</value>
+  </data>
+  <data name="CL_NewTaskDefaultName" xml:space="preserve">
+    <value>Новая условная задача</value>
+  </data>
+  <data name="CL_CategoryComponents" xml:space="preserve">
+    <value>Компоненты</value>
+  </data>
+  <data name="CL_CategoryMaintenance" xml:space="preserve">
+    <value>Обслуживание</value>
+  </data>
+  <data name="CL_CategoryInterface" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="CL_CategoryWorkflow" xml:space="preserve">
+    <value>Сценарий</value>
+  </data>
+  <data name="CL_ActionApplyPreset" xml:space="preserve">
+    <value>Применить пресет</value>
+  </data>
+  <data name="CL_ActionStartComponent" xml:space="preserve">
+    <value>Запустить компонент</value>
+  </data>
+  <data name="CL_ActionStopComponent" xml:space="preserve">
+    <value>Остановить компонент</value>
+  </data>
+  <data name="CL_ActionRestartComponent" xml:space="preserve">
+    <value>Перезапустить компонент</value>
+  </data>
+  <data name="CL_ActionStartAutorunComponents" xml:space="preserve">
+    <value>Запустить компоненты автозапуска</value>
+  </data>
+  <data name="CL_ActionStopAllComponents" xml:space="preserve">
+    <value>Остановить все компоненты</value>
+  </data>
+  <data name="CL_ActionStopNetworkService" xml:space="preserve">
+    <value>Остановить сетевую службу</value>
+  </data>
+  <data name="CL_ActionCheckApplicationUpdates" xml:space="preserve">
+    <value>Проверить обновления приложения</value>
+  </data>
+  <data name="CL_ActionCheckStoreUpdates" xml:space="preserve">
+    <value>Проверить обновления Магазина</value>
+  </data>
+  <data name="CL_ActionRunCompatibilityCheck" xml:space="preserve">
+    <value>Проверить совместимость</value>
+  </data>
+  <data name="CL_ActionRunBasicDiagnostics" xml:space="preserve">
+    <value>Запустить основную диагностику</value>
+  </data>
+  <data name="CL_ActionRunStoreDiagnostics" xml:space="preserve">
+    <value>Запустить диагностику Магазина</value>
+  </data>
+  <data name="CL_ActionOpenMainPage" xml:space="preserve">
+    <value>Открыть основную страницу</value>
+  </data>
+  <data name="CL_ActionOpenStorePage" xml:space="preserve">
+    <value>Открыть страницу Магазина</value>
+  </data>
+  <data name="CL_ActionOpenTool" xml:space="preserve">
+    <value>Открыть инструмент</value>
+  </data>
+  <data name="CL_ActionOpenHelp" xml:space="preserve">
+    <value>Открыть справку</value>
+  </data>
+  <data name="CL_ActionWait" xml:space="preserve">
+    <value>Ожидать</value>
+  </data>
+  <data name="CL_ActionShowNotification" xml:space="preserve">
+    <value>Показать уведомление</value>
+  </data>
+  <data name="CL_ParameterComponentId" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="CL_ParameterComponent" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="CL_ParameterPreset" xml:space="preserve">
+    <value>Пресет</value>
+  </data>
+  <data name="CL_ParameterPresetPackId" xml:space="preserve">
+    <value>Набор пресетов</value>
+  </data>
+  <data name="CL_ParameterPresetFileName" xml:space="preserve">
+    <value>Имя файла пресета</value>
+  </data>
+  <data name="CL_ParameterPage" xml:space="preserve">
+    <value>Страница</value>
+  </data>
+  <data name="CL_ParameterComponentIdForSettings" xml:space="preserve">
+    <value>Компонент </value>
+  </data>
+  <data name="CL_ParameterItemId" xml:space="preserve">
+    <value>ID элемента</value>
+  </data>
+  <data name="CL_ParameterCategoryId" xml:space="preserve">
+    <value>ID категории</value>
+  </data>
+  <data name="CL_ParameterTool" xml:space="preserve">
+    <value>Инструмент</value>
+  </data>
+  <data name="CL_ParameterComponentIdForTool" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="CL_ParameterKitId" xml:space="preserve">
+    <value>Набор пресетов</value>
+  </data>
+  <data name="CL_ParameterHelpPath" xml:space="preserve">
+    <value>Путь справки</value>
+  </data>
+  <data name="CL_ParameterMilliseconds" xml:space="preserve">
+    <value>Миллисекунды</value>
+  </data>
+  <data name="CL_ParameterTitle" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
+  <data name="CL_ParameterMessage" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
+  <data name="CL_ChoiceHome" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="CL_ChoiceUtilities" xml:space="preserve">
+    <value>Утилиты</value>
+  </data>
+  <data name="CL_ChoiceSettings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="CL_ChoiceAutorunSettings" xml:space="preserve">
+    <value>Параметры автозапуска</value>
+  </data>
+  <data name="CL_ChoicePersonalization" xml:space="preserve">
+    <value>Персонализация</value>
+  </data>
+  <data name="CL_ChoiceAbout" xml:space="preserve">
+    <value>О приложении</value>
+  </data>
+  <data name="CL_ChoiceApplicationUpdates" xml:space="preserve">
+    <value>Обновления приложения</value>
+  </data>
+  <data name="CL_ChoiceComponentSettings" xml:space="preserve">
+    <value>Параметры компонента</value>
+  </data>
+  <data name="CL_ChoiceCatalogItem" xml:space="preserve">
+    <value>Элемент каталога</value>
+  </data>
+  <data name="CL_ChoiceCategory" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="CL_ChoiceDownloads" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+  <data name="CL_ChoiceUpdates" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="CL_ChoiceLibrary" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="CL_ChoiceSettingsMemory" xml:space="preserve">
+    <value>Параметры • Память</value>
+  </data>
+  <data name="CL_ChoiceMemoryApplication" xml:space="preserve">
+    <value>Параметры • Память • Файлы приложения</value>
+  </data>
+  <data name="CL_ChoiceMemoryInstalledItems" xml:space="preserve">
+    <value>Параметры • Память • Установленные элементы</value>
+  </data>
+  <data name="CL_ChoiceMemoryLogs" xml:space="preserve">
+    <value>Параметры • Память • Журналы</value>
+  </data>
+  <data name="CL_ChoiceMemorySettings" xml:space="preserve">
+    <value>Параметры • Память • Настройки приложения</value>
+  </data>
+  <data name="CL_ChoiceMemoryStoreCache" xml:space="preserve">
+    <value>Параметры • Память • Кэш Магазина</value>
+  </data>
+  <data name="CL_ChoiceComponentConsole" xml:space="preserve">
+    <value>Псевдоконсоль</value>
+  </data>
+  <data name="CL_ChoiceAutoConfig" xml:space="preserve">
+    <value>Средства автоподбора</value>
+  </data>
+  <data name="CL_ChoiceConfigEditor" xml:space="preserve">
+    <value>Помощник создания пресетов</value>
+  </data>
+  <data name="CL_ChoiceCreateConfig" xml:space="preserve">
+    <value>Создать новый пресет</value>
+  </data>
+  <data name="CL_ChoiceEditConfigPack" xml:space="preserve">
+    <value>Изменить набор пресетов</value>
+  </data>
+  <data name="CL_ChoiceProxySetup" xml:space="preserve">
+    <value>Настройка прокси</value>
+  </data>
+  <data name="CL_ChoiceTroubleshooting" xml:space="preserve">
+    <value>Поиск и устранение неполадок</value>
+  </data>
+  <data name="CL_ChoicePresetTest" xml:space="preserve">
+    <value>Тест пресетов</value>
+  </data>
+  <data name="CL_ChoiceHostsEditor" xml:space="preserve">
+    <value>Утилита изменения файла hosts</value>
+  </data>
+  <data name="CL_TaskImported" xml:space="preserve">
+    <value>Задача импортирована.</value>
+  </data>
+  <data name="CL_CannotImportTaskFormat" xml:space="preserve">
+    <value>Не удалось импортировать задачу: {0}</value>
+  </data>
+  <data name="CL_InvalidFilesSkippedFormat" xml:space="preserve">
+    <value>Пропущено некорректных файлов .cdpitask: {0}.</value>
+  </data>
+  <data name="CL_TaskSaved" xml:space="preserve">
+    <value>Задача сохранена.</value>
+  </data>
+  <data name="CL_TaskExported" xml:space="preserve">
+    <value>Задача экспортирована.</value>
+  </data>
+  <data name="CL_CannotExportTaskFormat" xml:space="preserve">
+    <value>Не удалось экспортировать задачу: {0}</value>
+  </data>
+  <data name="CL_TaskDeleted" xml:space="preserve">
+    <value>Задача удалена.</value>
+  </data>
+  <data name="CL_CannotDeleteTaskFormat" xml:space="preserve">
+    <value>Не удалось удалить задачу: {0}</value>
+  </data>
+  <data name="CL_TaskExecutionRequestedFormat" xml:space="preserve">
+    <value>Задача «{0}» отправлена на выполнение.</value>
+  </data>
+  <data name="CL_CannotRunTaskFormat" xml:space="preserve">
+    <value>Не удалось выполнить задачу: {0}</value>
+  </data>
+  <data name="CL_RunTaskMenuItem.Text" xml:space="preserve">
+    <value>Выполнить</value>
+  </data>
+  <data name="CL_EnableTaskMenuItem" xml:space="preserve">
+    <value>Включить</value>
+  </data>
+  <data name="CL_DisableTaskMenuItem" xml:space="preserve">
+    <value>Отключить</value>
+  </data>
+  <data name="CL_PropertiesTaskMenuItem.Text" xml:space="preserve">
+    <value>Свойства...</value>
+  </data>
+  <data name="CL_DeleteTaskMenuItem.Text" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="CL_TaskEnabledFormat" xml:space="preserve">
+    <value>Задача «{0}» включена.</value>
+  </data>
+  <data name="CL_TaskDisabledFormat" xml:space="preserve">
+    <value>Задача «{0}» отключена.</value>
+  </data>
+  <data name="CL_CannotChangeTaskStateFormat" xml:space="preserve">
+    <value>Не удалось изменить состояние задачи: {0}</value>
+  </data>
+  <data name="CL_ImportDialogTitle" xml:space="preserve">
+    <value>Импорт условной задачи</value>
+  </data>
+  <data name="CL_ExportDialogTitle" xml:space="preserve">
+    <value>Экспорт условной задачи</value>
+  </data>
+  <data name="CL_TaskFileFilter" xml:space="preserve">
+    <value>Условные задачи CDPI UI (*.cdpitask)|*.cdpitask</value>
+  </data>
+  <data name="CL_DeleteDialogTitle" xml:space="preserve">
+    <value>Удалить задачу?</value>
+  </data>
+  <data name="CL_DeleteDialogContentFormat" xml:space="preserve">
+    <value>Задача «{0}» будет удалена без возможности восстановления.</value>
+  </data>
+  <data name="CL_DeleteButtonText" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="CL_CancelButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CL_ChooseAction" xml:space="preserve">
+    <value>Выберите действие.</value>
+  </data>
+  <data name="CL_AddActionButtonText" xml:space="preserve">
+    <value>Добавить действие</value>
+  </data>
+  <data name="CL_UpdateActionButtonText" xml:space="preserve">
+    <value>Обновить действие</value>
+  </data>
+  <data name="CL_ErrorTaskNameRequired" xml:space="preserve">
+    <value>Укажите имя задачи.</value>
+  </data>
+  <data name="CL_ErrorPriorityRequired" xml:space="preserve">
+    <value>Выберите приоритет.</value>
+  </data>
+  <data name="CL_ErrorTriggerRequired" xml:space="preserve">
+    <value>Выберите тип триггера.</value>
+  </data>
+  <data name="CL_ErrorActionRequired" xml:space="preserve">
+    <value>Добавьте хотя бы одно действие.</value>
+  </data>
+  <data name="CL_ErrorHotKeyRequired" xml:space="preserve">
+    <value>Выберите горячую клавишу.</value>
+  </data>
+  <data name="CL_ErrorProcessNameRequired" xml:space="preserve">
+    <value>Укажите имя процесса.</value>
+  </data>
+  <data name="CL_ErrorParameterRequiredFormat" xml:space="preserve">
+    <value>Необходимо заполнить поле «{0}».</value>
+  </data>
+  <data name="CL_ErrorComponentRequired" xml:space="preserve">
+    <value>Выберите установленный компонент.</value>
+  </data>
+  <data name="CL_ErrorPresetRequired" xml:space="preserve">
+    <value>Выберите пресет.</value>
   </data>
 </root>

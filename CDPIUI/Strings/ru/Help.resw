@@ -197,4 +197,16 @@
   <data name="BestConfigSelection" xml:space="preserve">
     <value>Подбор лучшего пресета</value>
   </data>
+  <data name="ConditionalLaunch" xml:space="preserve">
+    <value>Условный запуск</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>Как работает условный запуск</value>
+  </data>
+  <data name="CreatingTasks" xml:space="preserve">
+    <value>Создание и изменение задач</value>
+  </data>
+  <data name="TriggersAndActions" xml:space="preserve">
+    <value>Триггеры и действия</value>
+  </data>
 </root>

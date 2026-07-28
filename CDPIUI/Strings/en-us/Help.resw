@@ -197,4 +197,16 @@ Unfortunately we can't find page your looking for. Please, make sure program has
   <data name="BestConfigSelection" xml:space="preserve">
     <value>Select the best config</value>
   </data>
+  <data name="ConditionalLaunch" xml:space="preserve">
+    <value>Conditional Launch</value>
+  </data>
+  <data name="Overview" xml:space="preserve">
+    <value>How Conditional Launch works</value>
+  </data>
+  <data name="CreatingTasks" xml:space="preserve">
+    <value>Creating and editing tasks</value>
+  </data>
+  <data name="TriggersAndActions" xml:space="preserve">
+    <value>Triggers and actions</value>
+  </data>
 </root>
