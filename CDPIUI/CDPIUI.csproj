@@ -130,6 +130,11 @@
     <None Remove="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml" />
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
+    <None Remove="Windows\ConditionalLaunchWindow.xaml" />
+    <None Remove="Windows\ConditionalTaskEditorWindow.xaml" />
+    <None Remove="Controls\Navigation\AnimatedSelectorBar.xaml" />
+    <None Remove="Controls\Dialogs\ConditionalLaunch\ConditionalTriggerContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ConditionalLaunch\ConditionalActionContentDialog.xaml" />
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
     <None Remove="Windows\EditHostFileWindow.xaml" />
     <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
@@ -285,6 +290,21 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Windows\ConditionalLaunchWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ConditionalTaskEditorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Navigation\AnimatedSelectorBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ConditionalLaunch\ConditionalTriggerContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ConditionalLaunch\ConditionalActionContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -428,8 +448,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.6.2.0</FileVersion>
-    <AssemblyVersion>0.6.2.0</AssemblyVersion>
+    <FileVersion>0.6.3.0</FileVersion>
+    <AssemblyVersion>0.6.3.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>
