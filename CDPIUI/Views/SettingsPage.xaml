@@ -120,6 +120,12 @@
                         <controls:SettingsCard ContentAlignment="Left">
                             <CheckBox l:Uids.Uid="StoreUpdatesToast" x:Name="StoreUpdatesToast" Click="StoreUpdatesToast_Click" />
                         </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox
+                                x:Name="ConditionalLaunchActionToast"
+                                l:Uids.Uid="ConditionalLaunchActionToast"
+                                Click="ConditionalLaunchActionToast_Click" />
+                        </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
 

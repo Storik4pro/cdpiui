@@ -92,6 +92,10 @@ namespace CDPIUI.Views
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
             AppUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
             StoreUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
+            ConditionalLaunchActionToast.IsChecked = SettingsManager.Instance.GetValueOrDefault<bool>(
+                "NOTIFICATIONS",
+                "conditionalLaunchActions",
+                defaultValue: true);
 
             
 
@@ -175,6 +179,15 @@ namespace CDPIUI.Views
         private void StoreUpdatesToast_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue("NOTIFICATIONS", "storeUpdates", StoreUpdatesToast.IsChecked);
+            _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
+        }
+
+        private void ConditionalLaunchActionToast_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue(
+                "NOTIFICATIONS",
+                "conditionalLaunchActions",
+                ConditionalLaunchActionToast.IsChecked);
             _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
         }
 
