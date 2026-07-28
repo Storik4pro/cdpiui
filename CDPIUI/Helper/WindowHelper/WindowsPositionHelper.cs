@@ -58,6 +58,8 @@ namespace CDPIUI.Helper.WindowHelper
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(ConfigTestWindow), WindowResizeOptions.ResizeAndPositionFollowSystem }, 
             { nameof(EditHostFileWindow), WindowResizeOptions.OnlyPositionWizard }, 
+            { nameof(ConditionalLaunchWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
+            { nameof(ConditionalTaskEditorWindow), WindowResizeOptions.ResizeAndPositionUtility },
         };
         // positionType, Width, Height
         private static Dictionary<WindowResizeOptions, Tuple<WindowPositionVariants, int, int>> WindowsResizeParams = new()
