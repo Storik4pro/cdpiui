@@ -248,7 +248,7 @@ namespace CDPIUI
                     if (await ComponentTasksManager.Instance.IsTaskRunned(TestedComponentId))
                         await ComponentTasksManager.Instance.RestartTask(TestedComponentId);
                     else
-                        ComponentTasksManager.Instance.CreateAndRunNewTask(TestedComponentId);
+                        _ = ComponentTasksManager.Instance.CreateAndRunNewTask(TestedComponentId);
                 }
                 else if (await ComponentTasksManager.Instance.IsTaskRunned(TestedComponentId))
                 {

@@ -89,7 +89,7 @@ namespace CDPIUI.Views.Store
                 if (isUpdateRequested)
                 {
                     if (!StoreHelper.Instance.IsNowUpdatesChecked)
-                        StoreHelper.Instance.CheckUpdates();
+                        _ = StoreHelper.Instance.CheckUpdates();
                 }
             }
         }
@@ -286,7 +286,7 @@ namespace CDPIUI.Views.Store
         private void CheckForUpdatesButton_Click(object sender, RoutedEventArgs e)
         {
             if (!StoreHelper.Instance.IsNowUpdatesChecked)
-                StoreHelper.Instance.CheckUpdates();
+                _ = StoreHelper.Instance.CheckUpdates();
         }
 
         private void UpdateElement(DownloadItemModel downloadItemModel)
