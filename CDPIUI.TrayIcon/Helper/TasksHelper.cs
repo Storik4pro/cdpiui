@@ -76,7 +76,7 @@ namespace CDPIUI.TrayIcon.Helper
 
         List<string> serviceUsedComponentsIds = ["CSGIVS036", "CSZTBN012"];
 
-        public async void StopService()
+        public async Task StopService()
         {
             foreach (var task in Tasks)
             {
