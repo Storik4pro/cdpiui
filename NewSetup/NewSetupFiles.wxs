@@ -15,6 +15,9 @@
         <File Source="$(var.SourceDir)\Assets\favicon.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\ConditionalUtil.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\DragReorder.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -245,6 +248,15 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Autoselection">
         <File Source="$(var.SourceDir)\Help\EN\Autoselection\BestConfigSelection.md" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\CreatingTasks.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\Overview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
         <File Source="$(var.SourceDir)\Help\EN\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
       </Component>
@@ -283,6 +295,15 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
         <File Source="$(var.SourceDir)\Help\RU\Autoselection\BestConfigSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\CreatingTasks.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\Overview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\CreateConfigHelper">
         <File Source="$(var.SourceDir)\Help\RU\CreateConfigHelper\SaveConfigKitAs.md" KeyPath="yes" />
