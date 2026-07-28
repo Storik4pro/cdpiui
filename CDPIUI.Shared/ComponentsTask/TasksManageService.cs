@@ -99,7 +99,7 @@ namespace CDPIUI.Shared.ComponentsTask
         /// Add new task to task list, run associated <see cref="IProcessService"/>
         /// </summary>
         /// <param name="id">Task Id</param>
-        public async void CreateAndRunNewTask(string id)
+        public async Task CreateAndRunNewTask(string id)
         {
             var t = await GetTaskFromId(id);
             if (t != null)
@@ -133,7 +133,7 @@ namespace CDPIUI.Shared.ComponentsTask
         /// <param name="id">Task Id</param>
         /// <param name="executable">Executable</param>
         /// <param name="args">Command-line flags</param>
-        public virtual async void CreateAndRunNewTask(string id, string executable, string args)
+        public virtual async Task CreateAndRunNewTask(string id, string executable, string args)
         {
             var t = await GetTaskFromId(id);
             if (t != null)
@@ -168,7 +168,7 @@ namespace CDPIUI.Shared.ComponentsTask
         /// </summary>
         /// <param name="id">Task Id</param>
         /// <param name="args">Command-line flags</param>
-        public async void CreateAndRunNewTask(string id, string args)
+        public async Task CreateAndRunNewTask(string id, string args)
         {
             var t = await GetTaskFromId(id);
             if (t != null)
@@ -307,7 +307,7 @@ namespace CDPIUI.Shared.ComponentsTask
         /// <summary>
         /// Stop all tasks asynchronously
         /// </summary>
-        public async void StopAllTasks()
+        public async Task StopAllTasks()
         {
             await _taskOperationLock.WaitAsync();
             try
