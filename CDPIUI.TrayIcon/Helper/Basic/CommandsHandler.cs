@@ -43,6 +43,10 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                 case ApplicationMessageModel model:
                     await HandleApplicationMessage(model);
                     break;
+
+                case ConditionalLaunchMessageModel model:
+                    HandleConditionalLaunchMessage(model);
+                    break;
             }
         }
 
@@ -59,12 +63,12 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                         if (id == null || executable == null || args == null)
                             return;
 
-                        TasksHelper.Instance.CreateAndRunNewTask(id, executable, args);
+                        await TasksHelper.Instance.CreateAndRunNewTask(id, executable, args);
                         return;
                     }
 
                 case CONPTYMessageIds.StopService:
-                    TasksHelper.Instance.StopService();
+                    await TasksHelper.Instance.StopService();
                     return;
 
                 case CONPTYMessageIds.StopProcessId:
@@ -347,6 +351,29 @@ namespace CDPIUI.TrayIcon.Helper.Basic
 
                     NotifyHelper.Instance.Dispose();
                     Application.Exit();
+                    return;
+            }
+        }
+
+        private static void HandleConditionalLaunchMessage(ConditionalLaunchMessageModel model)
+        {
+            switch (model.MessageType)
+            {
+                case ConditionalLaunchMessageIds.ActionCompleted:
+                    ConditionalLaunch.ConditionalActionExecutor.CompleteCoreAction(
+                        model.MessageData?["operationId"],
+                        model.MessageData?["success"],
+                        model.MessageData?["error"]);
+                    return;
+
+                case ConditionalLaunchMessageIds.ReloadTasks:
+                    ConditionalLaunch.ConditionalLaunchEngine.Instance.Reload(
+                        model.MessageData?["tasksDirectory"]);
+                    return;
+
+                case ConditionalLaunchMessageIds.ExecuteTask:
+                    ConditionalLaunch.ConditionalLaunchEngine.Instance.RunTask(
+                        model.MessageData?["taskId"]);
                     return;
             }
         }
