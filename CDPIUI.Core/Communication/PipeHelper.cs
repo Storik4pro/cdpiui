@@ -1,5 +1,6 @@
 ﻿using CDPIUI.Shared.Pipe.Models;
 using System.Collections.Specialized;
+using CDPIUI.Shared.ConditionalLaunch;
 
 namespace CDPIUI.Core.Communication
 {
@@ -157,6 +158,57 @@ namespace CDPIUI.Core.Communication
             {
                 { "file", file }
             }
+            };
+
+            await PipeClientService.Instance.SendMessageAsync(model.ToString());
+        }
+
+        public static async Task SendConditionalLaunchResult(
+            string operationId,
+            bool success,
+            string? error = null)
+        {
+            ConditionalLaunchMessageModel model = new()
+            {
+                MessageType = ConditionalLaunchMessageIds.ActionCompleted,
+                MessageData = new()
+                {
+                    { "operationId", operationId },
+                    { "success", success.ToString() },
+                    { "error", error }
+                }
+            };
+
+            await PipeClientService.Instance.SendMessageAsync(model.ToString());
+        }
+
+        public static async Task SendConditionalTasksReloadPacket()
+        {
+            ConditionalLaunchMessageModel model = new()
+            {
+                MessageType = ConditionalLaunchMessageIds.ReloadTasks,
+                MessageData = new()
+                {
+                    {
+                        "tasksDirectory",
+                        ConditionalTaskFileService.GetTasksDirectoryFromSettingsFile(
+                            SettingsManager.Instance.SettingsFilePath)
+                    }
+                }
+            };
+
+            await PipeClientService.Instance.SendMessageAsync(model.ToString());
+        }
+
+        public static async Task SendConditionalTaskExecutePacket(string taskId)
+        {
+            ConditionalLaunchMessageModel model = new()
+            {
+                MessageType = ConditionalLaunchMessageIds.ExecuteTask,
+                MessageData = new()
+                {
+                    { "taskId", taskId }
+                }
             };
 
             await PipeClientService.Instance.SendMessageAsync(model.ToString());

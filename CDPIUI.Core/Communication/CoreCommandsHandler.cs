@@ -5,6 +5,10 @@ using CDPIUI.Shared.Extentions;
 using System.Diagnostics;
 using static CDPIUI.Core.Store.MSI.MsiInstallerService;
 using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Features;
+using CDPIUI.Shared.ConditionalLaunch;
 
 namespace CDPIUI.Core.Communication
 {
@@ -33,6 +37,9 @@ namespace CDPIUI.Core.Communication
                 case ApplicationMessageModel model:
                     HandleApplicationMessage(model);
                     break;
+                case ConditionalLaunchMessageModel model:
+                    _ = HandleConditionalLaunchMessage(model);
+                    break;
                 default:
                     return false;
             }
@@ -60,12 +67,12 @@ namespace CDPIUI.Core.Communication
                         var id = model.MessageData?["componentId"];
                         if (id == null) return;
 
-                        ComponentTasksManager.Instance.CreateAndRunNewTask(id);
+                        _ = ComponentTasksManager.Instance.CreateAndRunNewTask(id);
                         return;
                     }
 
                 case CONPTYMessageIds.GetAllStartupStrings:
-                    ComponentTasksManager.Instance.RunAllPreferredActions();
+                    _ = ComponentTasksManager.Instance.RunAllPreferredActions();
                     return;
 
                 case CONPTYMessageIds.CleanOutputForId:
@@ -224,6 +231,115 @@ namespace CDPIUI.Core.Communication
                     Process.GetCurrentProcess().Kill();
                     return;
             }
+        }
+
+        private static async Task HandleConditionalLaunchMessage(ConditionalLaunchMessageModel model)
+        {
+            if (model.MessageType != ConditionalLaunchMessageIds.ExecuteAction)
+                return;
+
+            var operationId = model.MessageData?["operationId"];
+            if (string.IsNullOrWhiteSpace(operationId))
+                return;
+
+            try
+            {
+                if (!Enum.TryParse<ConditionalActionType>(
+                    model.MessageData?["actionType"],
+                    ignoreCase: true,
+                    out var actionType))
+                {
+                    throw new ArgumentException("Unknown conditional action type.");
+                }
+
+                switch (actionType)
+                {
+                    case ConditionalActionType.ApplyPreset:
+                        ApplyPreset(model);
+                        break;
+
+                    case ConditionalActionType.StartComponent:
+                        {
+                            var componentId = RequireParameter(model, "componentId");
+                            if (!await ComponentTasksManager.Instance.IsTaskRunned(componentId))
+                            {
+                                await ComponentTasksManager.Instance.CreateAndRunNewTask(componentId);
+                                var task = await ComponentTasksManager.Instance.GetTaskFromId(componentId);
+                                if (task?.ProcessManager.IsErrorHappens == true)
+                                {
+                                    throw new InvalidOperationException(
+                                        task.ProcessManager.LastError?.ErrorCode ??
+                                        $"Component '{componentId}' could not be started.");
+                                }
+                            }
+                            break;
+                        }
+
+                    case ConditionalActionType.StartAutorunComponents:
+                        await ComponentTasksManager.Instance.RunAllPreferredActions();
+                        break;
+
+                    case ConditionalActionType.CheckStoreUpdates:
+                        await StoreHelper.Instance.CheckUpdates();
+                        if (StoreHelper.Instance.IsExceptonHappensWhileCheckingUpdates)
+                            throw new InvalidOperationException("One or more Store update checks failed.");
+                        break;
+
+                    case ConditionalActionType.CheckApplicationUpdates:
+                        await ApplicationUpdate.Instance.CheckForUpdates(notify: true);
+                        if (ApplicationUpdate.Instance.ErrorHappened)
+                        {
+                            throw new InvalidOperationException(
+                                ApplicationUpdate.Instance.ErrorInfo ??
+                                "The application update check failed.");
+                        }
+                        break;
+
+                    default:
+                        throw new InvalidOperationException(
+                            $"Action '{actionType}' cannot be executed by CDPIUI.Core.");
+                }
+
+                await PipeHelper.SendConditionalLaunchResult(operationId, success: true);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(
+                    nameof(CoreCommandsHandler),
+                    $"Conditional action failed: {ex}");
+                await PipeHelper.SendConditionalLaunchResult(operationId, success: false, ex.Message);
+            }
+            finally
+            {
+                if (Environment.GetCommandLineArgs().Contains("--exit-after-conditional-action"))
+                    Process.GetCurrentProcess().Kill();
+            }
+        }
+
+        private static void ApplyPreset(ConditionalLaunchMessageModel model)
+        {
+            var componentId = RequireParameter(model, "componentId");
+            var packId = RequireParameter(model, "packId");
+            var fileName = RequireParameter(model, "fileName");
+
+            ComponentItemsLoaderHelper.Instance.Init();
+            var componentHelper = ComponentItemsLoaderHelper.Instance
+                .GetComponentHelperFromId(componentId)
+                ?? throw new InvalidOperationException($"Component '{componentId}' was not found.");
+
+            SettingsManager.Instance.SetValue(["CONFIGS", componentId], "configFile", fileName);
+            SettingsManager.Instance.SetValue(["CONFIGS", componentId], "configId", packId);
+            componentHelper.ReInitConfigs();
+        }
+
+        private static string RequireParameter(
+            ConditionalLaunchMessageModel model,
+            string name)
+        {
+            var value = model.MessageData?[name];
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException($"Parameter '{name}' is required.");
+            return value;
         }
     }
 }
