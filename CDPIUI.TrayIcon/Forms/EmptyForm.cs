@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using CDPIUI.TrayIcon.ConditionalLaunch;
 
 namespace CDPIUI.TrayIcon.Forms
 {
@@ -40,7 +41,6 @@ namespace CDPIUI.TrayIcon.Forms
 
             Application.ApplicationExit += Application_ApplicationExit;
             this.Disposed += EmptyForm_Disposed;
-            this.Load += EmptyForm_Load;
 
             ConnectHandlers();
         }
@@ -65,11 +65,6 @@ namespace CDPIUI.TrayIcon.Forms
             Application.ApplicationExit -= Application_ApplicationExit;
             this.Close();
             this.Dispose();
-        }
-
-        private void EmptyForm_Load(object? sender, EventArgs e)
-        {
-            AddIcon();
         }
 
         private void ConnectHandlers()
@@ -287,6 +282,7 @@ namespace CDPIUI.TrayIcon.Forms
 
         private void EmptyForm_Disposed(object? sender, EventArgs e)
         {
+            ConditionalLaunchEngine.Instance.Dispose();
             DeleteIcon();
             DisconnectHandlers();
             this.Disposed -= EmptyForm_Disposed;
@@ -297,6 +293,9 @@ namespace CDPIUI.TrayIcon.Forms
         static uint s_uTaskbarRestart;
         protected override void WndProc(ref Message m)
         {
+            if (ConditionalLaunchEngine.Instance.HandleWindowMessage(ref m))
+                return;
+
             if (m.Msg == WM_CREATE)
             {
                 s_uTaskbarRestart = RegisterWindowMessage("TaskbarCreated");
