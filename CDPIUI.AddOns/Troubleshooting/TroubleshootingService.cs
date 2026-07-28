@@ -64,7 +64,7 @@ namespace CDPIUI.AddOns.Troubleshooting
 
         public async Task<Dictionary<StoreCheckStates, bool>> RunStoreDiagnostic()
         {
-            ComponentTasksManager.Instance.StopAllTasks();
+            await ComponentTasksManager.Instance.StopAllTasks();
             _ = ProcessService.StopService();
             CurrentStateChanged?.Invoke(StoreCheckStates.Preparing);
 
@@ -168,7 +168,7 @@ namespace CDPIUI.AddOns.Troubleshooting
 
         public async Task<Dictionary<RunBasicDialogStates, bool>> RunBasicDiagnostic()
         {
-            ComponentTasksManager.Instance.StopAllTasks();
+            await ComponentTasksManager.Instance.StopAllTasks();
             _ = ProcessService.StopService();
             CurrentStateChanged?.Invoke(RunBasicDialogStates.Preparing);
 

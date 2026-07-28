@@ -326,7 +326,7 @@ public sealed partial class SmallComponentTileUserControl : UserControl
 
         if (!isRunned)
         {
-            ComponentTasksManager.Instance.CreateAndRunNewTask(StoreId);
+            _ = ComponentTasksManager.Instance.CreateAndRunNewTask(StoreId);
         }
         else
         {

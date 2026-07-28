@@ -166,7 +166,7 @@ public sealed partial class GoodCheckReportStrategyUserControl : UserControl
 
             ComponentTasksManager.Instance.TaskStateUpdated += ProcessManager_onProcessStateChanged;
 
-            ComponentTasksManager.Instance.CreateAndRunNewTask(ComponentId, Args);
+            _ = ComponentTasksManager.Instance.CreateAndRunNewTask(ComponentId, Args);
 
         }
         else

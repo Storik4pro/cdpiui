@@ -36,12 +36,12 @@ namespace CDPIUI.Core.ComponentServices
         public void UpdateTaskList()
         {
             var _tasks = Tasks;
-            StopAllTasks();
+            _ = StopAllTasks();
             foreach (var item in DatabaseHelper.Instance.GetItemsByType("component"))
             {
                 AddNewTask(item.Id!);
                 if (_tasks.FirstOrDefault(x => x.Id == item.Id)?.ProcessManager?.IsProcessRunning ?? false)
-                    CreateAndRunNewTask(item.Id!);
+                    _ = CreateAndRunNewTask(item.Id!);
             }
         }
 
@@ -112,7 +112,7 @@ namespace CDPIUI.Core.ComponentServices
             await ProcessService.StopService();
         }
 
-        public async void RunAllPreferredActions()
+        public async Task RunAllPreferredActions()
         {
             foreach (var task in Tasks)
             {
@@ -125,7 +125,7 @@ namespace CDPIUI.Core.ComponentServices
 
         [Obsolete("Not supported for UI")]
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
-        public override void CreateAndRunNewTask(string id, string executable, string args)
+        public override Task CreateAndRunNewTask(string id, string executable, string args)
         {
             throw new NotImplementedException();
         }

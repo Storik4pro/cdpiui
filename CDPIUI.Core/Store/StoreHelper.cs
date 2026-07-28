@@ -258,7 +258,7 @@ namespace CDPIUI.Core.Store
             ItemRemoved?.Invoke(itemId);
         }
 
-        public async void CheckUpdates()
+        public async Task CheckUpdates()
         {
             if (IsNowUpdatesChecked) return;
             IsNowUpdatesChecked = true;

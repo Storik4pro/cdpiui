@@ -735,7 +735,7 @@ public sealed partial class CreateNewConfigPage : TemplatePage
             ConvertDesignerLikeSettingsToString();
             var config = CreateConfig(0);
             if (config != null) 
-                ComponentTasksManager.Instance.CreateAndRunNewTask(curRunId, ConfigurationService.GetStartupParametersByConfigItem(config));
+                _ = ComponentTasksManager.Instance.CreateAndRunNewTask(curRunId, ConfigurationService.GetStartupParametersByConfigItem(config));
         }
         else
         {
