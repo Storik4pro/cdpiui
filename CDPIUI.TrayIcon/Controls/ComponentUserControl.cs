@@ -146,7 +146,7 @@ namespace CDPIUI.TrayIcon.Controls
 
             if (!await TasksHelper.Instance.IsTaskRunned(ComponentId))
             {
-                TasksHelper.Instance.CreateAndRunNewTask(ComponentId);
+                _ = TasksHelper.Instance.CreateAndRunNewTask(ComponentId);
             }
             else
             {
