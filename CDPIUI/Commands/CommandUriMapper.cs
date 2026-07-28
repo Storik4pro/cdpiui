@@ -115,6 +115,7 @@ namespace CDPIUI.Commands
                 "Settings.Memory.MemoryViewStoreCachePage"),
 
             CreateWindowRoute("Tools", ["Console"], "ViewWindow"),
+            CreateWindowRoute("Tools", ["ConditionalLaunch"], "ConditionalLaunchWindow"),
             CreateWindowRoute("Tools", ["AutoConfig"], "CreateConfigUtilWindow"),
             new(
                 "Tools",
