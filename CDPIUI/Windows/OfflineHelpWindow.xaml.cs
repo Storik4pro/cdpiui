@@ -226,10 +226,9 @@ namespace CDPIUI
             string url = e.Uri.OriginalString;
             Debug.WriteLine(Uri.IsWellFormedUriString(url, UriKind.Absolute).ToString());
             
-            if (url.StartsWith("cdpi-wiki"))
+            if (url.StartsWith("cdpiui://", StringComparison.OrdinalIgnoreCase))
             {
-                var helpUrl = url.Replace("cdpi-wiki://", "").Trim('/');
-                Commands.CommandsHandler.HandleCommand($"cdpiui://Help/{helpUrl}/");
+                Commands.CommandsHandler.HandleCommand(url);
             }
             return;
         }
