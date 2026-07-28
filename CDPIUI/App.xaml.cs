@@ -102,6 +102,7 @@ namespace CDPIUI
             string[] arguments = Environment.GetCommandLineArgs();
 
             await PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
+            await PipeHelper.SendConditionalTasksReloadPacket();
             await PipeHelper.SendConPTYPacket(Shared.Pipe.Models.CONPTYMessageIds.GetAllProcessStates);
 
             ComponentTasksManager.Instance.RequestComponentItemsInit();
@@ -140,7 +141,7 @@ namespace CDPIUI
             
         }
 
-        private static readonly string[] SupportedFilePaths = [".cdpisignedpack", ".cdpiconfigpack"];
+        private static readonly string[] SupportedFilePaths = [".cdpisignedpack", ".cdpiconfigpack", ".cdpitask"];
 
         private async Task<bool> ProcessFiles(string[] files)
         {
@@ -149,8 +150,17 @@ namespace CDPIUI
                 var _file = file.Replace("\"", "");
                 Logger.Instance.CreateDebugLog(nameof(App), $"Working on file {_file}");
 
-                if (Path.Exists(_file) && SupportedFilePaths.Contains(Path.GetExtension(_file)))
+                if (Path.Exists(_file) && SupportedFilePaths.Contains(
+                    Path.GetExtension(_file),
+                    StringComparer.OrdinalIgnoreCase))
                 {
+                    if (Path.GetExtension(_file).Equals(".cdpitask", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var taskWindow = await SafeCreateNewWindow<ConditionalLaunchWindow>();
+                        taskWindow.ImportTaskFile(_file);
+                        return true;
+                    }
+
                     var window = await SafeCreateNewWindow<StoreLocalItemInstallingDialog>();
                     window.SetPackFilePath(_file);
                     return true; // Only first file will be processed.
@@ -165,6 +175,10 @@ namespace CDPIUI
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
             SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "storeUpdates");
+            SettingsManager.Instance.GetValueOrDefault<bool>(
+                "NOTIFICATIONS",
+                "conditionalLaunchActions",
+                defaultValue: true);
 
             _ = PipeConnectedActions();
 
@@ -511,6 +525,11 @@ namespace CDPIUI
 
         public Task ShowWindowModalAsync(Window modalWindow)
         {
+            return ShowWindowModalAsync(modalWindow, null);
+        }
+
+        public Task ShowWindowModalAsync(Window modalWindow, Window ownerWindow)
+        {
             if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
 
             var tcs = new TaskCompletionSource<bool>();
@@ -518,17 +537,20 @@ namespace CDPIUI
             var dq = modalWindow.DispatcherQueue;
             if (dq == null)
             {
-                MakeModalAndAwait(modalWindow, tcs);
+                MakeModalAndAwait(modalWindow, ownerWindow, tcs);
             }
             else
             {
-                dq.TryEnqueue(() => MakeModalAndAwait(modalWindow, tcs));
+                dq.TryEnqueue(() => MakeModalAndAwait(modalWindow, ownerWindow, tcs));
             }
 
             return tcs.Task;
         }
 
-        private void MakeModalAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        private void MakeModalAndAwait(
+            Window modalWindow,
+            Window ownerWindow,
+            TaskCompletionSource<bool> tcs)
         {
             lock (_modalLock)
             {
@@ -541,8 +563,19 @@ namespace CDPIUI
                         return;
                     }
 
+                    IntPtr ownerHwnd = IntPtr.Zero;
+                    if (ownerWindow != null)
+                    {
+                        ownerHwnd = WindowNative.GetWindowHandle(ownerWindow);
+                        if (ownerHwnd != IntPtr.Zero)
+                            SetWindowLongPtr(modalHwnd, GWLP_HWNDPARENT, ownerHwnd);
+                    }
+
                     _disabledWindows.Clear();
-                    foreach (var win in OpenWindows)
+                    var windowsToDisable = ownerWindow == null
+                        ? OpenWindows
+                        : new List<Window> { ownerWindow };
+                    foreach (var win in windowsToDisable)
                     {
                         if (win == null) continue;
                         try
@@ -573,11 +606,11 @@ namespace CDPIUI
                             var dq2 = modalWindow.DispatcherQueue;
                             if (dq2 != null)
                             {
-                                dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
+                                dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd, ownerHwnd));
                             }
                             else
                             {
-                                RestoreAfterModal(modalWindow, modalHwnd);
+                                RestoreAfterModal(modalWindow, modalHwnd, ownerHwnd);
                             }
                         }
                         finally
@@ -648,7 +681,10 @@ namespace CDPIUI
         }
 
 
-        private void RestoreAfterModal(Window modalWindow, IntPtr modalHwnd)
+        private void RestoreAfterModal(
+            Window modalWindow,
+            IntPtr modalHwnd,
+            IntPtr ownerHwnd = default)
         {
             lock (_modalLock)
             {
@@ -671,6 +707,9 @@ namespace CDPIUI
                 }
 
                 _disabledWindows.Clear();
+
+                if (ownerHwnd != IntPtr.Zero)
+                    SetForegroundWindow(ownerHwnd);
             }
         }
 
@@ -784,11 +823,15 @@ namespace CDPIUI
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_SHOWWINDOW = 0x0040;
+        private const int GWLP_HWNDPARENT = -8;
 
         [GeneratedRegex(@"""(.*?)\""")]
         private static partial Regex GetFilesFromStringRegex();
