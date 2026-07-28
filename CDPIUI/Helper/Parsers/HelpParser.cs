@@ -33,6 +33,7 @@ namespace CDPIUI.Helper.Parsers
             { "CreateConfigHelper", "\uE70F" },
             { "Utils", "\uE7B8" },
             { "Autoselection", "\uEB9D" },
+            { "ConditionalLaunch", "\uE8F1" },
             { "Other", "\uE835" },
         };
 
