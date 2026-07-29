@@ -3315,22 +3315,22 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Conditional launch</value>
   </data>
   <data name="MemoryUsageCategoryConditionalTasksDescription" xml:space="preserve">
-    <value>Saved conditional tasks</value>
+    <value>That files contains your conditional utility settings</value>
   </data>
   <data name="MemoryViewConditionalLaunchDetails" xml:space="preserve">
     <value>Conditional launch</value>
   </data>
   <data name="ConditionalTasksFullDescriptionTextBlock.Text" xml:space="preserve">
-    <value>Conditional task files contain the triggers and actions configured for Conditional Launch.</value>
+    <value>That files contains your conditional utility settings</value>
   </data>
   <data name="ManageConditionalTasksButton.Content" xml:space="preserve">
     <value>Manage tasks</value>
   </data>
   <data name="CleanupConditionalTasksTextBlock.Text" xml:space="preserve">
-    <value>Delete every conditional task from this computer. This action cannot be undone.</value>
+    <value>Delete all conditional tasks to free up space on this PC. This action cannot be undone.</value>
   </data>
   <data name="DeleteAllConditionalTasksButton.Content" xml:space="preserve">
-    <value>Delete all tasks</value>
+    <value>Delete</value>
   </data>
   <data name="MemoryConditionalTasksCountFormat" xml:space="preserve">
     <value>Task files: {0}</value>
@@ -3391,5 +3391,20 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   </data>
   <data name="UpdateFileWarningTextBlock.Text" xml:space="preserve">
     <value>Only install update files from a source you trust.</value>
+  </data>
+  <data name="FileAssociationSettingsCard.Header" xml:space="preserve">
+    <value>Install file associations</value>
+  </data>
+  <data name="FileAssociationSettingsCard.Description" xml:space="preserve">
+    <value>Force associations for supported file types</value>
+  </data>
+  <data name="InstallFileAssociationsButton.Content" xml:space="preserve">
+    <value>Install again</value>
+  </data>
+  <data name="FileAssociationsInstalled" xml:space="preserve">
+    <value>File associations have been installed.</value>
+  </data>
+  <data name="FileAssociationsInstallFailed" xml:space="preserve">
+    <value>Some associations could not be installed. See the application log for details.</value>
   </data>
 </root>

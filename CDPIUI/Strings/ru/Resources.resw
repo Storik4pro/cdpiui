@@ -3317,13 +3317,13 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Условный запуск</value>
   </data>
   <data name="MemoryUsageCategoryConditionalTasksDescription" xml:space="preserve">
-    <value>Сохранённые условные задачи</value>
+    <value>Эти файлы содержат сведения о задачах, которые вы создали</value>
   </data>
   <data name="MemoryViewConditionalLaunchDetails" xml:space="preserve">
     <value>Условный запуск</value>
   </data>
   <data name="ConditionalTasksFullDescriptionTextBlock.Text" xml:space="preserve">
-    <value>В этих файлах хранятся триггеры и действия, заданные в Условном запуске.</value>
+    <value>Эти файлы содержат сведения о задачах, которые вы создали</value>
   </data>
   <data name="ManageConditionalTasksButton.Content" xml:space="preserve">
     <value>Управлять задачами</value>
@@ -3332,7 +3332,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Удалить с этого компьютера все условные задачи. Отменить это действие не получится.</value>
   </data>
   <data name="DeleteAllConditionalTasksButton.Content" xml:space="preserve">
-    <value>Удалить все задачи</value>
+    <value>Удалить</value>
   </data>
   <data name="MemoryConditionalTasksCountFormat" xml:space="preserve">
     <value>Файлов задач: {0}</value>
@@ -3393,5 +3393,20 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="UpdateFileWarningTextBlock.Text" xml:space="preserve">
     <value>Устанавливайте файлы обновлений только из доверенного источника.</value>
+  </data>
+  <data name="FileAssociationSettingsCard.Header" xml:space="preserve">
+    <value>Установить ассоциации файлов</value>
+  </data>
+  <data name="FileAssociationSettingsCard.Description" xml:space="preserve">
+    <value>Принудительно установить ассоциации для поддерживаемых типов файлов</value>
+  </data>
+  <data name="InstallFileAssociationsButton.Content" xml:space="preserve">
+    <value>Установить заново</value>
+  </data>
+  <data name="FileAssociationsInstalled" xml:space="preserve">
+    <value>Ассоциации файлов установлены.</value>
+  </data>
+  <data name="FileAssociationsInstallFailed" xml:space="preserve">
+    <value>Не удалось установить некоторые ассоциации. Подробности доступны в журнале приложения.</value>
   </data>
 </root>
