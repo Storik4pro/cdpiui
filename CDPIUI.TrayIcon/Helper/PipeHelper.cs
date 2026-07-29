@@ -173,7 +173,7 @@ namespace CDPIUI.TrayIcon.Helper
                     message.Target == PipeMessageTargetIds.ConditionalLaunch)
                 {
                     var backgroundArgument = message.Target == PipeMessageTargetIds.ConditionalLaunch
-                        ? "--create-no-window --exit-after-conditional-action "
+                        ? "--create-no-window "
                         : string.Empty;
                     RunHelper.RunAsDesktopUser(
                         Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"),
