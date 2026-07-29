@@ -2712,7 +2712,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Create conditional task</value>
   </data>
   <data name="CL_EditorEditTitle" xml:space="preserve">
-    <value>Edit conditional task</value>
+    <value>Properties — {0}</value>
   </data>
   <data name="CL_NewTaskButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>New task (Ctrl+N)</value>
@@ -3307,5 +3307,89 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   </data>
   <data name="CL_ErrorPresetRequired" xml:space="preserve">
     <value>Select a preset.</value>
+  </data>
+  <data name="CL_AddTaskButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="MemoryUsageCategoryConditionalTasksDisplayName" xml:space="preserve">
+    <value>Conditional launch</value>
+  </data>
+  <data name="MemoryUsageCategoryConditionalTasksDescription" xml:space="preserve">
+    <value>Saved conditional tasks</value>
+  </data>
+  <data name="MemoryViewConditionalLaunchDetails" xml:space="preserve">
+    <value>Conditional launch</value>
+  </data>
+  <data name="ConditionalTasksFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Conditional task files contain the triggers and actions configured for Conditional Launch.</value>
+  </data>
+  <data name="ManageConditionalTasksButton.Content" xml:space="preserve">
+    <value>Manage tasks</value>
+  </data>
+  <data name="CleanupConditionalTasksTextBlock.Text" xml:space="preserve">
+    <value>Delete every conditional task from this computer. This action cannot be undone.</value>
+  </data>
+  <data name="DeleteAllConditionalTasksButton.Content" xml:space="preserve">
+    <value>Delete all tasks</value>
+  </data>
+  <data name="MemoryConditionalTasksCountFormat" xml:space="preserve">
+    <value>Task files: {0}</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteAllTitle" xml:space="preserve">
+    <value>Delete all conditional tasks?</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteAllContent" xml:space="preserve">
+    <value>All conditional tasks will be permanently deleted.</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleted" xml:space="preserve">
+    <value>All conditional tasks were deleted.</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteErrorFormat" xml:space="preserve">
+    <value>Could not delete all conditional tasks: {0}</value>
+  </data>
+  <data name="ConditionalTaskFileTypeDisplayName" xml:space="preserve">
+    <value>Conditional task file</value>
+  </data>
+  <data name="ConfigPackFileTypeDisplayName" xml:space="preserve">
+    <value>CDPI UI configuration package</value>
+  </data>
+  <data name="SignedPackFileTypeDisplayName" xml:space="preserve">
+    <value>CDPI UI signed package</value>
+  </data>
+  <data name="PatchFileTypeDisplayName" xml:space="preserve">
+    <value>CDPI UI update package</value>
+  </data>
+  <data name="FileAssociationApplicationNameFormat" xml:space="preserve">
+    <value>CDPI UI — version {0}</value>
+  </data>
+  <data name="UpdateFileDialogWindowTitle" xml:space="preserve">
+    <value>Application update</value>
+  </data>
+  <data name="UpdateFileQuestionTextBlock.Text" xml:space="preserve">
+    <value>Install update?</value>
+  </data>
+  <data name="InstallUpdateFileButton.Content" xml:space="preserve">
+    <value>Install update</value>
+  </data>
+  <data name="UpdateFileNotFound" xml:space="preserve">
+    <value>The update file was not found.</value>
+  </data>
+  <data name="UpdateFileInvalidExtension" xml:space="preserve">
+    <value>The selected file is not a CDPI UI update package.</value>
+  </data>
+  <data name="UpdateFileCurrentVersionFormat" xml:space="preserve">
+    <value>Current version: {0}</value>
+  </data>
+  <data name="UpdateFilePreparing" xml:space="preserve">
+    <value>Preparing the update…</value>
+  </data>
+  <data name="UpdateFileStartingInstaller" xml:space="preserve">
+    <value>Starting the updater…</value>
+  </data>
+  <data name="UpdateFileDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Review the update file before installing it.</value>
+  </data>
+  <data name="UpdateFileWarningTextBlock.Text" xml:space="preserve">
+    <value>Only install update files from a source you trust.</value>
   </data>
 </root>

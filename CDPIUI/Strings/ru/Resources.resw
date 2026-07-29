@@ -2714,7 +2714,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Создание условной задачи</value>
   </data>
   <data name="CL_EditorEditTitle" xml:space="preserve">
-    <value>Изменение условной задачи</value>
+    <value>Свойства — {0}</value>
   </data>
   <data name="CL_NewTaskButton.ToolTipService.ToolTip" xml:space="preserve">
     <value>Создать задачу (Ctrl+N)</value>
@@ -3309,5 +3309,89 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="CL_ErrorPresetRequired" xml:space="preserve">
     <value>Выберите пресет.</value>
+  </data>
+  <data name="CL_AddTaskButtonText" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="MemoryUsageCategoryConditionalTasksDisplayName" xml:space="preserve">
+    <value>Условный запуск</value>
+  </data>
+  <data name="MemoryUsageCategoryConditionalTasksDescription" xml:space="preserve">
+    <value>Сохранённые условные задачи</value>
+  </data>
+  <data name="MemoryViewConditionalLaunchDetails" xml:space="preserve">
+    <value>Условный запуск</value>
+  </data>
+  <data name="ConditionalTasksFullDescriptionTextBlock.Text" xml:space="preserve">
+    <value>В этих файлах хранятся триггеры и действия, заданные в Условном запуске.</value>
+  </data>
+  <data name="ManageConditionalTasksButton.Content" xml:space="preserve">
+    <value>Управлять задачами</value>
+  </data>
+  <data name="CleanupConditionalTasksTextBlock.Text" xml:space="preserve">
+    <value>Удалить с этого компьютера все условные задачи. Отменить это действие не получится.</value>
+  </data>
+  <data name="DeleteAllConditionalTasksButton.Content" xml:space="preserve">
+    <value>Удалить все задачи</value>
+  </data>
+  <data name="MemoryConditionalTasksCountFormat" xml:space="preserve">
+    <value>Файлов задач: {0}</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteAllTitle" xml:space="preserve">
+    <value>Удалить все условные задачи?</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteAllContent" xml:space="preserve">
+    <value>Все условные задачи будут удалены без возможности восстановления.</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleted" xml:space="preserve">
+    <value>Все условные задачи удалены.</value>
+  </data>
+  <data name="MemoryConditionalTasksDeleteErrorFormat" xml:space="preserve">
+    <value>Не удалось удалить все условные задачи: {0}</value>
+  </data>
+  <data name="ConditionalTaskFileTypeDisplayName" xml:space="preserve">
+    <value>Файл условной задачи</value>
+  </data>
+  <data name="ConfigPackFileTypeDisplayName" xml:space="preserve">
+    <value>Набор конфигураций CDPI UI</value>
+  </data>
+  <data name="SignedPackFileTypeDisplayName" xml:space="preserve">
+    <value>Подписанный пакет CDPI UI</value>
+  </data>
+  <data name="PatchFileTypeDisplayName" xml:space="preserve">
+    <value>Пакет обновления CDPI UI</value>
+  </data>
+  <data name="FileAssociationApplicationNameFormat" xml:space="preserve">
+    <value>CDPI UI — версия {0}</value>
+  </data>
+  <data name="UpdateFileDialogWindowTitle" xml:space="preserve">
+    <value>Обновление приложения</value>
+  </data>
+  <data name="UpdateFileQuestionTextBlock.Text" xml:space="preserve">
+    <value>Установить обновление?</value>
+  </data>
+  <data name="InstallUpdateFileButton.Content" xml:space="preserve">
+    <value>Установить обновление</value>
+  </data>
+  <data name="UpdateFileNotFound" xml:space="preserve">
+    <value>Файл обновления не найден.</value>
+  </data>
+  <data name="UpdateFileInvalidExtension" xml:space="preserve">
+    <value>Выбранный файл не является пакетом обновления CDPI UI.</value>
+  </data>
+  <data name="UpdateFileCurrentVersionFormat" xml:space="preserve">
+    <value>Текущая версия: {0}</value>
+  </data>
+  <data name="UpdateFilePreparing" xml:space="preserve">
+    <value>Подготовка обновления…</value>
+  </data>
+  <data name="UpdateFileStartingInstaller" xml:space="preserve">
+    <value>Запуск программы обновления…</value>
+  </data>
+  <data name="UpdateFileDescriptionTextBlock.Text" xml:space="preserve">
+    <value>Перед установкой проверьте выбранный файл обновления.</value>
+  </data>
+  <data name="UpdateFileWarningTextBlock.Text" xml:space="preserve">
+    <value>Устанавливайте файлы обновлений только из доверенного источника.</value>
   </data>
 </root>
