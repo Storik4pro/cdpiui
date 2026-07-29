@@ -80,9 +80,6 @@ namespace CDPIUI.Helper.Items
             {
                 Logger.Instance.CreateWarningLog(nameof(CompatibilityCheckHelper), $"Cannot begin check: {ex.Message}");
             }
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when process take too more time
-
             isCheckActive = false;
         }
     }

@@ -121,9 +121,6 @@ namespace CDPIUI.Core.Features
 
             }
 
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when parameter setted and window exist 
-
             CheckForUpdatesCompleted?.Invoke();
 
             return IsUpdateAvailable;
