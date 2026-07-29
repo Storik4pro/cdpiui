@@ -5,6 +5,7 @@ using CDPIUI.Core.Features;
 using System.Diagnostics;
 using CDPIUI.Helper.WindowHelper;
 using CDPIUI.Helper.Items;
+using System.Threading.Tasks;
 
 
 namespace CDPIUI.Commands
@@ -19,10 +20,25 @@ namespace CDPIUI.Commands
 
         public static bool HandleCommand(IPipeMessage message)
         {
+            if (!CanHandle(message))
+                return false;
+
+            _ = HandleCommandAsync(message);
+            return true;
+        }
+
+        public static async Task<bool> HandleCommandAsync(string commandUri)
+        {
+            var message = CommandUriMapper.ConvertBack(commandUri);
+            return message != null && await HandleCommandAsync(message);
+        }
+
+        public static async Task<bool> HandleCommandAsync(IPipeMessage message)
+        {
             switch (message)
             {
                 case PresentationMessageModel model:
-                    HandlePresentationMessage(model);
+                    await HandlePresentationMessage(model);
                     break;
 
                 case GoodCheckMessageModel model:
@@ -34,11 +50,11 @@ namespace CDPIUI.Commands
                     break;
 
                 case UpdateMessageModel model:
-                    HandleUpdateMessage(model);
+                    await HandleUpdateMessage(model);
                     break;
 
                 case CompatibilityCheckMessageModel model:
-                    HandleCompatibilityCheckMessage(model);
+                    await HandleCompatibilityCheckMessage(model);
                     break;
                 default:
                     return false;
@@ -46,7 +62,14 @@ namespace CDPIUI.Commands
             return true;
         }
 
-        private static async void HandlePresentationMessage(PresentationMessageModel model)
+        private static bool CanHandle(IPipeMessage message) =>
+            message is PresentationMessageModel or
+                GoodCheckMessageModel or
+                UtilsMessageModel or
+                UpdateMessageModel or
+                CompatibilityCheckMessageModel;
+
+        private static async Task HandlePresentationMessage(PresentationMessageModel model)
         {
             if (model.MessageType != PresentationMessageIds.ShowWindow)
                 return;
@@ -97,22 +120,22 @@ namespace CDPIUI.Commands
             }
         }
 
-        private static void HandleUpdateMessage(UpdateMessageModel model)
+        private static async Task HandleUpdateMessage(UpdateMessageModel model)
         {
             switch (model.MessageType)
             {
                 case UpdateMessageIds.CheckForUpdates:
-                    _ = ApplicationUpdate.Instance.CheckForUpdates(notify: true);
+                    await ApplicationUpdate.Instance.CheckForUpdates(notify: true);
                     return;
             }
         }
 
-        private static void HandleCompatibilityCheckMessage(CompatibilityCheckMessageModel model)
+        private static async Task HandleCompatibilityCheckMessage(CompatibilityCheckMessageModel model)
         {
             switch (model.MessageType)
             {
                 case CompatibilityCheckMessageIds.Begin:
-                    _ = CompatibilityCheckHelper.Instance.BeginCheck();
+                    await CompatibilityCheckHelper.Instance.BeginCheck();
                     return;
             }
         }

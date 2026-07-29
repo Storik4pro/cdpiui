@@ -16,6 +16,15 @@ namespace CDPIUI.Core.Communication
     {
         public static bool HandleCommand(IPipeMessage message)
         {
+            if (!CanHandle(message))
+                return false;
+
+            _ = HandleCommandAsync(message);
+            return true;
+        }
+
+        public static async Task<bool> HandleCommandAsync(IPipeMessage message)
+        {
             switch (message)
             {
                 case ServiceMessageModel model:
@@ -23,7 +32,7 @@ namespace CDPIUI.Core.Communication
                     break;
 
                 case CONPTYMessageModel model:
-                    HandleCONPTYMessage(model);
+                    await HandleCONPTYMessage(model);
                     break;
 
                 case SettingsMessageModel model:
@@ -38,13 +47,21 @@ namespace CDPIUI.Core.Communication
                     HandleApplicationMessage(model);
                     break;
                 case ConditionalLaunchMessageModel model:
-                    _ = HandleConditionalLaunchMessage(model);
+                    await HandleConditionalLaunchMessage(model);
                     break;
                 default:
                     return false;
             }
             return true;
         }
+
+        private static bool CanHandle(IPipeMessage message) =>
+            message is ServiceMessageModel or
+                CONPTYMessageModel or
+                SettingsMessageModel or
+                MSIInstallationMessageModel or
+                ApplicationMessageModel or
+                ConditionalLaunchMessageModel;
 
         private static void HandleServiceMessage(ServiceMessageModel model)
         {
@@ -58,7 +75,7 @@ namespace CDPIUI.Core.Communication
             }
         }
 
-        private static void HandleCONPTYMessage(CONPTYMessageModel model)
+        private static async Task HandleCONPTYMessage(CONPTYMessageModel model)
         {
             switch (model.MessageType)
             {
@@ -67,12 +84,12 @@ namespace CDPIUI.Core.Communication
                         var id = model.MessageData?["componentId"];
                         if (id == null) return;
 
-                        _ = ComponentTasksManager.Instance.CreateAndRunNewTask(id);
+                        await ComponentTasksManager.Instance.CreateAndRunNewTask(id);
                         return;
                     }
 
                 case CONPTYMessageIds.GetAllStartupStrings:
-                    _ = ComponentTasksManager.Instance.RunAllPreferredActions();
+                    await ComponentTasksManager.Instance.RunAllPreferredActions();
                     return;
 
                 case CONPTYMessageIds.CleanOutputForId:
@@ -308,11 +325,6 @@ namespace CDPIUI.Core.Communication
                     nameof(CoreCommandsHandler),
                     $"Conditional action failed: {ex}");
                 await PipeHelper.SendConditionalLaunchResult(operationId, success: false, ex.Message);
-            }
-            finally
-            {
-                if (Environment.GetCommandLineArgs().Contains("--exit-after-conditional-action"))
-                    Process.GetCurrentProcess().Kill();
             }
         }
 

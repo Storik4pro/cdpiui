@@ -119,8 +119,6 @@ namespace CDPIUI.Core.ComponentServices
                 await task.ProcessManager?.RunActionsIfAutorunSelected();
             }
 
-            string[] arguments = Environment.GetCommandLineArgs();
-            if (arguments.Contains("--exit-after-action")) Process.GetCurrentProcess().Kill();
         }
 
         [Obsolete("Not supported for UI")]

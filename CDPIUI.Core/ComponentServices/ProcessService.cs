@@ -58,16 +58,12 @@ namespace CDPIUI.Core.ComponentServices
             }
             if (isComponentAddedToAutorun)
             {
-                await StartProcess(exitAfterActionCheck: false);
+                await StartProcess();
             }
             await Task.CompletedTask;
         }
 
         public async Task StartProcess()
-        {
-            await StartProcess(true);
-        }
-        public async Task StartProcess(bool exitAfterActionCheck)
         {
             IsErrorHappens = false;
             LastError = null;
@@ -95,9 +91,6 @@ namespace CDPIUI.Core.ComponentServices
                 IsProcessRunning = true;
 
                 await PipeHelper.SendConPTYPacket(Shared.Pipe.Models.CONPTYMessageIds.StartProcessId, Id, exePath, args);
-                string[] arguments = Environment.GetCommandLineArgs();
-
-                if (arguments.Contains("--exit-after-action") && exitAfterActionCheck) Process.GetCurrentProcess().Kill(); // FIX: Possible issue when component not setted (Pseudoconsole internal error)
             }
             catch (Exception ex)
             {
