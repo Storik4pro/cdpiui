@@ -128,6 +128,7 @@
     <None Remove="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml" />
     <None Remove="Views\Store\Settings\Memory\MemoryViewSettingsDetailsPage.xaml" />
     <None Remove="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewConditionalLaunchDetailsPage.xaml" />
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
     <None Remove="Windows\ConditionalLaunchWindow.xaml" />
@@ -138,6 +139,7 @@
     <None Remove="Windows\CreateConfigHelperWindow.xaml" />
     <None Remove="Windows\EditHostFileWindow.xaml" />
     <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
+    <None Remove="Windows\Messages\ApplicationUpdateFileDialogWindow.xaml" />
     <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
     <None Remove="Windows\ModernMainWindow.xaml" />
     <None Remove="Windows\OfflineHelpWindow.xaml" />
@@ -448,8 +450,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.6.3.0</FileVersion>
-    <AssemblyVersion>0.6.3.0</AssemblyVersion>
+    <FileVersion>0.6.4.0</FileVersion>
+    <AssemblyVersion>0.6.4.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>
@@ -629,6 +631,9 @@
     <Page Update="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewConditionalLaunchDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -642,6 +647,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Windows\Messages\StoreLocalItemInstallingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\ApplicationUpdateFileDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Troubleshooting\WorkPage.xaml">
