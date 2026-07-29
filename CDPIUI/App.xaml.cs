@@ -19,8 +19,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -40,9 +38,11 @@ using CDPIUI.Helper.Basic;
 using CDPIUI.Helper.Database;
 using CDPIUI.Core.Communication;
 using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.Features;
 using CDPIUI.Default;
 using CDPIUI.Commands;
 using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.Shared.ConditionalLaunch;
 using CDPIUI.Helper.WindowHelper;
 
 namespace CDPIUI
@@ -83,17 +83,16 @@ namespace CDPIUI
                 }
                 if (!isWorking)
                 {
-                    GetCurrentWindowFromType<PrepareWindow>()?.Close();   
-                }
-                if (!isWorking && OpenWindows.Count == 1 && OpenWindows[0] is PrepareWindow)
-                {
-                    OpenWindows[0].Close();
-                    Process.GetCurrentProcess().Kill();
+                    GetCurrentWindowFromType<PrepareWindow>()?.Close();
+                    ExitIfIdle();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Process.GetCurrentProcess().Kill();
+                Logger.Instance.CreateWarningLog(
+                    nameof(App),
+                    $"Cannot update background operation state: {ex.Message}");
+                ExitIfIdle();
             }
         }
 
@@ -107,18 +106,36 @@ namespace CDPIUI
 
             ComponentTasksManager.Instance.RequestComponentItemsInit();
 
-            bool isFileProcessed = await ProcessFiles(arguments);
+            bool isFileProcessed = false;
             bool isActionPreffered = false;
 
             try
             {
+                if (Program.InitialActivationArguments?.Kind is ExtendedActivationKind.File &&
+                    Program.InitialActivationArguments.Data is IFileActivatedEventArgs initialFileArgs)
+                {
+                    isFileProcessed = await ProcessFiles(
+                        initialFileArgs.Files.Select(file => file.Path).ToArray());
+                }
 
-                string protocolArg = arguments.FirstOrDefault(x => x.StartsWith("----ms-protocol:"));
+                if (Program.InitialActivationArguments?.Kind is ExtendedActivationKind.Protocol &&
+                    Program.InitialActivationArguments.Data is IProtocolActivatedEventArgs initialProtocolArgs)
+                {
+                    isActionPreffered = await CommandsHandler.HandleCommandAsync(
+                        initialProtocolArgs.Uri.ToString());
+                }
+
+                if (!isFileProcessed)
+                    isFileProcessed = await ProcessFiles(arguments);
+
+                string protocolArg = isActionPreffered
+                    ? null
+                    : arguments.FirstOrDefault(x => x.StartsWith("----ms-protocol:"));
 
                 if (protocolArg != null)
                 {
                     string value = protocolArg["----ms-protocol:".Length..];
-                    isActionPreffered = CommandsHandler.HandleCommand(value);
+                    isActionPreffered = await CommandsHandler.HandleCommandAsync(value);
                 }
 
                 string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
@@ -126,22 +143,22 @@ namespace CDPIUI
                 if (directArgs != null)
                 {
                     string value = directArgs["--direct:".Length..];
-                    isActionPreffered = CoreCommandsHandler.HandleCommand(PipeModelConvertor.ConvertBack(value));
+                    isActionPreffered = await CoreCommandsHandler.HandleCommandAsync(
+                        PipeModelConvertor.ConvertBack(value));
                 }
             }
             catch { }
 
             if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
 
-            if (OpenWindows.Count > 1 && OpenWindows[0] is PrepareWindow)
-            {
-                OpenWindows[0].Close();
-            }
+            GetCurrentWindowFromType<PrepareWindow>()?.Close();
+            ExitIfIdle();
             Logger.Instance.CreateDebugLog(nameof(App), $"Arguments {arguments}");
             
         }
 
-        private static readonly string[] SupportedFilePaths = [".cdpisignedpack", ".cdpiconfigpack", ".cdpitask"];
+        private static readonly string[] SupportedFilePaths =
+            [".cdpisignedpack", ".cdpiconfigpack", ".cdpipatch", ".cdpitask"];
 
         private async Task<bool> ProcessFiles(string[] files)
         {
@@ -156,8 +173,30 @@ namespace CDPIUI
                 {
                     if (Path.GetExtension(_file).Equals(".cdpitask", StringComparison.OrdinalIgnoreCase))
                     {
-                        var taskWindow = await SafeCreateNewWindow<ConditionalLaunchWindow>();
-                        taskWindow.ImportTaskFile(_file);
+                        var imported = ConditionalTaskFileService.Load(_file);
+                        var tasksDirectory = ConditionalTaskFileService.GetTasksDirectoryFromSettingsFile(
+                            SettingsManager.Instance.SettingsFilePath);
+                        if (ConditionalTaskFileService.LoadDirectory(tasksDirectory).Any(task =>
+                            string.Equals(task.Id, imported.Id, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            imported.Id = Guid.NewGuid().ToString("D");
+                        }
+
+                        imported.FilePath = null;
+                        imported.IsEnabled = false;
+                        var editor = await UnsafeCreateNewWindow<ConditionalTaskEditorWindow>(
+                            activate: false,
+                            id: ConditionalTaskEditorWindow.WindowIdPrefix + imported.Id);
+                        editor.SetTask(imported, tasksDirectory, isImport: true);
+                        ActivateWindow(editor);
+                        return true;
+                    }
+
+                    if (Path.GetExtension(_file).Equals(".cdpipatch", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var updateDialog = await SafeCreateNewWindow<ApplicationUpdateFileDialogWindow>(activate: false);
+                        updateDialog.SetUpdateFilePath(_file);
+                        ActivateWindow(updateDialog);
                         return true;
                     }
 
@@ -194,7 +233,9 @@ namespace CDPIUI
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             string[] arguments = Environment.GetCommandLineArgs();
-            _ = SafeCreateNewWindow<PrepareWindow>(!arguments.Contains("--create-no-window"));
+            string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
+
+            _ = SafeCreateNewWindow<PrepareWindow>(string.IsNullOrEmpty(directArgs));
 
             PipeClientService.Instance.Start();
         }
@@ -207,10 +248,16 @@ namespace CDPIUI
                 appActivationArguments.Data is IProtocolActivatedEventArgs protocolActivatedEventArgs)
             {
                 string value = protocolActivatedEventArgs.Uri.ToString();
-                result = CommandsHandler.HandleCommand(value);
+                result = await CommandsHandler.HandleCommandAsync(value);
             }
 
-            if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
+            if (appActivationArguments.Kind is ExtendedActivationKind.File &&
+                appActivationArguments.Data is IFileActivatedEventArgs activatedFileArgs)
+            {
+                result = await ProcessFiles(
+                    activatedFileArgs.Files.Select(file => file.Path).ToArray());
+            }
+            else if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
                 appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)
             {
                 string[] args = GetFilesFromStringRegex().Split(fileActivatedEventArgs.Arguments);
@@ -218,6 +265,7 @@ namespace CDPIUI
                 result = await ProcessFiles(args);
             }
             if (!result) await SafeCreateNewWindow<ModernMainWindow>();
+            else ExitIfIdle();
         }
 
 
@@ -226,14 +274,7 @@ namespace CDPIUI
             DatabaseInitializationService.QuickRestore();
             await InitializeLocalizer();
             ApplicationInfo.Instance.SetLocalization(Localizer.Get().GetCurrentLanguage());
-
-            ActivationRegistrationManager.RegisterForProtocolActivation(
-                "cdpiui", 
-                "ms-appx:///Assets/Square44x44Logo.scale-200.png", 
-                $"CDPI UI – version {ApplicationInfo.Version}", 
-                Environment.ProcessPath);
-
-            await Task.CompletedTask;
+            FileAssociationService.EnsureRegistered();
         }
 
         public bool CheckWindow<TWindow>() where TWindow : Window
@@ -264,6 +305,50 @@ namespace CDPIUI
                 OpenWindows.Remove(viewWindow);
             }
         }
+
+        public void CloseWindow<TWindow>(string id) where TWindow : TemplateWindow
+        {
+            OpenWindows
+                .OfType<TWindow>()
+                .FirstOrDefault(window => string.Equals(
+                    window.Id,
+                    id,
+                    StringComparison.OrdinalIgnoreCase))
+                ?.Close();
+        }
+
+        public static void ActivateWindow(Window window)
+        {
+            window.Activate();
+            try
+            {
+                var windowHandle = WindowNative.GetWindowHandle(window);
+                if (windowHandle == IntPtr.Zero)
+                    return;
+
+                SetWindowPos(
+                    windowHandle,
+                    HWND_TOPMOST,
+                    0,
+                    0,
+                    0,
+                    0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetWindowPos(
+                    windowHandle,
+                    HWND_NOTOPMOST,
+                    0,
+                    0,
+                    0,
+                    0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetForegroundWindow(windowHandle);
+            }
+            catch
+            {
+            }
+        }
+
         public async Task<Window> UnsafeCreateNewWindow(Type windowType, bool activate = true, string id = "")
         {
             var findWindows = OpenWindows.Where(w => windowType.IsInstanceOfType(w)).ToList();
@@ -273,9 +358,12 @@ namespace CDPIUI
 
             foreach (TemplateWindow _win in findWindows)
             {
-                if (!string.IsNullOrEmpty(_win.Id) && _win.Id == id)
+                if (!string.IsNullOrEmpty(_win.Id) && string.Equals(
+                    _win.Id,
+                    id,
+                    StringComparison.OrdinalIgnoreCase))
                 {
-                    _win.Activate();
+                    if (activate) ActivateWindow(_win);
                     return _win;
                 }
             }
@@ -283,9 +371,8 @@ namespace CDPIUI
             var newWindow = (TemplateWindow)Activator.CreateInstance(windowType);
             newWindow.Id = id;
             WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
-            if (activate) newWindow.Activate();
-
             RegisterWindow(newWindow, isUnsafe: true);
+            if (activate) ActivateWindow(newWindow);
             await Task.CompletedTask;
 
             return newWindow;
@@ -300,9 +387,12 @@ namespace CDPIUI
 
             foreach (TemplateWindow _win in findWindows)
             {
-                if (!string.IsNullOrEmpty(_win.Id) && _win.Id == id)
+                if (!string.IsNullOrEmpty(_win.Id) && string.Equals(
+                    _win.Id,
+                    id,
+                    StringComparison.OrdinalIgnoreCase))
                 {     
-                    _win.Activate();
+                    if (activate) ActivateWindow(_win);
                     return (TWindow)_win;
                 }
             }
@@ -310,9 +400,8 @@ namespace CDPIUI
             var newViewWindow = new TWindow();
             newViewWindow.Id = id;
             WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
-            if (activate) newViewWindow.Activate();
-
             RegisterWindow(newViewWindow, isUnsafe:true);
+            if (activate) ActivateWindow(newViewWindow);
             await Task.CompletedTask;
 
             return newViewWindow;
@@ -326,7 +415,7 @@ namespace CDPIUI
 
             if (activeFindWindow != null && findWindowCount == 1)
             {
-                if (activate) activeFindWindow.Activate();
+                if (activate) ActivateWindow(activeFindWindow);
                 await Task.CompletedTask;
                 return activeFindWindow;
             }
@@ -343,7 +432,7 @@ namespace CDPIUI
                 WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newWindow);
                 RegisterWindow(newWindow);
 
-                if (activate) newWindow.Activate();
+                if (activate) ActivateWindow(newWindow);
                 await Task.CompletedTask;
 
                 return newWindow;
@@ -359,7 +448,7 @@ namespace CDPIUI
 
             if (activeFindWindow != null && findWindowCount == 1)
             {
-                if (activate) activeFindWindow.Activate();
+                if (activate) ActivateWindow(activeFindWindow);
                 await Task.CompletedTask;
                 return activeFindWindow;
             }
@@ -375,7 +464,7 @@ namespace CDPIUI
                 WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(newViewWindow);
                 RegisterWindow(newViewWindow);
 
-                if (activate) newViewWindow.Activate();
+                if (activate) ActivateWindow(newViewWindow);
                 await Task.CompletedTask;
 
                 return newViewWindow;
@@ -417,6 +506,7 @@ namespace CDPIUI
         {
             if (sender is not Window window) return;
             if (e.Handled) return;
+            var dispatcherQueue = window.DispatcherQueue;
 
             try
             {
@@ -449,7 +539,28 @@ namespace CDPIUI
             {
                 _ = SafeCreateNewWindow<PrepareWindow>(activate:false);
             }
+            else
+            {
+                if (!dispatcherQueue.TryEnqueue(
+                    Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+                    ExitIfIdle))
+                {
+                    ExitIfIdle();
+                }
+            }
             
+        }
+
+        private void ExitIfIdle()
+        {
+            if (OpenWindows.Count != 0 ||
+                ApplicationTaskMonitor.IsStoreWorking() ||
+                ApplicationTaskMonitor.IsGoodCheckRunned())
+            {
+                return;
+            }
+
+            Exit();
         }
 
         private void TryDisposeFrameworkElement(FrameworkElement fe)
