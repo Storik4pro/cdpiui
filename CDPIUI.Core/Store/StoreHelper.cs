@@ -244,9 +244,14 @@ namespace CDPIUI.Core.Store
             _ = ComponentTasksManager.Instance.StopTask(itemId);
             var item = DatabaseHelper.Instance.GetItemById(itemId);
 
+            if (item == null ||
+                item.Id == SharedConstants.ApplicationStoreId ||
+                item.Id == SharedConstants.LocalUserItemsId)
+                return;
+
             try
             {
-                if (item != null && Path.Exists(item.Directory))
+                if (Path.Exists(item.Directory))
                 {
                     Directory.Delete(item.Directory, recursive: true);
                 }
@@ -389,6 +394,8 @@ namespace CDPIUI.Core.Store
             }
             else
             {
+                OnlineItemsInstallationService.CreateDownloadWorker(qi.OperationId, cancellationTokenSource!);
+
                 var offlineCopyResult = GetReadyLocalItem(qi);
 
                 if (!offlineCopyResult.Success) return offlineCopyResult.ToEmptyResult();
@@ -514,9 +521,8 @@ namespace CDPIUI.Core.Store
 
         private static OperationResultModel<EmptyResult> CreateItemDirectory(string itemId, string itemFolder, bool clean)
         {
-            if (itemId == SharedConstants.ApplicationStoreId || itemId == SharedConstants.LocalUserItemsId) 
-                return OperationResultModel<EmptyResult>
-                    .UnSuccessResult();
+            if (itemId == SharedConstants.ApplicationStoreId || itemId == SharedConstants.LocalUserItemsId)
+                clean = false;
 
             try
             {

@@ -20,10 +20,6 @@ namespace CDPIUI.Core.Store.Application
             string operationId,
             DownloadWorker? downloadWorker)
         {
-            if (downloadWorker == null)
-                return OperationResultModel<EmptyResult>
-                    .FailureResult(HandleException(PrettyErrorCode.NULL_REFERENCE));
-
             string appItemDirectory = Path.Combine(Directories.StoreItemsDirectory, SharedConstants.ApplicationStoreId);
 
             string patchesDirectory = Path.Combine(appItemDirectory, "Patches");
@@ -74,6 +70,14 @@ namespace CDPIUI.Core.Store.Application
             {
                 return OperationResultModel<EmptyResult>.FailureResult(HandleException(ex));
             }
+            finally
+            {
+                try
+                {
+                    Directory.Delete(patchesDirectory);
+                }
+                catch { }
+            }
         }
 
         private async Task UnpackPatch(string archivePath, string patchDirectory) => 
@@ -123,8 +127,12 @@ namespace CDPIUI.Core.Store.Application
             PatchRequirementsModel requirements,
             Version currentVersion,
             string patchDirectory,
-            DownloadWorker downloadWorker)
+            DownloadWorker? downloadWorker)
         {
+            if (downloadWorker == null)
+                return OperationResultModel<List<string>>
+                    .FailureResult(HandleException(PrettyErrorCode.SERVER_UNREACHABLE));
+
             var patches = new List<string>();
             try
             {
@@ -134,7 +142,8 @@ namespace CDPIUI.Core.Store.Application
                     if (parts.Length > 2)
                     {
                         string[] reversedParts = parts.Reverse().ToArray();
-                        Version patchVer = new(reversedParts[2]);
+                        Logger.Instance.CreateInfoLog(nameof(ApplicationUpdateService), $"Version {reversedParts[1]}");
+                        Version patchVer = new(reversedParts[1]);
                         if (currentVersion >= patchVer)
                             continue;
                     }

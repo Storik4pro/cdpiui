@@ -244,7 +244,7 @@ namespace CDPIUI.Core.Store
                 .SuccessResult(links);
         }
 
-        private void CreateDownloadWorker(string operationId, CancellationTokenSource cancellationTokenSource)
+        internal void CreateDownloadWorker(string operationId, CancellationTokenSource cancellationTokenSource)
         {
             DeleteDownloadWorker();
 
