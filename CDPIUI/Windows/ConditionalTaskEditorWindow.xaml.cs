@@ -18,21 +18,39 @@ namespace CDPIUI
 {
     public sealed partial class ConditionalTaskEditorWindow : TemplateWindow
     {
+        internal const string WindowIdPrefix = "ConditionalTaskEditor:";
+        internal const string NewTaskWindowId = "ConditionalTaskEditor:New";
+
         internal ObservableCollection<ConditionalTriggerListItem> Triggers { get; } = [];
         internal ObservableCollection<ConditionalActionListItem> Actions { get; } = [];
-        public bool IsSaved { get; private set; }
-        public string? SavedTaskId { get; private set; }
+        internal static event Action<string, bool>? TaskSaved;
 
         private readonly ILocalizer _localizer = Localizer.Get();
-        private readonly string _tasksDirectory;
-        private readonly ConditionalTask _task;
+        private string _tasksDirectory = string.Empty;
+        private ConditionalTask _task = null!;
+        private bool _isImport;
 
-        public ConditionalTaskEditorWindow(ConditionalTask? sourceTask, string tasksDirectory)
+        public ConditionalTaskEditorWindow()
         {
             InitializeComponent();
 
+            IconUri = @"Assets/Icons/ConditionalUtil.ico";
+            CustomTitleBarUserControl = TitleBarUserControl;
+            WindowMinSize = new System.Windows.Size(720, 580);
+            DisableResizeFeature(false);
+        }
+
+        public void SetTask(
+            ConditionalTask? sourceTask,
+            string tasksDirectory,
+            bool isImport = false)
+        {
+            if (_task != null)
+                return;
+
             var isNewTask = sourceTask == null;
             _tasksDirectory = tasksDirectory;
+            _isImport = isImport;
             _task = isNewTask
                 ? ConditionalLaunchUiCatalog.CreateNewTask(_localizer)
                 : ConditionalLaunchUiCatalog.CloneTask(sourceTask!);
@@ -47,12 +65,11 @@ namespace CDPIUI
                     _task.Name = $"{defaultName} ({suffix})";
             }
 
-            WindowTitle = Text(isNewTask ? "CL_EditorCreateTitle" : "CL_EditorEditTitle");
-            IconUri = @"Assets/Icons/ConditionalUtil.ico";
-            CustomTitleBarUserControl = TitleBarUserControl;
-            WindowMinSize = new System.Windows.Size(720, 580);
-
-            DisableResizeFeature(false);
+            WindowTitle = isNewTask
+                ? Text("CL_EditorCreateTitle")
+                : string.Format(Text("CL_EditorEditTitle"), _task.Name);
+            if (isImport)
+                SaveTaskButton.Content = Text("CL_AddTaskButtonText");
 
             PriorityComboBox.ItemsSource = ConditionalLaunchUiCatalog.CreatePriorities(_localizer);
             LoadTaskIntoEditor();
@@ -79,9 +96,8 @@ namespace CDPIUI
             {
                 ApplyEditorToTask();
                 ConditionalTaskFileService.Save(_task, _tasksDirectory);
-                IsSaved = true;
-                SavedTaskId = _task.Id;
                 _ = PipeHelper.SendConditionalTasksReloadPacket();
+                TaskSaved?.Invoke(_task.Id, _isImport);
                 Close();
             }
             catch (Exception ex)

@@ -281,7 +281,7 @@
                     <FontIcon FontSize="16" Glyph="&#xE9CE;" />
                 </Button>
                 <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="8">
-                    <Button l:Uids.Uid="CL_OkEditorButton" Style="{ThemeResource AccentButtonStyle}" Click="SaveTaskButton_Click" MinWidth="150"/>
+                    <Button x:Name="SaveTaskButton" l:Uids.Uid="CL_OkEditorButton" Style="{ThemeResource AccentButtonStyle}" Click="SaveTaskButton_Click" MinWidth="150"/>
                     <Button l:Uids.Uid="CL_CancelEditorButton" Click="CancelButton_Click" MinWidth="150" />
                 </StackPanel>
             </Grid>

@@ -58,6 +58,7 @@ namespace CDPIUI
 
             LoadTasks();
 
+            ConditionalTaskEditorWindow.TaskSaved += ConditionalTaskEditorWindow_TaskSaved;
             this.Closed += ConditionalLaunchWindow_Closed;
             this.SizeChanged += ConditionalLaunchWindow_SizeChanged;
         }
@@ -65,6 +66,7 @@ namespace CDPIUI
         private void ConditionalLaunchWindow_Closed(object sender, WindowEventArgs args)
         {
             _statusInfoBarTimer.Stop();
+            ConditionalTaskEditorWindow.TaskSaved -= ConditionalTaskEditorWindow_TaskSaved;
             this.SizeChanged -= ConditionalLaunchWindow_SizeChanged;
             this.Closed -= ConditionalLaunchWindow_Closed;
         }
@@ -74,32 +76,18 @@ namespace CDPIUI
             TasksBorder.MaxHeight = this.Height - 400;
         }
 
-        public void ImportTaskFile(string filePath)
+        private void ConditionalTaskEditorWindow_TaskSaved(string taskId, bool isImport)
         {
-            try
-            {
-                var imported = ConditionalTaskFileService.Load(filePath);
-                if (Tasks.Any(item => string.Equals(
-                    item.Task.Id, imported.Id, StringComparison.OrdinalIgnoreCase)))
-                {
-                    imported.Id = Guid.NewGuid().ToString("D");
-                }
-
-                imported.FilePath = null;
-                ConditionalTaskFileService.Save(imported, _tasksDirectory);
-                LoadTasks(imported.Id);
-                NotifyTaskEngine();
-                ShowStatus(Text("CL_TaskImported"), InfoBarSeverity.Success);
-            }
-            catch (Exception ex)
-            {
-                ShowStatus(string.Format(Text("CL_CannotImportTaskFormat"), ex.Message), InfoBarSeverity.Error);
-            }
+            LoadTasks(taskId);
+            ShowStatus(Text(isImport ? "CL_TaskImported" : "CL_TaskSaved"), InfoBarSeverity.Success);
         }
 
         private void LoadTasks(string? selectedTaskId = null)
         {
             selectedTaskId ??= _selectedTask?.Id;
+            var previouslyLoadedTaskIds = Tasks
+                .Select(item => item.Task.Id)
+                .ToArray();
             Tasks.Clear();
 
             Directory.CreateDirectory(_tasksDirectory);
@@ -126,6 +114,15 @@ namespace CDPIUI
 
             foreach (var task in loadedTasks)
                 Tasks.Add(ConditionalLaunchUiCatalog.CreateTaskListItem(task, _localizer));
+
+            var loadedTaskIds = Tasks
+                .Select(item => item.Task.Id)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var removedTaskId in previouslyLoadedTaskIds.Where(id => !loadedTaskIds.Contains(id)))
+            {
+                ((App)Application.Current).CloseWindow<ConditionalTaskEditorWindow>(
+                    ConditionalTaskEditorWindow.WindowIdPrefix + removedTaskId);
+            }
 
             EmptyTaskListPanel.Visibility = Tasks.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
             TaskListView.Visibility = Tasks.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -155,7 +152,10 @@ namespace CDPIUI
         private async void TaskListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             if (_selectedTask != null)
+            {
+                e.Handled = true;
                 await OpenEditorAsync(_selectedTask);
+            }
         }
 
         private async void TaskListView_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -296,24 +296,23 @@ namespace CDPIUI
 
         private async System.Threading.Tasks.Task OpenEditorAsync(ConditionalTask? task)
         {
-            var editor = new ConditionalTaskEditorWindow(task, _tasksDirectory);
-            WindowsPositionHelper.SetCustomWindowSizeAndPositionFromSettings(editor);
+            var app = (App)Application.Current;
+            var windowId = task == null
+                ? ConditionalTaskEditorWindow.NewTaskWindowId
+                : ConditionalTaskEditorWindow.WindowIdPrefix + task.Id;
+            var editor = await app.UnsafeCreateNewWindow<ConditionalTaskEditorWindow>(
+                activate: false,
+                id: windowId);
+            editor.SetTask(task, _tasksDirectory);
+
             var cornerOffset = (int)Math.Round(
                 16 * WindowsPositionHelper.GetScaleFactor(this));
             WindowsPositionHelper.SetWindowPosition(
                 editor,
                 AppWindow.Position.X + cornerOffset,
                 AppWindow.Position.Y + cornerOffset);
-
-            var modalTask = ((App)Application.Current).ShowWindowModalAsync(editor, this);
-            editor.Activate();
-            await modalTask;
-
-            if (!editor.IsSaved)
-                return;
-
-            LoadTasks(editor.SavedTaskId);
-            ShowStatus(Text("CL_TaskSaved"), InfoBarSeverity.Success);
+            WindowsPositionHelper.SetWindowOwner(editor, this);
+            App.ActivateWindow(editor);
         }
 
         private void UpdatePreview(ConditionalTask? task)
@@ -354,7 +353,7 @@ namespace CDPIUI
             }
         }
 
-        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        private async void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             using OpenFileDialog dialog = new()
             {
@@ -363,8 +362,35 @@ namespace CDPIUI
                 Multiselect = false
             };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                ImportTaskFile(dialog.FileName);
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            try
+            {
+                var imported = ConditionalTaskFileService.Load(dialog.FileName);
+                if (Tasks.Any(item => string.Equals(
+                    item.Task.Id,
+                    imported.Id,
+                    StringComparison.OrdinalIgnoreCase)))
+                {
+                    imported.Id = Guid.NewGuid().ToString("D");
+                }
+
+                imported.FilePath = null;
+                imported.IsEnabled = false;
+                var editor = await ((App)Application.Current)
+                    .UnsafeCreateNewWindow<ConditionalTaskEditorWindow>(
+                        activate: false,
+                        id: ConditionalTaskEditorWindow.WindowIdPrefix + imported.Id);
+                editor.SetTask(imported, _tasksDirectory, isImport: true);
+                App.ActivateWindow(editor);
+            }
+            catch (Exception ex)
+            {
+                ShowStatus(
+                    string.Format(Text("CL_CannotImportTaskFormat"), ex.Message),
+                    InfoBarSeverity.Error);
+            }
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -413,7 +439,10 @@ namespace CDPIUI
 
             try
             {
+                var deletedTaskId = _selectedTask.Id;
                 File.Delete(_selectedTask.FilePath);
+                ((App)Application.Current).CloseWindow<ConditionalTaskEditorWindow>(
+                    ConditionalTaskEditorWindow.WindowIdPrefix + deletedTaskId);
                 LoadTasks();
                 NotifyTaskEngine();
                 ShowStatus(Text("CL_TaskDeleted"), InfoBarSeverity.Success);
@@ -425,6 +454,11 @@ namespace CDPIUI
         }
 
         private void ReloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadTasks();
+        }
+
+        public void ReloadTasksFromStorage()
         {
             LoadTasks();
         }

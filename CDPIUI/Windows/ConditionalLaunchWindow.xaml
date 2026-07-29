@@ -136,7 +136,7 @@
                             Padding="6"
                             l:Uids.Uid="CL_ImportButton"
                             Click="ImportButton_Click">
-                            <FontIcon FontSize="16" Glyph="&#xE8B5;" />
+                            <FontIcon FontSize="16" Glyph="&#xE8E5;" />
                         </Button>
                         <Button
                             x:Name="ExportButton"
