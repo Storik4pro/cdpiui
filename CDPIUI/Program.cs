@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ namespace CDPIUI
     public class Program
     {
         private static SynchronizationContext uiContext;
+        internal static AppActivationArguments InitialActivationArguments { get; private set; }
 
         [STAThread]
         static int Main(string[] args)
@@ -45,6 +45,7 @@ namespace CDPIUI
 
             if (keyInstance.IsCurrent)
             {
+                InitialActivationArguments = args;
                 keyInstance.Activated += OnActivated;
             }
             else
@@ -92,7 +93,7 @@ namespace CDPIUI
             IntPtr[] pHandles, out uint dwIndex);
 
         [DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static extern bool AllowSetForegroundWindow(uint dwProcessId);
 
         private static IntPtr redirectEventHandle = IntPtr.Zero;
 
@@ -102,6 +103,7 @@ namespace CDPIUI
                                                 AppInstance keyInstance)
         {
             redirectEventHandle = CreateEvent(IntPtr.Zero, true, false, null);
+            AllowSetForegroundWindow(keyInstance.ProcessId);
             Task.Run(() =>
             {
                 keyInstance.RedirectActivationToAsync(args).AsTask().Wait();
@@ -114,9 +116,6 @@ namespace CDPIUI
                CWMO_DEFAULT, INFINITE, 1,
                [redirectEventHandle], out uint handleIndex);
 
-            // Bring the window to the foreground
-            Process process = Process.GetProcessById((int)keyInstance.ProcessId);
-            SetForegroundWindow(process.MainWindowHandle);
         }
     }
 }
