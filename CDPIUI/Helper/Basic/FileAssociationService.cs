@@ -6,7 +6,6 @@ using Microsoft.Win32;
 using Microsoft.Windows.AppLifecycle;
 using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using WinUI3Localizer;
 
@@ -14,8 +13,8 @@ namespace CDPIUI.Helper.Basic
 {
     internal static class FileAssociationService
     {
-        private const string RegistrationStatePath = @"Software\CDPIUI";
-        private const string RegistrationSignatureValue = "ActivationRegistrationSignature";
+        private const string AutomaticRegistrationMarkerPath =
+            @"Software\CDPIUI\Registration\{B0DC091F-8A91-4EA4-AC76-ECA28C7ED986}";
 
         private static readonly Association[] Associations =
         [
@@ -27,62 +26,52 @@ namespace CDPIUI.Helper.Basic
 
         internal static void EnsureRegistered()
         {
+            if (WasAutomaticRegistrationAttempted() || !TryCreateAutomaticRegistrationMarker())
+                return;
+
+            _ = RegisterAssociations();
+        }
+
+        internal static bool RegisterManually()
+        {
+            _ = TryCreateAutomaticRegistrationMarker();
+            return RegisterAssociations();
+        }
+
+        private static bool RegisterAssociations()
+        {
             var executablePath = Environment.ProcessPath ?? string.Empty;
             if (string.IsNullOrWhiteSpace(executablePath))
-                return;
+                return false;
 
             var localizer = Localizer.Get();
             var applicationDisplayName = string.Format(
                 localizer.GetLocalizedString("FileAssociationApplicationNameFormat"),
                 ApplicationInfo.Version);
-            var registrationSignature = CreateRegistrationSignature(
-                executablePath,
-                applicationDisplayName,
-                localizer);
-
-            if (IsRegistrationCurrent(
-                executablePath,
-                applicationDisplayName,
-                registrationSignature,
-                localizer))
-            {
-                return;
-            }
-
             var executableIcon = $"{executablePath},0";
-            var activationRegistered = RegisterActivationHandlers(
+
+            var protocolRegistered = RegisterProtocolActivation(
                 executablePath,
                 executableIcon,
-                applicationDisplayName,
+                applicationDisplayName);
+            var fileActivationRegistered = RegisterFileActivationHandlers(
+                executablePath,
+                executableIcon,
                 localizer);
             var classicAssociationsRegistered = RegisterClassicAssociations(
                 executablePath,
                 applicationDisplayName,
                 localizer);
 
-            if (activationRegistered && classicAssociationsRegistered)
-            {
-                try
-                {
-                    SetValue(
-                        RegistrationStatePath,
-                        RegistrationSignatureValue,
-                        registrationSignature);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Instance.CreateWarningLog(
-                        nameof(FileAssociationService),
-                        $"Cannot save activation registration state: {ex.Message}");
-                }
-            }
+            return protocolRegistered &&
+                fileActivationRegistered &&
+                classicAssociationsRegistered;
         }
 
-        private static bool RegisterActivationHandlers(
+        private static bool RegisterProtocolActivation(
             string executablePath,
             string executableIcon,
-            string applicationDisplayName,
-            ILocalizer localizer)
+            string applicationDisplayName)
         {
             try
             {
@@ -92,6 +81,24 @@ namespace CDPIUI.Helper.Basic
                     applicationDisplayName,
                     executablePath);
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(FileAssociationService),
+                    $"Cannot register protocol activation: {ex.Message}");
+                return false;
+            }
+        }
+
+        private static bool RegisterFileActivationHandlers(
+            string executablePath,
+            string executableIcon,
+            ILocalizer localizer)
+        {
+            try
+            {
                 foreach (var association in Associations)
                 {
                     ActivationRegistrationManager.RegisterForFileTypeActivation(
@@ -108,7 +115,7 @@ namespace CDPIUI.Helper.Basic
             {
                 Logger.Instance.CreateWarningLog(
                     nameof(FileAssociationService),
-                    $"Cannot register application activation: {ex.Message}");
+                    $"Cannot register file activation: {ex.Message}");
                 return false;
             }
         }
@@ -182,135 +189,37 @@ namespace CDPIUI.Helper.Basic
             }
         }
 
-        private static bool IsRegistrationCurrent(
-            string executablePath,
-            string applicationDisplayName,
-            string registrationSignature,
-            ILocalizer localizer)
+        private static bool WasAutomaticRegistrationAttempted()
         {
             try
             {
-                var executableName = Path.GetFileName(executablePath);
-                var command = $"\"{executablePath}\" \"%1\"";
-                var icon = $"\"{executablePath}\",0";
-                var applicationPath = $@"Software\Classes\Applications\{executableName}";
-
-                if (!ValueEquals(
-                        RegistrationStatePath,
-                        RegistrationSignatureValue,
-                        registrationSignature) ||
-                    !ValueEquals(applicationPath, "FriendlyAppName", applicationDisplayName) ||
-                    !ValueEquals(applicationPath, "ApplicationIcon", icon) ||
-                    !ValueEquals($@"{applicationPath}\DefaultIcon", null, icon) ||
-                    !ValueEquals($@"{applicationPath}\shell\open\command", null, command) ||
-                    !IsProtocolRegistrationPresent(executablePath) ||
-                    !ValueEquals(
-                        @"Software\CDPIUI\Capabilities",
-                        "ApplicationName",
-                        applicationDisplayName) ||
-                    !ValueEquals(
-                        @"Software\CDPIUI\Capabilities",
-                        "ApplicationDescription",
-                        "CDPI UI") ||
-                    !ValueEquals(
-                        @"Software\CDPIUI\Capabilities",
-                        "ApplicationIcon",
-                        icon) ||
-                    !ValueEquals(
-                        @"Software\RegisteredApplications",
-                        "CDPI UI",
-                        @"Software\CDPIUI\Capabilities"))
-                {
-                    return false;
-                }
-
-                foreach (var association in Associations)
-                {
-                    var displayName = localizer.GetLocalizedString(association.DisplayNameResource);
-                    if (!ValueEquals(
-                            $@"Software\Classes\{association.Extension}",
-                            null,
-                            association.ProgId) ||
-                        !ValueEquals(
-                            $@"Software\Classes\{association.ProgId}",
-                            null,
-                            displayName) ||
-                        !ValueEquals(
-                            $@"Software\Classes\{association.ProgId}",
-                            "FriendlyTypeName",
-                            displayName) ||
-                        !ValueEquals(
-                            $@"Software\Classes\{association.ProgId}\DefaultIcon",
-                            null,
-                            icon) ||
-                        !ValueEquals(
-                            $@"Software\Classes\{association.ProgId}\shell\open\command",
-                            null,
-                            command) ||
-                        !ValueEquals(
-                            @"Software\CDPIUI\Capabilities\FileAssociations",
-                            association.Extension,
-                            association.ProgId) ||
-                        !ValueExists(
-                            $@"Software\Classes\{association.Extension}\OpenWithProgids",
-                            association.ProgId) ||
-                        !ValueExists(
-                            $@"{applicationPath}\SupportedTypes",
-                            association.Extension))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                using var key = Registry.CurrentUser.OpenSubKey(AutomaticRegistrationMarkerPath);
+                return key is not null;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Instance.CreateWarningLog(
+                    nameof(FileAssociationService),
+                    $"Cannot read the automatic association registration marker: {ex.Message}");
                 return false;
             }
         }
 
-        private static bool ValueEquals(string keyPath, string? valueName, string expected)
+        private static bool TryCreateAutomaticRegistrationMarker()
         {
-            using var key = Registry.CurrentUser.OpenSubKey(keyPath);
-            return string.Equals(
-                key?.GetValue(
-                    valueName,
-                    null,
-                    RegistryValueOptions.DoNotExpandEnvironmentNames)?.ToString(),
-                expected,
-                StringComparison.Ordinal);
+            try
+            {
+                using var key = Registry.CurrentUser.CreateSubKey(AutomaticRegistrationMarkerPath);
+                return key is not null;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(FileAssociationService),
+                    $"Cannot create the automatic association registration marker: {ex.Message}");
+                return false;
+            }
         }
-
-        private static bool ValueExists(string keyPath, string valueName)
-        {
-            using var key = Registry.CurrentUser.OpenSubKey(keyPath);
-            return key?.GetValueNames().Contains(valueName, StringComparer.OrdinalIgnoreCase) == true;
-        }
-
-        private static bool IsProtocolRegistrationPresent(string executablePath)
-        {
-            using var protocolKey = Registry.CurrentUser.OpenSubKey(
-                @"Software\Classes\cdpiui");
-            using var commandKey = Registry.CurrentUser.OpenSubKey(
-                @"Software\Classes\cdpiui\shell\open\command");
-            var command = commandKey?.GetValue(null)?.ToString();
-
-            return protocolKey?.GetValueNames().Contains(
-                    "URL Protocol",
-                    StringComparer.OrdinalIgnoreCase) == true &&
-                command?.Contains(executablePath, StringComparison.OrdinalIgnoreCase) == true;
-        }
-
-        private static string CreateRegistrationSignature(
-            string executablePath,
-            string applicationDisplayName,
-            ILocalizer localizer) =>
-            string.Join(
-                "|",
-                new[] { "1", executablePath, applicationDisplayName }
-                    .Concat(Associations.Select(association =>
-                        localizer.GetLocalizedString(association.DisplayNameResource))));
 
         private static void SetValue(string keyPath, string? valueName, object value)
         {

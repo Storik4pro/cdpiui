@@ -33,6 +33,7 @@ using WinUI3Localizer;
 using static CDPIUI.Helper.UIHelper;
 using CDPIUI.Shared.Extentions;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper.Basic;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -212,6 +213,20 @@ namespace CDPIUI.Views
         {
             var window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
             window.NavigateSubPage(typeof(Views.Store.SettingsPage), null, new DrillInNavigationTransitionInfo());
+        }
+
+        private void InstallFileAssociationsButton_Click(object sender, RoutedEventArgs e)
+        {
+            FileAssociationSettingsCard.IsEnabled = false;
+
+            try
+            {
+                FileAssociationService.RegisterManually();
+            }
+            finally
+            {
+                FileAssociationSettingsCard.IsEnabled = true;
+            }
         }
 
         

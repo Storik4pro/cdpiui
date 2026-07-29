@@ -141,6 +141,18 @@
                     </controls:SettingsCard.ActionIcon>
                 </controls:SettingsCard>
 
+                <controls:SettingsCard
+                    x:Name="FileAssociationSettingsCard"
+                    l:Uids.Uid="FileAssociationSettingsCard"
+                    IsClickEnabled="True"
+                    Click="InstallFileAssociationsButton_Click"
+                    IsActionIconVisible="False">
+                    <Button
+                        x:Name="InstallFileAssociationsButton"
+                        l:Uids.Uid="InstallButton"
+                        Click="InstallFileAssociationsButton_Click" />
+                </controls:SettingsCard>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>
