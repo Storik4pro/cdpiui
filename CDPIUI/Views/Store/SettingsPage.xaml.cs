@@ -173,9 +173,8 @@ namespace CDPIUI.Views.Store
                     StringComparison.OrdinalIgnoreCase))
                 {
                     var updateDialog = await ((App)Application.Current)
-                        .SafeCreateNewWindow<ApplicationUpdateFileDialogWindow>(activate: false);
+                        .SafeCreateNewWindow<ApplicationUpdateFileDialogWindow>();
                     updateDialog.SetUpdateFilePath(filePath);
-                    App.ActivateWindow(updateDialog);
                 }
                 else
                 {
