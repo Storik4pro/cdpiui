@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Name="MainWindow"
+    x:Class="CDPIUI.Messages.ApplicationUpdateFileDialogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    mc:Ignorable="d">
+
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop />
+    </template:TemplateWindow.SystemBackdrop>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <wc:TitleBarUserControl
+            x:Name="TitleBarUserControl"
+            Height="48" />
+
+        <Grid
+            x:Name="ContentFrame"
+            Grid.Row="1"
+            Padding="20,5,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Spacing="3">
+                <TextBlock
+                    l:Uids.Uid="UpdateFileQuestionTextBlock"
+                    Style="{ThemeResource TitleTextBlockStyle}"
+                    TextWrapping="Wrap" />
+                <TextBlock Text="CDPI UI" />
+                <TextBlock
+                    x:Name="CurrentVersionTextBlock"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock
+                    x:Name="UpdateFileNameTextBlock"
+                    Margin="0,8,0,0"
+                    Style="{ThemeResource BodyStrongTextBlockStyle}"
+                    TextWrapping="Wrap"
+                    IsTextSelectionEnabled="True" />
+                <TextBlock
+                    x:Name="UpdateFilePathTextBlock"
+                    MaxLines="2"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    TextWrapping="Wrap"
+                    IsTextSelectionEnabled="True" />
+            </StackPanel>
+
+            <Grid
+                Grid.Column="1"
+                Width="90"
+                Height="90"
+                VerticalAlignment="Top">
+                <Rectangle Fill="{ThemeResource AccentAcrylicBackgroundFillColorDefaultBrush}" />
+                <Image
+                    Width="60"
+                    Height="60"
+                    Source="ms-appx:///Assets/Square44x44Logo.png"
+                    Stretch="Uniform" />
+            </Grid>
+
+            <Grid
+                x:Name="ErrorGrid"
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="0,10"
+                BorderBrush="{ThemeResource AccentAcrylicBackgroundFillColorDefaultBrush}"
+                BorderThickness="3"
+                Visibility="Collapsed">
+                <Grid Padding="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        VerticalAlignment="Top"
+                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                        Glyph="&#xEB90;" />
+                    <StackPanel Grid.Column="2">
+                        <TextBlock
+                            l:Uids.Uid="CannotInstallItemTextBlock"
+                            Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        <TextBlock
+                            x:Name="ErrorCodeTextBlock"
+                            IsTextSelectionEnabled="True"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <StackPanel
+                x:Name="DownloadProgressStackPanel"
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Padding="0,10"
+                Visibility="Collapsed">
+                <TextBlock
+                    x:Name="CurrentStatusTextBlock"
+                    TextWrapping="Wrap" />
+                <ProgressBar
+                    x:Name="StatusProgressbar"
+                    IsIndeterminate="True"
+                    Minimum="0"
+                    Maximum="100" />
+            </StackPanel>
+
+            <Grid
+                x:Name="ActionGrid"
+                Grid.Row="3"
+                Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="10">
+                    <Button
+                        x:Name="InstallButton"
+                        Width="120"
+                        l:Uids.Uid="InstallButton"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Click="InstallButton_Click" />
+                    <Button
+                        x:Name="CancelButton"
+                        Width="120"
+                        l:Uids.Uid="CancelButton"
+                        Style="{ThemeResource AccentButtonStyle}"
+                        Click="CancelButton_Click" />
+                </StackPanel>
+            </Grid>
+
+            <Grid
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                VerticalAlignment="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <FontIcon
+                    FontSize="48"
+                    Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                    Glyph="&#xE814;" />
+                <TextBlock
+                    Grid.Column="2"
+                    l:Uids.Uid="ItemUnknownSourceWarningTextBlock"
+                    TextWrapping="Wrap" />
+            </Grid>
+        </Grid>
+    </Grid>
+</template:TemplateWindow>

@@ -54,6 +54,7 @@ namespace CDPIUI.Helper.WindowHelper
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
             { nameof(StoreLocalItemInstallingDialog), WindowResizeOptions.ExtendedMessage },
+            { nameof(ApplicationUpdateFileDialogWindow), WindowResizeOptions.ExtendedMessage },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(ConfigTestWindow), WindowResizeOptions.ResizeAndPositionFollowSystem }, 
@@ -128,6 +129,19 @@ namespace CDPIUI.Helper.WindowHelper
                 }
             }
             SetWindowPos(hwnd, nint.Zero, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+        }
+
+        public static void SetWindowOwner(Window window, Window ownerWindow)
+        {
+            if (window == null || ownerWindow == null)
+                return;
+
+            var windowHandle = WindowNative.GetWindowHandle(window);
+            var ownerHandle = WindowNative.GetWindowHandle(ownerWindow);
+            if (windowHandle == IntPtr.Zero || ownerHandle == IntPtr.Zero)
+                return;
+
+            SetWindowLongPtr(windowHandle, GWLP_HWNDPARENT, ownerHandle);
         }
 
         public static void SetCustomWindowSizeAndPositionFromSettings(Window window)
@@ -286,6 +300,7 @@ namespace CDPIUI.Helper.WindowHelper
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOZORDER = 0x0004;
+        private const int GWLP_HWNDPARENT = -8;
 
         [DllImport("user32.dll")]
         private static extern nint MonitorFromRect([In] ref RECT lprc, uint dwFlags);
@@ -299,6 +314,12 @@ namespace CDPIUI.Helper.WindowHelper
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(
+            IntPtr hWnd,
+            int nIndex,
+            IntPtr dwNewLong);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
