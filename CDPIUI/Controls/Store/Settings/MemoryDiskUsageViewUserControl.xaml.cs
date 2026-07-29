@@ -28,6 +28,7 @@ using WinUI3Localizer;
 
 using CDPIUI.Helper.Parsers;
 using CDPIUI.Shared.Basic.Filesystem;
+using CDPIUI.Shared.ConditionalLaunch;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,6 +45,7 @@ namespace CDPIUI.Controls.Store.Settings
         Temp,
         StoreItems,
         StoreCache,
+        ConditionalTasks,
     }
 
     public class MemoryViewItemModel : IComparable
@@ -84,6 +86,7 @@ namespace CDPIUI.Controls.Store.Settings
             { MemoryUsageCategories.Temp, "\uE74D" },
             { MemoryUsageCategories.StoreItems, "\uE71D" },
             { MemoryUsageCategories.StoreCache, "\uE719" },
+            { MemoryUsageCategories.ConditionalTasks, "\uE7C1" },
         };
 
         private Dictionary<MemoryUsageCategories, Type> CategoryPageTypePairs = new()
@@ -94,6 +97,7 @@ namespace CDPIUI.Controls.Store.Settings
             { MemoryUsageCategories.Temp, typeof(MemoryViewApplicationFilesDetailsPage) },
             { MemoryUsageCategories.StoreItems, typeof(MemoryViewInstalledItemsDetailsPage) },
             { MemoryUsageCategories.StoreCache, typeof(MemoryViewStoreCachePage) },
+            { MemoryUsageCategories.ConditionalTasks, typeof(MemoryViewConditionalLaunchDetailsPage) },
         };
 
         public MemoryDiskUsageViewUserControl()
@@ -234,6 +238,15 @@ namespace CDPIUI.Controls.Store.Settings
                 else if (relpath.StartsWith("TempFiles/"))
                 {
                     CreateTileForMemoryUsageCategory(size, totalSize, MemoryUsageCategories.Temp);
+                }
+                else if (relpath.Equals(
+                    ConditionalTaskFileService.DirectoryName,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    CreateTileForMemoryUsageCategory(
+                        size,
+                        totalSize,
+                        MemoryUsageCategories.ConditionalTasks);
                 }
                 else
                 {

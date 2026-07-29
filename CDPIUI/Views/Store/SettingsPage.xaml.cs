@@ -59,7 +59,8 @@ namespace CDPIUI.Views.Store
             typeof(MemoryViewInstalledItemsDetailsPage),
             typeof(MemoryViewLogsDetailsPage),
             typeof(MemoryViewSettingsDetailsPage),
-            typeof(MemoryViewStoreCachePage)];
+            typeof(MemoryViewStoreCachePage),
+            typeof(MemoryViewConditionalLaunchDetailsPage)];
 
         private ILocalizer localizer = Localizer.Get();
 
@@ -167,9 +168,14 @@ namespace CDPIUI.Views.Store
                     }
                 }
 
-                if (Path.GetExtension(filePath) == ".cdpipatch")
+                if (Path.GetExtension(filePath).Equals(
+                    ".cdpipatch",
+                    StringComparison.OrdinalIgnoreCase))
                 {
-                    ApplicationUpdate.Instance.InstallApplicationUpdateFromFile(filePath);
+                    var updateDialog = await ((App)Application.Current)
+                        .SafeCreateNewWindow<ApplicationUpdateFileDialogWindow>(activate: false);
+                    updateDialog.SetUpdateFilePath(filePath);
+                    App.ActivateWindow(updateDialog);
                 }
                 else
                 {
