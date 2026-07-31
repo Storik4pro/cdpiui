@@ -69,8 +69,15 @@ namespace CDPIUI.Core.ComponentServices.Configuration
 
                     Logger.Instance.CreateDebugLog(nameof(ConfigurationService), $"Now work at {jsonFile}");
 
-                    if (configItem.target[0] != Target && Target != "$ANY")
+                    string? configTarget = configItem.target?.FirstOrDefault();
+                    bool isLegacyZapretConfig =
+                        Target == HardcodedItemIds.ComponentIds[Components.Zapret2] &&
+                        configTarget == HardcodedItemIds.ComponentIds[Components.Zapret];
+
+                    if (configTarget != Target && Target != "$ANY" && !isLegacyZapretConfig)
                         continue;
+
+                    configItem.IsLegacy = isLegacyZapretConfig;
 
                     var result = Regex.Replace(
                         configItem.name!,

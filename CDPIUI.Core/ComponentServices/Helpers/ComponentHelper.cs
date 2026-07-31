@@ -1,5 +1,8 @@
 ﻿using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
 using CDPIUI.Core.Data;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 
 namespace CDPIUI.Core.ComponentServices.Helpers
@@ -26,6 +29,20 @@ namespace CDPIUI.Core.ComponentServices.Helpers
             ExecutablePath = Path.Combine(
                 DatabaseStoreItem.Directory!, 
                 DatabaseStoreItem.Executable + ".exe");
+
+            if (Id == HardcodedItemIds.ComponentIds[Components.Zapret2])
+            {
+                try
+                {
+                    Zapret2LegacyConfigService.EnsureStorageRegistered();
+                }
+                catch (Exception ex)
+                {
+                    Basic.Logger.Instance.CreateWarningLog(
+                        nameof(ComponentHelper),
+                        $"Cannot initialize the converted Zapret config storage: {ex}");
+                }
+            }
 
             ConfigHelper = new(id);
             ConfigHelper.Init();
@@ -65,7 +82,48 @@ namespace CDPIUI.Core.ComponentServices.Helpers
             string configFile = 
                 SettingsManager.Instance.GetValue<string>(["CONFIGS", Id], "configFile");
 
-            return ConfigHelper.GetStartupParameters(configFile!, configId!);
+            ConfigItem? config = ConfigHelper.GetConfigItem(configFile!, configId!);
+            if (config == null)
+            {
+                return string.Empty;
+            }
+
+            string startupString = ConfigurationService.GetStartupParametersByConfigItem(config);
+            if (Id != HardcodedItemIds.ComponentIds[Components.Zapret2] || !config.IsLegacy)
+            {
+                return startupString;
+            }
+
+            bool validateHashes = SettingsManager.Instance.GetValueOrDefault(
+                Zapret2LegacyConfigService.HashValidationSettingsGroup,
+                Zapret2LegacyConfigService.HashValidationSettingsKey,
+                defaultValue: Zapret2LegacyConfigService.DefaultHashValidationValue);
+
+            return Zapret2LegacyConfigService.GetStartupString(
+                config,
+                startupString,
+                validateHashes);
+        }
+
+        public void PrepareSelectedConfig(string configFile, string configId)
+        {
+            if (Id != HardcodedItemIds.ComponentIds[Components.Zapret2])
+            {
+                return;
+            }
+
+            ConfigItem? config = ConfigHelper.GetConfigItem(configFile, configId);
+            if (config == null || !config.IsLegacy)
+            {
+                return;
+            }
+
+            string startupString = ConfigurationService.GetStartupParametersByConfigItem(config);
+            _ = Zapret2LegacyConfigService.GetStartupString(
+                config,
+                startupString,
+                validateHashes: true,
+                forceRebuild: true);
         }
 
         private string? TryGetNewPath()

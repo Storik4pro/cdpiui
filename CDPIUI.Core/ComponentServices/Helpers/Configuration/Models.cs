@@ -28,6 +28,9 @@ namespace CDPIUI.Core.ComponentServices.Helpers.Configuration
         public string? startup_string { get; set; }
         public List<string>? toggle_lists;
 
+        [Newtonsoft.Json.JsonIgnore]
+        public bool IsLegacy { get; set; }
+
         public bool MarkAsRemoved = false;
     }
 
