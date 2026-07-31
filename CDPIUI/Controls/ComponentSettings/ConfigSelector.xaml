@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.ComponentSettings.ConfigSelector"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Controls.ComponentSettings">
+
+    <ComboBox
+        x:Name="Selector"
+        MinHeight="47"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
+        SelectionChanged="Selector_SelectionChanged">
+        <ComboBox.ItemTemplate>
+            <DataTemplate x:DataType="local:ConfigSelectorItem">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Border
+                            Padding="5,1"
+                            VerticalAlignment="Center"
+                            Background="{ThemeResource SystemFillColorCautionBrush}"
+                            CornerRadius="4"
+                            Visibility="{x:Bind LegacyVisibility, Mode=OneWay}">
+                            <TextBlock
+                                FontSize="10"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                Text="LEGACY" />
+                        </Border>
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorTertiary}"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Text="{x:Bind PackDisplayName, Mode=OneWay}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+        </ComboBox.ItemTemplate>
+    </ComboBox>
+</UserControl>
