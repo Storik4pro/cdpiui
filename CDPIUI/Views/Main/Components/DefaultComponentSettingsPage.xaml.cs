@@ -1,5 +1,6 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Controls.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Dispatching;
@@ -34,18 +35,10 @@ using CDPIUI.Controls.Default;
 
 namespace CDPIUI.Views.Main.Components
 {
-    public class ComboboxItem
-    {
-        public string file_name { get; set; }
-        public string packId { get; set; }
-        public string name { get; set; }
-        public string packName { get; set; }
-    }
-
     public sealed partial class DefaultComponentSettingsPage : TemplatePage
     {
         private string ComponentId = string.Empty;
-        private ObservableCollection<ComboboxItem> _comboboxItems = new();
+        private ObservableCollection<ConfigSelectorItem> _configItems = new();
 
         private readonly ObservableCollection<UIElement> _tiles = new();
 
@@ -55,9 +48,9 @@ namespace CDPIUI.Views.Main.Components
         {
             InitializeComponent();
 
-            ConfigChooseCombobox.ItemsSource = _comboboxItems;
+            ConfigChooseCombobox.ItemsSource = _configItems;
 
-            _comboboxItems.CollectionChanged += ComboboxItems_CollectionChanged;
+            _configItems.CollectionChanged += ConfigItems_CollectionChanged;
 
             StaggeredRepeater.ItemsSource = _tiles;
 
@@ -77,13 +70,13 @@ namespace CDPIUI.Views.Main.Components
             DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(ComponentId);
             string componentName = databaseStoreItem != null ? databaseStoreItem.ShortName : ComponentId;
             
-            var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
             Task.Run(() => InitPage(item));
             
         }
 
 
-        private void InitPage(ComboboxItem item)
+        private void InitPage(ConfigSelectorItem item)
         {
             LoadConfigItems();
             ComponentHelper componentHelper =
@@ -98,7 +91,7 @@ namespace CDPIUI.Views.Main.Components
             InitSettingsTiles(item);
         }
 
-        private void InitSettingsTiles(ComboboxItem sel)
+        private void InitSettingsTiles(ConfigSelectorItem sel)
         {
             bool _flag;
 
@@ -112,8 +105,8 @@ namespace CDPIUI.Views.Main.Components
 
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
-            List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.file_name, sel.packId);
-            List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.file_name, sel.packId);
+            List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.FileName, sel.PackId);
+            List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.FileName, sel.PackId);
 
             if (variables.Count > 0 || toggleLists.Count > 0)
             {
@@ -130,7 +123,7 @@ namespace CDPIUI.Views.Main.Components
                 {
                     SettingsTileItem settingsTileItem = new()
                     {
-                        Title = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.packId)}",
+                        Title = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.PackId)}",
                         ShowTopRectangle = _flag,
                     };
 
@@ -139,8 +132,8 @@ namespace CDPIUI.Views.Main.Components
                         ContentType = SettingTileContentType.ToggleSwitch,
                         VariableName = variable.name,
                         InitialToggleState = variable.value,
-                        PackId = sel.packId,
-                        FileName = sel.file_name,
+                        PackId = sel.PackId,
+                        FileName = sel.FileName,
                     });
 
                     variablesItem.Items.Add(settingsTileItem);
@@ -153,7 +146,7 @@ namespace CDPIUI.Views.Main.Components
                 });
             }
 
-            List<SiteListItem> list = componentHelper.GetConfigHelper().GetSiteListItems(sel.file_name, sel.packId, ignoreNull: true);
+            List<SiteListItem> list = componentHelper.GetConfigHelper().GetSiteListItems(sel.FileName, sel.PackId, ignoreNull: true);
             if (list.Count > 0)
             {
                 SettingsTile sitelistTile = new()
@@ -169,7 +162,7 @@ namespace CDPIUI.Views.Main.Components
                     if (item.Type == "NULL")
                         continue;
 
-                    string hardLinkTargetFile = FileSystemLinksManager.IsFileLinked(sel.packId, item.FilePath);
+                    string hardLinkTargetFile = FileSystemLinksManager.IsFileLinked(sel.PackId, item.FilePath);
 
                     string title =
                         localizer.GetLocalizedString($"/SettingTiles/{item.Type}") +
@@ -185,7 +178,7 @@ namespace CDPIUI.Views.Main.Components
                     {
                         ContentType = item.Type == "AutoSiteList" ? SettingTileContentType.OnlyViewButton : SettingTileContentType.EditViewButtons,
                         EditFilePath = item.FilePath,
-                        PackId = sel.packId,
+                        PackId = sel.PackId,
                         ViewParams = item.ApplyParams,
                         PrettyViewParams = item.PrettyApplyParams,
                         IsFileHardLinked = !string.IsNullOrEmpty(hardLinkTargetFile),
@@ -200,7 +193,7 @@ namespace CDPIUI.Views.Main.Components
 
                 DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick)); });
             }
-            List<SiteListItem> excludeList = componentHelper.GetConfigHelper().GetExcludedSiteListItems(sel.file_name, sel.packId, ignoreNull: true);
+            List<SiteListItem> excludeList = componentHelper.GetConfigHelper().GetExcludedSiteListItems(sel.FileName, sel.PackId, ignoreNull: true);
             if (excludeList.Count > 0)
             {
                 SettingsTile sitelistTile = new()
@@ -216,7 +209,7 @@ namespace CDPIUI.Views.Main.Components
                     if (item.Type == "NULL")
                         continue;
 
-                    string hardLinkTargetFile = FileSystemLinksManager.IsFileLinked(sel.packId, item.FilePath);
+                    string hardLinkTargetFile = FileSystemLinksManager.IsFileLinked(sel.PackId, item.FilePath);
 
                     string title =
                         localizer.GetLocalizedString($"/SettingTiles/{item.Type}") +
@@ -231,7 +224,7 @@ namespace CDPIUI.Views.Main.Components
                     settingsTileItem.Contents.Add(new SettingTileContentDefinition
                     {
                         ContentType = item.Type == "AutoSiteList" ? SettingTileContentType.OnlyViewButton : SettingTileContentType.EditViewButtons,
-                        PackId = sel.packId,
+                        PackId = sel.PackId,
                         EditFilePath = item.FilePath,
                         ViewParams = item.ApplyParams,
                         PrettyViewParams = item.PrettyApplyParams,
@@ -379,7 +372,7 @@ namespace CDPIUI.Views.Main.Components
                     componentHelper.GetConfigHelper().ChangeVariableValue(contentDefinition.FileName, contentDefinition.PackId, contentDefinition.VariableName, result);
 
                     ShowAnim = false;
-                    var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                    var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
                     Task.Run(() => InitSettingsTiles(item));
                     if (ComponentTasksManager.Instance.IsTaskRunned(ComponentId).Result) _ = ComponentTasksManager.Instance.RestartTask(ComponentId);
                     break;
@@ -412,7 +405,7 @@ namespace CDPIUI.Views.Main.Components
             {
 
                 ShowAnim = false;
-                var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
                 _ = Task.Run(() => InitSettingsTiles(item));
             }
         }
@@ -453,7 +446,7 @@ namespace CDPIUI.Views.Main.Components
                 else
                 {
                     ShowAnim = false;
-                    var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+                    var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
                     _ = Task.Run(() => InitSettingsTiles(item));
                 }
 
@@ -482,11 +475,11 @@ namespace CDPIUI.Views.Main.Components
                     break;
                 case "CFGEDIT":
                     ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
-                    var item = (ComboboxItem)ConfigChooseCombobox.SelectedItem;
+                    var item = (ConfigSelectorItem)ConfigChooseCombobox.SelectedItem;
 
                     CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
                     if (componentHelper != null)
-                        _window.OpenConfigEditPage(skp: false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.packId && x.file_name == item.file_name));
+                        _window.OpenConfigEditPage(skp: false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.PackId && x.file_name == item.FileName));
                     break;
                 case "CFGGOODCHECK":
                     CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
@@ -515,22 +508,24 @@ namespace CDPIUI.Views.Main.Components
 
             List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
 
-            DispatcherQueue.TryEnqueue(() => _comboboxItems.Clear());
+            DispatcherQueue.TryEnqueue(() => _configItems.Clear());
 
             foreach (ConfigItem item in items)
             {
-                ComboboxItem comboboxItem = new ComboboxItem();
+                ConfigSelectorItem configItem = new()
+                {
+                    FileName = item.file_name,
+                    PackId = item.packId,
+                    DisplayName = item.name,
+                    PackDisplayName = DatabaseHelper.Instance.GetItemById(item.packId)?.ShortName ?? item.packId,
+                    IsLegacyConfig = item.IsLegacy
+                };
 
-                comboboxItem.file_name = item.file_name;
-                comboboxItem.packId = item.packId;
-                comboboxItem.name = $"{item.name}";
-                comboboxItem.packName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName;
-
-                DispatcherQueue.TryEnqueue(() => _comboboxItems.Add(comboboxItem));
+                DispatcherQueue.TryEnqueue(() => _configItems.Add(configItem));
             }
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (_comboboxItems.Count == 0)
+                if (_configItems.Count == 0)
                 {
                     ToggleVisibility(false);
                 }
@@ -555,21 +550,37 @@ namespace CDPIUI.Views.Main.Components
             componentHelper.ConfigListUpdated -= LoadConfigItems;
         }
 
-        private void ComboboxItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ConfigItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ApplySavedSelection();
         }
 
         private async void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ConfigChooseCombobox.SelectedItem is ComboboxItem sel)
+            if (ConfigChooseCombobox.SelectedItem is ConfigSelectorItem sel)
             {
                 string oldCfg = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configFile");
                 string oldId = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configId");
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", sel.file_name);
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.packId);
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", sel.FileName);
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.PackId);
 
-                if ((oldCfg != sel.file_name || oldId != sel.packId) && await ComponentTasksManager.Instance.IsTaskRunned(ComponentId)) await ComponentTasksManager.Instance.RestartTask(ComponentId);
+                ComponentHelper componentHelper =
+                    ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
+                if (componentHelper != null)
+                {
+                    try
+                    {
+                        await Task.Run(() => componentHelper.PrepareSelectedConfig(sel.FileName, sel.PackId));
+                    }
+                    catch (Exception ex)
+                    {
+                        CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(
+                            nameof(DefaultComponentSettingsPage),
+                            $"Cannot prepare selected config '{sel.PackId}/{sel.FileName}': {ex}");
+                    }
+                }
+
+                if ((oldCfg != sel.FileName || oldId != sel.PackId) && await ComponentTasksManager.Instance.IsTaskRunned(ComponentId)) await ComponentTasksManager.Instance.RestartTask(ComponentId);
 
                 _ = Task.Run(() => InitSettingsTiles(sel));
             }
@@ -585,9 +596,9 @@ namespace CDPIUI.Views.Main.Components
             if (string.IsNullOrEmpty(savedFile) || string.IsNullOrEmpty(savedPackId))
                 return;
 
-            var match = _comboboxItems
-                .FirstOrDefault(ci => ci.file_name == savedFile
-                                   && ci.packId == savedPackId);
+            var match = _configItems
+                .FirstOrDefault(ci => ci.FileName == savedFile
+                                   && ci.PackId == savedPackId);
             if (match != null)
                 ConfigChooseCombobox.SelectedItem = match;
         }

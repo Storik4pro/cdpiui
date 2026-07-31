@@ -10,6 +10,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:l="using:WinUI3Localizer"
     xmlns:lcontrols="using:CDPIUI"
+    xmlns:componentControls="using:CDPIUI.Controls.ComponentSettings"
     xmlns:tpl="using:CDPIUI.Controls.Default">
 
     <tpl:TemplatePage.Resources>
@@ -75,20 +76,11 @@
                         <controls:SettingsCard.Resources>
                             <x:Double x:Key="SettingsCardWrapNoIconThreshold">700</x:Double>
                         </controls:SettingsCard.Resources>
-                        <ComboBox x:Name="ConfigChooseCombobox" 
-                                  MinWidth="400"
-                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged"
-                                  Height="47">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="local:ComboboxItem">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding name}"/>
-                                        <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <componentControls:ConfigSelector
+                            x:Name="ConfigChooseCombobox"
+                            MinWidth="400"
+                            Height="47"
+                            SelectionChanged="ConfigChooseCombobox_SelectionChanged" />
                     </controls:SettingsCard>
 
                     <ItemsRepeater x:Name="StaggeredRepeater" ElementPrepared="StaggeredRepeater_ElementPrepared">
