@@ -41,6 +41,7 @@ using CDPIUI.Core.ComponentServices;
 
 using CDPIUI.Shared;
 using CDPIUI.Controls.MainPage;
+using CDPIUI.Controls.ComponentSettings;
 using CDPIUI.Controls.Default;
 using CDPIUI.Core.JSON;
 
@@ -59,7 +60,7 @@ namespace CDPIUI.Views.Main.Components
 
 
         private readonly ObservableCollection<ViewTelegramDataCenterModel> TelegramDataCenterModels = [];
-        private readonly ObservableCollection<ComboboxItem> _comboboxItems = [];
+        private readonly ObservableCollection<ConfigSelectorItem> _configItems = [];
 
         public ICommand TgWsProxyEditCommand { get; }
         public ICommand TgWsProxyRemoveCommand { get; }
@@ -78,8 +79,8 @@ namespace CDPIUI.Views.Main.Components
             InitializeComponent();
             this.DataContext = this;
 
-            ConfigChooseCombobox.ItemsSource = _comboboxItems;
-            _comboboxItems.CollectionChanged += ComboboxItems_CollectionChanged;
+            ConfigChooseCombobox.ItemsSource = _configItems;
+            _configItems.CollectionChanged += ConfigItems_CollectionChanged;
 
             TgWsProxyEditCommand = new RelayCommand(p => EditElement((string)p));
             TgWsProxyRemoveCommand = new RelayCommand(p => RemoveElement((string)p));
@@ -108,7 +109,7 @@ namespace CDPIUI.Views.Main.Components
                 ComponentId = Model.Id;
             }
 
-            var item = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
             Task.Run(() => InitPage(item));
         }
 
@@ -151,22 +152,24 @@ namespace CDPIUI.Views.Main.Components
 
             List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
 
-            DispatcherQueue.TryEnqueue(() => _comboboxItems.Clear());
+            DispatcherQueue.TryEnqueue(() => _configItems.Clear());
 
             foreach (ConfigItem item in items)
             {
-                ComboboxItem comboboxItem = new ComboboxItem();
+                ConfigSelectorItem configItem = new()
+                {
+                    FileName = item.file_name,
+                    PackId = item.packId,
+                    DisplayName = item.name,
+                    PackDisplayName = DatabaseHelper.Instance.GetItemById(item.packId)?.ShortName ?? item.packId,
+                    IsLegacyConfig = item.IsLegacy
+                };
 
-                comboboxItem.file_name = item.file_name;
-                comboboxItem.packId = item.packId;
-                comboboxItem.name = $"{item.name}";
-                comboboxItem.packName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName;
-
-                DispatcherQueue.TryEnqueue(() => _comboboxItems.Add(comboboxItem));
+                DispatcherQueue.TryEnqueue(() => _configItems.Add(configItem));
             }
             DispatcherQueue.TryEnqueue(() =>
             {
-                if (_comboboxItems.Count == 0)
+                if (_configItems.Count == 0)
                 {
                     ToggleVisibility(false);
                 }
@@ -177,7 +180,7 @@ namespace CDPIUI.Views.Main.Components
             });
         }
 
-        private void InitPage(ComboboxItem item)
+        private void InitPage(ConfigSelectorItem item)
         {
             LoadConfigItems();
             ComponentHelper componentHelper =
@@ -192,7 +195,7 @@ namespace CDPIUI.Views.Main.Components
             InitSettings(item);
         }
 
-        private void ComboboxItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ConfigItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             ApplySavedSelection();
         }
@@ -205,23 +208,23 @@ namespace CDPIUI.Views.Main.Components
             if (string.IsNullOrEmpty(savedFile) || string.IsNullOrEmpty(savedPackId))
                 return;
 
-            var match = _comboboxItems
-                .FirstOrDefault(ci => ci.file_name == savedFile
-                                   && ci.packId == savedPackId);
+            var match = _configItems
+                .FirstOrDefault(ci => ci.FileName == savedFile
+                                   && ci.PackId == savedPackId);
             if (match != null)
                 ConfigChooseCombobox.SelectedItem = match;
         }
 
-        private void InitSettings(ComboboxItem comboboxItem)
+        private void InitSettings(ConfigSelectorItem configItem)
         {
             DispatcherQueue.TryEnqueue(() =>
             {
                 TelegramDataCenterModels.Clear();
             });
-            if (comboboxItem == null) return;
+            if (configItem == null) return;
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
-            string startupString = componentHelper.GetConfigHelper().GetStartupParameters(comboboxItem.file_name, comboboxItem.packId);
+            string startupString = componentHelper.GetConfigHelper().GetStartupParameters(configItem.FileName, configItem.PackId);
 
             ObservableCollection<GraphicDesignerSettingItemModel> lst = [];
             GraphicDesignerHelper.LoadTgWsProxyDesignerConfig(lst, []);
@@ -426,14 +429,14 @@ namespace CDPIUI.Views.Main.Components
 
         private async void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ConfigChooseCombobox.SelectedItem is ComboboxItem sel)
+            if (ConfigChooseCombobox.SelectedItem is ConfigSelectorItem sel)
             {
                 string oldCfg = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configFile");
                 string oldId = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configId");
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", sel.file_name);
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.packId);
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", sel.FileName);
+                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", sel.PackId);
 
-                if ((oldCfg != sel.file_name || oldId != sel.packId) && await ComponentTasksManager.Instance.IsTaskRunned(ComponentId)) await ComponentTasksManager.Instance.RestartTask(ComponentId);
+                if ((oldCfg != sel.FileName || oldId != sel.PackId) && await ComponentTasksManager.Instance.IsTaskRunned(ComponentId)) await ComponentTasksManager.Instance.RestartTask(ComponentId);
 
                 _ = Task.Run(() => InitSettings(sel));
             }
@@ -549,14 +552,14 @@ namespace CDPIUI.Views.Main.Components
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            var sel = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+            var sel = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
-            var item = componentHelper.GetConfigHelper().GetConfigItem(sel.file_name, sel.packId);
+            var item = componentHelper.GetConfigHelper().GetConfigItem(sel.FileName, sel.PackId);
 
             item.startup_string = GetStartupString(item.startup_string);
             
-            string errorCode = await ConfigurationService.SaveConfigItem(sel.file_name, sel.packId, item);
+            string errorCode = await ConfigurationService.SaveConfigItem(sel.FileName, sel.PackId, item);
             if (!string.IsNullOrEmpty(errorCode))
             {
                 ShowErrorDialog(string.Format(localizer.GetLocalizedString("SaveConfigException"), errorCode), localizer.GetLocalizedString("SomethingWentWrong"));
@@ -585,11 +588,11 @@ namespace CDPIUI.Views.Main.Components
                 {
                     case LinkedActions.EditCurrentConfig:
                         ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
-                        var item = (ComboboxItem)ConfigChooseCombobox.SelectedItem;
+                        var item = (ConfigSelectorItem)ConfigChooseCombobox.SelectedItem;
 
                         CreateConfigHelperWindow _window = await((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
                         if (componentHelper != null)
-                            _window.OpenConfigEditPage(skp: false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.packId && x.file_name == item.file_name));
+                            _window.OpenConfigEditPage(skp: false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.PackId && x.file_name == item.FileName));
                         break;
                     case LinkedActions.CreateNewConfigForComponent:
                         CreateConfig();

@@ -51,20 +51,11 @@
                     <controls:SettingsCard l:Uids.Uid="ConfigSettingsCard"
                                            CornerRadius="10"
                                            BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}">
-                        <ComboBox x:Name="ConfigChooseCombobox" 
-                                  MinWidth="400"
-                                  SelectionChanged="ConfigChooseCombobox_SelectionChanged"
-                                  Height="47">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="mpcontrols:ComboboxItem">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding name}"/>
-                                        <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <lcontrol:ConfigSelector
+                            x:Name="ConfigChooseCombobox"
+                            MinWidth="400"
+                            Height="47"
+                            SelectionChanged="ConfigChooseCombobox_SelectionChanged" />
                     </controls:SettingsCard>
                     <StackPanel x:Name="TilesStackPanel" Visibility="Collapsed" Spacing="20">
                         <StackPanel.ChildrenTransitions>
