@@ -1,9 +1,12 @@
 ﻿using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.Basic;
 using CDPIUI.Shared;
+using System;
 using System.Collections.Generic;
 
 namespace CDPIUI.Helper.Database
@@ -16,6 +19,22 @@ namespace CDPIUI.Helper.Database
         public static void QuickRestore()
         {
             RegisterCustomUserItem();
+
+            if (DatabaseHelper.Instance.IsItemInstalled(
+                    HardcodedItemIds.ComponentIds[Components.Zapret2]) ||
+                DatabaseHelper.Instance.IsItemInstalled(SharedConstants.ConvertedZapretStoreItemId))
+            {
+                try
+                {
+                    Zapret2LegacyConfigService.EnsureStorageRegistered(ApplicationInfo.Version);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.CreateWarningLog(
+                        nameof(DatabaseInitializationService),
+                        $"Cannot initialize the converted Zapret config storage: {ex}");
+                }
+            }
 
             var result = DatabaseHelper.Instance.RestorePaths();
 
