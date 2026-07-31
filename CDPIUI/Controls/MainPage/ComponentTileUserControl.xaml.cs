@@ -1,4 +1,5 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Controls.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Helpers;
@@ -53,14 +54,6 @@ public enum ComponentState
     ExitedWithException,
 }
 
-public class ComboboxItem
-{
-    public string file_name { get; set; }
-    public string packId { get; set; }
-    public string name { get; set; }
-    public string packName { get; set; }
-}
-
 public class ConfigSettingsItem
 {
     public string DisplayName { get; set; }
@@ -77,7 +70,7 @@ public sealed partial class ComponentTileUserControl : UserControl
     public ICommand ViewSettingsButtonClickCommand { get; }
     public ICommand ToggleProcessButtonClickCommand { get; }
 
-    private ObservableCollection<ComboboxItem> _comboboxItems = new();
+    private ObservableCollection<ConfigSelectorItem> _configItems = new();
     private ObservableCollection<ConfigSettingsItem> ConfigSettingsList = [];
     private ObservableCollection<FeaturesViewModel> AvailableFeaturesList = [];
 
@@ -103,8 +96,8 @@ public sealed partial class ComponentTileUserControl : UserControl
 
         this.SizeChanged += (e, a) => CheckVisualState();
 
-        ConfigChooseCombobox.ItemsSource = _comboboxItems;
-        _comboboxItems.CollectionChanged += ComboboxItems_CollectionChanged;
+        ConfigChooseCombobox.ItemsSource = _configItems;
+        _configItems.CollectionChanged += ConfigItems_CollectionChanged;
         ConfigSettingsListView.ItemsSource = ConfigSettingsList;
         AdditionalFeaturesListView.ItemsSource = AvailableFeaturesList;
 
@@ -196,7 +189,7 @@ public sealed partial class ComponentTileUserControl : UserControl
     {
         ConfigSettingsLoadFailureTextBlock.Visibility = Visibility.Visible;
         ConfigSettingsList.Clear();
-        var sel = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+        var sel = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
 
         if (sel == null)
             return;
@@ -206,8 +199,8 @@ public sealed partial class ComponentTileUserControl : UserControl
                     StoreId);
         if (componentHelper is null) return;
 
-        List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.file_name, sel.packId);
-        List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.file_name, sel.packId);
+        List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.FileName, sel.PackId);
+        List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.FileName, sel.PackId);
 
         if (variables.Count > 0 || toggleLists.Count > 0)
         {
@@ -215,7 +208,7 @@ public sealed partial class ComponentTileUserControl : UserControl
             {
                 ConfigSettingsList.Add(new()
                 {
-                    DisplayName = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.packId)}",
+                    DisplayName = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.PackId)}",
                     Id = variable.name,
                     Value = variable.value
                 });
@@ -375,21 +368,23 @@ public sealed partial class ComponentTileUserControl : UserControl
 
         List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
 
-        _comboboxItems.Clear();
+        _configItems.Clear();
 
         foreach (ConfigItem item in items)
         {
-            ComboboxItem comboboxItem = new ComboboxItem();
+            ConfigSelectorItem configItem = new()
+            {
+                FileName = item.file_name,
+                PackId = item.packId,
+                DisplayName = item.name,
+                PackDisplayName = DatabaseHelper.Instance.GetItemById(item.packId)?.ShortName ?? item.packId,
+                IsLegacyConfig = item.IsLegacy
+            };
 
-            comboboxItem.file_name = item.file_name;
-            comboboxItem.packId = item.packId;
-            comboboxItem.name = $"{item.name}";
-            comboboxItem.packName = DatabaseHelper.Instance.GetItemById(item.packId).ShortName;
-
-            _comboboxItems.Add(comboboxItem);
+            _configItems.Add(configItem);
         }
 
-        if (_comboboxItems.Count == 0)
+        if (_configItems.Count == 0)
         {
             ToggleVisibility(false);
         }
@@ -415,16 +410,32 @@ public sealed partial class ComponentTileUserControl : UserControl
 
     private async void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ConfigChooseCombobox.SelectedItem is ComboboxItem sel)
+        if (ConfigChooseCombobox.SelectedItem is ConfigSelectorItem sel)
         {
             string oldCfg = SettingsManager.Instance.GetValue<string>(["CONFIGS", StoreId], "configFile");
             string oldId = SettingsManager.Instance.GetValue<string>(["CONFIGS", StoreId], "configId");
-            SettingsManager.Instance.SetValue<string>(["CONFIGS", StoreId], "configFile", sel.file_name);
-            SettingsManager.Instance.SetValue<string>(["CONFIGS", StoreId], "configId", sel.packId);
+            SettingsManager.Instance.SetValue<string>(["CONFIGS", StoreId], "configFile", sel.FileName);
+            SettingsManager.Instance.SetValue<string>(["CONFIGS", StoreId], "configId", sel.PackId);
+
+            ComponentHelper componentHelper =
+                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(StoreId);
+            if (componentHelper != null)
+            {
+                try
+                {
+                    await Task.Run(() => componentHelper.PrepareSelectedConfig(sel.FileName, sel.PackId));
+                }
+                catch (Exception ex)
+                {
+                    CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(
+                        nameof(ComponentTileUserControl),
+                        $"Cannot prepare selected config '{sel.PackId}/{sel.FileName}': {ex}");
+                }
+            }
 
             InitConfigSettings();
 
-            if ((oldCfg != sel.file_name || oldId != sel.packId) && await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) await ComponentTasksManager.Instance.RestartTask(StoreId);
+            if ((oldCfg != sel.FileName || oldId != sel.PackId) && await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) await ComponentTasksManager.Instance.RestartTask(StoreId);
         }
     }
 
@@ -436,14 +447,14 @@ public sealed partial class ComponentTileUserControl : UserControl
         if (string.IsNullOrEmpty(savedFile) || string.IsNullOrEmpty(savedPackId))
             return;
 
-        var match = _comboboxItems
-            .FirstOrDefault(ci => ci.file_name == savedFile
-                               && ci.packId == savedPackId);
+        var match = _configItems
+            .FirstOrDefault(ci => ci.FileName == savedFile
+                               && ci.PackId == savedPackId);
         if (match != null)
             ConfigChooseCombobox.SelectedItem = match;
     }
 
-    private void ComboboxItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void ConfigItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         ApplySavedSelection();
     }
@@ -456,11 +467,11 @@ public sealed partial class ComponentTileUserControl : UserControl
         var item = ConfigSettingsList.FirstOrDefault((x) => x.Id == id);
         if (item == null) return;
 
-        var sel = ConfigChooseCombobox.SelectedItem as ComboboxItem;
+        var sel = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
         if (sel == null) return;
 
         ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(StoreId);
-        componentHelper.GetConfigHelper().ChangeVariableValue(sel.file_name, sel.packId, id, value);
+        componentHelper.GetConfigHelper().ChangeVariableValue(sel.FileName, sel.PackId, id, value);
 
         if (await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) _ = ComponentTasksManager.Instance.RestartTask(StoreId);
     }

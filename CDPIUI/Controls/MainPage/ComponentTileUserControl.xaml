@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls" 
+    xmlns:componentControls="using:CDPIUI.Controls.ComponentSettings"
     xmlns:viewmodels="using:CDPIUI.ViewModels"
     xmlns:l="using:WinUI3Localizer">
 
@@ -167,21 +168,13 @@
                             </Grid.RowDefinitions>
                             <StackPanel>
                                 <TextBlock l:Uids.Uid="StartupConfigTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                                <ComboBox x:Name="ConfigChooseCombobox" 
-                                          MinWidth="400"
-                                          HorizontalAlignment="Stretch"
-                                          SelectionChanged="ConfigChooseCombobox_SelectionChanged"
-                                          Height="47"
-                                          Margin="0 0 0 10">    
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate x:DataType="local:ComboboxItem">
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding name}"/>
-                                                <TextBlock Text="{Binding packName}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiary}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
+                                <componentControls:ConfigSelector
+                                    x:Name="ConfigChooseCombobox"
+                                    MinWidth="400"
+                                    Height="47"
+                                    Margin="0 0 0 10"
+                                    HorizontalAlignment="Stretch"
+                                    SelectionChanged="ConfigChooseCombobox_SelectionChanged" />
                             </StackPanel>
 
                             <TextBlock Grid.Row="1" l:Uids.Uid="AvailableConfigSettingsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
