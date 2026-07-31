@@ -3409,4 +3409,13 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="FileAssociationsInstallFailed" xml:space="preserve">
     <value>Не удалось установить некоторые ассоциации. Подробности доступны в журнале приложения.</value>
   </data>
+  <data name="PerformanceTextBlock.Text" xml:space="preserve">
+    <value>Производительность</value>
+  </data>
+  <data name="Zapret2LegacyHashValidationSettingsCard.Header" xml:space="preserve">
+    <value>Регулярно выполнять конвертацию используемых пресетов Zapret Legacy в Zapret2</value>
+  </data>
+  <data name="Zapret2LegacyHashValidationSettingsCard.Description" xml:space="preserve">
+    <value>Если этот параметр выключен, изменения в пресетах Zapret Legacy не будут автоматически применяться к Zapret2</value>
+  </data>
 </root>

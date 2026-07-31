@@ -2218,19 +2218,19 @@ This change appears only for yourself. If you want share this kit with others, m
     <value>Start test</value>
   </data>
   <data name="PresetTestConfirmMessage" xml:space="preserve">
-    <value>Preset testing will sequentially start each preset of the current component and check site availability. This will repeatedly interrupt the current connection and may take several minutes. Continue?</value>
+    <value>Config testing will sequentially start each config of the current component and check site availability. This will repeatedly interrupt the current connection and may take several minutes. Continue?</value>
   </data>
   <data name="PresetTestWindowTitle" xml:space="preserve">
-    <value>Preset testing</value>
+    <value>Config testing</value>
   </data>
   <data name="PresetTestWindowTitleTextBlock.Text" xml:space="preserve">
-    <value>Preset testing</value>
+    <value>Config testing</value>
   </data>
   <data name="PresetTestSettingsCard.Header" xml:space="preserve">
-    <value>Preset testing</value>
+    <value>Config testing</value>
   </data>
   <data name="PresetTestSettingsCard.Description" xml:space="preserve">
-    <value>Sequentially launch component presets and check site availability. Find the best-performing preset.</value>
+    <value>Sequentially launch component configs and check site availability. Find the best-performing config.</value>
   </data>
   <data name="PresetTestComponentLabel.Text" xml:space="preserve">
     <value>Component</value>
@@ -2245,7 +2245,7 @@ This change appears only for yourself. If you want share this kit with others, m
     <value>DPI checkers (TCP 16-20 freeze)</value>
   </data>
   <data name="PresetTestConfigSelectionLabel.Text" xml:space="preserve">
-    <value>Presets to test</value>
+    <value>Configs to test</value>
   </data>
   <data name="PresetTestAllConfigsRadio.Content" xml:space="preserve">
     <value>All configs</value>
@@ -2278,7 +2278,7 @@ This change appears only for yourself. If you want share this kit with others, m
     <value>Loaded targets: {0}</value>
   </data>
   <data name="PT_Header" xml:space="preserve">
-    <value>PRESET TESTS</value>
+    <value>CONFIG TESTS</value>
   </data>
   <data name="PT_ModeLabel" xml:space="preserve">
     <value>Mode:</value>
@@ -2296,13 +2296,13 @@ This change appears only for yourself. If you want share this kit with others, m
     <value>Tests may take several minutes. Please wait...</value>
   </data>
   <data name="PT_NoPresets" xml:space="preserve">
-    <value>No presets available for testing.</value>
+    <value>No configs available for testing.</value>
   </data>
   <data name="PT_NoTargets" xml:space="preserve">
     <value>Target sites list is empty.</value>
   </data>
   <data name="PT_NoSelection" xml:space="preserve">
-    <value>Select at least one preset to test.</value>
+    <value>Select at least one config to test.</value>
   </data>
   <data name="PT_ComponentNotFound" xml:space="preserve">
     <value>Failed to get a process for the selected component.</value>
@@ -2514,7 +2514,7 @@ You can visit the Store to download new components and config for them.</value>
     <value>About utility</value>
   </data>
   <data name="ConfigTextUtilityAboutTextBlock.Text" xml:space="preserve">
-    <value>A utility for automatically testing DPI bypass presets for supported components. Its implementation is based on the logic of a similar utility from the zapret-discord-youtube kit.
+    <value>A utility for automatically testing DPI bypass configs for supported components. Its implementation is based on the logic of a similar utility from the zapret-discord-youtube kit.
 
 Original developer: Niko</value>
   </data>
@@ -2522,7 +2522,7 @@ Original developer: Niko</value>
     <value>Results</value>
   </data>
   <data name="PresetTestResultsPlaceholder.Text" xml:space="preserve">
-    <value>Run a test to see ranked presets here.</value>
+    <value>Run a test to see ranked configs here.</value>
   </data>
   <data name="PresetTestRecommendedBadge" xml:space="preserve">
     <value>Recommended</value>
@@ -2534,7 +2534,7 @@ Original developer: Niko</value>
     <value>Run</value>
   </data>
   <data name="PT_ProgressStatus" xml:space="preserve">
-    <value>Testing preset {0}/{1}: {2}</value>
+    <value>Testing config {0}/{1}: {2}</value>
   </data>
   <data name="PT_ProgressEta" xml:space="preserve">
     <value>Estimated time left: {0} min {1} sec</value>
@@ -2546,7 +2546,7 @@ Original developer: Niko</value>
     <value>DPI OK: {0} | Blocked: {1} | Fail: {2}</value>
   </data>
   <data name="PT_PresetApplied" xml:space="preserve">
-    <value>Preset applied: {0}</value>
+    <value>Config applied: {0}</value>
   </data>
   <data name="PreferSystemWindowTitleBarSettingsCard.Header" xml:space="preserve">
     <value>Prefer system title bar for windows</value>
@@ -3072,13 +3072,13 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Component</value>
   </data>
   <data name="CL_ParameterPreset" xml:space="preserve">
-    <value>Preset</value>
+    <value>Config</value>
   </data>
   <data name="CL_ParameterPresetPackId" xml:space="preserve">
-    <value>Preset pack</value>
+    <value>Config kit</value>
   </data>
   <data name="CL_ParameterPresetFileName" xml:space="preserve">
-    <value>Preset file name</value>
+    <value>Config file name</value>
   </data>
   <data name="CL_ParameterPage" xml:space="preserve">
     <value>Page</value>
@@ -3306,7 +3306,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Select an installed component.</value>
   </data>
   <data name="CL_ErrorPresetRequired" xml:space="preserve">
-    <value>Select a preset.</value>
+    <value>Select a config.</value>
   </data>
   <data name="CL_AddTaskButtonText" xml:space="preserve">
     <value>Add</value>
@@ -3406,5 +3406,14 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   </data>
   <data name="FileAssociationsInstallFailed" xml:space="preserve">
     <value>Some associations could not be installed. See the application log for details.</value>
+  </data>
+  <data name="PerformanceTextBlock.Text" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="Zapret2LegacyHashValidationSettingsCard.Header" xml:space="preserve">
+    <value>Regularly convert used Zapret Legacy configs to Zapret2</value>
+  </data>
+  <data name="Zapret2LegacyHashValidationSettingsCard.Description" xml:space="preserve">
+    <value>If this setting is disabled, changes to Zapret Legacy configs will not be automatically applied to Zapret2</value>
   </data>
 </root>
