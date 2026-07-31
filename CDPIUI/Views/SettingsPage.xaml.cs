@@ -1,6 +1,7 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.Communication;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
 using CDPIUI.Core.System;
 
 using CDPIUI.Properties;
@@ -97,6 +98,10 @@ namespace CDPIUI.Views
                 "NOTIFICATIONS",
                 "conditionalLaunchActions",
                 defaultValue: true);
+            Zapret2LegacyHashValidationToggleSwitch.IsOn = SettingsManager.Instance.GetValueOrDefault(
+                Zapret2LegacyConfigService.HashValidationSettingsGroup,
+                Zapret2LegacyConfigService.HashValidationSettingsKey,
+                defaultValue: Zapret2LegacyConfigService.DefaultHashValidationValue);
 
             
 
@@ -190,6 +195,16 @@ namespace CDPIUI.Views
                 "conditionalLaunchActions",
                 ConditionalLaunchActionToast.IsChecked);
             _ = PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
+        }
+
+        private void Zapret2LegacyHashValidationToggleSwitch_Toggled(
+            object sender,
+            RoutedEventArgs e)
+        {
+            SettingsManager.Instance.SetValue(
+                Zapret2LegacyConfigService.HashValidationSettingsGroup,
+                Zapret2LegacyConfigService.HashValidationSettingsKey,
+                Zapret2LegacyHashValidationToggleSwitch.IsOn);
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
