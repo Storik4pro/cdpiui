@@ -10,7 +10,8 @@ namespace CDPIUI.TrayIcon.Helper
     {
         public static readonly Dictionary<string, string> ComponentNames = new()
         {
-            { "CSZTBN012", "Zapret" },
+            { "CSZTBN012", "Zapret Legacy" },
+            { "CSZTBN062", "Zapret2" },
             { "CSGIVS036", "GoodbyeDPI" },
             { "CSBIHA024", "ByeDPI" },
             { "CSSIXC048", "SpoofDPI" },
@@ -52,9 +53,9 @@ namespace CDPIUI.TrayIcon.Helper
             { "StartedAll", "All components are running now." },
             { "StartedNow", "Now started: {0}." },
             { "StartedNowS", "Now started: {0}." },
-            { "ConditionalTaskNotificationTitle", "Conditional task {0}" },
+            { "ConditionalTaskNotificationTitle", "Conditional task \"{0}\"" },
             { "ConditionalLaunchNotificationTitle", "Conditional Launch" },
-            { "ConditionalLaunchActionCompletedMessage", "Task {0} was executed." },
+            { "ConditionalLaunchActionCompletedMessage", "Task \"{0}\" was executed." },
             { "TrayErrorTitle", "Notify icon" },
             { "TrayErrorMessage", "We're unable to create icon in system notify aera. Click or tap here to view details.\n{0}" }
         };
@@ -87,9 +88,9 @@ namespace CDPIUI.TrayIcon.Helper
             { "StartedAll", "Все установленные компоненты запущены." },
             { "StartedNow", "Сейчас запущен: {0}." },
             { "StartedNowS", "Сейчас запущены: {0}." },
-            { "ConditionalTaskNotificationTitle", "Условная задача {0}" },
+            { "ConditionalTaskNotificationTitle", "Условная задача \"{0}\"" },
             { "ConditionalLaunchNotificationTitle", "Условный запуск" },
-            { "ConditionalLaunchActionCompletedMessage", "Была выполнена задача {0}" },
+            { "ConditionalLaunchActionCompletedMessage", "Была выполнена задача \"{0}\"" },
             { "TrayErrorTitle", "Индикатор уведомлений" },
             { "TrayErrorMessage", "Невозможно создать индикатор в системном лотке уведомлений. Нажмите или коснитесь здесь, чтобы узнать подробности.\n{0}" }
         };
