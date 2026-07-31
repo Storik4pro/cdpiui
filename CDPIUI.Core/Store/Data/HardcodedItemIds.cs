@@ -7,6 +7,7 @@
     public enum Components
     {
         Zapret,
+        Zapret2,
         GoodbyeDPI,
         ByeDPI,
         SpoofDPI,
@@ -23,6 +24,7 @@
         public static readonly Dictionary<Components, string> ComponentIds = new()
         {
             { Components.Zapret, "CSZTBN012" },
+            { Components.Zapret2, "CSZTBN062" },
             { Components.GoodbyeDPI, "CSGIVS036" },
             { Components.ByeDPI, "CSBIHA024" },
             { Components.SpoofDPI, "CSSIXC048" },

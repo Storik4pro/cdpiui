@@ -98,7 +98,7 @@ namespace CDPIUI.Core.ComponentServices
 
 
         // TODO: Remove hardcoded Ids
-        List<string> serviceUsedComponentsIds = ["CSGIVS036", "CSZTBN012"];
+        List<string> serviceUsedComponentsIds = ["CSGIVS036", "CSZTBN012", "CSZTBN062"];
 
         public async void StopService()
         {
