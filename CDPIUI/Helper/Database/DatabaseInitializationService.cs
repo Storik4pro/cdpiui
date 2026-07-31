@@ -19,6 +19,7 @@ namespace CDPIUI.Helper.Database
         public static void QuickRestore()
         {
             RegisterCustomUserItem();
+            RenameInstalledZapret();
 
             if (DatabaseHelper.Instance.IsItemInstalled(
                     HardcodedItemIds.ComponentIds[Components.Zapret2]) ||
@@ -45,6 +46,36 @@ namespace CDPIUI.Helper.Database
                     TryManualRestore(item);
                 }
             }
+        }
+
+        private static void RenameInstalledZapret()
+        {
+            const string legacyDisplayName = "Zapret Legacy";
+
+            if (SettingsManager.Instance.GetValueOrDefault(
+                "SYSTEM",
+                "zapretRenamed",
+                defaultValue: false))
+            {
+                return;
+            }
+
+            try
+            {
+                string zapretId = HardcodedItemIds.ComponentIds[Components.Zapret];
+                var zapretItem = DatabaseHelper.Instance.GetItemById(zapretId);
+                if (zapretItem == null)
+                {
+                    return;
+                }
+
+                zapretItem.ShortName = legacyDisplayName;
+
+                DatabaseHelper.Instance.AddOrUpdateItem(zapretItem);
+
+                SettingsManager.Instance.SetValue("SYSTEM", "zapretRenamed", true);
+            }
+            catch { }
         }
 
         private static void TryManualRestore(DatabaseStoreItem item)
