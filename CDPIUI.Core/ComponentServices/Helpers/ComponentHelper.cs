@@ -89,20 +89,7 @@ namespace CDPIUI.Core.ComponentServices.Helpers
             }
 
             string startupString = ConfigurationService.GetStartupParametersByConfigItem(config);
-            if (Id != HardcodedItemIds.ComponentIds[Components.Zapret2] || !config.IsLegacy)
-            {
-                return startupString;
-            }
-
-            bool validateHashes = SettingsManager.Instance.GetValueOrDefault(
-                Zapret2LegacyConfigService.HashValidationSettingsGroup,
-                Zapret2LegacyConfigService.HashValidationSettingsKey,
-                defaultValue: Zapret2LegacyConfigService.DefaultHashValidationValue);
-
-            return Zapret2LegacyConfigService.GetStartupString(
-                config,
-                startupString,
-                validateHashes);
+            return startupString;
         }
 
         public void PrepareSelectedConfig(string configFile, string configId)

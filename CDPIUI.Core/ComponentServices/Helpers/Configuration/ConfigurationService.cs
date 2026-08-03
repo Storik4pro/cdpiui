@@ -1,5 +1,6 @@
 ﻿using CDPIUI.Core.Basic;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration.Helpers;
 using CDPIUI.Core.Data;
 using CDPIUI.Core.JSON;
@@ -330,7 +331,21 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             startupString = ReplaceCommaVariables(startupString, commaVars);
 
             startupString = LScript.LScriptCore.ExecuteScriptUnsafe(startupString, callItemId: packId);
-            return startupString;
+
+            if (!item.IsLegacy)
+            {
+                return startupString;
+            }
+
+            bool validateHashes = SettingsManager.Instance.GetValueOrDefault(
+                Zapret2LegacyConfigService.HashValidationSettingsGroup,
+                Zapret2LegacyConfigService.HashValidationSettingsKey,
+                defaultValue: Zapret2LegacyConfigService.DefaultHashValidationValue);
+
+            return Zapret2LegacyConfigService.GetStartupString(
+                item,
+                startupString,
+                validateHashes);
         }
         public static string ReplaceCommaVariables(string startupString, Dictionary<string, string> commaVars)
         {
