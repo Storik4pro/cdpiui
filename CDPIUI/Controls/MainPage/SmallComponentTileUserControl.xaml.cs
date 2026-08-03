@@ -5,6 +5,7 @@ using CDPIUI.Core.Features;
 
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper;
+using CDPIUI.Shared;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
@@ -284,7 +285,7 @@ public sealed partial class SmallComponentTileUserControl : UserControl
         if (isRunned)
         {
             PlayToolTip.Text = localizer.GetLocalizedString("Stop");
-            PlayGlyph.Glyph = "\uE62E";
+            PlayGlyph.Glyph = SharedUtils.IsOsSupportedNewGlyph()? "\uE62E" : "\uF8AE";
             ShowComponentState(ComponentState.Runned);
         }
         else
