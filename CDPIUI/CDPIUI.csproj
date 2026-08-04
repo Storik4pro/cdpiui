@@ -81,6 +81,7 @@
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
     <None Remove="Controls\Troubleshooting\DiagnosticResultUserControl.xaml" />
+    <None Remove="Controls\Universal\ContentSeparator.xaml" />
     <None Remove="Controls\Universal\CopyButton.xaml" />
     <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
@@ -88,6 +89,7 @@
     <None Remove="Controls\Universal\NoContentToDisplayUserControl.xaml" />
     <None Remove="Controls\Universal\SearchUserControl.xaml" />
     <None Remove="Controls\Universal\SingleStringTextContentViewerUserControl.xaml" />
+    <None Remove="Controls\Universal\UtilityButtonControls.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="Controls\WindowControls\TitleBarUserControl.xaml" />
     <None Remove="MainPage.xaml" />
@@ -106,6 +108,7 @@
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
     <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
     <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\ConfigImportUtil\MainPage.xaml" />
     <None Remove="Views\EditHostsFile\MainPage.xaml" />
     <None Remove="Views\ModernMainPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
@@ -145,6 +148,7 @@
     <None Remove="Windows\OfflineHelpWindow.xaml" />
     <None Remove="Windows\PrepareWindow.xaml" />
     <None Remove="Windows\ProxySetupUtilWindow.xaml" />
+    <None Remove="Windows\ConfigImportUtilWindow.xaml" />
     <None Remove="Windows\TroubleshootingWindow.xaml" />
     <None Remove="Windows\WelcomeWindow.xaml" />
   </ItemGroup>
@@ -375,6 +379,9 @@
     <Page Update="Views\CreateConfigUtil\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Views\ConfigImportUtil\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Windows\PrepareWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -598,6 +605,12 @@
     <Page Update="Controls\MainPage\WelcomePlaceholderUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Universal\UtilityButtonControls.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\ContentSeparator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Hosts\hosts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -686,6 +699,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Windows\ProxySetupUtilWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ConfigImportUtilWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Windows\OfflineHelpWindow.xaml">
