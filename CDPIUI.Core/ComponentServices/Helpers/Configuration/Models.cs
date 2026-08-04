@@ -41,6 +41,14 @@ namespace CDPIUI.Core.ComponentServices.Helpers.Configuration
         public bool value;
     }
 
+    public class CommaVariableItem
+    {
+        public string? name;
+        public string? comment;
+        public string? value;
+        public List<string> values = [];
+    }
+
     public class SiteListItem
     {
         public string? Name;

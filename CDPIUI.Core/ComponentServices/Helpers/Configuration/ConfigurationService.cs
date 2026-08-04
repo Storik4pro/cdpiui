@@ -196,6 +196,31 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             _ = SaveConfigItem(filename, packId, configItem);
         }
 
+        public void ChangeCommaVariableValue(string filename, string packId, string key, string value)
+        {
+            var configItem = Items.FirstOrDefault(
+                x => string.Equals(x.packId, packId, StringComparison.Ordinal) &&
+                     string.Equals(x.file_name, filename, StringComparison.Ordinal));
+
+            if (configItem?.commaVars == null)
+                return;
+
+            string? actualKey = configItem.commaVars.Keys.FirstOrDefault(
+                candidate => string.Equals(candidate, key, StringComparison.OrdinalIgnoreCase));
+            AvailableVarValues? availableValues = configItem.availableCommaVarsValues?.FirstOrDefault(
+                item => string.Equals(item.VarName, key, StringComparison.OrdinalIgnoreCase));
+            if (actualKey == null)
+                return;
+
+            configItem.commaVars[actualKey] = value;
+            if (availableValues != null)
+            {
+                availableValues.CurrentValueIndex = availableValues.Values?.FindIndex(
+                    candidate => string.Equals(candidate, value, StringComparison.Ordinal)) ?? -1;
+            }
+            _ = SaveConfigItem(filename, packId, configItem);
+        }
+
         public static async Task<string> SaveConfigItem(string filename, string packId, ConfigItem item)
         {
             string folder = GetItemFolderFromPackId(packId);
@@ -432,6 +457,35 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             }
 
             return variables;
+        }
+
+        public List<CommaVariableItem> GetCommaVariables(string filename, string packId)
+        {
+            var configItem = Items.FirstOrDefault(
+                x => string.Equals(x.packId, packId, StringComparison.Ordinal) &&
+                     string.Equals(x.file_name, filename, StringComparison.Ordinal));
+            if (configItem?.commaVars == null)
+                return [];
+
+            var result = new List<CommaVariableItem>();
+            foreach (var commaVariable in configItem.commaVars)
+            {
+                AvailableVarValues? availableValues = configItem.availableCommaVarsValues?.FirstOrDefault(
+                    item => string.Equals(item.VarName, commaVariable.Key, StringComparison.OrdinalIgnoreCase));
+                List<string> values = (availableValues?.Values ?? [])
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+
+                result.Add(new CommaVariableItem
+                {
+                    name = commaVariable.Key,
+                    comment = availableValues?.Comment,
+                    value = commaVariable.Value,
+                    values = values,
+                });
+            }
+
+            return result;
         }
 
         public List<string> GetToggleLists(string filename, string packId)
