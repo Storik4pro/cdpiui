@@ -133,6 +133,17 @@ namespace CDPIUI.Commands
                         { "componentId", parameters["componentId"] }
                     })),
             CreateWindowRoute("Tools", ["ConfigEditor"], "CreateConfigHelperWindow"),
+            CreateWindowRoute("Tools", ["ImportConfig"], "ConfigImportUtilWindow"),
+            new(
+                "Tools",
+                ["ImportConfig", "{componentId}"],
+                parameters => CreateShowWindowCommand(
+                    "ConfigImportUtilWindow",
+                    "MainPage",
+                    new NameValueCollection
+                    {
+                        { "componentId", parameters["componentId"] }
+                    })),
             new(
                 "Tools",
                 ["CreateConfig", "{componentId}"],
