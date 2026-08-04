@@ -51,6 +51,11 @@ namespace CDPIUI.Views
             _ = ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
         }
 
+        private void ConfigImportUtilSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ConfigImportUtilWindow>();
+        }
+
         private void OfflineHelpSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             Commands.CommandsHandler.HandleCommand("cdpiui://Help/");

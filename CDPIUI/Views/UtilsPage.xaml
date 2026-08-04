@@ -106,6 +106,14 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="ConfigImportUtilSettingsCard" x:Name="ConfigImportUtilSettingsCard" IsClickEnabled="True" Click="ConfigImportUtilSettingsCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Import.ico" ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="PresetTestSettingsCard" x:Name="PresetTestSettingsCard" IsClickEnabled="True" Click="PresetTestSettingsCard_Click" Visibility="Collapsed">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
