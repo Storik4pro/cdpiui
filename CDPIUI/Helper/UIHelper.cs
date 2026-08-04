@@ -140,6 +140,7 @@ namespace CDPIUI.Helper
             ToggleSwitch,
             SiteListToggle,
             FullButton,
+            Button,
             OnlyTextContent,
             ComboBoxSelector
         }
@@ -213,7 +214,7 @@ namespace CDPIUI.Helper
         private static Thickness _Padding = new Thickness(15, 10, 15, 10);
 
         static public UIElement CreateSettingTile(
-            SettingsTile preset, 
+            SettingsTile config,
             Action<ActionIds, List<string>, SettingTileContentDefinition> executeAction, 
             TileType tileType = TileType.Basic,
             Thickness? padding = null)
@@ -223,13 +224,14 @@ namespace CDPIUI.Helper
             if (padding == null) padding = _Padding;
             var rootStack = new StackPanel();
 
-            foreach (var list in preset.Items)
+            foreach (var list in config.Items)
             {
                 var element = new SettingTileControlElement
                 {
                     Title = list.Title,
                     ShowTopRectangle = list.ShowTopRectangle,
-                    CardPadding = (Thickness)padding
+                    CardPadding = (Thickness)padding,
+
                 };
 
                 var contentPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
@@ -315,6 +317,8 @@ namespace CDPIUI.Helper
                             element.ActionIconGlyph = "\uE8A7";
                             element.IsClickEnabled = true;
 
+                            element.Description = def.Text;
+
                             element.Click += () =>
                             {
                                 executeAction?.Invoke(ActionIds.FullButtonElementClicked, null, def);
@@ -334,11 +338,18 @@ namespace CDPIUI.Helper
                                 ItemsSource = def.ComboBoxItems,
                                 DisplayMemberPath = "DisplayName",
                                 SelectedValuePath = "Id",
-                                SelectedItem = def.ComboBoxItems.FirstOrDefault(x => x.Id == def.SelectedComboBoxItemId)
+                                SelectedItem = def.ComboBoxItems?.FirstOrDefault(x => x.Id == def.SelectedComboBoxItemId),
+                                MinWidth = 220,
                             };
                             comboBox.SelectionChanged += (s, e) =>
                             {
-                                executeAction?.Invoke(ActionIds.ComboBoxSelectionChanged, [((ComboBoxModel)comboBox.SelectedItem).Id], def);
+                                if (comboBox.SelectedItem is ComboBoxModel selectedItem)
+                                {
+                                    executeAction?.Invoke(
+                                        ActionIds.ComboBoxSelectionChanged,
+                                        [selectedItem.Id],
+                                        def);
+                                }
                             };
                             contentPanel.Children.Add(comboBox);
                             break;
@@ -355,9 +366,9 @@ namespace CDPIUI.Helper
             {
                 var tile = new SettingTile
                 {
-                    IconGlyph = preset.IconGlyph,
-                    Title = preset.Title,
-                    Description = preset.Description,
+                    IconGlyph = config.IconGlyph,
+                    Title = config.Title,
+                    Description = config.Description,
                     InnerContent = rootStack
                 };
                 return tile;
@@ -366,9 +377,9 @@ namespace CDPIUI.Helper
             {
                 var tile = new QuickSettingWidget
                 {
-                    IconGlyph = preset.IconGlyph,
-                    Title = preset.Title,
-                    Description = preset.Description,
+                    IconGlyph = config.IconGlyph,
+                    Title = config.Title,
+                    Description = config.Description,
                     InnerContent = rootStack
                 };
                 return tile;
