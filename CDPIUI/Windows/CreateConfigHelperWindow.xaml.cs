@@ -224,7 +224,7 @@ namespace CDPIUI
                             configItem = dialog.SelectedConfigItem;
                             var _nvc_edit = new NameValueCollection
                             {
-                                { "mode", "CFGEDIT" },
+                                { "type", "CFGEDIT" },
                                 { "configItem", JSONConvertor.SerializeObject(configItem) }
                             };
                             ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_edit, new DrillInNavigationTransitionInfo());
@@ -239,7 +239,7 @@ namespace CDPIUI
         public void CreateNewConfigForComponentId(string componentId)
         {
             var _nvc_createbyid = new NameValueCollection();
-            _nvc_createbyid.Add("mode", "CFGCREATEBYID");
+            _nvc_createbyid.Add("type", "CFGCREATEBYID");
             _nvc_createbyid.Add("componentId", componentId);
             ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_createbyid, new DrillInNavigationTransitionInfo());
         }
@@ -274,7 +274,7 @@ namespace CDPIUI
                     var (configItem, errorHappens) = ConfigurationService.LoadConfigFromFile(filePath);
                     var _nvc_import = new NameValueCollection
                     {
-                        { "mode", "CFGIMPORT" },
+                        { "type", "CFGIMPORT" },
                         { "configItem", JSONConvertor.SerializeObject(configItem) },
                         { "errorHappens", (errorHappens).ToString() },
                         { "filePath", filePath }
