@@ -123,6 +123,12 @@
   <data name="AvailableSettings" xml:space="preserve">
     <value>Доступные параметры</value>
   </data>
+  <data name="ConfigVariables" xml:space="preserve">
+    <value>Переменные пресета</value>
+  </data>
+  <data name="ConfigVariablesTip" xml:space="preserve">
+    <value>Выберите переменную, чтобы изменить её значение. В редакторе можно выбрать готовый вариант или ввести значение вручную.</value>
+  </data>
   <data name="IpList" xml:space="preserve">
     <value>Список IP-адресов</value>
   </data>

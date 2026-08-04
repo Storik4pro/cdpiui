@@ -2250,10 +2250,10 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Какие пресеты тестировать</value>
   </data>
   <data name="PresetTestAllConfigsRadio.Content" xml:space="preserve">
-    <value>Все конфиги</value>
+    <value>Все пресеты</value>
   </data>
   <data name="PresetTestSelectedConfigsRadio.Content" xml:space="preserve">
-    <value>Выбранные конфиги</value>
+    <value>Выбранные пресеты</value>
   </data>
   <data name="PresetTestStartButton.Text" xml:space="preserve">
     <value>Запустить тест</value>
@@ -2280,7 +2280,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Загружено целей: {0}</value>
   </data>
   <data name="PT_Header" xml:space="preserve">
-    <value>ТЕСТЫ КОНФИГОВ</value>
+    <value>ТЕСТЫ ПРЕСЕТОВ</value>
   </data>
   <data name="PT_ModeLabel" xml:space="preserve">
     <value>Режим:</value>
@@ -2292,7 +2292,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>ПРОВЕРКА DPI</value>
   </data>
   <data name="PT_TotalConfigs" xml:space="preserve">
-    <value>Всего конфигов: {0}</value>
+    <value>Всего пресетов: {0}</value>
   </data>
   <data name="PT_MayTakeTime" xml:space="preserve">
     <value>Тесты могут занять несколько минут. Подождите...</value>
@@ -2316,7 +2316,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Пропущено (пустые параметры запуска)</value>
   </data>
   <data name="PT_Starting" xml:space="preserve">
-    <value>Запуск конфигурации...</value>
+    <value>Запуск пресетов...</value>
   </data>
   <data name="PT_FailedToStart" xml:space="preserve">
     <value>Не удалось запустить</value>
@@ -2376,10 +2376,10 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Сбой:</value>
   </data>
   <data name="PT_BestConfig" xml:space="preserve">
-    <value>Лучший конфиг: {0}</value>
+    <value>Лучший пресет: {0}</value>
   </data>
   <data name="PT_NoWorking" xml:space="preserve">
-    <value>Рабочий конфиг не найден.</value>
+    <value>Рабочий пресет не найден.</value>
   </data>
   <data name="PT_ResultsSaved" xml:space="preserve">
     <value>Результаты сохранены в {0}</value>
@@ -3353,7 +3353,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Файл условной задачи</value>
   </data>
   <data name="ConfigPackFileTypeDisplayName" xml:space="preserve">
-    <value>Набор конфигураций CDPI UI</value>
+    <value>Набор пресетов CDPI UI</value>
   </data>
   <data name="SignedPackFileTypeDisplayName" xml:space="preserve">
     <value>Подписанный пакет CDPI UI</value>
@@ -3417,5 +3417,281 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="Zapret2LegacyHashValidationSettingsCard.Description" xml:space="preserve">
     <value>Если этот параметр выключен, изменения в пресетах Zapret Legacy не будут автоматически применяться к Zapret2</value>
+  </data>
+  <data name="ConfigImportUtilSettingsCard.Header" xml:space="preserve">
+    <value>Импорт пресета</value>
+  </data>
+  <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
+    <value>Безопасная конвертация BAT, CMD, TXT и JSON-файлов в пресеты приложения</value>
+  </data>
+  <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
+    <value>Импорт пресета</value>
+  </data>
+  <data name="ConfigImportPageTitle.Text" xml:space="preserve">
+    <value>Импорт пресета</value>
+  </data>
+  <data name="ConfigImportPageSubtitle.Text" xml:space="preserve">
+    <value>Выберите исходный файл. Он анализируется статически и никогда не запускается, а полученный пресет можно проверить перед импортом.</value>
+  </data>
+  <data name="ConfigImportSourceCard.Header" xml:space="preserve">
+    <value>Исходный файл</value>
+  </data>
+  <data name="ConfigImportSourceCard.Description" xml:space="preserve">
+    <value>BAT, CMD и TXT будут преобразованы; также можно импортировать готовый JSON-пресет</value>
+  </data>
+  <data name="ConfigImportBrowseButton.Content" xml:space="preserve">
+    <value>Обзор</value>
+  </data>
+  <data name="ConfigImportTargetCard.Header" xml:space="preserve">
+    <value>Целевой компонент</value>
+  </data>
+  <data name="ConfigImportTargetCard.Description" xml:space="preserve">
+    <value>Исполняемый файл и текущая версия берутся из установленного компонента</value>
+  </data>
+  <data name="ConfigImportNameCard.Header" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="ConfigImportNameCard.Description" xml:space="preserve">
+    <value>Под этим названием пресет появится в параметрах компонента</value>
+  </data>
+  <data name="ConfigImportAnalyzeButton.Content" xml:space="preserve">
+    <value>Проанализировать файл</value>
+  </data>
+  <data name="ConfigImportInstallButton.Content" xml:space="preserve">
+    <value>Импортировать пресет</value>
+  </data>
+  <data name="ConfigImportFilesLabel.Text" xml:space="preserve">
+    <value>Файлов для копирования</value>
+  </data>
+  <data name="ConfigImportVariablesLabel.Text" xml:space="preserve">
+    <value>Изменяемых переменных</value>
+  </data>
+  <data name="ConfigImportStartupLabel.Text" xml:space="preserve">
+    <value>Преобразованные параметры запуска</value>
+  </data>
+  <data name="ConfigImportIssuesLabel.Text" xml:space="preserve">
+    <value>Диагностика</value>
+  </data>
+  <data name="ConfigImportNoComponentsTitle" xml:space="preserve">
+    <value>Нет подходящего установленного компонента</value>
+  </data>
+  <data name="ConfigImportNoComponentsMessage" xml:space="preserve">
+    <value>Перед импортом установите компонент с указанным исполняемым файлом.</value>
+  </data>
+  <data name="ConfigImportAnalyzingTitle" xml:space="preserve">
+    <value>Анализ исходного файла…</value>
+  </data>
+  <data name="ConfigImportAnalysisSuccessTitle" xml:space="preserve">
+    <value>Пресет готов к импорту</value>
+  </data>
+  <data name="ConfigImportAnalysisWarningTitle" xml:space="preserve">
+    <value>Пресет готов, но требует внимания</value>
+  </data>
+  <data name="ConfigImportAnalysisFailedTitle" xml:space="preserve">
+    <value>Не удалось автоматически преобразовать файл</value>
+  </data>
+  <data name="ConfigImportAnalysisSummary" xml:space="preserve">
+    <value>Файлы: {0}; переменные: {1}; предупреждения: {2}; ошибки: {3}.</value>
+  </data>
+  <data name="ConfigImportInstallingTitle" xml:space="preserve">
+    <value>Импорт пресета…</value>
+  </data>
+  <data name="ConfigImportInstalledTitle" xml:space="preserve">
+    <value>Пресет импортирован</value>
+  </data>
+  <data name="ConfigImportInstalledMessage" xml:space="preserve">
+    <value>«{0}» теперь доступен в параметрах компонента.</value>
+  </data>
+  <data name="ConfigImportInstallFailedTitle" xml:space="preserve">
+    <value>Не удалось импортировать пресет</value>
+  </data>
+  <data name="ConfigImportSourceCard.Text" xml:space="preserve">
+    <value>Исходный файл</value>
+  </data>
+  <data name="ConfigImportSourceDescription.Text" xml:space="preserve">
+    <value>BAT, CMD и TXT будут преобразованы; также можно импортировать готовый JSON-пресет</value>
+  </data>
+  <data name="ConfigImportTargetCard.Text" xml:space="preserve">
+    <value>Целевой компонент</value>
+  </data>
+  <data name="ConfigImportTargetDescription.Text" xml:space="preserve">
+    <value>Исполняемый файл и текущая версия берутся из установленного компонента</value>
+  </data>
+  <data name="ConfigImportNameCard.Text" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="ConfigImportNameDescription.Text" xml:space="preserve">
+    <value>Под этим названием пресет появится в параметрах компонента</value>
+  </data>
+  <data name="ConfigImportTestButton.Text" xml:space="preserve">
+    <value>Тестировать</value>
+  </data>
+  <data name="ConfigImportTestButtonText" xml:space="preserve">
+    <value>Тестировать</value>
+  </data>
+  <data name="ConfigImportSelectComponentTitle" xml:space="preserve">
+    <value>Выберите компонент</value>
+  </data>
+  <data name="ConfigImportSelectComponentMessage" xml:space="preserve">
+    <value>Не удалось автоматически определить целевой компонент.</value>
+  </data>
+  <data name="ConfigImportTestStartingTitle" xml:space="preserve">
+    <value>Запуск тестового пресета…</value>
+  </data>
+  <data name="ConfigImportTestRunningTitle" xml:space="preserve">
+    <value>Тестовый пресет запущен</value>
+  </data>
+  <data name="ConfigImportTestRunningMessage" xml:space="preserve">
+    <value>Проверьте работу нужных сервисов, затем остановите тест перед импортом.</value>
+  </data>
+  <data name="ConfigImportTestStoppedTitle" xml:space="preserve">
+    <value>Тестирование пресета остановлено</value>
+  </data>
+  <data name="ConfigImportTestFailedTitle" xml:space="preserve">
+    <value>Не удалось запустить тестовый пресет</value>
+  </data>
+  <data name="ConfigImportTestEmptyArguments" xml:space="preserve">
+    <value>В преобразованном пресете отсутствуют параметры запуска.</value>
+  </data>
+  <data name="ConfigImportTestProcessExited" xml:space="preserve">
+    <value>Процесс компонента завершился сразу после запуска.</value>
+  </data>
+  <data name="ImportConfig" xml:space="preserve">
+    <value>Выберите поддерживаемые файлы пресетов для импорта...</value>
+  </data>
+  <data name="BatchFiles" xml:space="preserve">
+    <value>Исполняемые файлы пресетов</value>
+  </data>
+  <data name="JsonFiles" xml:space="preserve">
+    <value>Поддерживаемые json-файлы пресетов GoodbyeDPI-UI и CDPIUI</value>
+  </data>
+  <data name="ConfigImportSelectStepTitle.Text" xml:space="preserve">
+    <value>Импортировать пресет</value>
+  </data>
+  <data name="ConfigImportSelectStepDescription.Text" xml:space="preserve">
+    <value>Выберите один или несколько файлов BAT, CMD, TXT или JSON для импорта.</value>
+  </data>
+  <data name="ConfigImportChooseFilesButton.Content" xml:space="preserve">
+    <value>Выбрать файлы</value>
+  </data>
+  <data name="ConfigImportProgressStepTitle.Text" xml:space="preserve">
+    <value>Импорт пресета</value>
+  </data>
+  <data name="ConfigImportProgressStepDescription.Text" xml:space="preserve">
+    <value>Идет работа над этим</value>
+  </data>
+  <data name="ConfigImportCompletedStepTitle.Text" xml:space="preserve">
+    <value>Импорт завершен</value>
+  </data>
+  <data name="ConfigImportResultNameLabel.Text" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="ConfigImportResultComponentLabel.Text" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="ConfigImportDetailsButton.Content" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="ConfigImportComponentMismatchMessage" xml:space="preserve">
+    <value>Похоже, что этот пресет не подходит для выбранного компонента. Он может не запуститься или работать неправильно.</value>
+  </data>
+  <data name="ConfigImportItemSuccessStatus" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="ConfigImportItemWarningStatus" xml:space="preserve">
+    <value>С предупреждениями</value>
+  </data>
+  <data name="ConfigImportItemFailedStatus" xml:space="preserve">
+    <value>Не удалось</value>
+  </data>
+  <data name="ConfigImportSaveButtonText" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="ConfigImportSavedButtonText" xml:space="preserve">
+    <value>Сохранено</value>
+  </data>
+  <data name="ConfigImportProgressCounter" xml:space="preserve">
+    <value>{0} из {1}: {2}</value>
+  </data>
+  <data name="ConfigImportCompletedSuccessTitle" xml:space="preserve">
+    <value>Пресеты успешно импортированы</value>
+  </data>
+  <data name="ConfigImportCompletedSuccessMessage" xml:space="preserve">
+    <value>Теперь сохраните желаемые пресеты и закройте мастер</value>
+  </data>
+  <data name="ConfigImportCompletedPartialTitle" xml:space="preserve">
+    <value>Некоторые пресеты не удалось импортировать</value>
+  </data>
+  <data name="ConfigImportCompletedPartialMessage" xml:space="preserve">
+    <value>Успешно импортировано {0} из {1}.</value>
+  </data>
+  <data name="ConfigImportCompletedFailedTitle" xml:space="preserve">
+    <value>Не удалось импортировать пресеты</value>
+  </data>
+  <data name="ConfigImportCompletedFailedMessage" xml:space="preserve">
+    <value>Информация об ошибке доступна по нажатию на статус.</value>
+  </data>
+  <data name="ConfigImportUnknownError" xml:space="preserve">
+    <value>Произошла неизвестная ошибка.</value>
+  </data>
+  <data name="ConfigImportIssueLine" xml:space="preserve">
+    <value> (строка {0})</value>
+  </data>
+  <data name="ConfigImportWizardTip" xml:space="preserve">
+    <value>Этот мастер поможет вам импортировать пресеты из других программ в CDPI UI.</value>
+  </data>
+  <data name="ConfigImportErrorView" xml:space="preserve">
+    <value>Нам не удалось импортировать пресет "{0}" из-за непредвиденной ошибки.</value>
+  </data>
+  <data name="ConfigImportSuccess" xml:space="preserve">
+    <value>Этот пресет импортирован успешно. Теперь просто сохраните его и выберите в параметрах компонента.</value>
+  </data>
+  <data name="SaveAll" xml:space="preserve">
+    <value>Сохранить все</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Сохранение ...</value>
+  </data>
+  <data name="ConfigImportWizardDoneTip.Text" xml:space="preserve">
+    <value>Все пресеты успешно импортированы и сохранены. Теперь вы можете выбрать лучший пресет в параметрах компонента.
+
+Также помните – некоторые пресеты могут содержать дополнительные параметры. В этом случае для их работы потребуется дополнительная настройка.
+Для получения поддержки по дополнительным параметрам пресета обращайтесь к разработчику соответствующего пресета.</value>
+  </data>
+  <data name="ClickExitToExit.Text" xml:space="preserve">
+    <value>Нажмите "Выход", чтобы закрыть этот мастер.</value>
+  </data>
+  <data name="ConfigImportMissingFilesStepTitle.Text" xml:space="preserve">
+    <value>Отсутствующие файлы</value>
+  </data>
+  <data name="ConfigImportMissingFilesStepDescription.Text" xml:space="preserve">
+    <value>Некоторые файлы, используемые пресетами, не найдены. Без этих файлов пресет работать не будет.</value>
+  </data>
+  <data name="ConfigImportMissingFileSuggestionLabel.Text" xml:space="preserve">
+    <value>Предложение автокорректора</value>
+  </data>
+  <data name="ConfigImportUseSuggestedFileButton.Content" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ConfigImportChooseReplacementButton.Content" xml:space="preserve">
+    <value>Выбрать файл</value>
+  </data>
+  <data name="ConfigImportUseEmptyFileButton.Content" xml:space="preserve">
+    <value>Создать пустой</value>
+  </data>
+  <data name="ConfigImportMissingFileUnresolved" xml:space="preserve">
+    <value>Требуется выбрать действие.</value>
+  </data>
+  <data name="ConfigImportMissingFileReplacementSelected" xml:space="preserve">
+    <value>Будет использован файл: {0}</value>
+  </data>
+  <data name="ConfigImportMissingFileEmptySelected" xml:space="preserve">
+    <value>Будет создан пустой файл.</value>
+  </data>
+  <data name="ConfigImportContinueButton" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="ConfigImportMissingFileEmptySuggestion" xml:space="preserve">
+    <value>Создать пустой файл</value>
   </data>
 </root>

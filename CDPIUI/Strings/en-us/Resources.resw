@@ -3351,7 +3351,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Conditional task file</value>
   </data>
   <data name="ConfigPackFileTypeDisplayName" xml:space="preserve">
-    <value>CDPI UI configuration package</value>
+    <value>CDPI UI configuration kit</value>
   </data>
   <data name="SignedPackFileTypeDisplayName" xml:space="preserve">
     <value>CDPI UI signed package</value>
@@ -3415,5 +3415,281 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   </data>
   <data name="Zapret2LegacyHashValidationSettingsCard.Description" xml:space="preserve">
     <value>If this setting is disabled, changes to Zapret Legacy configs will not be automatically applied to Zapret2</value>
+  </data>
+  <data name="ConfigImportUtilSettingsCard.Header" xml:space="preserve">
+    <value>Import Config</value>
+  </data>
+  <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
+    <value>Safely convert BAT, CMD, TXT or JSON files into application Configs</value>
+  </data>
+  <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
+    <value>Import Config</value>
+  </data>
+  <data name="ConfigImportPageTitle.Text" xml:space="preserve">
+    <value>Import Config</value>
+  </data>
+  <data name="ConfigImportPageSubtitle.Text" xml:space="preserve">
+    <value>Select a source file. It is analyzed statically and is never executed; the converted Config can be tested before importing.</value>
+  </data>
+  <data name="ConfigImportSourceCard.Header" xml:space="preserve">
+    <value>Source file</value>
+  </data>
+  <data name="ConfigImportSourceCard.Description" xml:space="preserve">
+    <value>BAT, CMD and TXT files are converted; existing JSON Configs can also be imported</value>
+  </data>
+  <data name="ConfigImportBrowseButton.Content" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="ConfigImportTargetCard.Header" xml:space="preserve">
+    <value>Target component</value>
+  </data>
+  <data name="ConfigImportTargetCard.Description" xml:space="preserve">
+    <value>The executable and current version are read from the installed component</value>
+  </data>
+  <data name="ConfigImportNameCard.Header" xml:space="preserve">
+    <value>Config name</value>
+  </data>
+  <data name="ConfigImportNameCard.Description" xml:space="preserve">
+    <value>This name will be shown in the component settings</value>
+  </data>
+  <data name="ConfigImportAnalyzeButton.Content" xml:space="preserve">
+    <value>Analyze file</value>
+  </data>
+  <data name="ConfigImportInstallButton.Content" xml:space="preserve">
+    <value>Import Config</value>
+  </data>
+  <data name="ConfigImportFilesLabel.Text" xml:space="preserve">
+    <value>Files to copy</value>
+  </data>
+  <data name="ConfigImportVariablesLabel.Text" xml:space="preserve">
+    <value>Editable variables</value>
+  </data>
+  <data name="ConfigImportStartupLabel.Text" xml:space="preserve">
+    <value>Converted launch parameters</value>
+  </data>
+  <data name="ConfigImportIssuesLabel.Text" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="ConfigImportNoComponentsTitle" xml:space="preserve">
+    <value>No supported component is installed</value>
+  </data>
+  <data name="ConfigImportNoComponentsMessage" xml:space="preserve">
+    <value>Install a component with an executable before importing a Config.</value>
+  </data>
+  <data name="ConfigImportAnalyzingTitle" xml:space="preserve">
+    <value>Analyzing the source file…</value>
+  </data>
+  <data name="ConfigImportAnalysisSuccessTitle" xml:space="preserve">
+    <value>The Config is ready to import</value>
+  </data>
+  <data name="ConfigImportAnalysisWarningTitle" xml:space="preserve">
+    <value>The Config is ready, but needs attention</value>
+  </data>
+  <data name="ConfigImportAnalysisFailedTitle" xml:space="preserve">
+    <value>The file could not be converted automatically</value>
+  </data>
+  <data name="ConfigImportAnalysisSummary" xml:space="preserve">
+    <value>Files: {0}; variables: {1}; warnings: {2}; errors: {3}.</value>
+  </data>
+  <data name="ConfigImportInstallingTitle" xml:space="preserve">
+    <value>Importing the Config…</value>
+  </data>
+  <data name="ConfigImportInstalledTitle" xml:space="preserve">
+    <value>Config imported</value>
+  </data>
+  <data name="ConfigImportInstalledMessage" xml:space="preserve">
+    <value>“{0}” is now available in the component settings.</value>
+  </data>
+  <data name="ConfigImportInstallFailedTitle" xml:space="preserve">
+    <value>Could not import the Config</value>
+  </data>
+  <data name="ConfigImportSourceCard.Text" xml:space="preserve">
+    <value>Source file</value>
+  </data>
+  <data name="ConfigImportSourceDescription.Text" xml:space="preserve">
+    <value>BAT, CMD and TXT files are converted; existing JSON Configs can also be imported</value>
+  </data>
+  <data name="ConfigImportTargetCard.Text" xml:space="preserve">
+    <value>Target component</value>
+  </data>
+  <data name="ConfigImportTargetDescription.Text" xml:space="preserve">
+    <value>The executable and current version are read from the installed component</value>
+  </data>
+  <data name="ConfigImportNameCard.Text" xml:space="preserve">
+    <value>Config name</value>
+  </data>
+  <data name="ConfigImportNameDescription.Text" xml:space="preserve">
+    <value>This name will be shown in the component settings</value>
+  </data>
+  <data name="ConfigImportTestButton.Text" xml:space="preserve">
+    <value>Test Config</value>
+  </data>
+  <data name="ConfigImportTestButtonText" xml:space="preserve">
+    <value>Test Config</value>
+  </data>
+  <data name="ConfigImportSelectComponentTitle" xml:space="preserve">
+    <value>Select a component</value>
+  </data>
+  <data name="ConfigImportSelectComponentMessage" xml:space="preserve">
+    <value>The target component could not be determined automatically.</value>
+  </data>
+  <data name="ConfigImportTestStartingTitle" xml:space="preserve">
+    <value>Starting the Config test…</value>
+  </data>
+  <data name="ConfigImportTestRunningTitle" xml:space="preserve">
+    <value>The test Config is running</value>
+  </data>
+  <data name="ConfigImportTestRunningMessage" xml:space="preserve">
+    <value>Check the required services, then stop the test before importing.</value>
+  </data>
+  <data name="ConfigImportTestStoppedTitle" xml:space="preserve">
+    <value>Config test stopped</value>
+  </data>
+  <data name="ConfigImportTestFailedTitle" xml:space="preserve">
+    <value>Could not start the Config test</value>
+  </data>
+  <data name="ConfigImportTestEmptyArguments" xml:space="preserve">
+    <value>The converted Config has no launch arguments.</value>
+  </data>
+  <data name="ConfigImportTestProcessExited" xml:space="preserve">
+    <value>The component process exited immediately after launch.</value>
+  </data>
+  <data name="ImportConfig" xml:space="preserve">
+    <value>Choose supported config files to import</value>
+  </data>
+  <data name="BatchFiles" xml:space="preserve">
+    <value>Batch config files</value>
+  </data>
+  <data name="JsonFiles" xml:space="preserve">
+    <value>Supported json config files GoodbyeDPI-UI and CDPIUI</value>
+  </data>
+  <data name="ConfigImportSelectStepTitle.Text" xml:space="preserve">
+    <value>Import Configs</value>
+  </data>
+  <data name="ConfigImportSelectStepDescription.Text" xml:space="preserve">
+    <value>Select one or more BAT, CMD, TXT or JSON files to import.</value>
+  </data>
+  <data name="ConfigImportChooseFilesButton.Content" xml:space="preserve">
+    <value>Choose files</value>
+  </data>
+  <data name="ConfigImportProgressStepTitle.Text" xml:space="preserve">
+    <value>Importing Configs</value>
+  </data>
+  <data name="ConfigImportProgressStepDescription.Text" xml:space="preserve">
+    <value>The selected files are being analyzed and converted.</value>
+  </data>
+  <data name="ConfigImportCompletedStepTitle.Text" xml:space="preserve">
+    <value>Import complete</value>
+  </data>
+  <data name="ConfigImportResultNameLabel.Text" xml:space="preserve">
+    <value>Config name</value>
+  </data>
+  <data name="ConfigImportResultComponentLabel.Text" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="ConfigImportDetailsButton.Content" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="ConfigImportComponentMismatchMessage" xml:space="preserve">
+    <value>This Config does not appear to be suitable for the selected component. It may not start or work correctly.</value>
+  </data>
+  <data name="ConfigImportItemSuccessStatus" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="ConfigImportItemWarningStatus" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="ConfigImportItemFailedStatus" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="ConfigImportSaveButtonText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ConfigImportSavedButtonText" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="ConfigImportProgressCounter" xml:space="preserve">
+    <value>{0} of {1}: {2}</value>
+  </data>
+  <data name="ConfigImportCompletedSuccessTitle" xml:space="preserve">
+    <value>Configs successfully imported</value>
+  </data>
+  <data name="ConfigImportCompletedSuccessMessage" xml:space="preserve">
+    <value>Review each Config, select a component, then test or save it.</value>
+  </data>
+  <data name="ConfigImportCompletedPartialTitle" xml:space="preserve">
+    <value>Some Configs could not be imported</value>
+  </data>
+  <data name="ConfigImportCompletedPartialMessage" xml:space="preserve">
+    <value>Successfully imported {0} of {1} Configs.</value>
+  </data>
+  <data name="ConfigImportCompletedFailedTitle" xml:space="preserve">
+    <value>Could not import the Configs</value>
+  </data>
+  <data name="ConfigImportCompletedFailedMessage" xml:space="preserve">
+    <value>Open status info on a Config for error information.</value>
+  </data>
+  <data name="ConfigImportUnknownError" xml:space="preserve">
+    <value>An unknown error occurred.</value>
+  </data>
+  <data name="ConfigImportIssueLine" xml:space="preserve">
+    <value> (line {0})</value>
+  </data>
+  <data name="ConfigImportWizardTip" xml:space="preserve">
+    <value>That wizard helps you import config from other applications to CDPI UI.</value>
+  </data>
+  <data name="ConfigImportErrorView" xml:space="preserve">
+    <value>We cannot import this config "{0}" during unexpected exception.</value>
+  </data>
+  <data name="ConfigImportSuccess" xml:space="preserve">
+    <value>That config imported successfully. Now just save it and select in component's settings.</value>
+  </data>
+  <data name="ConfigImportMissingFilesStepTitle.Text" xml:space="preserve">
+    <value>Missing files</value>
+  </data>
+  <data name="ConfigImportMissingFilesStepDescription.Text" xml:space="preserve">
+    <value>Some files referenced by the Configs were not found. Select a replacement, apply the file suggested by AutoCorrect, or explicitly allow an empty placeholder.</value>
+  </data>
+  <data name="ConfigImportMissingFileSuggestionLabel.Text" xml:space="preserve">
+    <value>AutoCorrect suggestion</value>
+  </data>
+  <data name="ConfigImportMissingFileEmptySuggestion" xml:space="preserve">
+    <value>Create an empty file</value>
+  </data>
+  <data name="ConfigImportUseSuggestedFileButton.Content" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ConfigImportChooseReplacementButton.Content" xml:space="preserve">
+    <value>Choose file</value>
+  </data>
+  <data name="ConfigImportUseEmptyFileButton.Content" xml:space="preserve">
+    <value>Create empty</value>
+  </data>
+  <data name="ConfigImportMissingFileUnresolved" xml:space="preserve">
+    <value>Select an action to continue.</value>
+  </data>
+  <data name="ConfigImportMissingFileReplacementSelected" xml:space="preserve">
+    <value>This file will be used: {0}</value>
+  </data>
+  <data name="ConfigImportMissingFileEmptySelected" xml:space="preserve">
+    <value>An empty file will be created.</value>
+  </data>
+  <data name="ConfigImportContinueButton" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="SaveAll" xml:space="preserve">
+    <value>Save all</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Saving ...</value>
+  </data>
+  <data name="ConfigImportWizardDoneTip.Text" xml:space="preserve">
+    <value>All configs imported and saved successfully. Now you can select it in component's settings.
+
+Also remember – some configs may have extra-settings. Than configs needs some additional setup before work.
+For support about additional config settings contact config's developer.</value>
+  </data>
+  <data name="ClickExitToExit.Text" xml:space="preserve">
+    <value>Click "Exit" to close this wizard.</value>
   </data>
 </root>

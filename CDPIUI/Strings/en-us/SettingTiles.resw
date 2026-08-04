@@ -123,6 +123,12 @@
   <data name="AvailableSettings" xml:space="preserve">
     <value>Available settings</value>
   </data>
+  <data name="ConfigVariables" xml:space="preserve">
+    <value>Config variables</value>
+  </data>
+  <data name="ConfigVariablesTip" xml:space="preserve">
+    <value>Select a variable to change its value. Available templates are shown in the editor, and a custom value can be entered manually.</value>
+  </data>
   <data name="IpList" xml:space="preserve">
     <value>Ip set</value>
   </data>
