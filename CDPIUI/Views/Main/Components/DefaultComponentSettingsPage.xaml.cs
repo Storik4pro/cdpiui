@@ -1,5 +1,6 @@
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Controls.Dialogs;
 using CDPIUI.Controls.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Views.CreateConfigUtil;
@@ -106,6 +107,8 @@ namespace CDPIUI.Views.Main.Components
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
             List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.FileName, sel.PackId);
+            List<CommaVariableItem> commaVariables = componentHelper.GetConfigHelper()
+                .GetCommaVariables(sel.FileName, sel.PackId);
             List<string> toggleLists = componentHelper.GetConfigHelper().GetToggleLists(sel.FileName, sel.PackId);
 
             if (variables.Count > 0 || toggleLists.Count > 0)
@@ -241,56 +244,41 @@ namespace CDPIUI.Views.Main.Components
                 DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(sitelistTile, HandleSettingTileElementClick)); });
             }
 
-            SettingsTile advancedTile = new()
+            if (commaVariables.Count > 0)
             {
-                IconGlyph = "\uEC7A",
-                Title = localizer.GetLocalizedString("/SettingTiles/AdvancedSettings"),
-                Description = localizer.GetLocalizedString("/SettingTiles/AdvancedSettingsTip")
-            };
-
-            SettingsTileItem createNewTileItem = new()
-            {
-                Title = localizer.GetLocalizedString("/SettingTiles/CreateNewConfig"),
-                ShowTopRectangle = false,
-            };
-            createNewTileItem.Contents.Add(new SettingTileContentDefinition
-            {
-                ContentType = SettingTileContentType.FullButton,
-                ClickId = "CFGCREATE"
-            });
-
-            advancedTile.Items.Add(createNewTileItem);
-
-            SettingsTileItem editTileItem = new()
-            {
-                Title = localizer.GetLocalizedString("/SettingTiles/EditConfig"),
-                ShowTopRectangle = true,
-            };
-            editTileItem.Contents.Add(new SettingTileContentDefinition
-            {
-                ContentType = SettingTileContentType.FullButton,
-                ClickId = "CFGEDIT"
-            });
-
-            advancedTile.Items.Add(editTileItem);
-
-            if (HardcodedItemIds.GoodCheckSupportedComponents.Contains(HardcodedItemIds.ComponentIds.GetKeyByValue(ComponentId)))
-            {
-                SettingsTileItem autoTileItem = new()
+                SettingsTile commaVariablesWidget = new()
                 {
-                    Title = localizer.GetLocalizedString("/SettingTiles/SelectAutomatically"),
-                    ShowTopRectangle = true,
+                    IconGlyph = "\uEC7A",
+                    Title = localizer.GetLocalizedString("/SettingTiles/AdvancedSettings"),
+                    Description = localizer.GetLocalizedString("/SettingTiles/ConfigVariablesTip"),
                 };
-                autoTileItem.Contents.Add(new SettingTileContentDefinition
+
+                _flag = false;
+                foreach (CommaVariableItem variable in commaVariables)
                 {
-                    ContentType = SettingTileContentType.FullButton,
-                    ClickId = "CFGGOODCHECK"
+                    SettingsTileItem variableButton = new()
+                    {
+                        Title = variable.name,
+                        ShowTopRectangle = _flag,
+                    };
+                    variableButton.Contents.Add(new SettingTileContentDefinition
+                    {
+                        ContentType = SettingTileContentType.FullButton,
+                        Text = variable.value,
+                        VariableName = variable.name,
+                        PackId = sel.PackId,
+                        FileName = sel.FileName,
+                        ClickId = "EDITCOMMAVAR"
+                    });
+                    commaVariablesWidget.Items.Add(variableButton);
+                    _flag = true;
+                }
+
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    _tiles.Add(CreateSettingTile(commaVariablesWidget, HandleSettingTileElementClick));
                 });
-
-                advancedTile.Items.Add(autoTileItem);
             }
-
-            DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(advancedTile, HandleSettingTileElementClick)); });
 
             SettingsTile helpTile = new()
             {
@@ -377,10 +365,53 @@ namespace CDPIUI.Views.Main.Components
                     if (ComponentTasksManager.Instance.IsTaskRunned(ComponentId).Result) _ = ComponentTasksManager.Instance.RestartTask(ComponentId);
                     break;
                 case ActionIds.FullButtonElementClicked:
-                    ButtonClick(contentDefinition.ClickId);
+                    ButtonClick(contentDefinition);
                     break;
 
             }
+        }
+
+        private async void ShowEditCommaVariableDialog(SettingTileContentDefinition contentDefinition)
+        {
+            ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
+            CommaVariableItem variable = componentHelper.GetConfigHelper()
+                .GetCommaVariables(contentDefinition.FileName, contentDefinition.PackId)
+                .FirstOrDefault(item => string.Equals(
+                    item.name,
+                    contentDefinition.VariableName,
+                    StringComparison.OrdinalIgnoreCase));
+            if (variable == null)
+                return;
+
+            var availableValues = new AvailableVarValues
+            {
+                Comment = variable.comment ?? string.Empty,
+                VarName = variable.name,
+                CurrentValueIndex = variable.values.FindIndex(value =>
+                    string.Equals(value, variable.value, StringComparison.Ordinal)),
+                Values = variable.values,
+            };
+            var dialog = new EditConfigVarValueDialog(variable.name, variable.value, availableValues)
+            {
+                XamlRoot = XamlRoot,
+            };
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary ||
+                string.Equals(dialog.VarValue, variable.value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            componentHelper.GetConfigHelper().ChangeCommaVariableValue(
+                contentDefinition.FileName,
+                contentDefinition.PackId,
+                contentDefinition.VariableName,
+                dialog.VarValue);
+
+            ShowAnim = false;
+            var selectedConfig = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
+            _ = Task.Run(() => InitSettingsTiles(selectedConfig));
+            if (await ComponentTasksManager.Instance.IsTaskRunned(ComponentId))
+                _ = ComponentTasksManager.Instance.RestartTask(ComponentId);
         }
 
         private async void RevertFileLink(string file, string packId, string fileName, string linkName)
@@ -465,9 +496,9 @@ namespace CDPIUI.Views.Main.Components
                 SettingsManager.Instance.SetValue("FILEOPENACTIONS", "isDialogShown", true);
         }
 
-        private async void ButtonClick(string targetId)
+        private async void ButtonClick(SettingTileContentDefinition contentDefinition)
         {
-            switch (targetId)
+            switch (contentDefinition.ClickId)
             {
                 case "CFGCREATE":
                     CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
@@ -491,6 +522,9 @@ namespace CDPIUI.Views.Main.Components
                 case "HELPOFFLINECONFIGCHOOISE":
                     Commands.CommandsHandler.HandleCommand(
                         "cdpiui://Help/Autoselection/BestConfigSelection/");
+                    break;
+                case "EDITCOMMAVAR":
+                    ShowEditCommaVariableDialog(contentDefinition);
                     break;
             }
         }
