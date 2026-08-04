@@ -84,8 +84,7 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // support both NameValueCollection and legacy string parameter
-
+            base.OnNavigatedTo(e);
             var window = ((App)Application.Current).GetCurrentWindowFromType<CreateConfigHelperWindow>();
 
             if (window?.NavigateBackParameter is ConfigItem configItem)
@@ -100,9 +99,9 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         private async void LoadedActions()
         {
-            if (Parameter != null && Parameter.Get("kitId") is string kitId && KitId != kitId)
+            if (Parameter != null && Parameter.Get("kitId") != KitId)
             {
-                KitId = kitId;
+                KitId = Parameter.Get("kitId");
                 await Task.Run(() => LoadConfigItems());
             }
         }
@@ -198,7 +197,7 @@ namespace CDPIUI.Views.CreateConfigHelper
                 ConfigItem configItem = ConfigHelper.GetConfigItem(item.FileName, item.PackId);
                 var nvc = new NameValueCollection
                 {
-                    { "mode", "CFGRETURNEDITED" },
+                    { "type", "CFGRETURNEDITED" },
                     { "configItem", CDPIUI.Core.JSON.JSONConvertor.SerializeObject(configItem) }
                 };
                 Frame.Navigate(typeof(CreateNewConfigPage), nvc, new DrillInNavigationTransitionInfo());

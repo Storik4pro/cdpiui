@@ -327,6 +327,8 @@ public sealed partial class CreateNewConfigPage : TemplatePage
         if (args is NameValueCollection collection)
         {
             string operationType = collection.Get("type");
+            ConfigItem = JSONConvertor.DeserializeObject<ConfigItem>(collection.Get("configItem"));
+            Debug.WriteLine(operationType);
             if (operationType == "CFGSTRING") 
             { 
                 string startupString = collection.Get("startupString");
@@ -352,7 +354,6 @@ public sealed partial class CreateNewConfigPage : TemplatePage
             }
             else if (operationType == "CFGIMPORT")
             {
-                ConfigItem = JSONConvertor.DeserializeObject<ConfigItem>(collection.Get("configItem"));
                 bool errorHappens = bool.Parse(collection.Get("errorHappens"));
                 string filePath = collection.Get("filePath");
 
@@ -372,8 +373,6 @@ public sealed partial class CreateNewConfigPage : TemplatePage
             }
             else if (operationType == "CFGEDIT")
             {
-                ConfigItem = JSONConvertor.DeserializeObject<ConfigItem>(collection.Get("configItem"));
-
                 PageTitleTextBlock.Text = localizer.GetLocalizedString("EditConfig");
                 if (ConfigItem.target != null)
                 {

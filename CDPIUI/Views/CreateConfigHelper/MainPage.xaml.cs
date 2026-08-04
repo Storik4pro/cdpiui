@@ -52,43 +52,8 @@ namespace CDPIUI.Views.CreateConfigHelper
 
         private async void ImportConfigButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!SettingsManager.Instance.GetValue<bool>("AD", "ImportConfigFromFile"))
-            {
-                ImportConfigFromFileDialog dialog = new ImportConfigFromFileDialog() { XamlRoot = this.Content.XamlRoot };
-                await dialog.ShowAsync();
-                SettingsManager.Instance.SetValue("AD", "ImportConfigFromFile", true);
-            }
-
-            string filePath;
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Choose config file";
-                openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                openFileDialog.FilterIndex = 4;
-
-                openFileDialog.Filter = "JSON configs (*.json)|*.json|BAT config files (*.bat)|*.bat|CMD config files (*.cmd)|*.cmd|All compacible config files (*.bat, *.cmd, *.json)|*.bat;*.cmd;*.json";
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    filePath = openFileDialog.FileName;
-                    var (configItem, errorHappens) = ConfigurationService.LoadConfigFromFile(filePath);
-                    Frame.Navigate(typeof(CreateNewConfigPage), 
-                        new NameValueCollection()
-                        {
-                            { "type", "CFGIMPORT" },
-                            { "configItem", JSONConvertor.SerializeObject(configItem) },
-                            { "errorHappens", errorHappens.ToString() },
-                            { "filePath", filePath }
-                        }, 
-                        new DrillInNavigationTransitionInfo());
-                }
-                else
-                {
-                    return;
-                }
-            }
+            await ((App)Application.Current).SafeCreateNewWindow<ConfigImportUtilWindow>();
+            CreateConfigHelperWindow.Instanse?.Close();
         }
 
         private async void EditConfigButton_Click(object sender, RoutedEventArgs e)
