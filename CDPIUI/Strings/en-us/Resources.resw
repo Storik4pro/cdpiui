@@ -3420,7 +3420,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Import Config</value>
   </data>
   <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
-    <value>Safely convert BAT, CMD, TXT or JSON files into application Configs</value>
+    <value>Importing external BAT, CMD, TXT and JSON-configs to application</value>
   </data>
   <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
     <value>Import Config</value>

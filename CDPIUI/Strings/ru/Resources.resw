@@ -3422,7 +3422,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Импорт пресета</value>
   </data>
   <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
-    <value>Безопасная конвертация BAT, CMD, TXT и JSON-файлов в пресеты приложения</value>
+    <value>Добавление сторонних BAT, CMD, TXT и JSON-пресетов в приложение</value>
   </data>
   <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
     <value>Импорт пресета</value>
@@ -3646,21 +3646,6 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="ConfigImportSuccess" xml:space="preserve">
     <value>Этот пресет импортирован успешно. Теперь просто сохраните его и выберите в параметрах компонента.</value>
   </data>
-  <data name="SaveAll" xml:space="preserve">
-    <value>Сохранить все</value>
-  </data>
-  <data name="Saving" xml:space="preserve">
-    <value>Сохранение ...</value>
-  </data>
-  <data name="ConfigImportWizardDoneTip.Text" xml:space="preserve">
-    <value>Все пресеты успешно импортированы и сохранены. Теперь вы можете выбрать лучший пресет в параметрах компонента.
-
-Также помните – некоторые пресеты могут содержать дополнительные параметры. В этом случае для их работы потребуется дополнительная настройка.
-Для получения поддержки по дополнительным параметрам пресета обращайтесь к разработчику соответствующего пресета.</value>
-  </data>
-  <data name="ClickExitToExit.Text" xml:space="preserve">
-    <value>Нажмите "Выход", чтобы закрыть этот мастер.</value>
-  </data>
   <data name="ConfigImportMissingFilesStepTitle.Text" xml:space="preserve">
     <value>Отсутствующие файлы</value>
   </data>
@@ -3669,6 +3654,9 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="ConfigImportMissingFileSuggestionLabel.Text" xml:space="preserve">
     <value>Предложение автокорректора</value>
+  </data>
+  <data name="ConfigImportMissingFileEmptySuggestion" xml:space="preserve">
+    <value>Создать пустой файл</value>
   </data>
   <data name="ConfigImportUseSuggestedFileButton.Content" xml:space="preserve">
     <value>Применить</value>
@@ -3691,7 +3679,19 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="ConfigImportContinueButton" xml:space="preserve">
     <value>Продолжить</value>
   </data>
-  <data name="ConfigImportMissingFileEmptySuggestion" xml:space="preserve">
-    <value>Создать пустой файл</value>
+  <data name="SaveAll" xml:space="preserve">
+    <value>Сохранить все</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Сохранение ...</value>
+  </data>
+  <data name="ConfigImportWizardDoneTip.Text" xml:space="preserve">
+    <value>Все пресеты успешно импортированы и сохранены. Теперь вы можете выбрать лучший пресет в параметрах компонента.
+
+Также помните – некоторые пресеты могут содержать дополнительные параметры. В этом случае для их работы потребуется дополнительная настройка.
+Для получения поддержки по дополнительным параметрам пресета обращайтесь к разработчику соответствующего пресета.</value>
+  </data>
+  <data name="ClickExitToExit.Text" xml:space="preserve">
+    <value>Нажмите "Выход", чтобы закрыть этот мастер.</value>
   </data>
 </root>
