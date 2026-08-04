@@ -32,9 +32,11 @@ namespace CDPIUI.Controls.Dialogs
             this.Title = string.Format(localizer.GetLocalizedString("EditVariableContentDialogTitle"), varName);
             VarValueTextBox.Text = varValue;
 
-            DescriptionTextBlock.Text = varValues?.Comment ?? localizer.GetLocalizedString("DescriptionNotProvided");
+            DescriptionTextBlock.Text = string.IsNullOrWhiteSpace(varValues?.Comment)
+                ? localizer.GetLocalizedString("DescriptionNotProvided")
+                : varValues.Comment;
 
-            if (varValues != null && varValues.Values.Count > 0)
+            if (varValues?.Values is { Count: > 0 })
             {
                 VarValueComboBox.ItemsSource = varValues.Values;
                 VarValueComboBox.SelectedItem = varValue;
