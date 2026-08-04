@@ -36,6 +36,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Import.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\find_error.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
