@@ -66,6 +66,7 @@ namespace CDPIUI.Views.Main.Components
             if (Parameter != null)
             {
                 ComponentId = Parameter.Get("componentId") ?? string.Empty;
+                EmptyPlaceholder.StoreId = ComponentId;
             }
 
             DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(ComponentId);

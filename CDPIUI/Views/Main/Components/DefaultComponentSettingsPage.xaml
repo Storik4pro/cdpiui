@@ -102,29 +102,7 @@
                     <TextBlock  Grid.Row="1" l:Uids.Uid="WorkingOnItTextBlock" HorizontalAlignment="Center"/>
                 </Grid>
                 <Grid x:Name="EmptyPageGrid" Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="(◡︵◡)" Style="{ThemeResource SubheaderTextBlockStyle}"/>
-                        <TextBlock l:Uids.Uid="EmptyPageTitle" Style="{ThemeResource SubheaderTextBlockStyle}" TextWrapping="NoWrap"/>
-                        <TextBlock l:Uids.Uid="EmptyPageDescription" TextWrapping="Wrap"/>
-                    </StackPanel>
-                    <VariableSizedWrapGrid Orientation="Horizontal" Grid.Row="1" Margin="20" ItemHeight="50">
-                        <Button x:Name="OpenStoreButton" Padding="6" Margin="0 0 10 0" Height="40" Click="OpenStoreButton_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="23" ShowAsMonochrome="True"/>
-                                <TextBlock l:Uids.Uid="ExploreInStore" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="CreateConfigButton" Grid.Column="1" Padding="6" Margin="0 0 10 0" Height="40" Click="CreateConfigButton_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="23" Height="23"/>
-                                <TextBlock l:Uids.Uid="CreateConfigTextBlock" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </VariableSizedWrapGrid>
+                    <componentControls:ConfigNeededUserControl x:Name="EmptyPlaceholder"/>
                 </Grid>
             </Grid>
         </ScrollViewer>

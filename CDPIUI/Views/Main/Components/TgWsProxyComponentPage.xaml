@@ -219,20 +219,7 @@
                         <ucontrols:LinkedSettingsUserControl x:Name="LinkedSettingsUserControl" ClickCommand="{Binding DataContext.LinkedSettingClickCommand, ElementName=RootPage}"/>
                     </StackPanel>
                 </StackPanel>
-                <StackPanel x:Name="EmptyStackPanel" Spacing="30" Visibility="Collapsed">
-                    <StackPanel>
-                        <TextBlock Text="(◡︵◡)" Style="{ThemeResource SubheaderTextBlockStyle}"/>
-                        <TextBlock l:Uids.Uid="EmptyPageTitle" Style="{ThemeResource SubheaderTextBlockStyle}" TextWrapping="NoWrap"/>
-                        <TextBlock l:Uids.Uid="EmptyPageDescription" TextWrapping="Wrap"/>
-                    </StackPanel>
-
-                    <Button x:Name="CreateConfigButton" Grid.Column="1" Padding="6" Margin="0 0 10 0" Height="40" Click="CreateConfigButton_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="23" Height="23"/>
-                            <TextBlock l:Uids.Uid="CreateConfigTextBlock" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                <lcontrol:ConfigNeededUserControl x:Name="EmptyPlaceholder" ClickCommand="{Binding CreateFromTemplateCommand, ElementName=RootPage}"/>
                 
             </StackPanel>
         </ScrollView>
