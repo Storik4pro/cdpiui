@@ -74,6 +74,8 @@ namespace CDPIUI.Views.Main.Components
 
         public readonly ObservableCollection<SettingLinkModel> LinkedSettings = [];
 
+        public ICommand CreateFromTemplateCommand { get; }
+
         public TgWsProxyComponentPage()
         {
             InitializeComponent();
@@ -89,6 +91,8 @@ namespace CDPIUI.Views.Main.Components
             DataCentersListView.ItemsSource = TelegramDataCenterModels;
             LinkedSettingsUserControl.SettingModelsList = LinkedSettings;
 
+            CreateFromTemplateCommand = new RelayCommand(p => HandleCreatePlCommand((AvailableConfigCreationActios)p));
+
             HideInfoBar();
             LoadLinks();
         }
@@ -102,11 +106,12 @@ namespace CDPIUI.Views.Main.Components
         {
             base.OnNavigatedTo(e);
 
-            if (Parameter != null)
+            if (e.Parameter != null && e.Parameter is ComponentPageNavigationModel model)
             {
                 
-                Model = JSONConvertor.DeserializeObject<ComponentPageNavigationModel>(Parameter.Get("model"));
+                Model = model;
                 ComponentId = Model.Id;
+                EmptyPlaceholder.StoreId = ComponentId;
             }
 
             var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
@@ -116,6 +121,7 @@ namespace CDPIUI.Views.Main.Components
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            
             ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
                     ComponentId);
@@ -130,12 +136,12 @@ namespace CDPIUI.Views.Main.Components
             if (!visible)
             {
                 ContentStackPanel.Visibility = Visibility.Collapsed;
-                EmptyStackPanel.Visibility = Visibility.Visible;
+                EmptyPlaceholder.Visibility = Visibility.Visible;
             }
             else
             {
                 ContentStackPanel.Visibility = Visibility.Visible;
-                EmptyStackPanel.Visibility = Visibility.Collapsed;
+                EmptyPlaceholder.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -451,6 +457,30 @@ namespace CDPIUI.Views.Main.Components
             }
         }
 
+        private void HandleCreatePlCommand(AvailableConfigCreationActios action)
+        {
+            if (action == AvailableConfigCreationActios.CreateFromTemplate) CreatePlConfig();
+        }
+
+        private async void CreatePlConfig()
+        {
+            var item = CreateConfigPageHelper.CreateConfigItem(
+                SharedConstants.LocalUserItemsId, localizer.GetLocalizedString("DefaultConfigPlaceholder"), ComponentId, [], [], [], [], DefaultTgWsProxyStartString
+                );
+            string fileName = $"{Guid.NewGuid()}.json";
+            string errorCode = await ConfigurationService.SaveConfigItem(fileName, SharedConstants.LocalUserItemsId, item);
+
+            if (!string.IsNullOrEmpty(errorCode))
+                ShowErrorDialog(string.Format(localizer.GetLocalizedString("SaveConfigException"), errorCode), localizer.GetLocalizedString("SomethingWentWrong"));
+
+            SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", fileName);
+            SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", SharedConstants.LocalUserItemsId);
+
+            ComponentHelper componentHelper =
+                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
+            componentHelper.ReInitConfigs();
+        }
+
         private async void CreateConfig()
         {
             var dialog = new CreateNewConfigForComponentContentDialog()
@@ -462,21 +492,7 @@ namespace CDPIUI.Views.Main.Components
 
             if (dialog.Result == CreateNewConfigForComponentContentDialog.ConfigCreationVariants.FromTemplate)
             {
-                var item = CreateConfigPageHelper.CreateConfigItem(
-                SharedConstants.LocalUserItemsId, localizer.GetLocalizedString("DefaultConfigPlaceholder"), ComponentId, [], [], [], [], DefaultTgWsProxyStartString
-                );
-                string fileName = $"{Guid.NewGuid()}.json";
-                string errorCode = await ConfigurationService.SaveConfigItem(fileName, SharedConstants.LocalUserItemsId, item);
-
-                if (!string.IsNullOrEmpty(errorCode))
-                    ShowErrorDialog(string.Format(localizer.GetLocalizedString("SaveConfigException"), errorCode), localizer.GetLocalizedString("SomethingWentWrong"));
-
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configFile", fileName);
-                SettingsManager.Instance.SetValue<string>(["CONFIGS", ComponentId], "configId", SharedConstants.LocalUserItemsId);
-
-                ComponentHelper componentHelper =
-                    ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
-                componentHelper.ReInitConfigs();
+                CreatePlConfig();
             }
             else if (dialog.Result == CreateNewConfigForComponentContentDialog.ConfigCreationVariants.Manual)
             {

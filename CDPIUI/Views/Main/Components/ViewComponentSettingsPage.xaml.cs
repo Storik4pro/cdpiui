@@ -108,7 +108,7 @@ namespace CDPIUI.Views.Main.Components
                         Id = id,
                     };
                     model.GoBackSignal += NavigateBack;
-                    PageContentFrame.Navigate(type, new NameValueCollection() { { "model", JSONConvertor.SerializeObject(model) } });
+                    PageContentFrame.Navigate(type, model);
                 }
                 else
                 {
