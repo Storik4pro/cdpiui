@@ -3422,7 +3422,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Импорт пресета</value>
   </data>
   <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
-    <value>Добавление сторонних BAT, CMD, TXT и JSON-пресетов в приложение</value>
+    <value>Импортировать пресеты из внешнего источника, включая .BAT-решения. Поддерживает все компоненты и большинство форматов пресетов</value>
   </data>
   <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
     <value>Импорт пресета</value>
@@ -3693,5 +3693,38 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="ClickExitToExit.Text" xml:space="preserve">
     <value>Нажмите "Выход", чтобы закрыть этот мастер.</value>
+  </data>
+  <data name="YouMustGetConfigsFirstTextBlock.Text" xml:space="preserve">
+    <value>Не удалось найти пресеты для этого компонента</value>
+  </data>
+  <data name="YouCanGetConfigsFromThatSourceTextBlock.Text" xml:space="preserve">
+    <value>Выберите один из вариантов ниже, чтобы добавить новый пресет для этого компонента</value>
+  </data>
+  <data name="CreateConfigManually" xml:space="preserve">
+    <value>Создать пресет вручную</value>
+  </data>
+  <data name="CreateConfigManuallyDescription" xml:space="preserve">
+    <value>Создать пресет с чистого листа используя встроенный редактор</value>
+  </data>
+  <data name="ConfigImportUtilDescription" xml:space="preserve">
+    <value>Импортировать пресеты из внешнего источника, включая .BAT-решения. Поддерживает все компоненты и большинство форматов пресетов</value>
+  </data>
+  <data name="GetInStore" xml:space="preserve">
+    <value>Выполнить поиск готовых пресетов в Магазине</value>
+  </data>
+  <data name="GetInStoreDescription" xml:space="preserve">
+    <value>Готовые для использования пресеты от разработчиков, которых вы знаете: Flowseal, KDS и др.</value>
+  </data>
+  <data name="CreateFromTemplateDescription" xml:space="preserve">
+    <value>Создать пресет с помощью рекомендуемого разработчиком образца</value>
+  </data>
+  <data name="CreateAutomatically" xml:space="preserve">
+    <value>Создать новый пресет автоматически</value>
+  </data>
+  <data name="CreateAutomaticallyDescription" xml:space="preserve">
+    <value>Начать автоподбор пресета для этого компонента</value>
+  </data>
+  <data name="CreateFromTemplate" xml:space="preserve">
+    <value>Использовать образец</value>
   </data>
 </root>

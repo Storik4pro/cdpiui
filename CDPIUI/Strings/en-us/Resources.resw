@@ -3420,7 +3420,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Import Config</value>
   </data>
   <data name="ConfigImportUtilSettingsCard.Description" xml:space="preserve">
-    <value>Importing external BAT, CMD, TXT and JSON-configs to application</value>
+    <value>Import configs from external source, including BAT-solutions. Supports all components and different config types</value>
   </data>
   <data name="ConfigImportUtilWindowTitle" xml:space="preserve">
     <value>Import Config</value>
@@ -3691,5 +3691,38 @@ For support about additional config settings contact config's developer.</value>
   </data>
   <data name="ClickExitToExit.Text" xml:space="preserve">
     <value>Click "Exit" to close this wizard.</value>
+  </data>
+  <data name="YouMustGetConfigsFirstTextBlock.Text" xml:space="preserve">
+    <value>There is no configs for that component</value>
+  </data>
+  <data name="YouCanGetConfigsFromThatSourceTextBlock.Text" xml:space="preserve">
+    <value>Here is available variants to get configuration for that component</value>
+  </data>
+  <data name="CreateConfigManually" xml:space="preserve">
+    <value>Create config manually</value>
+  </data>
+  <data name="CreateConfigManuallyDescription" xml:space="preserve">
+    <value>Create config for blank using [Config edit+create] utility</value>
+  </data>
+  <data name="ConfigImportUtilDescription" xml:space="preserve">
+    <value>Import configs from external source, including BAT-solutions. Supports all components and different config types</value>
+  </data>
+  <data name="GetInStore" xml:space="preserve">
+    <value>Search for configs in Store</value>
+  </data>
+  <data name="GetInStoreDescription" xml:space="preserve">
+    <value>Ready to use config kits from developers you know: Flowseal, KDS, Remba, etc.</value>
+  </data>
+  <data name="CreateFromTemplateDescription" xml:space="preserve">
+    <value>Create config from developer's recommended template</value>
+  </data>
+  <data name="CreateAutomatically" xml:space="preserve">
+    <value>Create new config automatically </value>
+  </data>
+  <data name="CreateAutomaticallyDescription" xml:space="preserve">
+    <value>Begin config autoselection for this component </value>
+  </data>
+  <data name="CreateFromTemplate" xml:space="preserve">
+    <value>Create from template</value>
   </data>
 </root>

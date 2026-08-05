@@ -376,4 +376,7 @@ Just go to [Autoselection] utility, select component you want and make some tea 
   <data name="AreYouKnow" xml:space="preserve">
     <value>Are you know?</value>
   </data>
+  <data name="YouMustGetConfigsFirstTextBlock.Text" xml:space="preserve">
+    <value>Component – it's only engine, who helps with work on traffic. To use component you must get configuration for you provider – different configurations works with different providers</value>
+  </data>
 </root>
