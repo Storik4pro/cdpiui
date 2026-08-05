@@ -1,8 +1,6 @@
-#nullable enable
-
 using CDPIUI.Default;
 using CDPIUI.Views.ConfigImportUtil;
-using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.Specialized;
 using WinUI3Localizer;
 
@@ -10,8 +8,6 @@ namespace CDPIUI;
 
 public sealed partial class ConfigImportUtilWindow : TemplateWindow
 {
-    public static ConfigImportUtilWindow? Instance { get; private set; }
-
     private string targetStoreId = string.Empty;
     public string TargetStoreId
     {
@@ -21,7 +17,8 @@ public sealed partial class ConfigImportUtilWindow : TemplateWindow
             targetStoreId = value ?? string.Empty;
             ContentFrame.Navigate(
                 typeof(MainPage),
-                new NameValueCollection { { "componentId", targetStoreId } });
+                new NameValueCollection { { "componentId", targetStoreId } },
+                new SuppressNavigationTransitionInfo());
         }
     }
 
@@ -35,18 +32,11 @@ public sealed partial class ConfigImportUtilWindow : TemplateWindow
         CustomTitleBarUserControl = TitleBarUserControl;
         DisableResizeFeature();
 
-        Instance = this;
         MainFrame = ContentFrame;
+
         ContentFrame.Navigate(
             typeof(MainPage),
-            new NameValueCollection { { "componentId", targetStoreId } });
-
-        Closed += ConfigImportUtilWindow_Closed;
-    }
-
-    private void ConfigImportUtilWindow_Closed(object sender, WindowEventArgs args)
-    {
-        Instance = null;
-        Closed -= ConfigImportUtilWindow_Closed;
+            new NameValueCollection { { "componentId", targetStoreId } },
+            new SuppressNavigationTransitionInfo());
     }
 }
