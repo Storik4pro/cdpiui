@@ -105,14 +105,14 @@ namespace CDPIUI.Core.Store.Network
                 else
                 {
                     if (!string.IsNullOrEmpty(executableFileName))
-                        File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + (isSupportedFileExtention ? filetype : FileSystemService.GetFileExtention(enFiletype))), true);
+                        File.Copy(tempDestination, Path.Combine(destinationPath, executableFileName + (!isSupportedFileExtention ? filetype : FileSystemService.GetFileExtention(enFiletype))), true);
                     else
                     {
                         string exeName = string.IsNullOrEmpty(filename) ? GetFileNameFromUri(url) : filename;
                         if (string.IsNullOrEmpty(exeName))
                             throw new IOException();
 
-                        string extention = isSupportedFileExtention? filetype : FileSystemService.GetFileExtention(enFiletype);
+                        string extention = !isSupportedFileExtention? filetype : FileSystemService.GetFileExtention(enFiletype);
 
                         File.Copy(tempDestination, Path.Combine(destinationPath, exeName + extention), true);
                     }
@@ -124,7 +124,7 @@ namespace CDPIUI.Core.Store.Network
                     string installerExeName = GetFileNameFromUri(url);
                     installerExeName = string.IsNullOrEmpty(installerExeName) ? "installer" : installerExeName;
 
-                    string msiPath = Path.Combine(destinationPath, installerExeName + (isSupportedFileExtention ? filetype : FileSystemService.GetFileExtention(enFiletype)));
+                    string msiPath = Path.Combine(destinationPath, installerExeName + (!isSupportedFileExtention ? filetype : FileSystemService.GetFileExtention(enFiletype)));
                     msiGUID = Guid.NewGuid().ToString();
                     MsiInstallerService msiInstallerHelper = new(msiGUID, msiPath);
                     msiInstallerHelper.callbackAction += HandleMsiInstallerMessage;
