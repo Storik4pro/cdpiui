@@ -8,7 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:template="using:CDPIUI.Default"
-    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:ncontrols="using:CDPIUI.Controls.Navigation"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal"
+    xmlns:l="using:WinUI3Localizer">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -18,12 +21,33 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <wc:TitleBarUserControl
             x:Name="TitleBarUserControl"
             Height="48"/>
         <Grid Grid.Row="1">
-            
+            <ncontrols:AnimatedHorizontalContentViewer x:Name="AnimatedHorizontalContentViewer">
+                <ncontrols:AnimatedHorizontalContentItem
+                    Header="WTF"
+                    Description="OMG">
+                    <TextBlock Text="Hello World" />
+                </ncontrols:AnimatedHorizontalContentItem>
+
+                <ncontrols:AnimatedHorizontalContentItem
+                    Header="WTF1"
+                    Description="OMG1">
+                    <TextBlock Text="Hello World2" />
+                </ncontrols:AnimatedHorizontalContentItem>
+            </ncontrols:AnimatedHorizontalContentViewer>
         </Grid>
+        <ucontrols:UtilityButtonControls Grid.Row="2">
+            <ucontrols:UtilityButtonControls.Buttons>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Button x:Name="NextButton" l:Uids.Uid="NextButton" Content="Next" Click="NextButton_Click"/>
+                    <Button x:Name="BackButton" l:Uids.Uid="BackButton" Content="Back" Click="BackButton_Click"/>
+                </StackPanel>
+            </ucontrols:UtilityButtonControls.Buttons>
+        </ucontrols:UtilityButtonControls>
     </Grid>
 </template:TemplateWindow>

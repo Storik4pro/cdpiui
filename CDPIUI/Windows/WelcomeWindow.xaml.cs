@@ -36,5 +36,15 @@ namespace CDPIUI
 
             
         }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            AnimatedHorizontalContentViewer.GoNext();
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            AnimatedHorizontalContentViewer.GoPrevious();
+        }
     }
 }
