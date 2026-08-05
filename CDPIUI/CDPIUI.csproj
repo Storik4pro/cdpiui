@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
+    <None Remove="Controls\ComponentSettings\ConfigNeededUserControl.xaml" />
     <None Remove="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml" />
     <None Remove="Controls\ConditionUserControl.xaml" />
     <None Remove="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml" />
@@ -61,6 +62,7 @@
     <None Remove="Controls\MainPage\SmallComponentTileUserControl.xaml" />
     <None Remove="Controls\MainPage\WelcomePlaceholderUserControl.xaml" />
     <None Remove="Controls\MainPage\WidgetUserControl.xaml" />
+    <None Remove="Controls\Navigation\AnimatedHorizontalContentViewer.xaml" />
     <None Remove="Controls\Store\Settings\MemoryDiskUsageViewUserControl.xaml" />
     <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
@@ -609,6 +611,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Universal\ContentSeparator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ComponentSettings\ConfigNeededUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Navigation\AnimatedHorizontalContentViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Hosts\hosts">
