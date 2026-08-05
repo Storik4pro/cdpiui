@@ -11,6 +11,8 @@ namespace CDPIUI.Commands
     {
         private static readonly CommandRoute[] Routes =
         [
+            CreateWindowRoute("Welcome", [], "WelcomeWindow"),
+
             CreateWindowRoute("Main", [], "MainWindow"),
             CreateWindowRoute("Main", ["Home"], "MainWindow", "HomePage"),
             CreateWindowRoute("Main", ["Utilities"], "MainWindow", "UtilsPage"),
