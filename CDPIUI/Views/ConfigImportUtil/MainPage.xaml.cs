@@ -48,8 +48,6 @@ public sealed partial class MainPage : TemplatePage
     private string activeTestComponentId = string.Empty;
     private ConfigImportTestPlaceholder activeTestPlaceholder;
 
-    private ImportUtilitySteps CurrentStep = ImportUtilitySteps.Welcome;
-
     public MainPage()
     {
         InitializeComponent();
@@ -122,37 +120,53 @@ public sealed partial class MainPage : TemplatePage
             return false;
         
         UtilityButtonContols.IsLoading = true;
-        SelectionStep.Visibility = Visibility.Collapsed;
-        CompletedStep.Visibility = Visibility.Collapsed;
-        MissingFilesStep.Visibility = Visibility.Collapsed;
-        ProgressStep.Visibility = Visibility.Visible;
+
+        MainContent.GoTo(ProgressStep);
+
         results.Clear();
         missingFiles.Clear();
 
+        await Task.Run(() => ImportWork(filePaths));
+
+        await PrepareMissingFilesAsync();
+
+            if (missingFiles.Count > 0)
+                ShowMissingFiles();
+            else
+                ShowCompletion();
+
+        return true;
+    }
+
+    private async Task ImportWork(string[] filePaths)
+    {
         List<ConfigImportTarget> targets = [.. components.Select(CreateTarget)];
         for (int index = 0; index < filePaths.Length; index++)
         {
-            UtilityButtonContols.LoadingStateText = string.Format(
+            
+            string text = string.Format(
                 localizer.GetLocalizedString("ConfigImportProgressCounter"),
                 index + 1,
                 filePaths.Length,
                 Path.GetFileName(filePaths[index]));
 
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                UtilityButtonContols.LoadingStateText = text;
+            });
+
             AnalyzedImport analyzed = await Task.Run(() => AnalyzeFile(Path.GetFullPath(filePaths[index]), targets));
             DatabaseStoreItem initialComponent = GetInitialComponent(analyzed.Result.Target.ComponentId);
-            results.Add(new ConfigImportPresetViewModel(
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                results.Add(new ConfigImportPresetViewModel(
                 analyzed.Result,
                 components,
                 initialComponent,
                 analyzed.TargetWasDetected));
+            });
         }
-
-        await PrepareMissingFilesAsync();
-        if (missingFiles.Count > 0)
-            ShowMissingFiles();
-        else
-            ShowCompletion();
-        return true;
     }
 
     private async Task PrepareMissingFilesAsync()
@@ -170,6 +184,7 @@ public sealed partial class MainPage : TemplatePage
                     missingPath,
                     suggestion,
                     suggestEmptyFile));
+                
             }
         }
     }
@@ -177,9 +192,9 @@ public sealed partial class MainPage : TemplatePage
     private void ShowMissingFiles()
     {
         UtilityButtonContols.IsLoading = false;
-        CurrentStep = ImportUtilitySteps.ResolveMissingFiles;
-        ProgressStep.Visibility = Visibility.Collapsed;
-        MissingFilesStep.Visibility = Visibility.Visible;
+
+        MainContent.GoTo(MissingFilesStep);
+
         NextButton.Content = localizer.GetLocalizedString("ConfigImportContinueButton");
         UpdateMissingFilesNextState();
     }
@@ -218,10 +233,7 @@ public sealed partial class MainPage : TemplatePage
 
         NextButton.Content = localizer.GetLocalizedString("SaveAll");
 
-        CurrentStep = ImportUtilitySteps.Done;
-        ProgressStep.Visibility = Visibility.Collapsed;
-        MissingFilesStep.Visibility = Visibility.Collapsed;
-        CompletedStep.Visibility = Visibility.Visible;
+        MainContent.GoTo(CompletedStep);
 
         int successful = results.Count(item => item.Result.IsSuccessful);
         if (successful == results.Count)
@@ -260,9 +272,8 @@ public sealed partial class MainPage : TemplatePage
 
         if (results.Count == 0)
         {
-            CompletedStep.Visibility = Visibility.Collapsed;
             NextButton.Visibility = Visibility.Collapsed;
-            WorkDoneStep.Visibility = Visibility.Visible;
+            MainContent.GoTo(WorkDoneStep);
         }
     }
 
@@ -528,17 +539,15 @@ public sealed partial class MainPage : TemplatePage
 
     private async void NextButton_Click(object sender, RoutedEventArgs e)
     {
-        if (CurrentStep == ImportUtilitySteps.Welcome)
+        if (MainContent.SelectedItem == SelectionStep)
         {
             NextButton.IsEnabled = false;
-            CurrentStep = ImportUtilitySteps.Working;
-            if (!await ImportConfigsAsync())
+            if (await ImportConfigsAsync())
             {
-                CurrentStep = ImportUtilitySteps.Welcome;
                 NextButton.IsEnabled = true;
             }
         }
-        else if (CurrentStep == ImportUtilitySteps.ResolveMissingFiles)
+        else if (MainContent.SelectedItem == MissingFilesStep)
         {
             bool flg = false;
             foreach (var item in missingFiles)
@@ -555,7 +564,7 @@ public sealed partial class MainPage : TemplatePage
             }
             if (!flg) ShowCompletion();
         }
-        else if (CurrentStep == ImportUtilitySteps.Done)
+        else if (MainContent.SelectedItem == CompletedStep)
         {
             NextButton.IsEnabled = false;
             ResultItemsControl.IsEnabled = false;
@@ -588,9 +597,7 @@ public sealed partial class MainPage : TemplatePage
 
             if (results.Count == 0)
             {
-                CompletedStep.Visibility = Visibility.Collapsed;
-                NextButton.Visibility = Visibility.Collapsed;
-                WorkDoneStep.Visibility = Visibility.Visible;
+                MainContent.GoTo(WorkDoneStep);
             }
         }
         
