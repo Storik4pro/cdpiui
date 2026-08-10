@@ -82,6 +82,7 @@
     <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
     <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
     <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
+    <None Remove="Controls\Store\StoreViewBundles.xaml" />
     <None Remove="Controls\Troubleshooting\DiagnosticResultUserControl.xaml" />
     <None Remove="Controls\Universal\ContentSeparator.xaml" />
     <None Remove="Controls\Universal\CopyButton.xaml" />
@@ -94,6 +95,8 @@
     <None Remove="Controls\Universal\UtilityButtonControls.xaml" />
     <None Remove="Controls\VariableUserControl.xaml" />
     <None Remove="Controls\WindowControls\TitleBarUserControl.xaml" />
+    <None Remove="ELUA\EN\ELUA.md" />
+    <None Remove="ELUA\RU\ELUA.md" />
     <None Remove="MainPage.xaml" />
     <None Remove="PersonalizePage.xaml" />
     <None Remove="SystemPage.xaml" />
@@ -166,6 +169,12 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="ELUA\EN\ELUA.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ELUA\RU\ELUA.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Strings\en-us\Flashlight.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -188,6 +197,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\en-us\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\WelcomeWizard.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\en-us\Widgets.resw">
@@ -215,6 +227,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\WelcomeWizard.resw">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Strings\ru\Widgets.resw">
@@ -619,6 +634,9 @@
     <Page Update="Controls\Navigation\AnimatedHorizontalContentViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Store\StoreViewBundles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Hosts\hosts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -774,5 +792,11 @@
     <ProjectReference Include="..\CDPIUI.AddOns\CDPIUI.AddOns.csproj" />
     <ProjectReference Include="..\CDPIUI.Core\CDPIUI.Core.csproj" />
     <ProjectReference Include="..\CDPIUI.Shared\CDPIUI.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\WelcomeWizard.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\WelcomeWizard.resw" />
   </ItemGroup>
 </Project>
