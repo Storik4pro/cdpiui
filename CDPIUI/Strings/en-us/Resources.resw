@@ -3725,4 +3725,46 @@ For support about additional config settings contact config's developer.</value>
   <data name="CreateFromTemplate" xml:space="preserve">
     <value>Create from template</value>
   </data>
+  <data name="ReadyKitContents" xml:space="preserve">
+    <value>Included in this kit</value>
+  </data>
+  <data name="ReadyKitInvalidTitle" xml:space="preserve">
+    <value>Kit is unavailable</value>
+  </data>
+  <data name="ReadyKitInvalidMessage" xml:space="preserve">
+    <value>The ready-to-use kit could not be found in the Store database.</value>
+  </data>
+  <data name="ReadyKitMissingItemsMessage" xml:space="preserve">
+    <value>The kit references {0} missing Store item(s). Installation has been disabled.</value>
+  </data>
+  <data name="ReadyKitUnsupportedTitle" xml:space="preserve">
+    <value>Kit is not supported</value>
+  </data>
+  <data name="ReadyKitUnsupportedMessage" xml:space="preserve">
+    <value>At least one item in this kit is not compatible with this version of CDPIUI.</value>
+  </data>
+  <data name="ReadyKitQueuedTitle" xml:space="preserve">
+    <value>Kit added to downloads</value>
+  </data>
+  <data name="ReadyKitQueuedMessage" xml:space="preserve">
+    <value>{0} item(s) will be downloaded and installed in the order shown.</value>
+  </data>
+  <data name="BundlesCategoryButton.Text" xml:space="preserve">
+    <value>Popular ready-to-use bundles</value>
+  </data>
+  <data name="ReadyKitsPageTitle" xml:space="preserve">
+    <value>Ready-to-use bundles</value>
+  </data>
+  <data name="ReadyKitsLoadError" xml:space="preserve">
+    <value>Could not load ready-to-use bundles from the Store database.</value>
+  </data>
+  <data name="ReadyKitsEmptyMessage" xml:space="preserve">
+    <value>There are no ready-to-use bundles available in the Store database yet.</value>
+  </data>
+  <data name="ReadyKitItemProgress" xml:space="preserve">
+    <value>{0} of {1}: {2}</value>
+  </data>
+  <data name="ReadyKitItemFailedMessage" xml:space="preserve">
+    <value>Could not get “{0}”. Error code: {1}</value>
+  </data>
 </root>

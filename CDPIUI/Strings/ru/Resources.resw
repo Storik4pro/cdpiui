@@ -3727,4 +3727,46 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="CreateFromTemplate" xml:space="preserve">
     <value>Использовать образец</value>
   </data>
+  <data name="ReadyKitContents" xml:space="preserve">
+    <value>Что входит в набор</value>
+  </data>
+  <data name="ReadyKitInvalidTitle" xml:space="preserve">
+    <value>Набор недоступен</value>
+  </data>
+  <data name="ReadyKitInvalidMessage" xml:space="preserve">
+    <value>Не удалось найти готовый набор в базе данных Магазина.</value>
+  </data>
+  <data name="ReadyKitMissingItemsMessage" xml:space="preserve">
+    <value>В наборе указано отсутствующих элементов: {0}. Установка отключена.</value>
+  </data>
+  <data name="ReadyKitUnsupportedTitle" xml:space="preserve">
+    <value>Набор не поддерживается</value>
+  </data>
+  <data name="ReadyKitUnsupportedMessage" xml:space="preserve">
+    <value>Хотя бы один элемент набора несовместим с этой версией CDPIUI.</value>
+  </data>
+  <data name="ReadyKitQueuedTitle" xml:space="preserve">
+    <value>Набор добавлен в загрузки</value>
+  </data>
+  <data name="ReadyKitQueuedMessage" xml:space="preserve">
+    <value>Элементов для последовательной загрузки и установки: {0}.</value>
+  </data>
+  <data name="BundlesCategoryButton.Text" xml:space="preserve">
+    <value>Популярные готовые наборы</value>
+  </data>
+  <data name="ReadyKitsPageTitle" xml:space="preserve">
+    <value>Готовые наборы</value>
+  </data>
+  <data name="ReadyKitsLoadError" xml:space="preserve">
+    <value>Не удалось загрузить готовые наборы из базы данных Магазина.</value>
+  </data>
+  <data name="ReadyKitsEmptyMessage" xml:space="preserve">
+    <value>В базе данных Магазина пока нет доступных готовых наборов.</value>
+  </data>
+  <data name="ReadyKitItemProgress" xml:space="preserve">
+    <value>{0} из {1}: {2}</value>
+  </data>
+  <data name="ReadyKitItemFailedMessage" xml:space="preserve">
+    <value>Не удалось получить «{0}». Код ошибки: {1}</value>
+  </data>
 </root>
