@@ -12,6 +12,9 @@
 
     <UserControl.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+
+
     </UserControl.Resources>
 
     <Grid>
@@ -30,13 +33,18 @@
             <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
 
             <Grid Padding="20">
-                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click" 
+                        Visibility="{x:Bind HelpUrl, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}">
                     <Button.Content>
                         <FontIcon Glyph="&#xE897;" FontSize="16"/>
                     </Button.Content>
                 </Button>
 
-                <ContentPresenter Content="{x:Bind Buttons, Mode=OneWay}" HorizontalAlignment="Right"/>
+                <ItemsRepeater ItemsSource="{x:Bind Items, Mode=OneWay}" HorizontalAlignment="Right">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Orientation="Horizontal" Spacing="10"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
             </Grid>
         </Grid>
     </Grid>

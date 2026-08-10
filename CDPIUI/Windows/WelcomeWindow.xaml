@@ -11,7 +11,10 @@
     xmlns:wc="using:CDPIUI.Controls.WindowControls"
     xmlns:ncontrols="using:CDPIUI.Controls.Navigation"
     xmlns:ucontrols="using:CDPIUI.Controls.Universal"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
+    xmlns:vm="using:CDPIUI.ViewModels"
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -29,25 +32,68 @@
         <Grid Grid.Row="1">
             <ncontrols:AnimatedHorizontalContentViewer x:Name="AnimatedHorizontalContentViewer">
                 <ncontrols:AnimatedHorizontalContentItem
-                    Header="WTF"
-                    Description="OMG">
-                    <TextBlock Text="Hello World" />
+                    x:Name="WelcomeItem"
+                    l:Uids.Uid="/WelcomeWizard/WelcomeAnimatedHorizontalContentItem">
+
+                    <ListBox 
+                        Margin="20 0 20 20"
+                        x:Name="LanguageListView"
+                        SelectedItem="{x:Bind uexp:LocalizationHelper.Instance.CurrentLanguage, Mode=OneWay}"
+                        ItemsSource="{x:Bind uexp:LocalizationHelper.Instance.Languages}"
+                        SelectionChanged="{x:Bind uexp:LocalizationHelper.Instance.HandleCollectionLanguageChanged}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LanguageSelectModel">
+                                <Grid Height="40" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock 
+                                        Text="{x:Bind DisplayId, Mode=OneWay}" 
+                                        VerticalAlignment="Center" 
+                                        Style="{ThemeResource SubheaderTextBlockStyle}"
+                                        TextWrapping="NoWrap"
+                                        FontSize="24"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </ncontrols:AnimatedHorizontalContentItem>
 
                 <ncontrols:AnimatedHorizontalContentItem
-                    Header="WTF1"
-                    Description="OMG1">
-                    <TextBlock Text="Hello World2" />
+                    x:Name="LicenseItem"
+                    l:Uids.Uid="/WelcomeWizard/LicenceAnimatedHorizontalContentItem">
+                    <Grid RowSpacing="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Padding="20 0">
+                            <controls:MarkdownTextBlock 
+                                x:Name="LicenseTextBlock"
+                                Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                                UseAutoLinks="False"
+                                UseEmphasisExtras="True"
+                                UseListExtras="True"
+                                UsePipeTables="True"
+                                UseTaskLists="True"
+                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>
+                        </ScrollViewer>
+                        <CheckBox x:Name="LicenseAgreeCheckBox" l:Uids.Uid="/WelcomeWizard/LicenseAgreeCheckBox" Click="LicenseAgreeCheckBox_Click" Grid.Row="1" Margin="20 0 20 10"/>
+                    </Grid>
+                </ncontrols:AnimatedHorizontalContentItem>
+
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="PersonalizationItem"
+                    l:Uids.Uid="/WelcomeWizard/PersonalizationAnimatedHorizontalContentItem">
+                    
                 </ncontrols:AnimatedHorizontalContentItem>
             </ncontrols:AnimatedHorizontalContentViewer>
         </Grid>
         <ucontrols:UtilityButtonControls Grid.Row="2">
-            <ucontrols:UtilityButtonControls.Buttons>
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <Button x:Name="NextButton" l:Uids.Uid="NextButton" Content="Next" Click="NextButton_Click"/>
-                    <Button x:Name="BackButton" l:Uids.Uid="BackButton" Content="Back" Click="BackButton_Click"/>
-                </StackPanel>
-            </ucontrols:UtilityButtonControls.Buttons>
+            <Button x:Name="BackButton" l:Uids.Uid="GoBackButton" Click="BackButton_Click"/>
+            <Button x:Name="NextButton" l:Uids.Uid="GoForwardButton" Click="NextButton_Click"/>
         </ucontrols:UtilityButtonControls>
     </Grid>
 </template:TemplateWindow>

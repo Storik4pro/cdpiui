@@ -279,17 +279,13 @@
             </nv:AnimatedHorizontalContentItem>
         </nv:AnimatedHorizontalContentViewer>
         <ucontrols:UtilityButtonControls x:Name="UtilityButtonContols" Grid.Row="1" HelpUrl="Utils/ImportConfig">
-            <ucontrols:UtilityButtonControls.Buttons>
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
-                    <Button x:Name="NextButton" 
-                            l:Uids.Uid="GoForwardButton" 
-                            MinWidth="150" 
-                            Click="NextButton_Click" 
-                            IsEnabled="True" 
-                            Style="{ThemeResource AccentButtonStyle}"/>
-                </StackPanel>
-            </ucontrols:UtilityButtonControls.Buttons>
+            <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
+            <Button x:Name="NextButton" 
+                    l:Uids.Uid="GoForwardButton" 
+                    MinWidth="150" 
+                    Click="NextButton_Click" 
+                    IsEnabled="True" 
+                    Style="{ThemeResource AccentButtonStyle}"/>
         </ucontrols:UtilityButtonControls>
     </Grid>
 </tpl:TemplatePage>
