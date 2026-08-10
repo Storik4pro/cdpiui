@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reflection;
+using WinUI3Localizer;
 
 namespace CDPIUI.Controls.Navigation;
 
@@ -20,6 +21,8 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
     private Storyboard _transitionStoryboard;
     private int _selectedIndex = -1;
 
+    private ILocalizer localizer = Localizer.Get();
+
     public AnimatedHorizontalContentItem SelectedItem
     {
         get => _selectedIndex >= 0 && _selectedIndex < Items.Count ? Items[_selectedIndex] : null;
@@ -31,7 +34,14 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
         _activePresenter = PrimaryPresenter;
         _inactivePresenter = SecondaryPresenter;
 
+        localizer.LanguageChanged += Localizer_LanguageChanged;
+
         this.Loaded += AnimatedHorizontalContentViewer_Loaded;
+    }
+
+    private void Localizer_LanguageChanged(object sender, LanguageChangedEventArgs e)
+    {
+        UpdateCurrentText(_selectedIndex);
     }
 
     public string CurrentHeader
@@ -43,7 +53,7 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
     public static readonly DependencyProperty CurrentHeaderProperty = DependencyProperty.Register(
         nameof(CurrentHeader),
         typeof(string),
-        typeof(AnimatedHorizontalContentItem),
+        typeof(AnimatedHorizontalContentViewer),
         new PropertyMetadata(string.Empty));
 
     public string CurrentDescription
@@ -55,7 +65,7 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
     public static readonly DependencyProperty CurrentDescriptionProperty = DependencyProperty.Register(
         nameof(CurrentDescription),
         typeof(string),
-        typeof(AnimatedHorizontalContentItem),
+        typeof(AnimatedHorizontalContentViewer),
         new PropertyMetadata(string.Empty));
 
     private void AnimatedHorizontalContentViewer_Loaded(object sender, RoutedEventArgs e)
@@ -72,14 +82,20 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
         GoTo(newIndex);
     }
 
+
+    private void UpdateCurrentText(int index)
+    {
+        UpdateTextStoryboard.Begin();
+        CurrentHeader = Items[index].Header;
+        CurrentDescription = Items[index].Description;
+    }
+
     public void GoTo(int index)
     {
         if (Items.Count < index || index < 0)
             return;
 
-        UpdateTextStoryboard.Begin();
-        CurrentHeader = Items[index].Header;
-        CurrentDescription = Items[index].Description;
+        UpdateCurrentText(index);
 
         ShowAnimated(index);
     }
