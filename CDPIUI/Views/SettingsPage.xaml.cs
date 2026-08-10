@@ -35,6 +35,7 @@ using static CDPIUI.Helper.UIHelper;
 using CDPIUI.Shared.Extentions;
 using CDPIUI.Controls.Default;
 using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.UserExperience;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -51,15 +52,9 @@ namespace CDPIUI.Views
         public ElementTheme Id { get; set; }
         public string DisplayName { get; set; }
     }
-    public class LanguageSelectModel
-    {
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
-    }
+    
     public sealed partial class SettingsPage : TemplatePage
     {
-        
-        private ObservableCollection<LanguageSelectModel> languages = [];
         private ObservableCollection<ComboBoxModel> components = [];
 
         public static readonly List<Type> MainSettingsNavigationSupportedPages = [
@@ -78,17 +73,7 @@ namespace CDPIUI.Views
             IsBackwardAnimationToPageAvailable = true;
             ElementToAnimateBackwardConnectedAnimation = NavGrid;
 
-            this.NavigationCacheMode = NavigationCacheMode.Disabled;
-
-
-            
-
-            LanguageComboBox.ItemsSource = languages;
-            CreateLanguages();
-            LanguageComboBox.SelectedItem = languages.FirstOrDefault(x => string.Equals(x.Id, localizer.GetCurrentLanguage(), StringComparison.OrdinalIgnoreCase));
-            LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
-
-            
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;            
 
             ProcessStateToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
@@ -138,29 +123,6 @@ namespace CDPIUI.Views
                     "OpenComponentSiteListToEditCardDescription"),
                     mode == (int)TextFileOpenModes.UserChoose ? Path.GetFileNameWithoutExtension(appPath).FirstCharToUpper() : localizer.GetLocalizedString("FollowSystem"));
         }
-
-        
-
-        
-
-        
-
-        private void CreateLanguages()
-        {
-            languages.Add(new()
-            {
-                Id = "en-us",
-                DisplayName = localizer.GetLocalizedString("en-us")
-            });
-            languages.Add(new()
-            {
-                Id = "ru",
-                DisplayName = localizer.GetLocalizedString("ru")
-            });
-        }
-
-        
-
         
 
         private void ProcessStateToast_Click(object sender, RoutedEventArgs e)
@@ -205,12 +167,6 @@ namespace CDPIUI.Views
                 Zapret2LegacyConfigService.HashValidationSettingsGroup,
                 Zapret2LegacyConfigService.HashValidationSettingsKey,
                 Zapret2LegacyHashValidationToggleSwitch.IsOn);
-        }
-
-        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            localizer.SetLanguage(((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
-            SettingsManager.Instance.SetValue<string>("SYSTEM", "language", ((LanguageSelectModel)LanguageComboBox.SelectedItem).Id);
         }
         
 
