@@ -38,6 +38,12 @@ namespace CDPIUI.Core.Data
         public static string StoreLocalUserItemDirectory => Path.Combine(StoreItemsDirectory, SharedConstants.LocalUserItemsId);
         #endregion
 
+        #region ELUA
+
+        public static string ELUADirectory => Path.Combine(CurrentDirectory, "ELUA");
+
+        #endregion
+
         public static string TempFilesDirectory { get => DataCombine("TempFiles"); }
 
         #region Download Manager
