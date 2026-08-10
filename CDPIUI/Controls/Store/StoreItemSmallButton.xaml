@@ -56,24 +56,24 @@
                             <ColumnDefinition Width="25"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Rectangle Grid.Column="0" Fill="{x:Bind CardBackgroundBrush}" 
+                        <Rectangle Grid.Column="0" Fill="{x:Bind CardBackgroundBrush, Mode=OneWay}" 
                                RadiusX="5" RadiusY="5"
                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"
                             BorderThickness="1" CornerRadius="5" 
                             BorderBrush="{ThemeResource ControlStrokeColorSecondaryBrush}"/>
-                        <Image x:Name="PART_Image" Grid.Column="0" Source="{x:Bind CardImageSource}" Width="60"/>
+                        <Image x:Name="PART_Image" Grid.Column="0" Source="{x:Bind CardImageSource, Mode=OneWay}" Width="60"/>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="{x:Bind CardTitle}" 
+                            <TextBlock Text="{x:Bind CardTitle, Mode=OneWay}" 
                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
                                    MaxLines="3"/>
-                            <TextBlock Text="{x:Bind CardDeveloper}" Margin="0, 5, 0, 0" 
+                            <TextBlock Text="{x:Bind CardDeveloper, Mode=OneWay}" Margin="0, 5, 0, 0" 
                                    Style="{ThemeResource CaptionTextBlockStyle}"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                         </StackPanel>
                         <Grid Grid.Column="2" HorizontalAlignment="Right" Padding="0" VerticalAlignment="Bottom">
                             <Rectangle Fill="{ThemeResource SubtleFillColorSecondaryBrush}" RadiusX="3" RadiusY="3"/>
-                            <TextBlock Text="{x:Bind CardPrice}" Style="{ThemeResource CaptionTextBlockStyle}" Margin="8, 2"/>
+                            <TextBlock Text="{x:Bind CardPrice, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Margin="8, 2"/>
                         </Grid>
                     </Grid>
                 </Grid>
