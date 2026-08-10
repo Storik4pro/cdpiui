@@ -23,6 +23,11 @@ namespace CDPIUI.Core.Store.Repository
         List<RepoItemModel> ItemsList { get; }
 
         /// <summary>
+        /// Ready-to-use kits available in Store.
+        /// </summary>
+        List<ReadyKitModel> ReadyKits { get; }
+
+        /// <summary>
         /// Is version control available
         /// </summary>
         /// <param name="versionControl">Version control</param>
@@ -43,6 +48,11 @@ namespace CDPIUI.Core.Store.Repository
         /// <param name="storeId">Item id</param>
         /// <returns>Item model if exist, otherwise null</returns>
         RepoItemModel? GetItemInfoFromStoreId(string storeId);
+
+        /// <summary>
+        /// Gets a ready-to-use kit by its Store ID.
+        /// </summary>
+        ReadyKitModel? GetReadyKitFromStoreId(string storeId);
 
         /// <summary>
         /// Gets category from category id

@@ -127,6 +127,8 @@ namespace CDPIUI.Core.Store
         public Dictionary<string, string>? StoreLocalizationPaths => RepositoryLoaderService.StoreLocalizationPaths;
         public List<RepoItemModel> ItemsList => RepositoryLoaderService.ItemsList;
 
+        public List<ReadyKitModel> ReadyKits => RepositoryLoaderService.ReadyKits;
+
         public static async Task<bool> TryLoadDatabaseForVersionControl(SupportedVersionControls versionControl) => 
             await RepositoryLoaderService.TryLoadDatabaseForVersionControl(versionControl);
 
@@ -136,6 +138,9 @@ namespace CDPIUI.Core.Store
 
         public RepoItemModel? GetItemInfoFromStoreId(string? storeId) => 
             RepositoryLoaderService.GetItemInfoFromStoreId(storeId);
+
+        public ReadyKitModel? GetReadyKitFromStoreId(string? storeId) =>
+            string.IsNullOrWhiteSpace(storeId) ? null : RepositoryLoaderService.GetReadyKitFromStoreId(storeId);
 
         public RepoCategoryModel? GetCategoryFromStoreId(string storeId) => 
             RepositoryLoaderService.GetCategoryFromStoreId(storeId);
@@ -178,7 +183,7 @@ namespace CDPIUI.Core.Store
             QueueManagerService.GetItemIdFromOperationId(operationId);
 
         public string? GetOperationIdFromItemId(string storeId) =>
-            QueueManagerService.GetItemIdFromOperationId(storeId);
+            QueueManagerService.GetOperationIdFromItemId(storeId);
 
         public Queue<QueueItemModel> GetQueue() =>
             QueueManagerService.GetQueue();
@@ -703,11 +708,19 @@ namespace CDPIUI.Core.Store
 
         private void OnlineItemsInstallationService_DownloadProgressChanged(Tuple<string, double> obj)
         {
+            QueueItemModel? queueItem = GetQueueItemFromOperationId(obj.Item1);
+            if (queueItem != null)
+                queueItem.DownloadProgress = obj.Item2;
+
             ItemDownloadProgressChanged?.Invoke(obj);
         }
 
         private void OnlineItemsInstallationService_DownloadStageChanged(Tuple<string, string> obj)
         {
+            QueueItemModel? queueItem = GetQueueItemFromOperationId(obj.Item1);
+            if (queueItem != null)
+                queueItem.DownloadStage = obj.Item2;
+
             ItemDownloadStageChanged?.Invoke(obj);
         }
         #endregion

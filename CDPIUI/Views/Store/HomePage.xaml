@@ -13,7 +13,8 @@
     xmlns:animation="using:System.Windows.Media.Animation"
     xmlns:labs="using:CommunityToolkit.Labs.WinUI"
     xmlns:l="using:WinUI3Localizer"
-    xmlns:tpl="using:CDPIUI.Controls.Default">
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:scontrol="using:CDPIUI.Controls.Store">
 
     <tpl:TemplatePage.Resources>
         <ItemsPanelTemplate x:Key="DefaultItemsPanel">
@@ -75,7 +76,7 @@
             x:Name="StoreScrollViewer"
             Grid.Row="0"
             Padding="20,0,5,0"
-            Margin="0, 20, 0, 0"
+            Margin="0, 0, 0, 0"
             IsTabStop="False"
             UseSystemFocusVisuals="False"
             VerticalScrollBarVisibility="Auto"
@@ -83,13 +84,29 @@
             HorizontalScrollMode="Enabled"
             HorizontalScrollBarVisibility="Hidden"
             Visibility="Collapsed">
-            <Grid>
+            <Grid Margin="0 20 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition x:Name="StoreMainGridColumnDefinition" Width="*" MaxWidth="1860" MinWidth="1860"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel x:Name="StoreStackPanel" Grid.Column="1">
+
+                <Grid Grid.Column="1" Grid.Row="0" RowSpacing="10" Margin="0 0 0 20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <local:StoreCategoryButton x:Name="BundlesCategoryButton" l:Uids.Uid="BundlesCategoryButton" Id="STR_BUNDLE"/>
+
+                    <scontrol:StoreViewBundles x:Name="StoreViewBundles" HorizontalAlignment="Left" Grid.Row="1"/>
+                </Grid>
+
+                <StackPanel x:Name="StoreStackPanel" Grid.Column="1" Grid.Row="1">
                     
                 </StackPanel>
             </Grid>

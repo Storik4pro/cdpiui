@@ -9,6 +9,7 @@
         public string? PackFilePath { get; } = packFilePath ?? string.Empty;
         public string Status { get; set; } = "WAIT";
         public string DownloadStage { get; set; } = string.Empty;
+        public double DownloadProgress { get; set; }
         public string ErrorCode { get; set; } = string.Empty;
     }
 }

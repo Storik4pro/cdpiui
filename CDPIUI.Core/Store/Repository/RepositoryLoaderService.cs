@@ -30,6 +30,8 @@ namespace CDPIUI.Core.Store.Repository
 
         public List<RepoItemModel> ItemsList { get; } = [];
 
+        public List<ReadyKitModel> ReadyKits { get; } = [];
+
         public RepositoryLoaderService()
         {
             VersionControl = 
@@ -215,6 +217,9 @@ namespace CDPIUI.Core.Store.Repository
             return null;
         }
 
+        public ReadyKitModel? GetReadyKitFromStoreId(string storeId) =>
+            ReadyKits.FirstOrDefault(kit => kit.store_id == storeId);
+
         public static void ClearRepoCache()
         {
             string targetFolder = Directories.StoreRepoCacheDirectory;
@@ -227,6 +232,7 @@ namespace CDPIUI.Core.Store.Repository
         private List<RepoCategoryModel> GetFormattedStoreDatabase()
         {
             ItemsList?.Clear();
+            ReadyKits.Clear();
             List<RepoCategoryModel> categories = new List<RepoCategoryModel>();
 
             string localAppData = CDPIUI.Core.Data.Directories.DataDirectory;
@@ -242,6 +248,8 @@ namespace CDPIUI.Core.Store.Repository
                 RepositoryInitializationModel repoInitData = JSONConvertor.LoadJson<RepositoryInitializationModel>(localRepoInitFile);
 
                 StoreLocalizationPaths = repoInitData.localized_strings_directory;
+
+                LoadReadyKits(localRepoFolder, repoInitData.kits_directory);
 
                 List<string> categoriesAvailable = repoInitData.categories;
                 Dictionary<string, string> categoriesPaths = repoInitData.categories_directory;
@@ -345,6 +353,55 @@ namespace CDPIUI.Core.Store.Repository
             }
 
             return categories;
+        }
+
+        private void LoadReadyKits(string repositoryFolder, string? kitsDirectory)
+        {
+            if (string.IsNullOrWhiteSpace(kitsDirectory))
+                return;
+
+            string kitsInitPath = Path.Combine(repositoryFolder, kitsDirectory, "init.json");
+            if (!File.Exists(kitsInitPath))
+                return;
+
+            try
+            {
+                ReadyKitsInitializationModel? initialization =
+                    JSONConvertor.LoadJson<ReadyKitsInitializationModel>(kitsInitPath);
+
+                if (initialization?.kits == null || initialization.kits_directories == null)
+                    return;
+
+                foreach (string kitName in initialization.kits)
+                {
+                    if (!initialization.kits_directories.TryGetValue(kitName, out string? kitDirectory) ||
+                        string.IsNullOrWhiteSpace(kitDirectory))
+                    {
+                        Logger.Instance.CreateDebugLog(nameof(RepositoryLoaderService), $"Skip the ready kit: {kitName}");
+                        continue;
+                    }
+
+                    string kitInitPath = Path.Combine(repositoryFolder, kitsDirectory, kitDirectory, "init.json");
+                    if (!File.Exists(kitInitPath))
+                    {
+                        Logger.Instance.CreateDebugLog(nameof(RepositoryLoaderService), $"Skip the ready kit: {kitName} >>> {kitInitPath}");
+                        continue;
+                    }
+
+                    ReadyKitModel? kit = JSONConvertor.LoadJson<ReadyKitModel>(kitInitPath);
+                    if (kit == null || string.IsNullOrWhiteSpace(kit.store_id) || kit.items == null || kit.items.Count == 0)
+                    {
+                        Logger.Instance.CreateDebugLog(nameof(RepositoryLoaderService), $"Skip the invalid ready kit: {kitName}");
+                        continue;
+                    }
+
+                    ReadyKits.Add(kit);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateErrorLog(nameof(RepositoryLoaderService), $"Cannot load ready kits: {ex.Message}");
+            }
         }
 
         

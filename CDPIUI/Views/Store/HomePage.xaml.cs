@@ -1,10 +1,11 @@
+using CDPIUI.Controls.Default;
+using CDPIUI.Controls.Store;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.Store.Repository.Localization;
 using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Helper;
 using CDPIUI.Helper.LScript;
-
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -14,12 +15,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
-using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,14 +30,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Windows;
-
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using WinUI3Localizer;
-using Application = Microsoft.UI.Xaml.Application;
 using DependencyObject = Microsoft.UI.Xaml.DependencyObject;
-using GridLength = Microsoft.UI.Xaml.GridLength;
-using GridUnitType = Microsoft.UI.Xaml.GridUnitType;
 using ItemsControl = Microsoft.UI.Xaml.Controls.ItemsControl;
 using ItemsPanelTemplate = Microsoft.UI.Xaml.Controls.ItemsPanelTemplate;
 using SizeChangedEventArgs = Microsoft.UI.Xaml.SizeChangedEventArgs;
@@ -45,7 +41,6 @@ using Thickness = Microsoft.UI.Xaml.Thickness;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using Visibility = Microsoft.UI.Xaml.Visibility;
 using Window = Microsoft.UI.Xaml.Window;
-using CDPIUI.Controls.Default;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -131,6 +126,9 @@ public sealed partial class HomePage : TemplatePage
     {
         InitializeComponent();
 
+        StoreViewBundles.BundleClick += ReadyKitButton_Click;
+        BundlesCategoryButton.Click += BundlesCategoryButton_Click;
+
         // SetupLayout();
 
         StoreHelper.Instance.StoreInternalErrorHappens += StoreHelper_ErrorHappens;
@@ -174,6 +172,7 @@ public sealed partial class HomePage : TemplatePage
         }
 
         _panels.Clear();
+        StoreViewBundles.ClearBundles();
         _lastCategories = null;
 
         StoreStackPanel.Children.Clear();
@@ -279,6 +278,25 @@ public sealed partial class HomePage : TemplatePage
 
     }
 
+    private void ReadyKitButton_Click(StoreReadyKitButton sender)
+    {
+        PrepareToConnectedForwardAnimate(sender.ImageElement);
+
+        StoreWindow.Instance.NavigateSubPage(
+            typeof(Views.Store.ReadyKitViewPage),
+            new NameValueCollection() { { "kitId", sender.KitId } },
+            new SuppressNavigationTransitionInfo());
+    }
+
+    private void BundlesCategoryButton_Click(StoreCategoryButton sender)
+    {
+        PrepareToConnectedForwardAnimate(sender.textElement, new DirectConnectedAnimationConfiguration());
+        StoreWindow.Instance.NavigateSubPage(
+            typeof(Views.Store.ReadyKitsViewPage),
+            null,
+            new SuppressNavigationTransitionInfo());
+    }
+
     public void InitializeAndShow(IEnumerable<UICategoryData> categories)
     {
         _lastCategories = categories;
@@ -298,6 +316,8 @@ public sealed partial class HomePage : TemplatePage
         var sampleLarge = new StoreItemLargeButton();
         LargeMinW = sampleLarge.MinWidth;
         LargePrefW = sampleLarge.PreferredWidth;
+
+        LoadReadyKits();
 
         foreach (var cat in categories)
         {
@@ -326,10 +346,26 @@ public sealed partial class HomePage : TemplatePage
         LargeElementWidth = CalcGrid(MaxTotalWidth);
         
         CurrentPageWidth = totalWidth;
+        // StoreViewBundles.Width = CurrentPageWidth;
 
         SmallElementWidth = LargeElementWidth * 2;
 
         SetupElementsWidth();
+    }
+
+    private void LoadReadyKits()
+    {
+        List<ReadyKitModel> kits = StoreHelper.Instance.ReadyKits
+            .OrderByDescending(kit => kit.IsRecommended)
+            .ToList();
+
+        if (kits.Count == 0)
+        {
+            StoreViewBundles.ClearBundles();
+            return;
+        }
+
+        StoreViewBundles.SetBundles(kits.Select(ReadyKitViewModelFactory.Create));
     }
 
     private async void UpdateStoreDatabase()
@@ -485,6 +521,7 @@ public sealed partial class HomePage : TemplatePage
         LargeElementWidth = CalcGrid(e.NewSize.Width);
 
         CurrentPageWidth = totalWidth;
+        StoreViewBundles.Width = CurrentPageWidth;
 
         SmallElementWidth = LargeElementWidth * 2;
 
