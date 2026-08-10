@@ -217,7 +217,9 @@ public sealed partial class StoreWindow : TemplateWindow
     private static Type GetNavigationPageType(Type pageType)
     {
         if (pageType == typeof(Views.Store.ItemViewPage) ||
-            pageType == typeof(Views.Store.CategoryViewPage))
+            pageType == typeof(Views.Store.CategoryViewPage) ||
+            pageType == typeof(Views.Store.ReadyKitViewPage) ||
+            pageType == typeof(Views.Store.ReadyKitsViewPage))
         {
             return typeof(HomePage);
         }
