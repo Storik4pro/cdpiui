@@ -185,7 +185,7 @@ namespace CDPIUI.TrayIcon.Helper
                 {
                     _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.CompleteRestartRequest);
                 }
-                else if (exitCode == 0 || exitCode == 1603)
+                else if (exitCode == 0 || exitCode == 1603 || exitCode == 1638)
                 {
                     _ = PipeHelper.SendMsiInstallationPacket(MSIInstallationMessageIds.SetOperationStatus, operationId, MsiState.Complete);
                 }
