@@ -108,7 +108,7 @@ namespace CDPIUI.Core.Store.Repository
                     client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIUI_Components_Store", ApplicationInfo.Version));
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", usedVersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
-
+                    Debug.WriteLine(zipUrl);
                     using HttpResponseMessage response = await client.GetAsync(zipUrl);
                     response.EnsureSuccessStatusCode();
 
@@ -410,7 +410,7 @@ namespace CDPIUI.Core.Store.Repository
         {
             return string.Format(
                     VersionControlData.VersionControlsLinks[versionControl],
-                    SharedConstants.StoreRepo);
+                    versionControl == SupportedVersionControls.GitHub ? SharedConstants.StoreRepo : SharedConstants.GitLabStoreRepo);
         }
     }
 }
