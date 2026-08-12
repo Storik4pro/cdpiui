@@ -32,6 +32,8 @@ namespace CDPIUI.Core.Store.Network
         public readonly string OperationId;
         private string? msiGUID;
 
+        public ErrorModel? LastError { get; private set; }
+
         public DownloadWorker(string operationId, CancellationTokenSource cancellationTokenSource, HttpClient client = null)
         {
             source = cancellationTokenSource;
@@ -61,6 +63,7 @@ namespace CDPIUI.Core.Store.Network
             string filename = ""
         )
         {
+            LastError = null;
             IsRestartNeeded = false;
             bool success = false;
             List<string> _extractedFiles = [];
@@ -268,6 +271,7 @@ namespace CDPIUI.Core.Store.Network
             StageChanged?.Invoke(Tuple.Create(OperationId, "ErrorHappens"));
             string errorCode = Convertor.GetPrettyErrorCode("ERR_NET_DOWNLOAD", ex);
             ErrorHappens?.Invoke(Tuple.Create(OperationId, errorCode, $"{ex}"));
+            LastError = ErrorModel.OnlyErrorCode(errorCode);
         }
         public void Dispose()
         {

@@ -455,6 +455,12 @@ namespace CDPIUI.Core.Store
                 return OperationResultModel<Tuple<string, string, RepoItemModel>>.FailureResult(result.Error!);
             }
 
+            if (!result.Success && !result.ErrorHappens)
+            {
+                return OperationResultModel<Tuple<string, string, RepoItemModel>>
+                    .UnSuccessResult();
+            }
+
             if (result.Result == null || result.Result.version == null || result.Result.link == null) 
                 return OperationResultModel<Tuple<string, string, RepoItemModel>>
                     .FailureResult(ErrorModel.OnlyErrorCode(PrettyErrorCode.NULL_REFERENCE));

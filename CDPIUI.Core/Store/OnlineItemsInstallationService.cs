@@ -163,7 +163,7 @@ namespace CDPIUI.Core.Store
                 }
 
                 if (!result) return OperationResultModel<ILinkModel>
-                        .UnSuccessResult();
+                        .FailureResult(DownloadWorker.LastError);
             }
 
             if (restartFlag)
