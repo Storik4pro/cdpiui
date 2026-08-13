@@ -130,10 +130,10 @@ public sealed partial class MainPage : TemplatePage
 
         await PrepareMissingFilesAsync();
 
-            if (missingFiles.Count > 0)
-                ShowMissingFiles();
-            else
-                ShowCompletion();
+        if (missingFiles.Count > 0)
+            ShowMissingFiles();
+        else
+            ShowCompletion();
 
         return true;
     }
@@ -541,14 +541,16 @@ public sealed partial class MainPage : TemplatePage
     {
         if (MainContent.SelectedItem == SelectionStep)
         {
-            NextButton.IsEnabled = false;
+            NextButton.Visibility = Visibility.Collapsed;
             if (await ImportConfigsAsync())
             {
-                NextButton.IsEnabled = true;
+                NextButton.Visibility = Visibility.Collapsed;
             }
+            NextButton.Visibility = Visibility.Visible;
         }
         else if (MainContent.SelectedItem == MissingFilesStep)
         {
+            NextButton.Visibility = Visibility.Visible;
             bool flg = false;
             foreach (var item in missingFiles)
             {
@@ -566,7 +568,7 @@ public sealed partial class MainPage : TemplatePage
         }
         else if (MainContent.SelectedItem == CompletedStep)
         {
-            NextButton.IsEnabled = false;
+            NextButton.Visibility = Visibility.Collapsed;
             ResultItemsControl.IsEnabled = false;
 
             UtilityButtonContols.IsLoading = true;
