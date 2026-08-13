@@ -117,6 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Here you can set preferred advertising shown settings. 
+Ad showing only in application window – notifications or other popups not allowed. Application won't collect or share your data.</value>
+  </data>
+  <data name="AdAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Advertising</value>
+  </data>
+  <data name="CompleteAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>If you have some questions about app you can visit offline help (cdpiui://help) or contact community support (you can find links on [About] page)
+
+If you found some bug tell about it developer – we can make application better together!
+
+Click [Close] to close this wizard. Enjoy!</value>
+  </data>
+  <data name="CompleteAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Application setup finished</value>
+  </data>
   <data name="LicenceAnimatedHorizontalContentItem.Description" xml:space="preserve">
     <value>For using this application you must accept license agreements.
 Disagreement with license will closed application.</value>

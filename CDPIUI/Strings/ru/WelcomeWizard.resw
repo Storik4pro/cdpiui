@@ -117,6 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Здесь вы можете настроить предпочтения при показе проспонсированных объявлений в приложении. 
+Реклама будет отображаться только в окне приложения, не блокируя элементы управления – уведомления или другие всплывающие окна не будут показаны. Приложение не будет собирать и отправлять данные для персонализации рекламных объявлений.</value>
+  </data>
+  <data name="AdAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Реклама</value>
+  </data>
+  <data name="CompleteAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Если у вас возникли вопросы по приложению, вы можете обратиться за помощью оффлайн (cdpiui://help) или связаться со службой поддержки сообщества (ссылки можно найти на странице [Сведения]).
+
+Если вы обнаружили ошибку, сообщите об этом разработчику – мы сможем улучшить приложение вместе!
+
+Нажмите [Закрыть], чтобы закрыть этот мастер. Приятного использования!</value>
+  </data>
+  <data name="CompleteAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Настройка приложения завершена</value>
+  </data>
   <data name="LicenceAnimatedHorizontalContentItem.Description" xml:space="preserve">
     <value>Для использования этого приложения необходимо принять лицензионное соглашение.
 Несогласие приведет к закрытию приложения.</value>
