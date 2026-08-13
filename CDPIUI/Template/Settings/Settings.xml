@@ -19,6 +19,13 @@
     <Setting Key="compatibilityCheck" Type="bool" Value="true"/>
 		<Setting Key="conditionalLaunchActions" Type="bool" Value="true"/>
 	</Group>
+  <Group Name="AD">
+    <Setting Key="ShowAd" Type="bool" Value="true"/>
+    <Setting Key="ShowDeveloperProjectsAd" Type="bool" Value="true"/>
+    <Setting Key="ShowDeveloperAskAd" Type="bool" Value="true"/>
+    <Setting Key="ShowInternalAd" Type="bool" Value="true"/>
+    <Setting Key="ShowTrustedServicesAd" Type="bool" Value="true"/>
+  </Group>
 	<Group Name="PSEUDOCONSOLE">
     <Setting Key="prettyPathView" Type="bool" Value="true"/>
 		<Setting Key="outputMode" Type="bool" Value="true" />
