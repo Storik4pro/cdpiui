@@ -12,7 +12,8 @@
     xmlns:l="using:WinUI3Localizer"
     xmlns:conv="using:CDPIUI.Converters"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
-    xmlns:tpl="using:CDPIUI.Controls.Default">
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:scontrols="using:CDPIUI.Controls.Settings">
     
     <tpl:TemplatePage.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
@@ -81,43 +82,7 @@
                 
                 <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
 
-                <controls:SettingsExpander l:Uids.Uid="ThemeSelector" IsExpanded="True">
-                    <controls:SettingsExpander.Items>
-                        <controls:SettingsCard
-                            l:Uids.Uid="AvailableThemesSettingsCard"
-                            HorizontalContentAlignment="Left"
-                            ContentAlignment="Vertical">
-                            <GridView x:Name="ThemeGridView">
-                                <GridView.ItemTemplate>
-                                    <DataTemplate x:DataType="viewmodels:ThemeViewModel" >
-                                        <Border x:Name="MainBorder" 
-                                                BorderBrush="{ThemeResource SystemChromeMediumColor}" 
-                                                CornerRadius="4" 
-                                                BorderThickness="2">
-                                            
-                                            <Grid CornerRadius="4" Width="64" Height="64">
-                                                <Rectangle Fill="{x:Bind FirstBackgrounBrush, Mode=OneWay}" RadiusX="10" RadiusY="10"/>
-                                                <Polygon Points="0,0 0,64 64,64" Fill="{x:Bind FirstBackgrounBrush, Mode=OneWay}"/>
-                                                <Polygon Points="0,0 64,64 64,0" Fill="{x:Bind SecondBackgrounBrush, Mode=OneWay}"/>
-                                            </Grid>
-                                            <ToolTipService.ToolTip>
-
-                                                <ToolTip PlacementTarget="{Binding ElementName= MainBorder}"
-                                                         Placement="Bottom">
-                                                    <StackPanel>
-                                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
-                                                        <TextBlock Text="{x:Bind Description, Mode=OneWay}" Visibility="{x:Bind ShowDescription, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
-                                                    </StackPanel>
-                                                </ToolTip>
-                                            </ToolTipService.ToolTip>
-                                        </Border>
-                                    </DataTemplate>
-                                </GridView.ItemTemplate>
-                            </GridView>
-                        </controls:SettingsCard>
-
-                    </controls:SettingsExpander.Items>
-                </controls:SettingsExpander>
+                <scontrols:ViewThemeUserControl/>
 
                 <controls:SettingsExpander l:Uids.Uid="ColorSelector" x:Name="ColorSelectorButton" Visibility="Collapsed">
                     <controls:SettingsExpander.Items>
@@ -179,9 +144,9 @@
                             HorizontalContentAlignment="Left"
                             ContentAlignment="Vertical">
                             <GridView x:Name="MarkupGridView" HorizontalAlignment="Center" Grid.Row="1" 
-                                      SelectedItem="{x:Bind viewmodels:MainPageMarkupManager.Instance.CurrentMarkup}"
+                                      SelectedItem="{x:Bind viewmodels:MainPageMarkupManager.Instance.CurrentMarkup, Mode=OneWay}"
                                       ItemsSource="{x:Bind viewmodels:MainPageMarkupManager.Instance.Markups}"
-                                      SelectionChanged="{x:Bind viewmodels:MainPageMarkupManager.Instance.HandleCollectionLanguageChanged}">
+                                      SelectionChanged="{x:Bind viewmodels:MainPageMarkupManager.Instance.HandleCollectionChanged}">
                                 <GridView.ItemTemplate>
                                     <DataTemplate x:DataType="viewmodels:MainPageMarkupViewModel">
                                         <Grid Width="200" Height="120" CornerRadius="5" ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}" ToolTipService.Placement="Bottom">
@@ -202,7 +167,8 @@
 
                 <controls:SettingsExpander l:Uids.Uid="MarkupPropertiesSettingsExpander">
                     <controls:SettingsExpander.Items>
-                        <controls:SettingsCard l:Uids.Uid="MainGridColumnSelector" x:Name="MainGridColumnSelectorSettingsCard">
+                        <controls:SettingsCard l:Uids.Uid="MainGridColumnSelector" x:Name="MainGridColumnSelectorSettingsCard" 
+                                               Visibility="{x:Bind viewmodels:MainPageMarkupManager.Instance.IsModernMarkupSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}">
                             <ComboBox x:Name="MainGridColumnSelector" Width="Auto" DisplayMemberPath="DisplayName"/>
                         </controls:SettingsCard>
                         <controls:SettingsCard l:Uids.Uid="FlashlightWidgetSettingsCard">
@@ -214,7 +180,7 @@
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
 
-
+                <scontrols:AdUserControl/>
                 
             </StackPanel>
         </ScrollViewer>

@@ -27,21 +27,16 @@ using Windows.UI.ViewManagement;
 using WinUI3Localizer;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace CDPIUI.Views.Settings;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class PersonalizePage : TemplatePage
 {
     private ObservableCollection<BreadcrumbBarModel> BreadcrumbBarModels = [];
 
     private ILocalizer localizer = Localizer.Get();
 
-    private ObservableCollection<ThemeViewModel> themes = [];
+    
     private ObservableCollection<GridColumnsCountModel> gridColumnModels = [];
     private ObservableCollection<ColorViewModel> Colors = [];
 
@@ -74,12 +69,6 @@ public sealed partial class PersonalizePage : TemplatePage
 
     private void InitSettings()
     {
-        ThemeGridView.ItemsSource = themes;
-        CreateThemes();
-        ElementTheme theme = ((App)Application.Current).GetCurrentTheme();
-        ThemeGridView.SelectedItem = themes.FirstOrDefault(x => x.FriendlyThemeId == theme);
-        ThemeGridView.SelectionChanged += ThemeGridView_SelectionChanged;
-
         MainGridColumnSelector.ItemsSource = gridColumnModels;
         CreateGridColimnVariants();
         MainGridColumnSelector.SelectedItem = gridColumnModels.FirstOrDefault(x => x.Count == SettingsManager.Instance.GetValue<int>("APPEARANCE", "mainGridColumnsCount"));
@@ -109,30 +98,7 @@ public sealed partial class PersonalizePage : TemplatePage
 
     private void CreateThemes()
     {
-        themes.Add(new()
-        {
-            Guid = new Guid(),
-            FriendlyThemeId = ElementTheme.Dark,
-            Name = localizer.GetLocalizedString("DarkTheme"),
-            FirstBackgroundColorHEX = "#000000",
-            SecondBackgroundColorHEX = "#000000",
-        });
-        themes.Add(new()
-        {
-            Guid = new Guid(),
-            FriendlyThemeId = ElementTheme.Light,
-            Name = localizer.GetLocalizedString("LightTheme"),
-            FirstBackgroundColorHEX = "#F3F3F3",
-            SecondBackgroundColorHEX = "#F3F3F3",
-        });
-        themes.Add(new()
-        {
-            Guid = new Guid(),
-            FriendlyThemeId = ElementTheme.Default,
-            Name = localizer.GetLocalizedString("SystemTheme"),
-            FirstBackgroundColorHEX = "#000000",
-            SecondBackgroundColorHEX = "#F3F3F3",
-        });
+        
     }
 
     private void CreateGridColimnVariants()
@@ -219,7 +185,6 @@ public sealed partial class PersonalizePage : TemplatePage
     {
         base.OnNavigatedFrom(e);
 
-        ThemeGridView.SelectionChanged -= ThemeGridView_SelectionChanged;
         MainGridColumnSelector.SelectionChanged -= MainGridColumnSelector_SelectionChanged;
         UISettings.ColorValuesChanged -= HandleAccentChanged;
 
@@ -257,21 +222,6 @@ public sealed partial class PersonalizePage : TemplatePage
 
     #endregion
 
-    private void ThemeGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (this.Content is FrameworkElement frameworkElement)
-        {
-
-            ElementTheme newTheme = ElementTheme.Default;
-
-            newTheme = ((ThemeViewModel)ThemeGridView.SelectedItem).FriendlyThemeId;
-            frameworkElement.RequestedTheme = newTheme;
-
-            SettingsManager.Instance.SetValue<string>("APPEARANCE", "Theme", newTheme.ToString());
-
-            ((App)Application.Current).UpdateThemeForAllWindows(newTheme);
-        }
-    }
 
     private void ColorSelectorButton_Click(object sender, RoutedEventArgs e)
     {
