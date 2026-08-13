@@ -1,3 +1,5 @@
+using CDPIUI.Commands;
+using CDPIUI.Controls.Universal;
 using CDPIUI.Core.Data;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Repository.Localization;
@@ -67,6 +69,7 @@ namespace CDPIUI
 
         private void CheckNavigation()
         {
+            UtilityButtonControls.HelpUrl = string.Empty;
             NextButton.IsEnabled = true;
             var sel = AnimatedHorizontalContentViewer.SelectedItem;
 
@@ -78,7 +81,17 @@ namespace CDPIUI
             {
                 TryLoadLicense();
                 BackButton.Visibility = Visibility.Visible;
-                NextButton.IsEnabled = false;
+                NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
+            }
+            else if (sel == AdItem)
+            {
+                UtilityButtonControls.HelpUrl = "/Other/Ad";
+            }
+            else if (sel == CompleteItem)
+            {
+                BackButton.Visibility = Visibility.Collapsed;
+                NextButton.Visibility = Visibility.Collapsed;
+                CompleteButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -100,6 +113,21 @@ namespace CDPIUI
         private void LicenseAgreeCheckBox_Click(object sender, RoutedEventArgs e)
         {
             NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
+        }
+
+        private void UtilityButtonControls_Loaded(object sender, RoutedEventArgs e)
+        {
+            CheckNavigation();
+        }
+
+        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandsHandler.HandleCommand("cdpiui://");
+            if (ShowAppFeaturesCheckBox.IsChecked == true) 
+            {
+                CommandsHandler.HandleCommand("cdpiui://AppFeatures");
+            }
+            this.Close();
         }
     }
 }

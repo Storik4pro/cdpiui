@@ -14,7 +14,7 @@
     xmlns:l="using:WinUI3Localizer"
     xmlns:uexp="using:CDPIUI.Helper.UserExperience"
     xmlns:vm="using:CDPIUI.ViewModels"
-    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock">
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:scontrols="using:CDPIUI.Controls.Settings">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -87,13 +87,63 @@
                 <ncontrols:AnimatedHorizontalContentItem
                     x:Name="PersonalizationItem"
                     l:Uids.Uid="/WelcomeWizard/PersonalizationAnimatedHorizontalContentItem">
-                    
+                    <ScrollViewer>
+                        <StackPanel Margin="20 0 20 20">
+                            <GridView
+                                SelectedItem="{x:Bind vm:MainPageMarkupManager.Instance.CurrentMarkup, Mode=OneWay}"
+                                ItemsSource="{x:Bind vm:MainPageMarkupManager.Instance.Markups}"
+                                SelectionChanged="{x:Bind vm:MainPageMarkupManager.Instance.HandleCollectionChanged}"
+                                Padding="0">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MainPageMarkupViewModel">
+                                        <Grid Padding="10" ColumnSpacing="15" HorizontalAlignment="Stretch" Width="418.49">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Width="200" Height="120" CornerRadius="5" ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}" ToolTipService.Placement="Bottom">
+                                                <Image Source="/Assets/Wallpaper/Kislovodsk/1.jpeg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
+                                                <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Rectangle.Fill>
+                                                        <media:AcrylicBrush TintOpacity="0.0" TintColor="#FF000000" FallbackColor="#FFFFFFFF" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="180"/>
+                                            </Grid>
+                                            <Grid Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                                <TextBlock Text="{x:Bind Description}" Grid.Row="1" TextWrapping="Wrap" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                            <scontrols:ViewThemeUserControl/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </ncontrols:AnimatedHorizontalContentItem>
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="AdItem"
+                    l:Uids.Uid="/WelcomeWizard/AdAnimatedHorizontalContentItem">
+                    <StackPanel Margin="20 0">
+                        <scontrols:AdUserControl/>
+                    </StackPanel>
+                </ncontrols:AnimatedHorizontalContentItem>
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="CompleteItem"
+                    l:Uids.Uid="/WelcomeWizard/CompleteAnimatedHorizontalContentItem">
+                    <CheckBox x:Name="ShowAppFeaturesCheckBox" l:Uids.Uid="ShowAppFeaturesCheckBox" VerticalAlignment="Bottom" Margin="20" IsChecked="True"/>
                 </ncontrols:AnimatedHorizontalContentItem>
             </ncontrols:AnimatedHorizontalContentViewer>
         </Grid>
-        <ucontrols:UtilityButtonControls Grid.Row="2">
+        <ucontrols:UtilityButtonControls x:Name="UtilityButtonControls" Grid.Row="2" Loaded="UtilityButtonControls_Loaded">
             <Button x:Name="BackButton" l:Uids.Uid="GoBackButton" Click="BackButton_Click"/>
             <Button x:Name="NextButton" l:Uids.Uid="GoForwardButton" Click="NextButton_Click"/>
+            <Button x:Name="CompleteButton" l:Uids.Uid="CompleteButton" Click="CompleteButton_Click" Visibility="Collapsed"/>
         </ucontrols:UtilityButtonControls>
     </Grid>
 </template:TemplateWindow>
