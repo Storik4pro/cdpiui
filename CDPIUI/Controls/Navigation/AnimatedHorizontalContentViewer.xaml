@@ -39,7 +39,7 @@
             Text="{x:Bind CurrentDescription, Mode=OneWay}"
             Grid.Row="1" 
             TextWrapping="Wrap" 
-            Margin="20 0 0 5" 
+            Margin="20 0 20 5" 
             Visibility="{x:Bind CurrentDescription, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}"/>
 
         <Grid x:Name="ContentHost" Grid.Row="2">
