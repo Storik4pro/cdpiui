@@ -5,8 +5,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Markup;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Numerics;
+using Windows.UI.ViewManagement;
 using WinUI3Localizer;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -20,10 +22,13 @@ namespace CDPIUI.Controls.Universal
         private const double ActionButtonMinWidth = 150d;
         private const float VisibilityAnimationOffset = 16f;
 
-        private static readonly TimeSpan ShowAnimationDuration = TimeSpan.FromMilliseconds(180);
+        private static readonly TimeSpan ShowAnimationDuration = TimeSpan.FromMilliseconds(120);
         private static readonly TimeSpan HideAnimationDuration = TimeSpan.FromMilliseconds(150);
+        private static readonly TimeSpan RepositionAnimationDuration = HideAnimationDuration * 2;
 
         private static ILocalizer localizer = Localizer.Get();
+        private readonly bool animationsEnabled;
+        private readonly HashSet<Button> configuredButtons = [];
 
         public ObservableCollection<Button> Items { get; } = [];
 
@@ -31,7 +36,18 @@ namespace CDPIUI.Controls.Universal
         {
             InitializeComponent();
 
+            animationsEnabled = new UISettings().AnimationsEnabled;
             Items.CollectionChanged += Items_CollectionChanged;
+            Loaded += UtilityButtonControls_Loaded;
+        }
+
+        private void UtilityButtonControls_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!animationsEnabled)
+                return;
+
+            foreach (Button button in Items)
+                PrepareVisibilityAnimations(button);
         }
 
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -44,15 +60,16 @@ namespace CDPIUI.Controls.Universal
                 if (button.MinWidth < ActionButtonMinWidth)
                     button.MinWidth = ActionButtonMinWidth;
 
-                PrepareVisibilityAnimations(button);
+                if (animationsEnabled && IsLoaded)
+                    PrepareVisibilityAnimations(button);
             }
         }
 
-        private static void PrepareVisibilityAnimations(Button button)
+        private void PrepareVisibilityAnimations(Button button)
         {
-            // A show animation assigned before the element enters the visual tree also
-            // runs for its initial appearance. Configure it after Loaded so that the
-            // initial state stays untouched and only later Visibility changes animate.
+            if (!configuredButtons.Add(button))
+                return;
+
             if (button.IsLoaded)
             {
                 ConfigureVisibilityAnimations(button);
@@ -63,7 +80,7 @@ namespace CDPIUI.Controls.Universal
             button.Loaded += Button_Loaded;
         }
 
-        private static void Button_Loaded(object sender, RoutedEventArgs e)
+        private void Button_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is not Button button)
                 return;
@@ -82,54 +99,91 @@ namespace CDPIUI.Controls.Universal
                 compositor,
                 fromTranslation: new Vector3(0, VisibilityAnimationOffset, 0),
                 toTranslation: new Vector3(0, 0, 0),
-                fromOpacity: 0f,
-                toOpacity: 1f,
                 duration: ShowAnimationDuration,
                 firstControlPoint: new Vector2(0.22f, 1f),
                 secondControlPoint: new Vector2(0.36f, 1f));
 
             CompositionAnimationGroup hideAnimation = CreateVisibilityAnimation(
                 compositor,
-                fromTranslation: new Vector3(-(float)button.ActualWidth, 0, 0),
-                toTranslation: new Vector3(-(float)button.ActualWidth, VisibilityAnimationOffset, 0),
-                fromOpacity: 1f,
-                toOpacity: 0f,
+                fromTranslation: Vector3.Zero,
+                toTranslation: new Vector3(0, VisibilityAnimationOffset, 0),
                 duration: HideAnimationDuration,
                 firstControlPoint: new Vector2(0.55f, 0f),
                 secondControlPoint: new Vector2(1f, 0.45f));
 
+            ConfigureRepositionAnimation(button, compositor);
             ElementCompositionPreview.SetImplicitHideAnimation(button, hideAnimation);
 
-            if (button.Visibility == Visibility.Collapsed)
-            {
+            bool showAnimationIsConfigured = button.Visibility == Visibility.Collapsed;
+            if (showAnimationIsConfigured)
                 ElementCompositionPreview.SetImplicitShowAnimation(button, showAnimation);
-                return;
-            }
 
-            long visibilityCallbackToken = 0;
-            visibilityCallbackToken = button.RegisterPropertyChangedCallback(
+            button.RegisterPropertyChangedCallback(
                 UIElement.VisibilityProperty,
                 (dependencyObject, _) =>
                 {
-                    if (dependencyObject is not Button targetButton ||
-                        targetButton.Visibility != Visibility.Collapsed)
+                    if (dependencyObject is not Button targetButton)
+                        return;
+
+                    if (targetButton.Visibility == Visibility.Collapsed)
                     {
+                        if (!showAnimationIsConfigured)
+                        {
+                            ElementCompositionPreview.SetImplicitShowAnimation(targetButton, showAnimation);
+                            showAnimationIsConfigured = true;
+                        }
+
                         return;
                     }
 
-                    targetButton.UnregisterPropertyChangedCallback(
-                        UIElement.VisibilityProperty,
-                        visibilityCallbackToken);
-                    ElementCompositionPreview.SetImplicitShowAnimation(targetButton, showAnimation);
+                    SuppressRepositionForCurrentShow(targetButton, compositor);
                 });
+        }
+
+        private static void SuppressRepositionForCurrentShow(Button button, Compositor compositor)
+        {
+            Visual visual = ElementCompositionPreview.GetElementVisual(button);
+            visual.StopAnimation("Offset");
+            visual.ImplicitAnimations?.Remove("Offset");
+
+            EventHandler<object> layoutUpdatedHandler = null;
+            layoutUpdatedHandler = (_, _) =>
+            {
+                button.LayoutUpdated -= layoutUpdatedHandler;
+                ConfigureRepositionAnimation(button, compositor);
+            };
+
+            button.LayoutUpdated += layoutUpdatedHandler;
+        }
+
+        private static void ConfigureRepositionAnimation(Button button, Compositor compositor)
+        {
+            Visual visual = ElementCompositionPreview.GetElementVisual(button);
+            CubicBezierEasingFunction easingFunction = compositor.CreateCubicBezierEasingFunction(
+                new Vector2(0.22f, 1f),
+                new Vector2(0.36f, 1f));
+
+            Vector3KeyFrameAnimation repositionAnimation = compositor.CreateVector3KeyFrameAnimation();
+            repositionAnimation.Target = "Offset";
+            repositionAnimation.Duration = RepositionAnimationDuration;
+            repositionAnimation.InsertExpressionKeyFrame(0f, "this.StartingValue");
+
+            repositionAnimation.InsertExpressionKeyFrame(
+                0.5f,
+                "this.FinalValue.X > this.StartingValue.X ? this.StartingValue : this.FinalValue",
+                easingFunction);
+            repositionAnimation.InsertExpressionKeyFrame(1f, "this.FinalValue", easingFunction);
+
+            ImplicitAnimationCollection implicitAnimations =
+                visual.ImplicitAnimations ?? compositor.CreateImplicitAnimationCollection();
+            implicitAnimations["Offset"] = repositionAnimation;
+            visual.ImplicitAnimations = implicitAnimations;
         }
 
         private static CompositionAnimationGroup CreateVisibilityAnimation(
             Compositor compositor,
             Vector3 fromTranslation,
             Vector3 toTranslation,
-            float fromOpacity,
-            float toOpacity,
             TimeSpan duration,
             Vector2 firstControlPoint,
             Vector2 secondControlPoint)

@@ -44,7 +44,6 @@ public sealed partial class PersonalizePage : TemplatePage
     private ObservableCollection<ThemeViewModel> themes = [];
     private ObservableCollection<GridColumnsCountModel> gridColumnModels = [];
     private ObservableCollection<ColorViewModel> Colors = [];
-    private ObservableCollection<MainPageMarkupViewModel> Markups = [];
 
 
     private UISettings UISettings = new UISettings();
@@ -63,9 +62,7 @@ public sealed partial class PersonalizePage : TemplatePage
         CreateBreadcrumbBarNavigation();
 
         ColorsGridView.ItemsSource = Colors;
-        MarkupGridView.ItemsSource = Markups;
 
-        CreateMarkups();
         CreateColors();
         InitSettings();
         
@@ -104,28 +101,10 @@ public sealed partial class PersonalizePage : TemplatePage
 
         PreferSystemWindowTitleBarToggleSwitch.IsOn = SettingsManager.Instance.GetValue<int>("APPEARANCE", "titleBarMode") == 0 ? true : false;
 
-        MarkupGridView.SelectedItem = Markups.FirstOrDefault(x => x.Type.ToString() == SettingsManager.Instance.GetValue<string>("APPEARANCE", "mainPageMarkup"));
-
         ShowFlashlightToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "showFlashlightWidget");
         ShowWidgetsToggleSwitch.IsOn = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "showWidgetsPanel");
 
         InfoStackPanel.Visibility = Visibility.Collapsed;
-    }
-
-    private void CreateMarkups()
-    {
-        Markups.Add(new()
-        {
-            Type = MarkupTypes.Classic,
-            Name = localizer.GetLocalizedString("ClassicMarkup"),
-            ImageSource = new BitmapImage(UIHelper.GetUriFromString("ms-appx:///Assets/Preview/MainPageMarkup/ClassicMarkup.png"))
-        });
-        Markups.Add(new()
-        {
-            Type = MarkupTypes.Modern,
-            Name = localizer.GetLocalizedString("ModernMarkup"),
-            ImageSource = new BitmapImage(UIHelper.GetUriFromString("ms-appx:///Assets/Preview/MainPageMarkup/ModernMarkup.png"))
-        });
     }
 
     private void CreateThemes()
