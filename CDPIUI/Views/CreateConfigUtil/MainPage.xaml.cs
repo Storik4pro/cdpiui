@@ -2,6 +2,7 @@ using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Store;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Helper;
 using CDPIUI.Messages;
 using CDPIUI.ViewModels;
@@ -23,6 +24,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using WinUI3Localizer;
 using static WinUI3Localizer.LanguageDictionary;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -35,9 +37,19 @@ namespace CDPIUI.Views.CreateConfigUtil
     /// </summary>
     public sealed partial class MainPage : TemplatePage
     {
-        private ObservableCollection<ViewComponentModel> items = [];
-        private List<string> supportedComponents = ["Zapret", "GoodbyeDPI", "ByeDPI"];
-        private List<string> ConfigTestUnsupportedComponents = ["TG WS Proxy"]; // TODO: Check for component Ids, not names
+        private readonly ObservableCollection<ViewComponentModel> items = [];
+        private readonly HashSet<string> supportedComponents =
+        [
+            .. HardcodedItemIds.GoodCheckSupportedComponents
+                .Select(component => HardcodedItemIds.ComponentIds[component]),
+            HardcodedItemIds.ComponentIds[Components.Zapret2],
+        ];
+        private readonly HashSet<string> configTestUnsupportedComponents =
+        [
+            HardcodedItemIds.ComponentIds[Components.TgWsProxy],
+        ];
+        private readonly ILocalizer localizer = Localizer.Get();
+        private bool navigationActionHandled;
 
         private string TargetId = string.Empty;
         public MainPage()
@@ -47,7 +59,11 @@ namespace CDPIUI.Views.CreateConfigUtil
             GetReadyVariants();
 
             StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
-            
+            localizer.LanguageChanged += Localizer_LanguageChanged;
+
+
+            IsBackwardAnimationToPageAvailable = true;
+            ElementToAnimateBackwardConnectedAnimation = ActionButtonsGrid;
         }
 
         private void StoreHelper_ItemActionsStopped(string obj)
@@ -63,12 +79,31 @@ namespace CDPIUI.Views.CreateConfigUtil
         {
             base.OnNavigatedTo(e);
 
-            if (Parameter != null)
+            if (Parameter != null && items.Count > 0)
             {
                 TargetId = Parameter.Get("componentId");
                 if (!string.IsNullOrEmpty(TargetId)) 
                     ComponentChooseComboBox.SelectedItem = 
                         items.FirstOrDefault(x => x.StoreId == TargetId) ?? items.First();
+
+                string action = Parameter.Get("action");
+                if (!navigationActionHandled && !string.IsNullOrWhiteSpace(action))
+                {
+                    navigationActionHandled = true;
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (string.Equals(action, "BlockCheck2", StringComparison.OrdinalIgnoreCase))
+                        {
+                            NavigateToBlockCheck2(false);
+                            Frame.BackStack.Clear();
+                        }
+                        else if (string.Equals(action, "BlockCheck2Reports", StringComparison.OrdinalIgnoreCase))
+                        {
+                            NavigateToBlockCheck2Reports();
+                            Frame.BackStack.Clear();
+                        }
+                    });
+                }
             }
         }
 
@@ -77,6 +112,7 @@ namespace CDPIUI.Views.CreateConfigUtil
             base.OnNavigatedFrom(e);
 
             StoreHelper.Instance.ItemActionsStopped -= StoreHelper_ItemActionsStopped;
+            localizer.LanguageChanged -= Localizer_LanguageChanged;
         }
 
 
@@ -109,17 +145,28 @@ namespace CDPIUI.Views.CreateConfigUtil
 
         private async void BeginNewSelectionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (ComponentChooseComboBox.SelectedItem is not ViewComponentModel component)
+            {
+                return;
+            }
+
+            SettingsManager.Instance.SetValue<string>("AUTOSELECTION", "lastComponentSelectedId", component.StoreId);
+            if (IsZapret2(component))
+            {
+                NavigateToBlockCheck2();
+                return;
+            }
+
             if (!DatabaseHelper.Instance.IsItemInstalled("ASGKOI001"))
             {
                 var window = await((App)Application.Current).UnsafeCreateNewWindow<StoreSmallDownloadDialog>(id: "ASGKOI001");
                 return;
             }
 
-            SettingsManager.Instance.SetValue<string>("AUTOSELECTION", "lastComponentSelectedId", ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
             Frame.Navigate(typeof(CreateViaGoodCheck), 
                 new NameValueCollection()
                 {
-                    {"componentId", ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId }
+                    {"componentId", component.StoreId }
                 }, 
                 new SuppressNavigationTransitionInfo());
         }
@@ -132,21 +179,60 @@ namespace CDPIUI.Views.CreateConfigUtil
 
         private void ComponentChooseComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!supportedComponents.Contains(((ViewComponentModel)ComponentChooseComboBox.SelectedItem)?.DisplayName))
+            UpdateSelectedComponentActions();
+        }
+
+        private void Localizer_LanguageChanged(object sender, LanguageChangedEventArgs e) =>
+            UpdateSelectedComponentActions();
+
+        private void UpdateSelectedComponentActions()
+        {
+            if (ComponentChooseComboBox.SelectedItem is not ViewComponentModel component)
             {
                 BeginNewSelectionButton.Visibility = Visibility.Collapsed;
+                BlockCheck2ReportsSettingsCard.Visibility = Visibility.Collapsed;
+                return;
             }
-            else
+
+            bool isZapret2 = IsZapret2(component);
+            BeginNewSelectionButton.Visibility = supportedComponents.Contains(component.StoreId)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            BlockCheck2ReportsSettingsCard.Visibility = isZapret2
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            TestBestConfigSettingsCard.Visibility = configTestUnsupportedComponents.Contains(component.StoreId)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            BeginNewSelectionButton.Header = localizer.GetLocalizedString(isZapret2
+                ? "BlockCheck2StartSelectionCardTitle"
+                : "CreateNewViaGoodCheckSettingsCardTitle");
+            BeginNewSelectionButton.Description = localizer.GetLocalizedString(isZapret2
+                ? "BlockCheck2StartSelectionCardDescription"
+                : "CreateNewViaGoodCheckSettingsCardDescription");
+        }
+
+        private static bool IsZapret2(ViewComponentModel component) =>
+            string.Equals(
+                component.StoreId,
+                HardcodedItemIds.ComponentIds[Components.Zapret2],
+                StringComparison.OrdinalIgnoreCase);
+
+        private void NavigateToBlockCheck2(bool animate = true)
+        {
+            if (animate) PrepareToConnectedForwardAnimate(ActionButtonsGrid);
+            Frame.Navigate(typeof(Views.BlockCheck2.MainPage), new NameValueCollection() { }, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+        }
+        private void NavigateToBlockCheck2Reports() =>
+            Frame.Navigate(typeof(Views.BlockCheck2.ReportHistoryPage), new NameValueCollection() { }, new SuppressNavigationTransitionInfo());
+
+        private void BlockCheck2ReportsSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (ComponentChooseComboBox.SelectedItem is ViewComponentModel component && IsZapret2(component))
             {
-                BeginNewSelectionButton.Visibility = Visibility.Visible;
-            }
-            if (ConfigTestUnsupportedComponents.Contains(((ViewComponentModel)ComponentChooseComboBox.SelectedItem)?.DisplayName))
-            {
-                TestBestConfigSettingsCard.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                TestBestConfigSettingsCard.Visibility = Visibility.Visible;
+                SettingsManager.Instance.SetValue<string>("AUTOSELECTION", "lastComponentSelectedId", component.StoreId);
+                NavigateToBlockCheck2Reports();
             }
         }
 

@@ -32,36 +32,47 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
-
-        <StackPanel Grid.Row="1" Padding="20" Spacing="5" x:Name="MainPanel">
-            <StackPanel.ChildrenTransitions>
-                <RepositionThemeTransition />
-            </StackPanel.ChildrenTransitions>
-            <controls:SettingsCard x:Name="TestBestConfigSettingsCard" l:Uids.Uid="TestBestConfigSettingsCard" IsClickEnabled="True" Click="TestBestConfigSettingsCard_Click">
-                <controls:SettingsCard.HeaderIcon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
-                </controls:SettingsCard.HeaderIcon>
-                <controls:SettingsCard.ActionIcon>
-                    <FontIcon Glyph="&#xE8A7;" />
-                </controls:SettingsCard.ActionIcon>
-            </controls:SettingsCard>
-            <controls:SettingsCard x:Name="BeginNewSelectionButton" l:Uids.Uid="CreateNewViaGoodCheckSettingsCard" IsClickEnabled="True" Click="BeginNewSelectionButton_Click">
-                <controls:SettingsCard.HeaderIcon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
-                </controls:SettingsCard.HeaderIcon>
-            </controls:SettingsCard>
-            <controls:SettingsCard l:Uids.Uid="CreateYouOwnConfigSettingsCard" IsClickEnabled="True" Click="ViewOtherButton_Click">
-                <controls:SettingsCard.Header>
-                    <TextBlock l:Uids.Uid="OpenConfigHelperTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-                </controls:SettingsCard.Header>
-                <controls:SettingsCard.HeaderIcon>
-                    <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
-                </controls:SettingsCard.HeaderIcon>
-                <controls:SettingsCard.ActionIcon>
-                    <FontIcon Glyph="&#xE8A7;" />
-                </controls:SettingsCard.ActionIcon>
-            </controls:SettingsCard>
-        </StackPanel>
+        <ScrollView Grid.Row="1" Padding="0 10 0 0" >
+            <StackPanel Margin="20 0 20 20" Spacing="5" x:Name="MainPanel">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition />
+                </StackPanel.ChildrenTransitions>
+                <controls:SettingsCard x:Name="TestBestConfigSettingsCard" l:Uids.Uid="TestBestConfigSettingsCard" IsClickEnabled="True" Click="TestBestConfigSettingsCard_Click">
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard x:Name="BeginNewSelectionButton" l:Uids.Uid="CreateNewViaGoodCheckSettingsCard" IsClickEnabled="True" Click="BeginNewSelectionButton_Click">
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard
+                    x:Name="BlockCheck2ReportsSettingsCard"
+                    l:Uids.Uid="BlockCheck2ReportsSettingsCard"
+                    IsClickEnabled="True"
+                    Click="BlockCheck2ReportsSettingsCard_Click"
+                    Visibility="Collapsed">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE823;" />
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard l:Uids.Uid="CreateYouOwnConfigSettingsCard" IsClickEnabled="True" Click="ViewOtherButton_Click">
+                    <controls:SettingsCard.Header>
+                        <TextBlock l:Uids.Uid="OpenConfigHelperTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                    </controls:SettingsCard.Header>
+                    <controls:SettingsCard.HeaderIcon>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                    </controls:SettingsCard.HeaderIcon>
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                </controls:SettingsCard>
+            </StackPanel>
+        </ScrollView>
 
         <StackPanel x:Name="PlaceholderGrid" Grid.Row="1" Margin="20 20 20 0" Spacing="20">
             <TextBlock l:Uids.Uid="NoOneComponentInstalledTextBlock" TextWrapping="Wrap"/>
