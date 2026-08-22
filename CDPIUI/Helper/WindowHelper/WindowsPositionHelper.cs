@@ -50,6 +50,7 @@ namespace CDPIUI.Helper.WindowHelper
             { nameof(OfflineHelpWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(MainWindow), WindowResizeOptions.ResizeAndPositionMain },
             { nameof(CreateConfigUtilWindow), WindowResizeOptions.OnlyPositionWizard },
+            { nameof(BlockCheck2ResultWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(WelcomeWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(ConfigImportUtilWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(CreateConfigHelperWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
