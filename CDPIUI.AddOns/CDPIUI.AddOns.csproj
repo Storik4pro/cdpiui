@@ -23,4 +23,8 @@
     <ProjectReference Include="..\CDPIUI.Shared\CDPIUI.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="BlockCheck2\Catalog\strategy-catalog.v1.json" />
+  </ItemGroup>
+
 </Project>
