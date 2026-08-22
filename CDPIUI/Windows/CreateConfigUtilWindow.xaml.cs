@@ -28,15 +28,11 @@ using WinUI3Localizer;
 using WinUIEx;
 using CDPIUI.AddOns.GoodCheck;
 using System.Collections.Specialized;
+using BlockCheck2MainPage = CDPIUI.Views.BlockCheck2.MainPage;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace CDPIUI
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class CreateConfigUtilWindow : TemplateWindow
     {
         public static CreateConfigUtilWindow Instance { get; private set; }
@@ -48,7 +44,8 @@ namespace CDPIUI
             set
             {
                 targetStoreId = value;
-                ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), new NameValueCollection() { { "componentId", TargetStoreId } });
+                if (ContentFrame.SourcePageType == typeof(Views.CreateConfigUtil.MainPage))
+                    ContentFrame.Navigate(typeof(Views.CreateConfigUtil.MainPage), new NameValueCollection() { { "componentId", TargetStoreId } });
             }
         }
 
@@ -103,14 +100,16 @@ namespace CDPIUI
                 ContentDialog dialog = new()
                 {
                     Title = localizer.GetLocalizedString("ConfirmationRequired"),
-                    Content = localizer.GetLocalizedString("GoodCheckAskStopSelection"),
+                    Content = localizer.GetLocalizedString(IsBlockCheck2Running
+                        ? "BlockCheck2AskStopSelection"
+                        : "GoodCheckAskStopSelection"),
                     PrimaryButtonText = localizer.GetLocalizedString("Yes"),
                     CloseButtonText = localizer.GetLocalizedString("No"),
                     XamlRoot = this.Content.XamlRoot
                 };
                 if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 {
-                    GoodCheckProcessService.Instance.Stop();
+                    StopActiveSelection();
                     this.Close();
                 }
             }
@@ -130,14 +129,15 @@ namespace CDPIUI
         {
             if (isDialogOpened)
             {
-                GoodCheckProcessService.Instance.Stop();
+                StopActiveSelection();
             }
-            else if (GoodCheckProcessService.Instance.IsRunned())
+            else if (IsSelectionRunning)
             {
                 AskForExit();
                 args.Handled = true;
                 return;
             }
+            
             Instance = null;
             this.Closed -= CreateConfigUtilWindow_Closed;
             
@@ -164,9 +164,33 @@ namespace CDPIUI
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (IsSelectionRunning)
+            {
+                return;
+            }
+
             if (ContentFrame.CanGoBack)
             {
                 ContentFrame.GoBack();
+            }
+        }
+
+        private bool IsBlockCheck2Running =>
+            ContentFrame.Content is BlockCheck2MainPage page && page.ViewModel.IsRunning;
+
+        private bool IsSelectionRunning =>
+            GoodCheckProcessService.Instance.IsRunned() || IsBlockCheck2Running;
+
+        private void StopActiveSelection()
+        {
+            if (GoodCheckProcessService.Instance.IsRunned())
+            {
+                GoodCheckProcessService.Instance.Stop();
+            }
+
+            if (ContentFrame.Content is BlockCheck2MainPage page)
+            {
+                page.CancelRunningSession();
             }
         }
     }

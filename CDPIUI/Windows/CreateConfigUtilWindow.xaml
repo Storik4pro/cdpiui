@@ -49,9 +49,7 @@
         </wc:TitleBarUserControl>
         <Frame x:Name="ContentFrame" Grid.Row="1">
             <Frame.ContentTransitions>
-                <TransitionCollection>
-                    <NavigationThemeTransition  />
-                </TransitionCollection>
+                <TransitionCollection/>
             </Frame.ContentTransitions>
         </Frame>
     </Grid>
