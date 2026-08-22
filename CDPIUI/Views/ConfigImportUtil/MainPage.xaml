@@ -16,6 +16,7 @@
     <Grid Unloaded="MainPage_Unloaded">
         <Grid.Resources>
             <conv:BoolToVisibilityConverter x:Name="BoolToVisibilityConverter"/>
+            <conv:StringToVisibilityConverter x:Name="StringToVisibilityConverter"/>
         </Grid.Resources>
         
         <Grid.RowDefinitions>
@@ -86,7 +87,7 @@
                                     <StackPanel Spacing="8">
                                         <TextBlock Text="{Binding ConfigName}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
                                         <TextBlock Text="{Binding MissingPath}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
-                                        <StackPanel Spacing="2">
+                                        <StackPanel Spacing="2" Visibility="{Binding HasSuggestion, Converter={StaticResource StringToVisibilityConverter}}">
                                             <TextBlock l:Uids.Uid="ConfigImportMissingFileSuggestionLabel" Style="{ThemeResource CaptionTextBlockStyle}"/>
                                             <TextBlock Text="{Binding SuggestionText}" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
                                         </StackPanel>
@@ -278,7 +279,7 @@
                 </Grid>
             </nv:AnimatedHorizontalContentItem>
         </nv:AnimatedHorizontalContentViewer>
-        <ucontrols:UtilityButtonControls x:Name="UtilityButtonContols" Grid.Row="1" HelpUrl="Utils/ImportConfig">
+        <ucontrols:UtilityButtonControls x:Name="UtilityButtonContols" Grid.Row="1" HelpUrl="ConfigImport/1AboutConfigImport">
             <Button x:Name="CancelButton" l:Uids.Uid="ExitButton" MinWidth="150" Click="CancelButton_Click" IsEnabled="True"/>
             <Button x:Name="NextButton" 
                     l:Uids.Uid="GoForwardButton" 
