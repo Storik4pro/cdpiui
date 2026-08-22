@@ -21,7 +21,7 @@ using WinUI3Localizer;
 
 namespace CDPIUI.Controls.Universal;
 
-public sealed partial class URIButton : Button
+public sealed partial class URIButton : UserControl
 {
     public string URI
     {
@@ -32,27 +32,19 @@ public sealed partial class URIButton : Button
     public static readonly DependencyProperty URIMessageProperty =
         DependencyProperty.Register("URI", typeof(string), typeof(URIButton), new PropertyMetadata(string.Empty));
 
-    public string UriName
+    public string DisplayText
     {
-        get { return (string)GetValue(UriNameMessageProperty); }
-        set { 
-            SetValue(UriNameMessageProperty, value);
-            Debug.WriteLine(UriName);
-        }
+        get { return (string)GetValue(DisplayTextProperty); }
+        set  { SetValue(DisplayTextProperty, value); }
     }
 
-    public static readonly DependencyProperty UriNameMessageProperty =
-        DependencyProperty.Register(nameof(UriName), typeof(string), typeof(URIButton), new PropertyMetadata("Link"));
-
-
+    public static readonly DependencyProperty DisplayTextProperty =
+        DependencyProperty.Register(
+            nameof(DisplayText), typeof(string), typeof(URIButton), new PropertyMetadata(string.Empty)
+        );
 
     public URIButton()
     {
         InitializeComponent();
-    }
-
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        CommandsHandler.HandleCommand(URI);
     }
 }
