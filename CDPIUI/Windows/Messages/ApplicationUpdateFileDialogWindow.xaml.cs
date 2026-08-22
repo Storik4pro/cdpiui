@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.Core;
 using CDPIUI.Core.Features;
 using CDPIUI.Core.Store;
