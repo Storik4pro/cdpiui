@@ -108,7 +108,73 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                         TasksHelper.Instance.SetIsStartArgsChangedProperty(id, true);
                         return;
                     }
+
+                case CONPTYMessageIds.CaptureHelpOutput:
+                    _ = CaptureHelpOutputAsync(model);
+                    return;
             }
+        }
+
+        private static async Task CaptureHelpOutputAsync(CONPTYMessageModel model)
+        {
+            const int OutputChunkSize = 12 * 1024;
+            string requestId = model.MessageData?["requestId"] ?? string.Empty;
+            int totalChunks = 0;
+            int exitCode = -1;
+            bool timedOut = false;
+            string error = string.Empty;
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(requestId))
+                {
+                    return;
+                }
+
+                string encodedPath = model.MessageData?["exePath"] ?? string.Empty;
+                string executablePath = CDPIUI.Shared.Pipe.PipePayloadCodec.DecodeString(encodedPath);
+                if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
+                {
+                    throw new FileNotFoundException(
+                        "The component executable was not found.",
+                        executablePath);
+                }
+
+                ConPTYCaptureResult result = await ConPTYHelper.CaptureProcessOutputAsync(
+                    executablePath,
+                    "--help",
+                    Path.GetDirectoryName(executablePath) ?? string.Empty,
+                    TimeSpan.FromSeconds(10));
+                exitCode = result.ExitCode;
+                timedOut = result.TimedOut;
+
+                byte[] outputBytes = System.Text.Encoding.UTF8.GetBytes(result.Output);
+                totalChunks = outputBytes.Length == 0
+                    ? 0
+                    : (outputBytes.Length + OutputChunkSize - 1) / OutputChunkSize;
+                for (int index = 0; index < totalChunks; index++)
+                {
+                    int offset = index * OutputChunkSize;
+                    int count = Math.Min(OutputChunkSize, outputBytes.Length - offset);
+                    byte[] chunk = new byte[count];
+                    Buffer.BlockCopy(outputBytes, offset, chunk, 0, count);
+                    if (!await PipeHelper.SendHelpOutputChunk(requestId, index, chunk))
+                    {
+                        return;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                error = exception.Message;
+            }
+
+            await PipeHelper.SendHelpOutputCompleted(
+                requestId,
+                totalChunks,
+                exitCode,
+                timedOut,
+                error);
         }
 
         private static async Task HandleGoodCheckMessage(GoodCheckMessageModel model)
