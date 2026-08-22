@@ -1,4 +1,5 @@
 ﻿using CDPIUI.Core;
+using CDPIUI.Helper.Items;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -16,7 +17,19 @@ namespace CDPIUI.Helper.UserExperience
 {
     internal sealed class LocalizationHelper : INotifyPropertyChanged
     {
-        public static LocalizationHelper Instance { get; } = new();
+        private static LocalizationHelper _instance;
+        private static readonly object _lock = new();
+        public static LocalizationHelper Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    _instance ??= new LocalizationHelper();
+                    return _instance;
+                }
+            }
+        }
 
         private readonly ILocalizer localizer;
         private LanguageSelectModel currentLanguage;

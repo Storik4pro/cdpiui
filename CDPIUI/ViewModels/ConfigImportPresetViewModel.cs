@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.AddOns.ConfigImport;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Shared;

@@ -1,5 +1,6 @@
 ﻿using CDPIUI.Core;
 using CDPIUI.Helper;
+using CDPIUI.Helper.UserExperience;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -36,7 +37,19 @@ namespace CDPIUI.ViewModels
 
     public class ApplicationThemeManager : INotifyPropertyChanged
     {
-        public static ApplicationThemeManager Instance { get; } = new();
+        private static ApplicationThemeManager _instance;
+        private static readonly object _lock = new();
+        public static ApplicationThemeManager Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    _instance ??= new ApplicationThemeManager();
+                    return _instance;
+                }
+            }
+        }
 
         public readonly ObservableCollection<ThemeViewModel> Themes = [];
 
