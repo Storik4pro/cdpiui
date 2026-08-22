@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.ConditionalLaunch;
 using CDPIUI.Controls.Dialogs.ConditionalLaunch;
 using CDPIUI.Core.Communication;
