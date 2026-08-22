@@ -40,7 +40,7 @@
                     </Button.Content>
                 </Button>
 
-                <ItemsRepeater ItemsSource="{x:Bind Items, Mode=OneWay}" HorizontalAlignment="Stretch">
+                <ItemsRepeater ItemsSource="{x:Bind Items, Mode=OneWay}" HorizontalAlignment="Stretch" MinHeight="32">
                     <ItemsRepeater.Layout>
                         <local:RightAlignedStackLayout Spacing="10"/>
                     </ItemsRepeater.Layout>

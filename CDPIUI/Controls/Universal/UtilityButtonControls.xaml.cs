@@ -4,10 +4,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
 using WinUI3Localizer;
 
@@ -25,10 +29,16 @@ namespace CDPIUI.Controls.Universal
         private static readonly TimeSpan ShowAnimationDuration = TimeSpan.FromMilliseconds(120);
         private static readonly TimeSpan HideAnimationDuration = TimeSpan.FromMilliseconds(150);
         private static readonly TimeSpan RepositionAnimationDuration = HideAnimationDuration * 2;
+        private static readonly TimeSpan ButtonSequenceGap = TimeSpan.FromMilliseconds(10);
 
         private static ILocalizer localizer = Localizer.Get();
         private readonly bool animationsEnabled;
         private readonly HashSet<Button> configuredButtons = [];
+        private readonly Dictionary<Button, long> visibilityCallbackTokens = [];
+        private readonly Dictionary<Button, Visibility> requestedVisibilityStates = [];
+        private CancellationTokenSource visibilitySequenceCancellation;
+        private Frame navigationFrame;
+        private Page navigationPage;
 
         public ObservableCollection<Button> Items { get; } = [];
 
@@ -39,6 +49,19 @@ namespace CDPIUI.Controls.Universal
             animationsEnabled = new UISettings().AnimationsEnabled;
             Items.CollectionChanged += Items_CollectionChanged;
             Loaded += UtilityButtonControls_Loaded;
+            Unloaded += UtilityButtonControls_Unloaded;
+        }
+
+        private void UtilityButtonControls_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= UtilityButtonControls_Loaded;
+            Unloaded -= UtilityButtonControls_Unloaded;
+
+            if (!animationsEnabled)
+                return;
+
+            DetachFromNavigationFrame();
+            SuspendVisibilityAnimations();
         }
 
         private void UtilityButtonControls_Loaded(object sender, RoutedEventArgs e)
@@ -46,8 +69,97 @@ namespace CDPIUI.Controls.Universal
             if (!animationsEnabled)
                 return;
 
+            AttachToNavigationFrame();
+
             foreach (Button button in Items)
                 PrepareVisibilityAnimations(button);
+        }
+
+        private void AttachToNavigationFrame()
+        {
+            DetachFromNavigationFrame();
+
+            DependencyObject current = this;
+            while (current is not null)
+            {
+                if (current is Page page && page.Frame is Frame frame)
+                {
+                    navigationPage = page;
+                    navigationFrame = frame;
+                    navigationFrame.Navigating += NavigationFrame_Navigating;
+                    return;
+                }
+
+                current = VisualTreeHelper.GetParent(current);
+            }
+        }
+
+        private void DetachFromNavigationFrame()
+        {
+            if (navigationFrame is null)
+                return;
+
+            navigationFrame.Navigating -= NavigationFrame_Navigating;
+            navigationFrame = null;
+            navigationPage = null;
+        }
+
+        private void NavigationFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            Frame currentFrame = navigationFrame;
+            Page currentPage = navigationPage;
+            DetachFromNavigationFrame();
+            SuspendVisibilityAnimations();
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (!IsLoaded || !ReferenceEquals(currentFrame?.Content, currentPage))
+                    return;
+
+                AttachToNavigationFrame();
+
+                foreach (Button button in Items)
+                    PrepareVisibilityAnimations(button);
+
+                if (requestedVisibilityStates.Count == 0)
+                    return;
+
+                (Button Button, Visibility Visibility)[] states =
+                    new (Button, Visibility)[requestedVisibilityStates.Count];
+                int stateIndex = 0;
+                foreach (KeyValuePair<Button, Visibility> state in requestedVisibilityStates)
+                    states[stateIndex++] = (state.Key, state.Value);
+
+                SetButtonVisibilities(states);
+            });
+        }
+
+        private void SuspendVisibilityAnimations()
+        {
+            visibilitySequenceCancellation?.Cancel();
+
+            foreach (Button button in configuredButtons)
+            {
+                if (visibilityCallbackTokens.TryGetValue(button, out long callbackToken))
+                {
+                    button.UnregisterPropertyChangedCallback(
+                        UIElement.VisibilityProperty,
+                        callbackToken);
+                }
+
+                ElementCompositionPreview.SetImplicitShowAnimation(button, null);
+                ElementCompositionPreview.SetImplicitHideAnimation(button, null);
+
+                Visual visual = ElementCompositionPreview.GetElementVisual(button);
+                visual.StopAnimation("Translation");
+                visual.StopAnimation("Opacity");
+                visual.Opacity = 1f;
+                visual.StopAnimation("Offset");
+                visual.ImplicitAnimations?.Remove("Offset");
+            }
+
+            visibilityCallbackTokens.Clear();
+            configuredButtons.Clear();
         }
 
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -89,7 +201,7 @@ namespace CDPIUI.Controls.Universal
             ConfigureVisibilityAnimations(button);
         }
 
-        private static void ConfigureVisibilityAnimations(Button button)
+        private void ConfigureVisibilityAnimations(Button button)
         {
             ElementCompositionPreview.SetIsTranslationEnabled(button, true);
 
@@ -99,6 +211,8 @@ namespace CDPIUI.Controls.Universal
                 compositor,
                 fromTranslation: new Vector3(0, VisibilityAnimationOffset, 0),
                 toTranslation: new Vector3(0, 0, 0),
+                fromOpacity: 0f,
+                toOpacity: 1f,
                 duration: ShowAnimationDuration,
                 firstControlPoint: new Vector2(0.22f, 1f),
                 secondControlPoint: new Vector2(0.36f, 1f));
@@ -107,6 +221,8 @@ namespace CDPIUI.Controls.Universal
                 compositor,
                 fromTranslation: Vector3.Zero,
                 toTranslation: new Vector3(0, VisibilityAnimationOffset, 0),
+                fromOpacity: 1f,
+                toOpacity: 0f,
                 duration: HideAnimationDuration,
                 firstControlPoint: new Vector2(0.55f, 0f),
                 secondControlPoint: new Vector2(1f, 0.45f));
@@ -118,7 +234,7 @@ namespace CDPIUI.Controls.Universal
             if (showAnimationIsConfigured)
                 ElementCompositionPreview.SetImplicitShowAnimation(button, showAnimation);
 
-            button.RegisterPropertyChangedCallback(
+            long callbackToken = button.RegisterPropertyChangedCallback(
                 UIElement.VisibilityProperty,
                 (dependencyObject, _) =>
                 {
@@ -138,6 +254,154 @@ namespace CDPIUI.Controls.Universal
 
                     SuppressRepositionForCurrentShow(targetButton, compositor);
                 });
+            visibilityCallbackTokens[button] = callbackToken;
+        }
+
+        public void SetButtonVisibilities(params (Button Button, Visibility Visibility)[] states)
+        {
+            Dictionary<Button, Visibility> requestedStates = [];
+            foreach ((Button button, Visibility visibility) in states)
+            {
+                if (button is not null && Items.Contains(button))
+                    requestedStates[button] = visibility;
+            }
+
+            if (visibilitySequenceCancellation is { IsCancellationRequested: false } &&
+                AreSameStates(requestedStates, requestedVisibilityStates))
+            {
+                return;
+            }
+
+            visibilitySequenceCancellation?.Cancel();
+            requestedVisibilityStates.Clear();
+            foreach (KeyValuePair<Button, Visibility> state in requestedStates)
+                requestedVisibilityStates[state.Key] = state.Value;
+
+            if (!animationsEnabled || !IsLoaded)
+            {
+                foreach (Button button in Items)
+                {
+                    if (requestedStates.TryGetValue(button, out Visibility visibility))
+                        button.Visibility = visibility;
+                }
+
+                return;
+            }
+
+            List<(Button Button, Visibility Visibility)> hiddenButtons = [];
+            List<(Button Button, Visibility Visibility)> shownButtons = [];
+
+            foreach (Button button in Items)
+            {
+                if (!requestedStates.TryGetValue(button, out Visibility visibility) ||
+                    button.Visibility == visibility)
+                {
+                    continue;
+                }
+
+                if (visibility == Visibility.Collapsed)
+                    hiddenButtons.Add((button, visibility));
+                else
+                    shownButtons.Add((button, visibility));
+            }
+
+            if (hiddenButtons.Count == 0 && shownButtons.Count == 0)
+                return;
+
+            CancellationTokenSource cancellation = new();
+            visibilitySequenceCancellation = cancellation;
+            _ = RunVisibilitySequenceAsync(hiddenButtons, shownButtons, cancellation);
+        }
+
+        private static bool AreSameStates(
+            IReadOnlyDictionary<Button, Visibility> first,
+            IReadOnlyDictionary<Button, Visibility> second)
+        {
+            if (first.Count != second.Count)
+                return false;
+
+            foreach (KeyValuePair<Button, Visibility> state in first)
+            {
+                if (!second.TryGetValue(state.Key, out Visibility visibility) ||
+                    visibility != state.Value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task RunVisibilitySequenceAsync(
+            IReadOnlyList<(Button Button, Visibility Visibility)> hiddenButtons,
+            IReadOnlyList<(Button Button, Visibility Visibility)> shownButtons,
+            CancellationTokenSource cancellation)
+        {
+            try
+            {
+                int transitionCount = hiddenButtons.Count + shownButtons.Count;
+                int transitionIndex = 0;
+
+                foreach ((Button button, Visibility visibility) in hiddenButtons)
+                {
+                    bool repositionsButtonsToTheLeft = HasVisibleButtonToTheLeft(button);
+                    button.Visibility = visibility;
+                    transitionIndex++;
+
+                    if (transitionIndex < transitionCount)
+                    {
+                        TimeSpan duration = repositionsButtonsToTheLeft
+                            ? RepositionAnimationDuration
+                            : HideAnimationDuration;
+                        await Task.Delay(duration + ButtonSequenceGap, cancellation.Token);
+                    }
+                }
+
+                foreach ((Button button, Visibility visibility) in shownButtons)
+                {
+                    bool repositionsButtonsToTheLeft = HasVisibleButtonToTheLeft(button);
+                    button.Visibility = visibility;
+                    transitionIndex++;
+
+                    if (transitionIndex < transitionCount)
+                    {
+                        TimeSpan duration = repositionsButtonsToTheLeft
+                            ? Max(ShowAnimationDuration, RepositionAnimationDuration / 2)
+                            : ShowAnimationDuration;
+                        await Task.Delay(duration + ButtonSequenceGap, cancellation.Token);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                
+            }
+            finally
+            {
+                if (ReferenceEquals(visibilitySequenceCancellation, cancellation))
+                    visibilitySequenceCancellation = null;
+
+                cancellation.Dispose();
+            }
+        }
+
+        private bool HasVisibleButtonToTheLeft(Button targetButton)
+        {
+            foreach (Button button in Items)
+            {
+                if (ReferenceEquals(button, targetButton))
+                    return false;
+
+                if (button.Visibility == Visibility.Visible)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static TimeSpan Max(TimeSpan first, TimeSpan second)
+        {
+            return first >= second ? first : second;
         }
 
         private static void SuppressRepositionForCurrentShow(Button button, Compositor compositor)
@@ -184,6 +448,8 @@ namespace CDPIUI.Controls.Universal
             Compositor compositor,
             Vector3 fromTranslation,
             Vector3 toTranslation,
+            float fromOpacity,
+            float toOpacity,
             TimeSpan duration,
             Vector2 firstControlPoint,
             Vector2 secondControlPoint)
@@ -198,8 +464,15 @@ namespace CDPIUI.Controls.Universal
             translationAnimation.InsertKeyFrame(0f, fromTranslation);
             translationAnimation.InsertKeyFrame(1f, toTranslation, easingFunction);
 
+            ScalarKeyFrameAnimation opacityAnimation = compositor.CreateScalarKeyFrameAnimation();
+            opacityAnimation.Target = "Opacity";
+            opacityAnimation.Duration = duration;
+            opacityAnimation.InsertKeyFrame(0f, fromOpacity);
+            opacityAnimation.InsertKeyFrame(1f, toOpacity, easingFunction);
+
             CompositionAnimationGroup animationGroup = compositor.CreateAnimationGroup();
             animationGroup.Add(translationAnimation);
+            animationGroup.Add(opacityAnimation);
 
             return animationGroup;
         }
@@ -214,6 +487,24 @@ namespace CDPIUI.Controls.Universal
             DependencyProperty.Register(
                 nameof(IsLoading), typeof(bool), typeof(UtilityButtonControls), new PropertyMetadata(false)
             );
+
+        public bool IsIndeterminate 
+        { 
+            get => LoadingProgressBar.IsIndeterminate; 
+            set => LoadingProgressBar.IsIndeterminate = value;
+        }
+
+        public double LoadingValue
+        {
+            get => LoadingProgressBar.Value;
+            set => LoadingProgressBar.Value = value;
+        }
+
+        public double LoadingMaximumValue
+        {
+            get => LoadingProgressBar.Maximum;
+            set => LoadingProgressBar.Maximum = value;
+        }
 
         public string LoadingStateText
         {
