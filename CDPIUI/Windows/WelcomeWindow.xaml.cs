@@ -73,26 +73,24 @@ namespace CDPIUI
             NextButton.IsEnabled = true;
             var sel = AnimatedHorizontalContentViewer.SelectedItem;
 
-            if (sel == WelcomeItem)
-            {
-                BackButton.Visibility = Visibility.Collapsed;
-            }
-            else if (sel == LicenseItem)
+            if (sel == LicenseItem)
             {
                 TryLoadLicense();
-                BackButton.Visibility = Visibility.Visible;
                 NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
             }
             else if (sel == AdItem)
             {
                 UtilityButtonControls.HelpUrl = "/Other/Ad";
             }
-            else if (sel == CompleteItem)
-            {
-                BackButton.Visibility = Visibility.Collapsed;
-                NextButton.Visibility = Visibility.Collapsed;
-                CompleteButton.Visibility = Visibility.Visible;
-            }
+
+            bool isComplete = sel == CompleteItem;
+            UtilityButtonControls.SetButtonVisibilities(
+                (BackButton, sel == WelcomeItem || isComplete
+                    ? Visibility.Collapsed
+                    : Visibility.Visible),
+                (SkipButton, sel == StoreItem ? Visibility.Visible : Visibility.Collapsed),
+                (NextButton, isComplete ? Visibility.Collapsed : Visibility.Visible),
+                (CompleteButton, isComplete ? Visibility.Visible : Visibility.Collapsed));
         }
 
         private void TryLoadLicense()
@@ -113,6 +111,13 @@ namespace CDPIUI
         private void LicenseAgreeCheckBox_Click(object sender, RoutedEventArgs e)
         {
             NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
+        }
+
+        private async void UpdateStoreDatabase()
+        {
+            bool result = await StoreHelper.Instance.LoadAllStoreDatabase();
+
+
         }
 
         private void UtilityButtonControls_Loaded(object sender, RoutedEventArgs e)
