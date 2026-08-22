@@ -1,488 +1,213 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using CDPIUI.Controls.Dialogs;
+using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.UserExperience;
+using CDPIUI.Helper.WindowHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI;
-using System.Text;
-using Microsoft.UI.System;
-using Windows.UI;
-using CDPIUI.Core;
-using System.Runtime.InteropServices;
-using WinRT.Interop;
-using CommunityToolkit.WinUI.Behaviors;
-using CommunityToolkit.WinUI.Controls;
+using System;
+using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Windows.Storage.Pickers;
-using Windows.Storage.Provider;
-using Windows.Storage;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Microsoft.Win32;
-using static CommunityToolkit.WinUI.Animations.Expressions.ExpressionValues;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using CDPIUI.Controls.Dialogs;
-using WinUIEx;
 using WinUI3Localizer;
 
-using WindowId = Microsoft.UI.WindowId;
-using Microsoft.UI.Windowing;
-using CDPIUI.Default;
-using CDPIUI.Controls.Dialogs.Universal;
-using CDPIUI.Shared.PrettyErrorConvertionService;
-using CDPIUI.Core.Store.Database;
-using CDPIUI.Core.ComponentServices;
-using CDPIUI.Helper;
-using CDPIUI.Helper.WindowHelper;
+namespace CDPIUI;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-namespace CDPIUI
+public sealed partial class ViewWindow : TemplateWindow
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    private readonly ILocalizer localizer = Localizer.Get();
 
-
-    public sealed partial class ViewWindow : TemplateWindow
+    public ViewWindow()
     {
-        private readonly StringBuilder _outputBuffer = new StringBuilder();
+        NewIdSet += SetId;
+        InitializeComponent();
 
-        private ILocalizer localizer = Localizer.Get();
+        WindowTitle = localizer.GetLocalizedString("PseudoconsoleWindowTitle");
+        IconUri = @"Assets/Icons/Pseudoconsole.ico";
+        CustomTitleBarUserControl = TitleBarUserControl;
+        Closed += ViewWindow_Closed;
 
-        public ViewWindow()
+        WindowsPositionHelper.TrySetMicaBackdrop(true, this, MainGrid);
+
+        CleanOutputButton.IsChecked = SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode");
+        DefaultOutputButton.IsChecked = !CleanOutputButton.IsChecked;
+        HidePathsButton.IsChecked = SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView");
+        ShowPathsButton.IsChecked = !HidePathsButton.IsChecked;
+
+        ConfigOutput.RunningStateChanged += ConfigOutput_RunningStateChanged;
+        SetId();
+    }
+
+    public bool IsActive() => DispatcherQueue != null;
+
+    private async void SetId()
+    {
+        if (!string.Equals(ConfigOutput.ComponentId, Id, StringComparison.Ordinal))
         {
-            this.NewIdSet += SetId;
-            this.InitializeComponent();
+            ConfigOutput.ComponentId = Id;
+        }
+        else
+        {
+            await ConfigOutput.RefreshComponentAsync();
+        }
+        UpdateProcessControls(ConfigOutput.IsProcessRunning);
+    }
 
-            WindowTitle = localizer.GetLocalizedString("PseudoconsoleWindowTitle");
-            IconUri = @"Assets/Icons/Pseudoconsole.ico";
-            this.CustomTitleBarUserControl = TitleBarUserControl;
+    private async Task<ProcessService> GetProcessManagerAsync() =>
+        (await ComponentTasksManager.Instance.GetTaskFromId(Id))?.ProcessManager;
 
-            this.Closed += ViewWindow_Closed;
+    private void ConfigOutput_RunningStateChanged(bool isRunning)
+    {
+        DispatcherQueue.TryEnqueue(() => UpdateProcessControls(isRunning));
+    }
 
-            WindowsPositionHelper.TrySetMicaBackdrop(true, this, MainGrid);
+    private void UpdateProcessControls(bool isRunning)
+    {
+        ProcessControlIcon.Glyph = isRunning ? "\uE71A" : "\uE768";
+        ProcessControl.Text = localizer.GetLocalizedString(isRunning ? "Stop" : "Start");
+        ProcessRestart.IsEnabled = isRunning;
+    }
 
+    private void ViewWindow_Closed(object sender, WindowEventArgs args)
+    {
+        NewIdSet -= SetId;
+        ConfigOutput.RunningStateChanged -= ConfigOutput_RunningStateChanged;
+        Closed -= ViewWindow_Closed;
+    }
 
-            if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode"))
-            {
-                CleanOutputButton.IsChecked = true;
-            }
-            else
-            {
-                DefaultOutputButton.IsChecked = true;
-            }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
-            if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView"))
-            {
-                HidePathsButton.IsChecked = true;
-            }
-            else
-            {
-                ShowPathsButton.IsChecked = true;
-            }
-
-            OutputRichTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
-            OutputRichTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
-
-            SetId();
+    private async void SaveButton_Click(object sender, RoutedEventArgs e)
+    {
+        Microsoft.Win32.SaveFileDialog dialog = new()
+        {
+            OverwritePrompt = true,
+            FileName = "PseudoConsoleLog.txt",
+            DefaultExt = ".txt",
+            Filter = "TXT Files|*.txt",
+        };
+        if (dialog.ShowDialog() != true)
+        {
+            return;
         }
 
-        private void SetId()
+        try
         {
-            DisconnectHandlers();
-            TrySetCurentProcess();
-            ConnectHandlers();
+            await File.WriteAllTextAsync(dialog.FileName, ConfigOutput.OutputText);
+        }
+        catch (Exception exception)
+        {
+            ErrorContentDialog errorDialog = new();
+            await errorDialog.ShowErrorDialogAsync(
+                content: string.Format(
+                    localizer.GetLocalizedString("FileSaveErrorMessage"),
+                    dialog.FileName,
+                    "ERR_FILE_WRITE"),
+                errorDetails: exception.ToString(),
+                xamlRoot: Content.XamlRoot);
+        }
+    }
+
+    private async void ProcessControl_Click(object sender, RoutedEventArgs e)
+    {
+        ProcessService processManager = await GetProcessManagerAsync();
+        if (processManager == null)
+        {
+            return;
         }
 
-        private async Task<ProcessService> GetProcessManager()
+        if (processManager.IsProcessRunning)
         {
-            ProcessService processManager = (await ComponentTasksManager.Instance.GetTaskFromId(Id))?.ProcessManager;
-            if (processManager == null) return null;
-            return processManager;
+            await processManager.StopProcess();
+        }
+        else
+        {
+            await processManager.StartProcess();
+        }
+    }
+
+    private async void ProcessRestart_Click(object sender, RoutedEventArgs e)
+    {
+        ProcessService processManager = await GetProcessManagerAsync();
+        if (processManager != null)
+        {
+            await processManager.RestartProcess();
+        }
+    }
+
+    private void CleanOutputButton_Click(object sender, RoutedEventArgs e)
+    {
+        SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", true);
+        ConfigOutput.RefreshOutput();
+    }
+
+    private void DefaultOutputButton_Click(object sender, RoutedEventArgs e)
+    {
+        SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", false);
+        ConfigOutput.RefreshOutput();
+    }
+
+    private void ShowPathsButton_Click(object sender, RoutedEventArgs e)
+    {
+        SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", false);
+        ConfigOutput.RefreshOutput();
+    }
+
+    private void HidePathsButton_Click(object sender, RoutedEventArgs e)
+    {
+        SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", true);
+        ConfigOutput.RefreshOutput();
+    }
+
+    private void ShowFontSettingsDialog()
+    {
+        ConsoleFontHelper.Instance.ShowFontSettingsDialogForXamlRoot(Content.XamlRoot);
+    }
+
+    private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e) => ShowFontSettingsDialog();
+
+    private void SupportButton_Click(object sender, RoutedEventArgs e) => UrlOpenHelper.LaunchReportUrl();
+
+    private async void CopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        ConfigOutput.CopyAll();
+        CopyIcon.Glyph = "\uE73E";
+        await Task.Delay(1000);
+        CopyIcon.Glyph = "\uE8C8";
+    }
+
+    private async void StopServiceButton_Click(object sender, RoutedEventArgs e)
+    {
+        ContentDialog dialog = new()
+        {
+            XamlRoot = Content.XamlRoot,
+            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+            Title = localizer.GetLocalizedString("ConfirmationRequired"),
+            PrimaryButtonText = localizer.GetLocalizedString("YesStopService"),
+            CloseButtonText = localizer.GetLocalizedString("Cancel"),
+            DefaultButton = ContentDialogButton.Close,
+            Content = localizer.GetLocalizedString("ServiceAskToStopMessage"),
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return;
         }
 
-        private async void ConnectHandlers()
+        try
         {
-            var processManager = await GetProcessManager();
-            if (processManager == null) return;
-            processManager.OutputReceived += OnProcessOutputReceived;
-            processManager.ProcessStateChanged += ChangeProcessStatus;
-            processManager.ErrorHappens += ErrorHappens;
-            processManager.ProcessNameChanged += ProcessManager_ProcessNameChanged;
-
-            if (processManager.IsErrorHappens)
-            {
-                if (processManager.LastError != null)
-                {
-                    ErrorHappens(processManager.LastError);
-                }
-                else
-                {
-                    ErrorHappens("UNKNOWN_ERROR", "console");
-                }
-                await processManager.GetReady(false);
-            }
-            else
-            {
-                ChangeIcon(processManager.IsProcessRunning);
-                await processManager.GetReady(true);
-            }
+            await ProcessService.StopService();
         }
-
-        private async void DisconnectHandlers()
+        catch (Exception exception)
         {
-            var processManager = await GetProcessManager();
-            if (processManager == null) return;
-            processManager.OutputReceived -= OnProcessOutputReceived;
-            processManager.ProcessStateChanged -= ChangeProcessStatus;
-            processManager.ErrorHappens -= ErrorHappens;
-            processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
+            ErrorContentDialog errorDialog = new();
+            await errorDialog.ShowErrorDialogAsync(
+                content: string.Format(
+                    localizer.GetLocalizedString("ServiceStopException"),
+                    "WINDIVERT_STOP_ERROR"),
+                errorDetails: exception.Message,
+                xamlRoot: Content.XamlRoot);
         }
-
-        private async void TrySetCurentProcess(string procName = null)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(procName))
-                {
-                    var processManager = await GetProcessManager();
-                    StatusMessage.Message = string.Format(
-                        processManager.IsProcessRunning ? localizer.GetLocalizedString("ProcessStartedMessageMessage") : localizer.GetLocalizedString("ProcessStoppedMessageMessage"), 
-                        GetProcessName()
-                        );
-                }
-
-                var item = DatabaseHelper.Instance.GetItemById(Id);
-                if (item != null)
-                {
-                    SelectedComponentTextBlock.Text = string.Format(localizer.GetLocalizedString("NowViewOutputFromComponent"), item.ShortName);
-                }
-                else
-                {
-                    SelectedComponentTextBlock.Text = localizer.GetLocalizedString("NoComponent");
-                }
-            }
-            catch 
-            {
-                SelectedComponentTextBlock.Text = localizer.GetLocalizedString("NoComponent");
-            }
-        }
-
-        private void ProcessManager_ProcessNameChanged(string obj)
-        {
-            TrySetCurentProcess(obj);
-        }
-
-        public bool IsActive()
-        {
-            return this.DispatcherQueue != null;
-        }
-
-        private void OnProcessOutputReceived(string output)
-        {
-            AppendToRichTextBlock(output);
-        }
-        private void AppendToRichTextBlock(string text)
-        {
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                _outputBuffer.Append(text);
-
-                Run run = new Run
-                {
-                    Text = text,
-                    Foreground = new SolidColorBrush(Colors.LightGray) 
-                };
-
-                OutputParagraph.Inlines.Add(run);
-
-                
-            });
-        }
-
-
-        private void ClearRichTextBlock()
-        {
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                _outputBuffer.Clear();
-
-                OutputParagraph.Inlines.Clear();
-            });
-        }
-
-        private void ChangeProcessStatus(Tuple<string, bool> tuple)
-        {
-            if (tuple.Item2)
-            {
-                ClearRichTextBlock();
-                AppendToRichTextBlock(GetProcessOutput());
-                ChangeIcon(true);
-
-            } else if (!tuple.Item2)
-            {
-                ChangeIcon(false);
-            }
-        }
-
-        private string GetProcessName()
-        {
-            if (string.IsNullOrEmpty(GetProcessManager().Result.ProcessName))
-            {
-                var item = DatabaseHelper.Instance.GetItemById(Id);
-                if (item != null)
-                {
-                    return item.Executable + ".exe";
-                }
-                return string.Empty;
-            }
-            return GetProcessManager().Result.ProcessName;
-        }
-
-        private void ChangeIcon(bool type)
-        {
-            if (type)
-            {
-                StatusIcon.Glyph = "\uEC61";
-                ProcessControlIcon.Glyph = "\uE71A";
-                ProcessControl.Text = localizer.GetLocalizedString("Stop");
-                ProcessRestart.IsEnabled = true;
-                var successColor = (Color)Application.Current.Resources["SystemFillColorSuccess"];
-                var successBrush = new SolidColorBrush(successColor);
-                StatusIcon.Foreground = successBrush;
-                StatusText.Text = localizer.GetLocalizedString("ProcessStarted");
-                StatusMessage.Title = localizer.GetLocalizedString("ProcessStartedMessageTitle");
-                if (string.IsNullOrEmpty(GetProcessName())) StatusMessage.Message = string.Empty;
-                else StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStartedMessageMessage"), GetProcessName());
-                StatusMessage.Severity = InfoBarSeverity.Success;
-            }
-            else
-            {
-                StatusIcon.Glyph = "\uEB90";
-                ProcessControlIcon.Glyph = "\uE768";
-                ProcessControl.Text = localizer.GetLocalizedString("Start");
-                ProcessRestart.IsEnabled = false;
-                var criticalColor = (Color)Application.Current.Resources["SystemFillColorCritical"];
-                var criticalBrush = new SolidColorBrush(criticalColor);
-                StatusIcon.Foreground = criticalBrush;
-                StatusText.Text = localizer.GetLocalizedString("ProcessStopped");
-                StatusMessage.Title = localizer.GetLocalizedString("ProcessStoppedMessageTitle");
-                if (string.IsNullOrEmpty(GetProcessName())) StatusMessage.Message = string.Empty;
-                else StatusMessage.Message = string.Format(localizer.GetLocalizedString("ProcessStoppedMessageMessage"), GetProcessName());
-                StatusMessage.Severity = InfoBarSeverity.Informational;
-            }
-            StatusHeader.Visibility = Visibility.Visible;
-            StatusMessage.IsOpen = true;
-            
-        }
-
-        private void ErrorHappens(ErrorModel model)
-        {
-            ErrorHappens(model.ErrorCode, model.Object);
-        }
-        private void ErrorHappens(string error, string _object = "process")
-        {
-            ChangeIcon(false);
-            StatusMessage.Severity = InfoBarSeverity.Error;
-            StatusHeader.Visibility = Visibility.Visible;
-            string message = _object == "process" ? 
-                string.Format(localizer.GetLocalizedString("ProceesRaisedException"), GetProcessManager().Result.ProcessName) : localizer.GetLocalizedString("PseudoconsoleInternalError");
-            StatusMessage.Message = $"{message}: {error}";
-        }
-
-
-        private void ViewWindow_Closed(object sender, WindowEventArgs args)
-        {
-            DisconnectHandlers();
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void StatusMessage_CloseButtonClick(InfoBar sender, object args)
-        {
-            StatusHeader.Visibility = Visibility.Collapsed;
-        }
-
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            var _dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                OverwritePrompt = true,
-                FileName = "PseudoConsoleLog.txt",
-                DefaultExt = ".txt",
-                Filter = "TXT Files|*.txt"
-            };
-            var result = _dialog.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                string filename = _dialog.FileName;
-                
-                string text = GetProcessOutput();
-                try
-                {
-                    File.WriteAllText(filename, text);
-                    
-                } catch (Exception ex)
-                {
-                    ErrorContentDialog dialog = new ErrorContentDialog { };
-                    await dialog.ShowErrorDialogAsync(content: string.Format(localizer.GetLocalizedString("FileSaveErrorMessage"), _dialog.FileName, "ERR_FILE_WRITE"),
-                        errorDetails: $"{ex}",
-                        xamlRoot: this.Content.XamlRoot);
-                }
-                
-            }
-        }
-
-        private async void ProcessControl_Click(object sender, RoutedEventArgs e)
-        {
-            if (GetProcessManager().Result.IsProcessRunning)
-            {
-                await GetProcessManager().Result.StopProcess();
-            } else
-            {
-                await GetProcessManager().Result.StartProcess();
-            }
-        }
-
-        private async void ProcessRestart_Click(object sender, RoutedEventArgs e)
-        {
-            await GetProcessManager().Result.RestartProcess();
-        }
-
-        private void CleanOutputButton_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", true);
-            UpdateTextBlock();
-        }
-
-        private void DefaultOutputButton_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "outputMode", false);
-            UpdateTextBlock();
-        }
-
-        private void ShowPathsButton_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", false);
-            UpdateTextBlock();
-        }
-
-        private void HidePathsButton_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "prettyPathView", true);
-            UpdateTextBlock();
-        }
-
-        private void UpdateTextBlock()
-        {
-            ClearRichTextBlock();
-            AppendToRichTextBlock(GetProcessOutput());
-        }
-
-        private async void ShowFontSettingsDialog()
-        {
-            FontSettingsContentDialog dialog = new()
-            {
-                XamlRoot = this.Content.XamlRoot,
-            };
-
-            var result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary)
-            {
-                string selectedFontFamily = dialog.FontName as string;
-                ApplyFontSettings(selectedFontFamily, dialog.FontSize);
-            }
-        }
-
-        private void ApplyFontSettings(string fontFamily, double fontSize)
-        {
-            OutputRichTextBlock.FontFamily = new FontFamily(fontFamily);
-            OutputRichTextBlock.FontSize = fontSize;
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "fontFamily", fontFamily);
-            SettingsManager.Instance.SetValue("PSEUDOCONSOLE", "fontSize", fontSize);
-        }
-
-
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
-        {
-            ShowFontSettingsDialog();
-        }
-
-        private void SupportButton_Click(object sender, RoutedEventArgs e)
-        {
-            UrlOpenHelper.LaunchReportUrl();
-        }
-
-        private async void CopyButton_Click(object sender, RoutedEventArgs e)
-        {
-            OutputRichTextBlock.SelectAll();
-            OutputRichTextBlock.CopySelectionToClipboard();
-            CopyIcon.Glyph = "\uE73E";
-            await Task.Delay(1000);
-            CopyIcon.Glyph = "\uE8C8";
-
-        }
-
-        private async void StopServiceButton_Click(object sender, RoutedEventArgs e)
-        {
-            ContentDialog dialog = new ContentDialog
-            {
-                XamlRoot = this.Content.XamlRoot,
-                Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-                Title = localizer.GetLocalizedString("ConfirmationRequired"),
-
-                PrimaryButtonText = localizer.GetLocalizedString("YesStopService"),
-                CloseButtonText = localizer.GetLocalizedString("Cancel"),
-                DefaultButton = ContentDialogButton.Close,
-                Content = localizer.GetLocalizedString("ServiceAskToStopMessage")
-            };
-            var result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary)
-            {
-                try
-                {
-                    await ProcessService.StopService();
-                } catch (Exception ex)
-                {
-                    ErrorContentDialog _dialog = new ErrorContentDialog { };
-                    await _dialog.ShowErrorDialogAsync(content: string.Format(localizer.GetLocalizedString("ServiceStopException"), "WINDIVERT_STOP_ERROR"),
-                        errorDetails: $"{ex.Message}",
-                        xamlRoot: this.Content.XamlRoot);
-                }
-            }
-        }
-
-        private string GetProcessOutput()
-        {
-            string text = SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "outputMode") ? GetProcessManager().Result.GetProcessOutput() :
-                    GetProcessManager().Result.GetDefaultProcessOutput();
-
-            if (SettingsManager.Instance.GetValue<bool>("PSEUDOCONSOLE", "prettyPathView"))
-            {
-                return ProcessService.ReplacePath(text);
-            }
-            else
-            {
-                return text;
-            }
-        }
-
     }
 }

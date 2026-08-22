@@ -15,15 +15,14 @@
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
     xmlns:template="using:CDPIUI.Default"
-    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal">
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="AppBar" Height="auto"/>
             <RowDefinition x:Name="FuncBar" Height="36"/>
-            <RowDefinition x:Name="ViewHeader" Height="Auto"/>
             <RowDefinition x:Name="View" Height="*"/>
-            <RowDefinition x:Name="StatusBar" Height="28"/>
         </Grid.RowDefinitions>
         <wc:TitleBarUserControl 
             x:Name="TitleBarUserControl"
@@ -138,61 +137,6 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Grid Grid.Row="2" Background="Black">
-            
-        </Grid>
-        <Grid x:Name="StatusHeader" Height="Auto" Grid.Row="2"
-              Padding="0, 0, 0, 0"
-              Margin="12, 12, 12, 0"
-              CornerRadius="6"
-              Visibility="Collapsed"
-              Background="{ThemeResource ControlAltFillColorTransparent}">
-            <InfoBar
-                x:Name="StatusMessage"
-                IsOpen="True"
-                Severity="Success"
-                IsIconVisible="True"
-                IsClosable="True"
-                CloseButtonClick="StatusMessage_CloseButtonClick"
-                Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-            />
-        </Grid>
-        <ScrollViewer x:Name="OutputScrollViewer" Grid.Row="3"
-              VerticalScrollBarVisibility="Auto"
-              HorizontalScrollBarVisibility="Disabled"
-              Background="Black">
-            
-            <RichTextBlock x:Name="OutputRichTextBlock"
-                                    FontFamily="Consolas"
-                                    FontSize="16"
-                                    Foreground="White"
-                                    TextWrapping="Wrap"
-                                    IsTextSelectionEnabled="True"
-                                    Padding="20"
-                                    SelectionHighlightColor="Gray">
-                <Paragraph x:Name="OutputParagraph"/>
-            </RichTextBlock>
-
-
-        </ScrollViewer>
-        <Grid Grid.Row="4">
-            <Grid Padding="10, 0, 10, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="SelectedComponentTextBlock" Grid.Column="0" VerticalAlignment="Center"/>
-
-                <FontIcon x:Name="StatusIcon" Grid.Column="4" Glyph="&#xEC61;" FontSize="16" />
-                <TextBlock x:Name="StatusText" Grid.Column="5" VerticalAlignment="Center"/>
-                <Rectangle Grid.Column="3" Fill="{ThemeResource TextFillColorTertiary}" Height="15" Width="1" 
-                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </Grid>
-            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" VerticalAlignment="Bottom"/>
-        </Grid>
+        <ucontrols:ViewConfigOutput x:Name="ConfigOutput" Grid.Row="2" />
     </Grid>
 </template:TemplateWindow>
