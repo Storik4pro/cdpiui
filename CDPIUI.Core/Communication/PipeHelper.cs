@@ -1,6 +1,7 @@
 ﻿using CDPIUI.Shared.Pipe.Models;
 using System.Collections.Specialized;
 using CDPIUI.Shared.ConditionalLaunch;
+using CDPIUI.Shared.Pipe;
 
 namespace CDPIUI.Core.Communication
 {
@@ -161,6 +162,25 @@ namespace CDPIUI.Core.Communication
             };
 
             await PipeClientService.Instance.SendMessageAsync(model.ToString());
+        }
+
+        public static async Task<bool> SendConPTYHelpCaptureRequest(
+            string componentId,
+            string requestId,
+            string executablePath)
+        {
+            CONPTYMessageModel model = new()
+            {
+                MessageType = CONPTYMessageIds.CaptureHelpOutput,
+                MessageData = new()
+                {
+                    { "componentId", componentId },
+                    { "requestId", requestId },
+                    { "exePath", PipePayloadCodec.Encode(executablePath) },
+                },
+            };
+
+            return await PipeClientService.Instance.SendMessageAsync(model.ToString());
         }
 
         public static async Task SendConditionalLaunchResult(

@@ -77,6 +77,11 @@ namespace CDPIUI.Core.Communication
 
         private static async Task HandleCONPTYMessage(CONPTYMessageModel model)
         {
+            if (ConPtyHelpCaptureClient.HandleMessage(model))
+            {
+                return;
+            }
+
             switch (model.MessageType)
             {
                 case CONPTYMessageIds.GetStartupString:
