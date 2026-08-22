@@ -9,10 +9,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
     l:Uids.Uid="FontContentDialog"
     DefaultButton="Secondary"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <ContentDialog.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="ContentDialogMaxWidth">800</x:Double>
+        </ResourceDictionary>
+    </ContentDialog.Resources>
 
     <Grid Width="325">
         <Grid.RowDefinitions>
@@ -20,18 +27,39 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="1" Padding="0, 0, 0, -10" MaxHeight="300">
-            <StackPanel Spacing="10" Margin="0 0 0 10">
+            <StackPanel Spacing="10" Margin="0 0 0 10" Grid.Column="1">
                 <StackPanel>
                     <TextBlock l:Uids.Uid="FontMenuItem" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <ComboBox x:Name="FontChooseComboBox" HorizontalAlignment="Stretch"/>
+                    <CheckBox 
+                            l:Uids.Uid="ShowOnlyMonospaceFonts"
+                            IsChecked="{x:Bind uexp:ConsoleFontHelper.Instance.OnlyMonospace, Mode=TwoWay}"/>
+                    <ComboBox 
+                            x:Name="FontChooseComboBox"
+                            ItemsSource="{x:Bind uexp:ConsoleFontHelper.Instance.AvailableFonts}" 
+                            SelectedItem="{x:Bind uexp:ConsoleFontHelper.Instance.SelectedFontFamilyInCollection, Mode=OneWay}" 
+                            HorizontalAlignment="Stretch"
+                            MinHeight="50">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="FontFamily">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{x:Bind Source, Mode=OneWay}" FontFamily="{x:Bind}"/>
+                                    <TextBlock Grid.Row="1" Text="{x:Bind Source, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock l:Uids.Uid="FontSizeTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
-                    <ComboBox x:Name="FontSizeComboBox" IsEditable="False" SelectionChanged="FontSizeComboBox_SelectionChanged" HorizontalAlignment="Stretch" />
-                </StackPanel>
-                <StackPanel x:Name="WarningText" Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE814;" FontSize="16"/>
-                    <TextBlock Text="Size value is incorrect."/>
+                    <ComboBox x:Name="FontSizeComboBox" 
+                              IsEditable="False" 
+                              ItemsSource="{x:Bind uexp:ConsoleFontHelper.Instance.FontSizes}" 
+                              SelectedItem="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                              HorizontalAlignment="Stretch" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

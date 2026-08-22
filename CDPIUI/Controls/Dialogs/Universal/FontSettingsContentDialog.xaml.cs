@@ -18,40 +18,18 @@ using Application = Microsoft.UI.Xaml.Application;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace CDPIUI.Controls.Dialogs;
 
 public sealed partial class FontSettingsContentDialog : ContentDialog
 {
-    public string FontName { get; set; }
-    public new int FontSize { get; set; }
+    public FontFamily FontName { get; set; }
+    public new double FontSize { get; set; }
     
     public FontSettingsContentDialog()
     {
         InitializeComponent();
 
         this.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-
-        List<string> monoFonts = new List<string>
-        {
-            "Consolas",
-            "Courier New",
-            "Lucida Console",
-            "Cascadia Code",
-            "Cascadia Mono"
-        };
-
-        List<string> fontSize = new()
-        {
-            "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "36", "48", "72"
-        };
-
-        FontChooseComboBox.ItemsSource = monoFonts;
-        FontChooseComboBox.SelectedItem = SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily");
-        FontSizeComboBox.ItemsSource = fontSize;
-        FontSizeComboBox.SelectedValue = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize").ToString();
     }
 
     private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -61,32 +39,7 @@ public sealed partial class FontSettingsContentDialog : ContentDialog
 
     private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
     {
-        bool result = int.TryParse(FontSizeComboBox.SelectedItem.ToString(), out int size);
-        FontName = FontChooseComboBox.SelectedItem.ToString();
-        FontSize = (int)SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
-
-        if (!result)
-        {
-            WarningText.Visibility = Visibility.Visible;
-            args.Cancel = true;
-            return;
-        }
-
-        
-        FontSize = size;
-    }
-
-    private void FontSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        bool result = int.TryParse(FontSizeComboBox.SelectedItem.ToString(), out int size);
-
-        if (!result)
-        {
-            WarningText.Visibility = Visibility.Visible;
-            IsPrimaryButtonEnabled = false;
-            return;
-        }
-        IsPrimaryButtonEnabled = true;
-        WarningText.Visibility = Visibility.Collapsed;
+        FontSize = (double)FontSizeComboBox.SelectedItem;
+        FontName = FontChooseComboBox.SelectedItem as FontFamily;
     }
 }

@@ -2,6 +2,7 @@ using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs;
 using CDPIUI.Core;
 using CDPIUI.Helper;
+using CDPIUI.Helper.UserExperience;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -167,8 +168,8 @@ public sealed partial class PersonalizePage : TemplatePage
 
     private void CheckFontSettings()
     {
-        string family = SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily");
-        string size = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize").ToString();
+        string family = ConsoleFontHelper.Instance.FontFamily.Source.ToString();
+        string size = ConsoleFontHelper.Instance.FontSize.ToString();
 
         SelectFontSettingsCard.Description = string.Format(localizer.GetLocalizedString("FontSizeDescription"), family, size);
     }
@@ -281,19 +282,9 @@ public sealed partial class PersonalizePage : TemplatePage
         SettingsManager.Instance.SetValue<string>("APPEARANCE", "mainPageMarkup", ((MainPageMarkupViewModel)MarkupGridView.SelectedItem).Type.ToString());
     }
 
-    private async void SelectFontButton_Click(object sender, RoutedEventArgs e)
+    private void SelectFontButton_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new FontSettingsContentDialog()
-        {
-            XamlRoot = this.XamlRoot
-        };
-
-        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-        {
-            SettingsManager.Instance.SetValue<string>("PSEUDOCONSOLE", "fontFamily", dialog.FontName);
-            SettingsManager.Instance.SetValue<double>("PSEUDOCONSOLE", "fontSize", dialog.FontSize);
-
-            CheckFontSettings();
-        }
+        ConsoleFontHelper.Instance.ShowFontSettingsDialogForXamlRoot(XamlRoot);
+        CheckFontSettings();
     }
 }

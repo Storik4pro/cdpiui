@@ -24,8 +24,6 @@ namespace CDPIUI.Controls.Dialogs
         public string DialogTitle { get; set; }
         public string MessageToShow { get; set; }
         public List<string> Args { get; set; }
-        public FontFamily ArgsFontFamily { get; set; }
-        public double ArgsFontSize { get; set; }
         public Visibility SeparationTextVisible {  get; set; } = Visibility.Visible;
         public string SeparationText { get; set; } = "--new";
 
@@ -35,9 +33,6 @@ namespace CDPIUI.Controls.Dialogs
 
             this.DataContext = this;
             this.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-
-            ArgsFontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
-            ArgsFontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
 
             DialogTitleTextBlock.Visibility = !string.IsNullOrEmpty(SeparationText) ? Visibility.Visible : Visibility.Collapsed;
         }

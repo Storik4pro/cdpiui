@@ -7,8 +7,9 @@
     xmlns:local="using:CDPIUI.Controls.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
     mc:Ignorable="d"
-    Title="Применяемые параметры"
+    Title="Applied flags"
     PrimaryButtonText="OK"
     DefaultButton="Primary"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
@@ -31,8 +32,8 @@
                                 <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" 
                                     BorderBrush="{ThemeResource ControlStrokeColorForStrongFillWhenOnImageBrush}" BorderThickness="1" CornerRadius="5"/>
                                 <RichTextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="10"
-                                           FontSize="{Binding  ArgsFontSize, ElementName=ContentDialog}" 
-                                           FontFamily="{Binding  ArgsFontFamily, ElementName=ContentDialog}" SelectionHighlightColor="Gray">
+                                           FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                                           FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" SelectionHighlightColor="Gray">
                                     <Paragraph>
                                         <Run Text="{x:Bind}"/>
                                     </Paragraph>
