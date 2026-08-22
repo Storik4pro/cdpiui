@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using CDPIUI.Controls.MenuManagement;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.Specialized;
@@ -21,6 +22,20 @@ namespace CDPIUI.Controls.Default
         public NameValueCollection Parameter { get; set; } = null;
 
         protected bool IsAnimated = false;
+
+        public DataTemplate MenuBarTemplate
+        {
+            get => (DataTemplate)GetValue(MenuBarTemplateProperty);
+            set => SetValue(MenuBarTemplateProperty, value);
+        }
+
+        public static readonly DependencyProperty MenuBarTemplateProperty = DependencyProperty.Register(
+            nameof(MenuBarTemplate),
+            typeof(DataTemplate),
+            typeof(TemplatePage),
+            new PropertyMetadata(null, OnMenuBarTemplateChanged));
+
+        public MenuBarSession MenuBarSession { get; internal set; }
 
         public TemplatePage()
         {
@@ -96,6 +111,14 @@ namespace CDPIUI.Controls.Default
             {
                 FocusElement(Parameter.Get("setFocus"));
             }
+        }
+
+        private static void OnMenuBarTemplateChanged(
+            DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs args)
+        {
+            if (dependencyObject is TemplatePage page)
+                page.MenuBarSession?.Refresh();
         }
     }
 }
