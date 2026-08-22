@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.Controls.Default;
 using CDPIUI.Core;
 using CDPIUI.Core.Communication;
