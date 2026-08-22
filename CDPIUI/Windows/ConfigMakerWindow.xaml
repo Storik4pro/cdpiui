@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.ConfigMakerWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:configMaker="using:CDPIUI.Controls.CreateConfigHelper"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop />
+    </template:TemplateWindow.SystemBackdrop>
+
+    <Grid x:Name="RootGrid" Loaded="RootGrid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl x:Name="TitleBarUserControl" Height="48" />
+        <configMaker:ConfigMakerUserControl x:Name="ConfigMaker" Grid.Row="2" />
+    </Grid>
+</template:TemplateWindow>
