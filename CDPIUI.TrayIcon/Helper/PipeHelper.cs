@@ -3,6 +3,7 @@ using CDPIUI.TrayIcon.Helper.Basic;
 using System.Collections.Specialized;
 using static CDPIUI.TrayIcon.Helper.MsiInstallerHelper;
 using CDPIUI.Shared.ConditionalLaunch;
+using CDPIUI.Shared.Pipe;
 
 namespace CDPIUI.TrayIcon.Helper
 {
@@ -78,6 +79,48 @@ namespace CDPIUI.TrayIcon.Helper
 
             if (!openIfNotConnected) return await PipeServer.Instance.SendMessageAsync(model.ToString());
             else return await TrySendMessage(model);
+        }
+
+        public static async Task<bool> SendHelpOutputChunk(
+            string requestId,
+            int chunkIndex,
+            byte[] output)
+        {
+            CONPTYMessageModel model = new()
+            {
+                MessageType = CONPTYMessageIds.HelpOutputChunk,
+                MessageData = new()
+                {
+                    { "requestId", requestId },
+                    { "chunkIndex", chunkIndex.ToString() },
+                    { "output", PipePayloadCodec.Encode(output) },
+                },
+            };
+
+            return await PipeServer.Instance.SendMessageAsync(model.ToString());
+        }
+
+        public static async Task<bool> SendHelpOutputCompleted(
+            string requestId,
+            int totalChunks,
+            int exitCode,
+            bool timedOut,
+            string error)
+        {
+            CONPTYMessageModel model = new()
+            {
+                MessageType = CONPTYMessageIds.HelpOutputCompleted,
+                MessageData = new()
+                {
+                    { "requestId", requestId },
+                    { "totalChunks", totalChunks.ToString() },
+                    { "exitCode", exitCode.ToString() },
+                    { "timedOut", timedOut.ToString() },
+                    { "error", PipePayloadCodec.Encode(error) },
+                },
+            };
+
+            return await PipeServer.Instance.SendMessageAsync(model.ToString());
         }
 
         public static async Task<bool> SendGoodCheckPacket(GoodCheckMessageIds messageId, string operationId, string? error = null)

@@ -8,6 +8,13 @@ using CDPIUI.Shared.Extentions;
 
 namespace CDPIUI.TrayIcon.Helper
 {
+    public sealed class ConPTYCaptureResult
+    {
+        public string Output { get; init; } = string.Empty;
+        public int ExitCode { get; init; }
+        public bool TimedOut { get; init; }
+    }
+
     enum StopActionCallers
     {
         Unknown,
@@ -86,6 +93,234 @@ namespace CDPIUI.TrayIcon.Helper
         }
 
         private readonly SemaphoreSlim _processLock = new SemaphoreSlim(1, 1);
+
+        public static async Task<ConPTYCaptureResult> CaptureProcessOutputAsync(
+            string exePath,
+            string args,
+            string workingDirectory,
+            TimeSpan timeout,
+            CancellationToken cancellationToken = default)
+        {
+            IntPtr pseudoConsoleHandle = IntPtr.Zero;
+            IntPtr hInputRead = IntPtr.Zero;
+            IntPtr hInputWrite = IntPtr.Zero;
+            IntPtr hOutputRead = IntPtr.Zero;
+            IntPtr hOutputWrite = IntPtr.Zero;
+            IntPtr attributeList = IntPtr.Zero;
+            PROCESS_INFORMATION processInfo = default;
+            Task? outputTask = null;
+            StringBuilder output = new();
+            bool timedOut = false;
+            bool canceled = false;
+            int exitCode = -1;
+
+            try
+            {
+                CreatePipe(out hInputRead, out hInputWrite, false);
+                CreatePipe(out hOutputRead, out hOutputWrite, false);
+
+                COORD size = new() { X = 4096, Y = 50 };
+                uint result = CreatePseudoConsole(
+                    size,
+                    hInputRead,
+                    hOutputWrite,
+                    0,
+                    out pseudoConsoleHandle);
+                if (result != 0)
+                {
+                    throw new InvalidOperationException(
+                        $"Unable to create PseudoConsole, error: {result}");
+                }
+
+                CloseHandle(hInputRead);
+                hInputRead = IntPtr.Zero;
+                CloseHandle(hOutputWrite);
+                hOutputWrite = IntPtr.Zero;
+
+                STARTUPINFOEX startupInfo = new()
+                {
+                    StartupInfo = new STARTUPINFO
+                    {
+                        cb = Marshal.SizeOf<STARTUPINFOEX>(),
+                        dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW,
+                        wShowWindow = SW_HIDE,
+                    },
+                };
+
+                IntPtr attributeListSize = IntPtr.Zero;
+                InitializeProcThreadAttributeList(IntPtr.Zero, 1, 0, ref attributeListSize);
+                attributeList = Marshal.AllocHGlobal(attributeListSize);
+                if (!InitializeProcThreadAttributeList(attributeList, 1, 0, ref attributeListSize))
+                {
+                    throw new InvalidOperationException(
+                        $"Cannot initialize process attributes, error: {Marshal.GetLastWin32Error()}");
+                }
+
+                if (!UpdateProcThreadAttribute(
+                    attributeList,
+                    0,
+                    (IntPtr)PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
+                    pseudoConsoleHandle,
+                    (IntPtr)IntPtr.Size,
+                    IntPtr.Zero,
+                    IntPtr.Zero))
+                {
+                    throw new InvalidOperationException(
+                        $"Cannot attach PseudoConsole, error: {Marshal.GetLastWin32Error()}");
+                }
+
+                startupInfo.lpAttributeList = attributeList;
+                string resolvedWorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory)
+                    ? Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory
+                    : workingDirectory;
+                bool started = CreateProcess(
+                    null,
+                    $"\"{exePath}\" {args}",
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    false,
+                    EXTENDED_STARTUPINFO_PRESENT,
+                    IntPtr.Zero,
+                    resolvedWorkingDirectory,
+                    ref startupInfo,
+                    out processInfo);
+                if (!started)
+                {
+                    throw new InvalidOperationException(
+                        $"Cannot start process, error: {Marshal.GetLastWin32Error()}");
+                }
+
+                CloseHandle(processInfo.hThread);
+                processInfo.hThread = IntPtr.Zero;
+
+                SafeFileHandle safeOutputHandle = new(hOutputRead, ownsHandle: true);
+                hOutputRead = IntPtr.Zero;
+                outputTask = ReadCaptureOutputAsync(safeOutputHandle, output);
+
+                using CancellationTokenSource timeoutSource = new(timeout);
+                using CancellationTokenSource linkedSource = CancellationTokenSource.CreateLinkedTokenSource(
+                    cancellationToken,
+                    timeoutSource.Token);
+                try
+                {
+                    await WaitForProcessExitAsync(processInfo, linkedSource.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    canceled = cancellationToken.IsCancellationRequested;
+                    timedOut = !canceled && timeoutSource.IsCancellationRequested;
+                    TerminateProcess(processInfo.hProcess, 1);
+                    WaitForSingleObject(processInfo.hProcess, INFINITE);
+                }
+
+                if (GetExitCodeProcess(processInfo.hProcess, out uint nativeExitCode))
+                {
+                    exitCode = unchecked((int)nativeExitCode);
+                }
+
+                ClosePseudoConsole(pseudoConsoleHandle);
+                pseudoConsoleHandle = IntPtr.Zero;
+                CloseHandle(hInputWrite);
+                hInputWrite = IntPtr.Zero;
+
+                try
+                {
+                    await outputTask;
+                }
+                catch (IOException)
+                {
+                    // pass
+                }
+
+                if (canceled)
+                {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+
+                return new ConPTYCaptureResult
+                {
+                    Output = output.ToString(),
+                    ExitCode = exitCode,
+                    TimedOut = timedOut,
+                };
+            }
+            finally
+            {
+                if (processInfo.hProcess != IntPtr.Zero)
+                {
+                    if (WaitForSingleObject(processInfo.hProcess, 0) == WAIT_TIMEOUT)
+                    {
+                        TerminateProcess(processInfo.hProcess, 1);
+                        WaitForSingleObject(processInfo.hProcess, INFINITE);
+                    }
+                    CloseHandle(processInfo.hProcess);
+                }
+                if (processInfo.hThread != IntPtr.Zero)
+                {
+                    CloseHandle(processInfo.hThread);
+                }
+                if (attributeList != IntPtr.Zero)
+                {
+                    DeleteProcThreadAttributeList(attributeList);
+                    Marshal.FreeHGlobal(attributeList);
+                }
+                if (pseudoConsoleHandle != IntPtr.Zero)
+                {
+                    ClosePseudoConsole(pseudoConsoleHandle);
+                }
+                if (hInputRead != IntPtr.Zero)
+                {
+                    CloseHandle(hInputRead);
+                }
+                if (hInputWrite != IntPtr.Zero)
+                {
+                    CloseHandle(hInputWrite);
+                }
+                if (hOutputRead != IntPtr.Zero)
+                {
+                    CloseHandle(hOutputRead);
+                }
+                if (hOutputWrite != IntPtr.Zero)
+                {
+                    CloseHandle(hOutputWrite);
+                }
+
+                if (outputTask != null && !outputTask.IsCompleted)
+                {
+                    try
+                    {
+                        await outputTask;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
+
+        private static async Task ReadCaptureOutputAsync(
+            SafeFileHandle outputHandle,
+            StringBuilder output)
+        {
+            using FileStream stream = new(outputHandle, FileAccess.Read, 4096, isAsync: false);
+            using StreamReader reader = new(stream, Encoding.UTF8, true, 4096, leaveOpen: false);
+            char[] buffer = new char[4096];
+            int charsRead;
+            while ((charsRead = await reader.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Append(buffer, 0, charsRead);
+            }
+        }
+
+        private static async Task WaitForProcessExitAsync(
+            PROCESS_INFORMATION processInfo,
+            CancellationToken cancellationToken)
+        {
+            while (WaitForSingleObject(processInfo.hProcess, 100) == WAIT_TIMEOUT)
+            {
+                await Task.Delay(25, cancellationToken);
+            }
+        }
 
         public async void RunProcess(string exePath, string args, string workingDirectory)
         {
@@ -484,7 +719,7 @@ namespace CDPIUI.TrayIcon.Helper
             public bool bInheritHandle;
         }
 
-        private void CreatePipe(out IntPtr hReadPipe, out IntPtr hWritePipe, bool bInheritHandle)
+        private static void CreatePipe(out IntPtr hReadPipe, out IntPtr hWritePipe, bool bInheritHandle)
         {
             SECURITY_ATTRIBUTES saAttr = new SECURITY_ATTRIBUTES
             {
