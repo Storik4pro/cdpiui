@@ -49,9 +49,6 @@ public sealed partial class ChooseGroupModeContentDialog : ContentDialog
     {
         InitializeComponent();
 
-        QHelpTextBlock.FontFamily = new FontFamily(SettingsManager.Instance.GetValue<string>("PSEUDOCONSOLE", "fontFamily"));
-        QHelpTextBlock.FontSize = SettingsManager.Instance.GetValue<double>("PSEUDOCONSOLE", "fontSize");
-
         ModeTokenView.ItemsSource = _modes;
 
         _modes.Add(new()

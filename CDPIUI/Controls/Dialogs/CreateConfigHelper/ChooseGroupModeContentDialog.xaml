@@ -10,6 +10,7 @@
     mc:Ignorable="d"
     xmlns:l="using:WinUI3Localizer"
     xmlns:labs="using:CommunityToolkit.Labs.WinUI"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
     Style="{ThemeResource DefaultContentDialogStyle}">
 
     <Grid>
@@ -31,7 +32,7 @@
                     </StackPanel>
                     <Grid>
                         <Rectangle Fill="{ThemeResource CardBackgroundFillColorSecondaryBrush}"/>
-                        <TextBlock x:Name="QHelpTextBlock" l:Uids.Uid="/Flashlight/ByeDPIModeHelpTextBlock" Margin="10" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="QHelpTextBlock" FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" l:Uids.Uid="/Flashlight/ByeDPIModeHelpTextBlock" Margin="10" TextWrapping="Wrap"/>
                     </Grid>
                 </StackPanel>
             </StackPanel>
