@@ -1,3 +1,4 @@
+using CDPIUI.Controls.Default;
 using CDPIUI.Converters;
 using CDPIUI.Core;
 using CDPIUI.Helper;
@@ -34,6 +35,13 @@ public sealed partial class SearchUserControl : UserControl
 
     private SearchWindowState searchWindowState = SearchWindowState.Hidden;
 
+    public static readonly DependencyProperty ReplaceEnableProperty =
+        DependencyProperty.Register(
+            nameof(ReplaceEnable),
+            typeof(bool),
+            typeof(SearchUserControl),
+            new PropertyMetadata(true));
+
 
     public SearchUserControl()
     {
@@ -41,6 +49,12 @@ public sealed partial class SearchUserControl : UserControl
 
         MatchCaseMenuFlyoutItem.IsChecked = SettingsManager.Instance.GetValue<bool>("SEARCH", "matchCase");
         WholeWordMenuFlyoutItem.IsChecked = SettingsManager.Instance.GetValue<bool>("SEARCH", "wholeWord");
+    }
+
+    public bool ReplaceEnable
+    {
+        get => (bool)GetValue(ReplaceEnableProperty);
+        set => SetValue(ReplaceEnableProperty, value);
     }
 
     private void CalcCenter(bool isReplaceOpened)

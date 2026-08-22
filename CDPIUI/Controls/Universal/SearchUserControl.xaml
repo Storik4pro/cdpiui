@@ -76,7 +76,7 @@
             <ColumnDefinition Width="37"/>
         </Grid.ColumnDefinitions>
 
-        <Button l:Uids.Uid="ReplaceControlButton" Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Padding="0" Height="32" Width="32" BorderThickness="0" Background="Transparent" x:Name="ExpandSearchBoxForReplaceButton" Click="ExpandSearchBoxForReplaceButton_Click">
+        <Button l:Uids.Uid="ReplaceControlButton" Grid.Row="1" Grid.Column="1" Margin="0,0,5,0" Padding="0" Height="32" Width="32" BorderThickness="0" Background="Transparent" x:Name="ExpandSearchBoxForReplaceButton" Click="ExpandSearchBoxForReplaceButton_Click" IsEnabled="{x:Bind ReplaceEnable, Mode=OneWay}">
             <FontIcon Glyph="&#xE70D;" FontSize="14">
                 <FontIcon.Projection>
                     <PlaneProjection RotationZ="0" x:Name="expandSearchButtonRotation"/>
@@ -94,6 +94,9 @@
 
         <Button l:Uids.Uid="SearchCloseButton" Grid.Row="1" Grid.Column="6"  Margin="0,0,0,0" Height="32" Width="32" Padding="0" Background="Transparent" BorderThickness="0"  Click="SearchWindow_CloseButtonClick">
             <FontIcon Glyph="&#xE711;" FontSize="16"/>
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Escape"/>
+            </Button.KeyboardAccelerators>
         </Button>
 
         <Button l:Uids.Uid="AdditionalSettingsButton" Grid.Row="1" Grid.Column="5" Margin="0,0,5,0" Height="32" Width="32" Padding="0" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" >
