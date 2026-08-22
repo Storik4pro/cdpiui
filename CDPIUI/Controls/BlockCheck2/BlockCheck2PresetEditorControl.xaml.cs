@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.Controls.CreateConfigHelper;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
