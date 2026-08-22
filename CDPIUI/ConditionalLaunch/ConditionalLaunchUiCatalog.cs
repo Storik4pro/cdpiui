@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Shared.ConditionalLaunch;
