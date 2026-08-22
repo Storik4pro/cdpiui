@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.AddOns.BlockCheck2.Models;
 using CDPIUI.AddOns.BlockCheck2.Presentation;
 using Microsoft.UI.Xaml.Controls;
