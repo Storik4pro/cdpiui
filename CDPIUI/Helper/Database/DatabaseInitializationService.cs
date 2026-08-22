@@ -5,6 +5,7 @@ using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.Basic;
+using CDPIUI.Helper.BlockCheck2;
 using CDPIUI.Shared;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace CDPIUI.Helper.Database
         public static void QuickRestore()
         {
             RegisterCustomUserItem();
+            BlockCheck2HistoryStoreItemService.RegisterOnFirstLaunch(ApplicationInfo.Version);
             RenameInstalledZapret();
 
             if (DatabaseHelper.Instance.IsItemInstalled(
