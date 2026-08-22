@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.BlockCheck2.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:converters="using:CDPIUI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigation="using:CDPIUI.Controls.Navigation"
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:universal="using:CDPIUI.Controls.Universal"
+    xmlns:vm="using:CDPIUI.ViewModels"
+    mc:Ignorable="d">
+
+    <tpl:TemplatePage.Resources>
+        <converters:ReversedBoolToVisibilityConverter x:Key="ReversedBoolToVisibilityConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </tpl:TemplatePage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <navigation:AnimatedHorizontalContentViewer x:Name="MainContent">
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="SiteListsStep"
+                l:Uids.Uid="BlockCheck2SiteListsStep">
+                <Grid Padding="20,4,0,0" RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+
+                    </Grid.RowDefinitions>
+
+                    <InfoBar
+                        x:Name="InputInfoBar"
+                        IsClosable="True"
+                        IsOpen="False"
+                        Severity="Warning"
+                        Margin="0 0 20 0"/>
+
+                    <Grid Grid.Row="1" ColumnSpacing="10" Margin="0 0 20 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button>
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <FontIcon FontSize="16" Glyph="&#xE710;" />
+                                    <TextBlock l:Uids.Uid="BlockCheck2AddSiteListButtonText" />
+                                </StackPanel>
+                            </Button.Content>
+                            <Button.Flyout>
+                                <Flyout x:Name="SelectSiteListFlyout">
+                                    <StackPanel Width="370">
+                                        <TextBlock
+                                            l:Uids.Uid="GoodCheckSelectSiteListFromTemplate"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        <ListBox
+                                            x:Name="SiteListBox"
+                                            MaxHeight="280"
+                                            ItemsSource="{x:Bind ViewModel.AvailableSiteLists, Mode=OneWay}"
+                                            SelectionChanged="ListBox_SelectionChanged">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:BlockCheck2SiteListItem">
+                                                    <Grid ColumnSpacing="8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{x:Bind DisplayName}" />
+                                                            <TextBlock
+                                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{x:Bind SourceName}" />
+                                                        </StackPanel>
+                                                        <TextBlock
+                                                            Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Text="{x:Bind DomainCount}" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <TextBlock
+                                            l:Uids.Uid="ORSeparatorTextBlock"
+                                            Margin="10,2"
+                                            HorizontalAlignment="Center"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <Button
+                                                Width="120"
+                                                Height="120"
+                                                Padding="6"
+                                                Click="EditCustomSiteListButton_Click">
+                                                <StackPanel>
+                                                    <FontIcon Glyph="&#xE70F;" />
+                                                    <TextBlock
+                                                        l:Uids.Uid="BlockCheck2CustomSiteListTile"
+                                                        TextAlignment="Center"
+                                                        TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Button>
+                                            <Button
+                                                Width="120"
+                                                Height="120"
+                                                Padding="6"
+                                                Click="ChooseSiteListFileButton_Click">
+                                                <StackPanel>
+                                                    <FontIcon Glyph="&#xE8E5;" />
+                                                    <TextBlock
+                                                        l:Uids.Uid="ChooseExistOnLocalPCTextBlock"
+                                                        TextAlignment="Center"
+                                                        TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                        <ProgressRing
+                            Grid.Column="1"
+                            Width="20"
+                            Height="20"
+                            IsActive="{x:Bind ViewModel.IsSiteListLoading, Mode=OneWay}" />
+                        <StackPanel
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Spacing="5">
+                            <TextBlock
+                                l:Uids.Uid="BlockCheck2SelectedSiteListsLabel"
+                                VerticalAlignment="Center" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="{x:Bind ViewModel.SelectedSiteListCount, Mode=OneWay}"
+                                Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid
+                        x:Name="SiteListDropArea"
+                        Grid.Row="2"
+                        AllowDrop="True"
+                        Background="Transparent"
+                        DragLeave="SiteListDropArea_DragLeave"
+                        DragOver="SiteListDropArea_DragOver"
+                        Drop="SiteListDropArea_Drop"
+                        >
+                        <Border
+                            x:Name="SiteListDropBorder"
+                            IsHitTestVisible="False"
+                            BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            Opacity="0" 
+                            Margin="0 0 20 0"/>
+                    <ScrollViewer>
+                        <ItemsRepeater ItemsSource="{x:Bind ViewModel.SelectedSiteLists, Mode=OneWay}" Margin="0 0 20 16">
+                            <ItemsRepeater.Layout>
+                                <StackLayout Spacing="5" />
+                            </ItemsRepeater.Layout>
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="vm:BlockCheck2SiteListItem">
+                                    <Border
+                                        Padding="10,8"
+                                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                        CornerRadius="5">
+                                        <Grid ColumnSpacing="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock
+                                                    Text="{x:Bind DisplayName}"
+                                                    Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock
+                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                                        Text="{x:Bind SourceName}" />
+                                                    <universal:ContentSeparator Height="10"/>
+                                                    <TextBlock l:Uids.Uid="BlockCheck2SitesCountLabel" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                    <TextBlock Text="{x:Bind DomainCount, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <ComboBox
+                                                Grid.Column="1"
+                                                Width="230"
+                                                VerticalAlignment="Center"
+                                                SelectedIndex="{x:Bind ProcessingModeIndex, Mode=TwoWay}">
+                                                <ComboBoxItem l:Uids.Uid="BlockCheck2WholeListModeItem" />
+                                                <ComboBoxItem l:Uids.Uid="BlockCheck2EachSiteModeItem" />
+                                            </ComboBox>
+                                            <Button
+                                                Grid.Column="2"
+                                                Padding="7"
+                                                Tag="{x:Bind}"
+                                                Click="EditSiteListButton_Click"
+                                                l:Uids.Uid="BlockCheck2EditSiteListButton">
+                                                <FontIcon FontSize="16" Glyph="&#xE70F;" />
+                                            </Button>
+                                            <Button
+                                                Grid.Column="3"
+                                                Padding="7"
+                                                Tag="{x:Bind}"
+                                                Click="RemoveSiteListButton_Click"
+                                                l:Uids.Uid="BlockCheck2RemoveSiteListButton">
+                                                <FontIcon FontSize="16" Glyph="&#xE894;" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </ScrollViewer>
+
+                    <StackPanel
+                        VerticalAlignment="Center"
+                        Visibility="{x:Bind ViewModel.HasTargetSources, Mode=OneWay, Converter={StaticResource ReversedBoolToVisibilityConverter}}"
+                        Margin="0 0 20 0">
+                            <FontIcon Glyph="&#xE7C9;" FontSize="40" HorizontalAlignment="Center" />
+                            <TextBlock
+                            l:Uids.Uid="BlockCheck2EmptySiteListsTip1"
+                            HorizontalAlignment="Center" />
+                        <TextBlock
+                            l:Uids.Uid="BlockCheck2EmptySiteListsTip2"
+                            HorizontalAlignment="Center" />
+                    </StackPanel>
+                    </Grid>
+                </Grid>
+            </navigation:AnimatedHorizontalContentItem>
+
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="ModeStep"
+                l:Uids.Uid="BlockCheck2ModeStep">
+                <ScrollViewer Padding="20,4,20,16">
+                    <StackPanel Spacing="5">
+                        <Button
+                            Padding="12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            HorizontalContentAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Click="RadioButton_Click"
+                            Tag="{x:Bind QuickModeRadioButton}">
+                            <RadioButton
+                                x:Name="QuickModeRadioButton"
+                                GroupName="BlockCheck2RunMode"
+                                Checked="RunModeRadioButton_Checked"
+                                Padding="10 0"
+                                HorizontalContentAlignment="Stretch">
+                                <StackPanel Spacing="3">
+                                    <TextBlock
+                                        l:Uids.Uid="BlockCheck2QuickModeTitle"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock
+                                        l:Uids.Uid="BlockCheck2QuickModeDescription"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </RadioButton>
+                        </Button>
+
+                        <Button
+                            Padding="12"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            HorizontalContentAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Click="RadioButton_Click"
+                            Tag="{x:Bind BalancedModeRadioButton}">
+                            <RadioButton
+                                x:Name="BalancedModeRadioButton"
+                                GroupName="BlockCheck2RunMode"
+                                Checked="RunModeRadioButton_Checked"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="10 0">
+                                <StackPanel Spacing="3">
+                                    <TextBlock
+                                        l:Uids.Uid="BlockCheck2BalancedModeTitle"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock
+                                        l:Uids.Uid="BlockCheck2BalancedModeDescription"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </RadioButton>
+                        </Button>
+
+                        <Button
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="2"
+                            CornerRadius="6"
+                            Padding="0"
+                            HorizontalContentAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Click="RadioButton_Click"
+                            Tag="{x:Bind ExhaustiveModeRadioButton}">
+                            <RadioButton
+                                x:Name="ExhaustiveModeRadioButton"
+                                GroupName="BlockCheck2RunMode"
+                                Checked="RunModeRadioButton_Checked"
+                                Padding="10 0"
+                                Margin="12"
+                                HorizontalContentAlignment="Stretch">
+                                <Grid>
+                                    <StackPanel Spacing="3">
+                                        <TextBlock
+                                        l:Uids.Uid="BlockCheck2ExhaustiveModeTitle"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock
+                                        l:Uids.Uid="BlockCheck2ExhaustiveModeDescription"
+                                        TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </RadioButton>
+                        </Button>
+
+                        <InfoBar
+                            IsOpen="True"
+                            IsClosable="False"
+                            Severity="Informational"
+                            l:Uids.Uid="BlockCheck2ModeNoticeInfoBar" />
+                    </StackPanel>
+                </ScrollViewer>
+            </navigation:AnimatedHorizontalContentItem>
+
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="AdvancedStep"
+                l:Uids.Uid="BlockCheck2AdvancedStep">
+                <ScrollViewer Padding="20,0,20,0">
+                    <StackPanel Spacing="5" Margin="0 0 0 16">
+                        <InfoBar
+                            IsClosable="False"
+                            IsOpen="{x:Bind ViewModel.IsHttpOnly, Mode=OneWay}"
+                            Severity="Warning"
+                            l:Uids.Uid="BlockCheck2HttpOnlyInfoBar" />
+                        
+                        <controls:SettingsCard
+                            l:Uids.Uid="BlockCheck2ProtocolsCard"
+                            ContentAlignment="Vertical">
+                            <controls:SettingsCard.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="16">
+                                    <CheckBox l:Uids.Uid="BlockCheck2HttpCheckBox" IsChecked="{x:Bind ViewModel.IncludeHttp, Mode=TwoWay}" />
+                                    <CheckBox l:Uids.Uid="BlockCheck2Tls12CheckBox" IsChecked="{x:Bind ViewModel.IncludeTls12, Mode=TwoWay}" />
+                                    <CheckBox l:Uids.Uid="BlockCheck2Tls13CheckBox" IsChecked="{x:Bind ViewModel.IncludeTls13, Mode=TwoWay}" />
+                                    <CheckBox l:Uids.Uid="BlockCheck2TlsAutoCheckBox" IsChecked="{x:Bind ViewModel.IncludeTlsAuto, Mode=TwoWay}" />
+                                    <CheckBox l:Uids.Uid="BlockCheck2QuicCheckBox" IsChecked="{x:Bind ViewModel.IncludeQuic, Mode=TwoWay}" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </controls:SettingsCard.Content>
+                        </controls:SettingsCard>
+
+                        
+
+                        <controls:SettingsCard
+                            l:Uids.Uid="BlockCheck2IpVersionsCard">
+                            <controls:SettingsCard.Content>
+                                <StackPanel Orientation="Horizontal" Spacing="16">
+                                    <CheckBox l:Uids.Uid="BlockCheck2Ipv4CheckBox" IsChecked="{x:Bind ViewModel.IncludeIpv4, Mode=TwoWay}" />
+                                    <CheckBox l:Uids.Uid="BlockCheck2Ipv6CheckBox" IsChecked="{x:Bind ViewModel.IncludeIpv6, Mode=TwoWay}" />
+                                </StackPanel>
+                            </controls:SettingsCard.Content>
+                        </controls:SettingsCard>
+
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ConnectTimeoutCard">
+                            <NumberBox
+                                Width="120"
+                                Minimum="1"
+                                Maximum="60"
+                                SmallChange="1"
+                                SpinButtonPlacementMode="Compact"
+                                Value="{x:Bind ViewModel.ConnectTimeoutSeconds, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2RequestTimeoutCard">
+                            <NumberBox
+                                Width="120"
+                                Minimum="2"
+                                Maximum="180"
+                                SmallChange="1"
+                                SpinButtonPlacementMode="Compact"
+                                Value="{x:Bind ViewModel.RequestTimeoutSeconds, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2StartupGraceCard">
+                            <NumberBox
+                                Width="120"
+                                Minimum="0.25"
+                                Maximum="10"
+                                SmallChange="0.25"
+                                SpinButtonPlacementMode="Compact"
+                                Value="{x:Bind ViewModel.StartupGraceSeconds, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2RequestsPerDomainCard">
+                            <NumberBox
+                                Width="120"
+                                Minimum="1"
+                                Maximum="20"
+                                SmallChange="1"
+                                SpinButtonPlacementMode="Compact"
+                                Value="{x:Bind ViewModel.RequestsPerDomain, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2TestAllStrategiesCard">
+                            <ToggleSwitch IsOn="{x:Bind ViewModel.TestAllStrategies, Mode=TwoWay}" />
+                        </controls:SettingsCard>
+
+                        <Button
+                            l:Uids.Uid="BlockCheck2ResetAdvancedButton"
+                            HorizontalAlignment="Left"
+                            Click="ResetAdvancedButton_Click" />
+                    </StackPanel>
+                </ScrollViewer>
+            </navigation:AnimatedHorizontalContentItem>
+
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="ReviewStep"
+                l:Uids.Uid="BlockCheck2ReviewStep">
+                <ScrollViewer Padding="20,4,20,0">
+                    <StackPanel Spacing="5" Margin="0 0 0 16">
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewSourcesCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewSourcesTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewConnectionsCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewConnectionsTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewModeCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewModeTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewRequestsCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewRequestsTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewTimeoutsCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewTimeoutsTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="BlockCheck2ReviewMaximumTimeCard" ContentAlignment="Vertical">
+                            <TextBlock
+                                x:Name="ReviewMaximumTimeTextBlock"
+                                TextWrapping="Wrap"
+                                Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        </controls:SettingsCard>
+                    </StackPanel>
+                </ScrollViewer>
+            </navigation:AnimatedHorizontalContentItem>
+
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="ProgressStep"
+                l:Uids.Uid="BlockCheck2ProgressStep">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+
+                    <Grid Grid.Row="2" ColumnSpacing="0"  VerticalAlignment="Bottom" Visibility="{x:Bind ViewModel.IsRunning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="20 0 0 5" Spacing="5" >
+                            <FontIcon Glyph="&#xE9D9;" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock l:Uids.Uid="DetailsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"  VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <HyperlinkButton
+                            x:Name="ProgressViewMoreButton"
+                            Grid.Column="1"
+                            Padding="0"
+                            Click="ProgressViewMoreButton_Click"
+                            PointerEntered="ProgressViewMoreButton_PointerEntered"
+                            PointerExited="ProgressViewMoreButton_PointerExited"
+                            Margin="0 0 20 0">
+                            <TextBlock
+                                x:Name="ProgressViewMoreText"
+                                TextDecorations="Underline" />
+                        </HyperlinkButton>
+
+
+                        <ScrollViewer Padding="20,4,20,0" Grid.Row="3" Grid.ColumnSpan="2">
+                            <Border
+                            Padding="12"
+                            Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                            CornerRadius="5">
+                                <StackPanel Spacing="3">
+                                    <TextBlock
+                                    l:Uids.Uid="BlockCheck2CurrentStageLabel"
+                                    Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock
+                                    x:Name="ProgressPhaseTextBlock"
+                                    Margin="50,0,0,0" />
+                                    <TextBlock
+                                    l:Uids.Uid="BlockCheck2OverallRemainingLabel"
+                                    Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                    <TextBlock
+                                    x:Name="OverallRemainingTimeTextBlock"
+                                    Margin="50,0,0,0" />
+
+                                    <StackPanel
+                                    x:Name="AdditionalProgressInfo"
+                                    Spacing="3"
+                                    Visibility="Collapsed">
+                                        <Rectangle
+                                        Height="2"
+                                        Margin="0,6"
+                                        Fill="{ThemeResource SmokeFillColorDefaultBrush}" />
+                                        <TextBlock
+                                        l:Uids.Uid="BlockCheck2CurrentSelectionLabel"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2CurrentUrlLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.CurrentTargetUrl, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"
+                                        IsTextSelectionEnabled="True" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2ConnectionDetailsLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.CurrentTargetConnectionDetails, Mode=OneWay}"
+                                        IsTextSelectionEnabled="True" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2CurrentStrategyLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.CurrentStrategyId, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"
+                                        IsTextSelectionEnabled="True" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2StageRemainingLabel" />
+                                        <TextBlock
+                                        x:Name="StageRemainingTimeTextBlock"
+                                        Margin="50,0,0,0" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2StageProgressLabel" />
+                                        <TextBlock
+                                        x:Name="ProgressCounterTextBlock"
+                                        Margin="50,0,0,0" />
+
+                                        <Rectangle
+                                        Height="2"
+                                        Margin="0,6"
+                                        Fill="{ThemeResource SmokeFillColorDefaultBrush}" />
+                                        <TextBlock
+                                        l:Uids.Uid="BlockCheck2IntermediateStatsLabel"
+                                        Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2CompletedChecksLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.CompletedChecks, Mode=OneWay}" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2SuccessfulChecksLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.SuccessfulChecks, Mode=OneWay}" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2FailedChecksLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.FailedChecks, Mode=OneWay}" />
+                                        <TextBlock l:Uids.Uid="BlockCheck2SuccessfulStrategiesLabel" />
+                                        <TextBlock
+                                        Margin="50,0,0,0"
+                                        Text="{x:Bind ViewModel.SuccessfulStrategies, Mode=OneWay}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </navigation:AnimatedHorizontalContentItem>
+            <navigation:AnimatedHorizontalContentItem
+                x:Name="WorkComplete"
+                l:Uids.Uid="BlockCheck2WorkCompleteStep">
+                <InfoBar
+                    x:Name="ProgressInfoBar"
+                    IsClosable="False"
+                    IsOpen="False"
+                    Grid.Row="0"
+                    Margin="20 0"/>
+            </navigation:AnimatedHorizontalContentItem>
+        </navigation:AnimatedHorizontalContentViewer>
+
+        <universal:UtilityButtonControls
+            x:Name="UtilityButtons"
+            Grid.Row="1"
+            IsLoading="{x:Bind ViewModel.IsRunning, Mode=OneWay}"
+            IsIndeterminate="{x:Bind ViewModel.IsProgressIndeterminate, Mode=OneWay}"
+            LoadingMaximumValue="1"
+            LoadingValue="{x:Bind ViewModel.ProgressValue, Mode=OneWay}"
+            LoadingStateText="{x:Bind ProgressPhaseTextBlock.Text, Mode=OneWay}"
+            HelpUrl="/Zapret2PresetSelection/1AboutPresetSelection"
+            >
+            <Button
+                x:Name="ExitButton"
+                l:Uids.Uid="ExitButton"
+                Click="ExitButton_Click"
+                Visibility="Collapsed" />
+            <Button
+                x:Name="BackButton"
+                l:Uids.Uid="GoBackButton"
+                Click="BackButton_Click"
+                Visibility="Collapsed" />
+            <Button
+                x:Name="CancelButton"
+                l:Uids.Uid="BlockCheck2CancelButton"
+                Click="CancelButton_Click"
+                Visibility="Collapsed" />
+            <Button
+                x:Name="ViewResultButton"
+                l:Uids.Uid="BlockCheck2OpenResultButton"
+                Click="ViewResultButton_Click"
+                Style="{ThemeResource AccentButtonStyle}"
+                Visibility="Collapsed" />
+            <Button
+                x:Name="NextButton"
+                Click="NextButton_Click"
+                Style="{ThemeResource AccentButtonStyle}" />
+        </universal:UtilityButtonControls>
+    </Grid>
+</tpl:TemplatePage>
