@@ -1,33 +1,31 @@
-﻿# What is auto-selection?
+# What is auto-selection?
 
-Auto-selection allows you to automatically select the appropriate component launch parameters without your intervention.
+Auto-selection helps find a suitable way to restore access to the sites you need. The application runs checks and compares the available options, so you usually do not need to try technical parameters manually.
 
-There are several types of auto-selection:
-- **Creating a new preset using GoodCheck.** Allows you to create a new custom preset that will allow access to inaccessible resources.
-- **Selecting the best preset.** Allows you to select the best preset from those already downloaded/created.
+### Which tools are available?
 
-### Which auto-selection should I choose?
+- **Preset selection for Zapret2.** Tests different Zapret2 strategies on the selected sites and uses the successful results to suggest a personal preset.
+- **Select the best preset.** Compares presets that are already installed or created and helps you choose the most suitable one.
+- **Create a new preset with GoodCheck.** Helps build a new preset when the ready-made options do not work.
 
-You should create a new preset using GoodCheck if:
+### Which one should I choose?
 
-- You are a confident PC user.
-- You have at least a basic understanding of how blocking mechanisms work and the components that bypass them. *Information on this topic can be found on the component pages.*
-- None of the presets available in the Store allow access to the required websites.
+If you use **Zapret2**, start with [preset selection for Zapret2](cdpiui://Help/Zapret2PresetSelection/1AboutPresetSelection/). It is the simplest option: select the sites and a scan mode. Internet access on this device may be temporarily unavailable while the scan is running.
 
-You should select a preset from those already downloaded if:
+Use [Select the best preset](cdpiui://Help/Autoselection/BestConfigSelection/) if you already have several presets and want to find which one works best with the required sites.
 
-- You are a new PC user.
-- You are not comfortable manually selecting configs.
+**For advanced users.** Creating a preset with GoodCheck is suitable when ready-made presets do not help and you are prepared to test and adjust the result yourself. Open it from [Auto-selection tools] on the [Utilities] page.
 
-### How do I start auto-selection?
+### How do I start a Zapret2 scan?
 
-For more information on this topic, visit the related help pages:
+- [Start a new scan](cdpiui://Tools/AutoConfig/Zapret2/)
+- [Show previous scans](cdpiui://Tools/AutoConfig/Zapret2/Reports)
+- [Read the step-by-step guide](cdpiui://Help/Zapret2PresetSelection/1AboutPresetSelection/)
 
-- Creating a new config using GoodCheck
-- Choosing the best config
+If the automatic result does not work for you, see [Build a config manually](cdpiui://Help/Zapret2ManualPresetBuilding/1ManualPresetOverview/). It explains how to choose successful strategies from the report, put them in the correct order, and test the finished preset.
 
-### Related Literature
+### Related reading
 
-- [https://github.com/bol-van/zapret/blob/master/docs/readme.md](https://github.com/bol-van/zapret/blob/master/docs/readme.md)
-- [https://habr.com/ru/post/335436](https://habr.com/ru/post/335436) OR [https://web.archive.org/web/20230331233644/https://habr.com/ru/post/335436/](https://web.archive.org/web/20230331233644/https://habr.com/ru/post/335436/)
-- [https://geneva.cs.umd.edu/papers/geneva_ccs19.pdf](https://geneva.cs.umd.edu/papers/geneva_ccs19.pdf)
+- [Zapret documentation](https://github.com/bol-van/zapret/blob/master/docs/readme.md)
+- [Article about blocking methods and DPI](https://habr.com/ru/post/335436) or its [archived copy](https://web.archive.org/web/20230331233644/https://habr.com/ru/post/335436/)
+- [Geneva research paper](https://geneva.cs.umd.edu/papers/geneva_ccs19.pdf)
