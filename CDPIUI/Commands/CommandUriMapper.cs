@@ -1,3 +1,4 @@
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Shared;
 using CDPIUI.Shared.Pipe.Models;
 using System;
@@ -124,6 +125,28 @@ namespace CDPIUI.Commands
             CreateWindowRoute("Tools", ["Console"], "ViewWindow"),
             CreateWindowRoute("Tools", ["ConditionalLaunch"], "ConditionalLaunchWindow"),
             CreateWindowRoute("Tools", ["AutoConfig"], "CreateConfigUtilWindow"),
+            new(
+                "Tools",
+                ["AutoConfig", "Zapret2"],
+                _ => CreateShowWindowCommand(
+                    "CreateConfigUtilWindow",
+                    "MainPage",
+                    new NameValueCollection
+                    {
+                        { "componentId", HardcodedItemIds.ComponentIds[Components.Zapret2] },
+                        { "action", "BlockCheck2" }
+                    })),
+            new(
+                "Tools",
+                ["AutoConfig", "Zapret2", "Reports"],
+                _ => CreateShowWindowCommand(
+                    "CreateConfigUtilWindow",
+                    "MainPage",
+                    new NameValueCollection
+                    {
+                        { "componentId", HardcodedItemIds.ComponentIds[Components.Zapret2] },
+                        { "action", "BlockCheck2Reports" }
+                    })),
             new(
                 "Tools",
                 ["AutoConfig", "{componentId}"],
