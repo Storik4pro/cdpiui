@@ -14,10 +14,19 @@ namespace CDPIUI.Controls.Navigation
     {
         public ObservableCollection<AnimatedSelectorBarItem> Items { get; } = [];
 
+        public bool AreTransitionsEnabled { get; set; } = true;
+
+        public int SelectedIndex => _selectedIndex;
+
+        public AnimatedSelectorBarItem SelectedItem => _selectedItem;
+
+        public event EventHandler<AnimatedSelectorBarSelectionChangedEventArgs> SelectionChanged;
+
         private ContentPresenter _activePresenter;
         private ContentPresenter _inactivePresenter;
         private Storyboard _transitionStoryboard;
         private int _selectedIndex = -1;
+        private AnimatedSelectorBarItem _selectedItem;
         private bool _isBuildingSelector;
 
         public AnimatedSelectorBar()
@@ -42,6 +51,9 @@ namespace CDPIUI.Controls.Navigation
 
         private void RebuildSelector()
         {
+            var oldIndex = _selectedIndex;
+            var oldItem = _selectedItem;
+
             _isBuildingSelector = true;
             NavigationSelector.Items.Clear();
             foreach (var item in Items)
@@ -65,9 +77,12 @@ namespace CDPIUI.Controls.Navigation
             else
             {
                 _selectedIndex = -1;
+                _selectedItem = null;
                 _activePresenter.Content = null;
             }
             _isBuildingSelector = false;
+
+            RaiseSelectionChanged(oldIndex, oldItem);
         }
 
         private void NavigationSelector_SelectionChanged(
@@ -81,13 +96,44 @@ namespace CDPIUI.Controls.Navigation
             if (newIndex < 0 || newIndex == _selectedIndex)
                 return;
 
-            ShowAnimated(newIndex);
+            var oldIndex = _selectedIndex;
+            var oldItem = _selectedItem;
+
+            if (AreTransitionsEnabled)
+                ShowAnimated(newIndex);
+            else
+                ShowImmediately(newIndex);
+
+            RaiseSelectionChanged(oldIndex, oldItem);
+        }
+
+        public void SelectIndex(int index)
+        {
+            if (index < 0 || index >= Items.Count)
+                return;
+
+            if (!IsLoaded || NavigationSelector.Items.Count <= index)
+            {
+                var oldIndex = _selectedIndex;
+                var oldItem = _selectedItem;
+                _selectedIndex = index;
+                _selectedItem = Items[index];
+                RaiseSelectionChanged(oldIndex, oldItem);
+                return;
+            }
+
+            var selectorItem = NavigationSelector.Items[index];
+            if (!ReferenceEquals(NavigationSelector.SelectedItem, selectorItem))
+                NavigationSelector.SelectedItem = selectorItem;
+            else
+                ShowImmediately(index);
         }
 
         private void ShowImmediately(int index)
         {
             FinishTransition();
             _selectedIndex = index;
+            _selectedItem = Items[index];
             _activePresenter.Content = Items[index].Content;
             _activePresenter.Opacity = 1;
             _activePresenter.Visibility = Visibility.Visible;
@@ -106,6 +152,7 @@ namespace CDPIUI.Controls.Navigation
 
             var direction = newIndex > _selectedIndex ? 1d : -1d;
             _selectedIndex = newIndex;
+            _selectedItem = Items[newIndex];
             _inactivePresenter.Content = Items[newIndex].Content;
             _inactivePresenter.Visibility = Visibility.Visible;
             _inactivePresenter.Opacity = 0;
@@ -176,6 +223,42 @@ namespace CDPIUI.Controls.Navigation
             _activePresenter.Opacity = 1;
             ((TranslateTransform)_activePresenter.RenderTransform).X = 0;
         }
+
+        private void RaiseSelectionChanged(
+            int oldIndex,
+            AnimatedSelectorBarItem oldItem)
+        {
+            if (oldIndex == _selectedIndex && ReferenceEquals(oldItem, _selectedItem))
+                return;
+
+            SelectionChanged?.Invoke(
+                this,
+                new AnimatedSelectorBarSelectionChangedEventArgs(
+                    oldIndex,
+                    _selectedIndex,
+                    oldItem,
+                    _selectedItem));
+        }
+    }
+
+    public sealed class AnimatedSelectorBarSelectionChangedEventArgs : EventArgs
+    {
+        public AnimatedSelectorBarSelectionChangedEventArgs(
+            int oldIndex,
+            int newIndex,
+            AnimatedSelectorBarItem oldItem,
+            AnimatedSelectorBarItem newItem)
+        {
+            OldIndex = oldIndex;
+            NewIndex = newIndex;
+            OldItem = oldItem;
+            NewItem = newItem;
+        }
+
+        public int OldIndex { get; }
+        public int NewIndex { get; }
+        public AnimatedSelectorBarItem OldItem { get; }
+        public AnimatedSelectorBarItem NewItem { get; }
     }
 
     [ContentProperty(Name = nameof(Content))]
