@@ -1,5 +1,3 @@
-#nullable enable
-
 using CDPIUI.ConditionalLaunch;
 using CDPIUI.Shared.ConditionalLaunch;
 using Microsoft.UI.Xaml;
