@@ -244,6 +244,23 @@ namespace CDPIUI
             ContentFrame.Navigate(typeof(CreateNewConfigPage), _nvc_createbyid, new DrillInNavigationTransitionInfo());
         }
 
+        public void CreateNewConfigFromString(string componentId, string startupString)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(componentId);
+            ArgumentException.ThrowIfNullOrWhiteSpace(startupString);
+
+            var parameters = new NameValueCollection
+            {
+                { "type", "CFGSTRING" },
+                { "componentId", componentId },
+                { "startupString", startupString }
+            };
+            ContentFrame.Navigate(
+                typeof(CreateNewConfigPage),
+                parameters,
+                new DrillInNavigationTransitionInfo());
+        }
+
         private void CreateNewConfigButton_Click(object sender, RoutedEventArgs e)
         {
             ContentFrame.Navigate(typeof(CreateNewConfigPage), null, new DrillInNavigationTransitionInfo());

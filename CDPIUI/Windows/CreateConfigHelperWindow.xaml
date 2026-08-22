@@ -13,7 +13,8 @@
     xmlns:template="using:CDPIUI.Default"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:animations="using:CommunityToolkit.WinUI.Animations"
-    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:commands="using:CDPIUI.Commands">
 
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
@@ -36,7 +37,7 @@
         <wc:TitleBarUserControl 
             x:Name="TitleBarUserControl"
             Height="36"/>
-        <Grid Grid.Row="1" Height="36" Margin="0 -4 0 0">
+        <Grid Grid.Row="1" Height="36" Margin="0 0 0 0">
             <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
                VerticalAlignment="Bottom">
             </Rectangle>
@@ -49,10 +50,7 @@
                     <ColumnDefinition x:Name="Quick" Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Grid.ChildrenTransitions>
-                    <RepositionThemeTransition/>
-                </Grid.ChildrenTransitions>
-
+                
                 <Button 
                     x:Name="BackButton" 
                     l:Uids.Uid="FrameGoBackButton"
@@ -89,7 +87,11 @@
                                 <KeyboardAccelerator Modifiers="Control" Key="N"/>
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
-                        <MenuFlyoutItem x:Name="ImportConfigFromFileButton" l:Uids.Uid="ImportConfigFromFileMenuItem" Click="ImportConfigFromFileButton_Click">
+                        <MenuFlyoutItem 
+                            x:Name="ImportConfigFromFileButton" 
+                            l:Uids.Uid="ImportConfigFromFileMenuItem" 
+                            Command="{x:Bind commands:CommandsHandler.Instance.Command}"
+                            CommandParameter="cdpiui://Tools/ImportConfig">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8E5;" />
                             </MenuFlyoutItem.Icon>
