@@ -1,17 +1,51 @@
-﻿using CDPIUI.Shared.Pipe.Models;
-using CDPIUI.AddOns.GoodCheck;
+﻿using CDPIUI.AddOns.GoodCheck;
 using CDPIUI.AddOns.Troubleshooting;
 using CDPIUI.Core.Features;
-using System.Diagnostics;
-using CDPIUI.Helper.WindowHelper;
 using CDPIUI.Helper.Items;
+using CDPIUI.Helper.WindowHelper;
+using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.ViewModels;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 
 namespace CDPIUI.Commands
 {
     internal class CommandsHandler
     {
+        #region UI link handle
+        private static CommandsHandler _instance;
+        private static readonly object _lock = new();
+        public static CommandsHandler Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    _instance ??= new CommandsHandler();
+                    return _instance;
+                }
+            }
+        }
+
+        public ICommand Command { get; }
+
+        private CommandsHandler()
+        {
+            Command = new RelayCommand(ExecuteCommand);
+        }
+
+        private void ExecuteCommand(object parameter)
+        {
+            if (parameter is string uri)
+            {
+                HandleCommand(uri);
+            }
+        }
+        #endregion
+
+
         public static bool HandleCommand(string commandUri)
         {
             var message = CommandUriMapper.ConvertBack(commandUri);
