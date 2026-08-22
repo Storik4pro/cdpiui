@@ -14,8 +14,7 @@
     xmlns:items="using:CDPIUI.Core.ComponentServices.Helpers.Configuration"
     xmlns:template="using:CDPIUI.Default"
     xmlns:models="using:CDPIUI.ViewModels"
-    xmlns:wc="using:CDPIUI.Controls.WindowControls"
-    >
+    xmlns:wc="using:CDPIUI.Controls.WindowControls" xmlns:uexp="using:CDPIUI.Helper.UserExperience">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -231,8 +230,8 @@
                               Background="Black"
                               CornerRadius="6">
                     <RichTextBlock x:Name="OutputRichTextBlock"
-                                   FontFamily="Consolas"
-                                   FontSize="14"
+                                   FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                                   FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}"
                                    Foreground="#DCDCDC"
                                    IsTextSelectionEnabled="True"
                                    Padding="16"
