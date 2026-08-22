@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text;
 using System.Threading.Tasks;
 using TextControlBoxNS;
@@ -11,7 +12,9 @@ namespace CDPIUI.Helper.CreateConfigHelper
 {
     internal class DarkDefaultHighlighter : SyntaxHighlightLanguage
     {
-        public DarkDefaultHighlighter()
+        public DarkDefaultHighlighter(
+            IEnumerable<string> errorTokens = null,
+            IEnumerable<string> warningTokens = null)
         {
             Name = "CMD Prompt";
             Author = "Storik4";
@@ -25,12 +28,16 @@ namespace CDPIUI.Helper.CreateConfigHelper
                 new SyntaxHighlights("(--new)|(-A.*?(?:\\s|^|=))|(--auto.*?(?:\\s|^|=))", "#ffffff", "#ffffff"),
                 new SyntaxHighlights("\\b([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[eE]([+-]?\\d+))?\\b", "#ff6b84", "#ff6b84"),
                 new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#6e86ff", "#6e86ff"),
+                .. DiagnosticHighlights.Create(warningTokens, "#CA5010"),
+                .. DiagnosticHighlights.Create(errorTokens, "#C42B1C"),
             ];
         }
     }
     internal class LightDefaultHighlighter : SyntaxHighlightLanguage
     {
-        public LightDefaultHighlighter()
+        public LightDefaultHighlighter(
+            IEnumerable<string> errorTokens = null,
+            IEnumerable<string> warningTokens = null)
         {
             Name = "CMD Prompt";
             Author = "Storik4";
@@ -45,7 +52,31 @@ namespace CDPIUI.Helper.CreateConfigHelper
                 new SyntaxHighlights("(--new)|(-A.*?(?:\\s|^|=))|(--auto.*?(?:\\s|^|=))", "#000000", "#000000"),
                 new SyntaxHighlights("\\b([+-]?(?=\\.\\d|\\d)(?:\\d+)?(?:\\.?\\d*))(?:[eE]([+-]?\\d+))?\\b", "#dd00dd", "#dd00dd"),
                 new SyntaxHighlights("(\\\".+?\\\"|\\'.+?\\')", "#00C000", "#00C000"),
+                .. DiagnosticHighlights.Create(warningTokens, "#CA5010"),
+                .. DiagnosticHighlights.Create(errorTokens, "#C42B1C"),
             ];
+        }
+    }
+
+    internal static class DiagnosticHighlights
+    {
+        public static IReadOnlyList<SyntaxHighlights> Create(
+            IEnumerable<string> tokens,
+            string color)
+        {
+            string[] escapedTokens = (tokens ?? [])
+                .Where(token => !string.IsNullOrWhiteSpace(token) && token.Length > 1)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Select(Regex.Escape)
+                .OrderByDescending(token => token.Length)
+                .ToArray();
+            if (escapedTokens.Length == 0)
+            {
+                return [];
+            }
+
+            string pattern = $"(?<![A-Za-z0-9_.-])(?:{string.Join('|', escapedTokens)})(?=$|[\\s=])";
+            return [new SyntaxHighlights(pattern, color, color, false, false, true)];
         }
     }
 
