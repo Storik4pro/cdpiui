@@ -45,6 +45,7 @@ namespace CDPIUI.Shared.Pipe.Models
         GetAllProcessStates,
         StopService,
         ProcessIdStartupArgsChanged,
+        CaptureHelpOutput,
         // ToClient
         GetStartupString,
         GetAllStartupStrings,
@@ -54,6 +55,8 @@ namespace CDPIUI.Shared.Pipe.Models
         ChangeProcessIdExecutable,
         ProcessIdNewOutput,
         ProcessIdFullOutput,
+        HelpOutputChunk,
+        HelpOutputCompleted,
     }
 
     public enum GoodCheckMessageIds
