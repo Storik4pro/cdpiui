@@ -2497,10 +2497,10 @@ Error code: {2}</value>
   <data name="TestBestConfigSettingsCard.Description" xml:space="preserve">
     <value>Test all installed configs and offer the best</value>
   </data>
-  <data name="CreateNewViaGoodCheckSettingsCard.Header" xml:space="preserve">
+  <data name="CreateNewViaGoodCheckSettingsCardTitle" xml:space="preserve">
     <value>Create new config with best settings via GoodCheck</value>
   </data>
-  <data name="CreateNewViaGoodCheckSettingsCard.Description" xml:space="preserve">
+  <data name="CreateNewViaGoodCheckSettingsCardDescription" xml:space="preserve">
     <value>Create new custom config for your provider</value>
   </data>
   <data name="CreateYouOwnConfigSettingsCard.Description" xml:space="preserve">
@@ -2631,7 +2631,7 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
     <value>Personalization</value>
   </data>
   <data name="PersonalizationSettingsCard.Description" xml:space="preserve">
-    <value>Select app theme. Switch main page markup.</value>
+    <value>Select app theme. Switch main page markup. Change ad settings.</value>
   </data>
   <data name="Personalization" xml:space="preserve">
     <value>Personalization</value>
@@ -3766,5 +3766,1827 @@ For support about additional config settings contact config's developer.</value>
   </data>
   <data name="ReadyKitItemFailedMessage" xml:space="preserve">
     <value>Could not get “{0}”. Error code: {1}</value>
+  </data>
+  <data name="BlockCheck2WindowTitle" xml:space="preserve">
+    <value>Zapret 2 config selection</value>
+  </data>
+  <data name="BlockCheck2ResultWindowTitle" xml:space="preserve">
+    <value>Zapret 2 selection result</value>
+  </data>
+  <data name="BlockCheck2SettingsCard.Header" xml:space="preserve">
+    <value>Zapret 2 config selection</value>
+  </data>
+  <data name="BlockCheck2SettingsCard.Description" xml:space="preserve">
+    <value>Check websites, select compatible strategies, and build a combined config</value>
+  </data>
+  <data name="BlockCheck2TargetsStep.Header" xml:space="preserve">
+    <value>Check targets</value>
+  </data>
+  <data name="BlockCheck2TargetsStep.Description" xml:space="preserve">
+    <value>Enter domains or URLs and select the protocols to check</value>
+  </data>
+  <data name="BlockCheck2ModeStep.Header" xml:space="preserve">
+    <value>Selection mode</value>
+  </data>
+  <data name="BlockCheck2ModeStep.Description" xml:space="preserve">
+    <value>Choose a balance between scan speed and result stability</value>
+  </data>
+  <data name="BlockCheck2ProgressStep.Header" xml:space="preserve">
+    <value>Working on it</value>
+  </data>
+  <data name="BlockCheck2ProgressStep.Description" xml:space="preserve">
+    <value>The best config is being selected. Internet access on this device may be unavailable until the selection is complete.</value>
+  </data>
+  <data name="BlockCheck2TargetsLabel.Text" xml:space="preserve">
+    <value>Domains and URLs — one per line</value>
+  </data>
+  <data name="BlockCheck2TargetInputTextBox.PlaceholderText" xml:space="preserve">
+    <value>example.com
+https://example.org/path</value>
+  </data>
+  <data name="BlockCheck2ProtocolsCard.Header" xml:space="preserve">
+    <value>Protocols</value>
+  </data>
+  <data name="BlockCheck2ProtocolsCard.Description" xml:space="preserve">
+    <value>The selected variants will be generated for domains without a scheme</value>
+  </data>
+  <data name="BlockCheck2HttpCheckBox.Content" xml:space="preserve">
+    <value>HTTP</value>
+  </data>
+  <data name="BlockCheck2Tls12CheckBox.Content" xml:space="preserve">
+    <value>TLS 1.2</value>
+  </data>
+  <data name="BlockCheck2Tls13CheckBox.Content" xml:space="preserve">
+    <value>TLS 1.3 (exact)</value>
+  </data>
+  <data name="BlockCheck2QuicCheckBox.Content" xml:space="preserve">
+    <value>QUIC / HTTP/3</value>
+  </data>
+  <data name="BlockCheck2IpVersionsCard.Header" xml:space="preserve">
+    <value>IP versions</value>
+  </data>
+  <data name="BlockCheck2IpVersionsCard.Description" xml:space="preserve">
+    <value>Enable IPv6 only when a working IPv6 connection is available</value>
+  </data>
+  <data name="BlockCheck2Ipv4CheckBox.Content" xml:space="preserve">
+    <value>IPv4</value>
+  </data>
+  <data name="BlockCheck2Ipv6CheckBox.Content" xml:space="preserve">
+    <value>IPv6</value>
+  </data>
+  <data name="BlockCheck2QuickModeTitle.Text" xml:space="preserve">
+    <value>Quick</value>
+  </data>
+  <data name="BlockCheck2QuickModeDescription.Text" xml:space="preserve">
+    <value>A minimal strategy set and two attempts. Good for the first run.</value>
+  </data>
+  <data name="BlockCheck2BalancedModeTitle.Text" xml:space="preserve">
+    <value>Balanced — recommended</value>
+  </data>
+  <data name="BlockCheck2BalancedModeDescription.Text" xml:space="preserve">
+    <value>An extended strategy set, three attempts, and automatic final config repair.</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeTitle.Text" xml:space="preserve">
+    <value>Exhaustive</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeDescription.Text" xml:space="preserve">
+    <value>The full catalog, five attempts, and stronger stability checks. Takes longer.</value>
+  </data>
+  <data name="BlockCheck2ModeNoticeInfoBar.Title" xml:space="preserve">
+    <value>Network components will be temporarily stopped during selection</value>
+  </data>
+  <data name="BlockCheck2ModeNoticeInfoBar.Message" xml:space="preserve">
+    <value>When BlockCheck completes or is canceled, it restores the components that were running before it started.</value>
+  </data>
+  <data name="BlockCheck2CurrentTargetCard.Header" xml:space="preserve">
+    <value>Current target</value>
+  </data>
+  <data name="BlockCheck2CurrentStrategyCard.Header" xml:space="preserve">
+    <value>Current strategy</value>
+  </data>
+  <data name="BlockCheck2CancelButton.Content" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="BlockCheck2OpenResultButton.Content" xml:space="preserve">
+    <value>View result</value>
+  </data>
+  <data name="BlockCheck2NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="BlockCheck2StartButton" xml:space="preserve">
+    <value>Start selection</value>
+  </data>
+  <data name="BlockCheck2WorkingState" xml:space="preserve">
+    <value>Checking websites and strategies</value>
+  </data>
+  <data name="BlockCheck2InputIssueTitle" xml:space="preserve">
+    <value>Check the input</value>
+  </data>
+  <data name="BlockCheck2InputRequired" xml:space="preserve">
+    <value>Enter at least one domain or URL and select a protocol and IP version.</value>
+  </data>
+  <data name="BlockCheck2PhasePreparing" xml:space="preserve">
+    <value>Preparing the check</value>
+  </data>
+  <data name="BlockCheck2PhaseBaseline" xml:space="preserve">
+    <value>Checking access without circumvention</value>
+  </data>
+  <data name="BlockCheck2PhaseStartingStrategy" xml:space="preserve">
+    <value>Starting strategy</value>
+  </data>
+  <data name="BlockCheck2PhaseProbing" xml:space="preserve">
+    <value>Checking website</value>
+  </data>
+  <data name="BlockCheck2PhaseStrategyCompleted" xml:space="preserve">
+    <value>Processing strategy results</value>
+  </data>
+  <data name="BlockCheck2PhaseValidatingConfig" xml:space="preserve">
+    <value>Validating the combined config</value>
+  </data>
+  <data name="BlockCheck2PhaseRepairingConfig" xml:space="preserve">
+    <value>Repairing the combined config</value>
+  </data>
+  <data name="BlockCheck2ProgressCounterFormat" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="BlockCheck2CompletedTitle" xml:space="preserve">
+    <value>Config selected successfully</value>
+  </data>
+  <data name="BlockCheck2CompletedMessage" xml:space="preserve">
+    <value>The combined config passed the repeated check for the selected websites.</value>
+  </data>
+  <data name="BlockCheck2CanceledTitle" xml:space="preserve">
+    <value>Selection stopped</value>
+  </data>
+  <data name="BlockCheck2CanceledMessage" xml:space="preserve">
+    <value>Selection stopped by user.</value>
+  </data>
+  <data name="BlockCheck2FailedTitle" xml:space="preserve">
+    <value>Selection run into a problem</value>
+  </data>
+  <data name="BlockCheck2UnknownFailure" xml:space="preserve">
+    <value>No error details are available.</value>
+  </data>
+  <data name="BlockCheck2ResultTitle.Text" xml:space="preserve">
+    <value>Zapret 2 BlockCheck result</value>
+  </data>
+  <data name="BlockCheck2ResultModeLabel.Text" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="BlockCheck2ResultTargetsLabel.Text" xml:space="preserve">
+    <value>Targets</value>
+  </data>
+  <data name="BlockCheck2ResultProfilesLabel.Text" xml:space="preserve">
+    <value>Profiles</value>
+  </data>
+  <data name="BlockCheck2ResultCreatedLabel.Text" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="BlockCheck2ResultConfigsPivot.Header" xml:space="preserve">
+    <value>Configs</value>
+  </data>
+  <data name="BlockCheck2ResultProfilesPivot.Header" xml:space="preserve">
+    <value>Profiles</value>
+  </data>
+  <data name="BlockCheck2ResultIssuesPivot.Header" xml:space="preserve">
+    <value>Issues</value>
+  </data>
+  <data name="BlockCheck2PrimaryStrategyLabel.Text" xml:space="preserve">
+    <value>Primary strategy</value>
+  </data>
+  <data name="BlockCheck2FallbackStrategiesLabel.Text" xml:space="preserve">
+    <value>Fallback strategies</value>
+  </data>
+  <data name="BlockCheck2NoIssuesText.Text" xml:space="preserve">
+    <value>No issues</value>
+  </data>
+  <data name="BlockCheck2EditInConfigsButton.Label" xml:space="preserve">
+    <value>Open in Configs</value>
+  </data>
+  <data name="BlockCheck2CopyConfigButton.Label" xml:space="preserve">
+    <value>Copy config</value>
+  </data>
+  <data name="BlockCheck2SaveConfigButton.Label" xml:space="preserve">
+    <value>Save config</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportButton.Label" xml:space="preserve">
+    <value>Export JSON report</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportButton.Label" xml:space="preserve">
+    <value>Export TXT report</value>
+  </data>
+  <data name="BlockCheck2ResultEmptyTitle" xml:space="preserve">
+    <value>No result has been supplied yet</value>
+  </data>
+  <data name="BlockCheck2ResultEmptyMessage" xml:space="preserve">
+    <value>Complete a selection in the BlockCheck window.</value>
+  </data>
+  <data name="BlockCheck2ResultSuccessTitle" xml:space="preserve">
+    <value>Validated config is ready</value>
+  </data>
+  <data name="BlockCheck2ResultSuccessMessage" xml:space="preserve">
+    <value>You can save the config or open it for further editing.</value>
+  </data>
+  <data name="BlockCheck2ResultPartialTitle" xml:space="preserve">
+    <value>Selection completed with issues</value>
+  </data>
+  <data name="BlockCheck2ResultPartialMessage" xml:space="preserve">
+    <value>Review the profiles and issues before using the result.</value>
+  </data>
+  <data name="BlockCheck2QuickModeName" xml:space="preserve">
+    <value>Quick</value>
+  </data>
+  <data name="BlockCheck2BalancedModeName" xml:space="preserve">
+    <value>Balanced</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeName" xml:space="preserve">
+    <value>Exhaustive</value>
+  </data>
+  <data name="BlockCheck2ConfigCopiedMessage" xml:space="preserve">
+    <value>The config was copied to the clipboard.</value>
+  </data>
+  <data name="BlockCheck2FileSavedMessage" xml:space="preserve">
+    <value>The file was saved.</value>
+  </data>
+  <data name="BlockCheck2ActionCompletedTitle" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="BlockCheck2ActionFailedTitle" xml:space="preserve">
+    <value>Could not complete the action</value>
+  </data>
+  <data name="BlockCheck2SaveConfigDialogTitle" xml:space="preserve">
+    <value>Save Zapret 2 config</value>
+  </data>
+  <data name="BlockCheck2SaveReportDialogTitle" xml:space="preserve">
+    <value>Save BlockCheck report</value>
+  </data>
+  <data name="BlockCheck2TextFileFilter" xml:space="preserve">
+    <value>Text files (*.txt)|*.txt</value>
+  </data>
+  <data name="BlockCheck2JsonFileFilter" xml:space="preserve">
+    <value>JSON files (*.json)|*.json</value>
+  </data>
+  <data name="BlockCheck2SiteListsLabel.Text" xml:space="preserve">
+    <value>Ready-made site lists</value>
+  </data>
+  <data name="BlockCheck2SiteListsDescription.Text" xml:space="preserve">
+    <value>You can select one or more installed lists. Their domains will be checked, and the generated config will keep references to the list files.</value>
+  </data>
+  <data name="BlockCheck2ChooseSiteListFileButton.Content" xml:space="preserve">
+    <value>Choose list file</value>
+  </data>
+  <data name="BlockCheck2SiteListsLoadFailedTitle" xml:space="preserve">
+    <value>Could not load installed site lists</value>
+  </data>
+  <data name="BlockCheck2SiteListInvalidTitle" xml:space="preserve">
+    <value>Unsupported site list</value>
+  </data>
+  <data name="BlockCheck2SiteListInvalidMessage" xml:space="preserve">
+    <value>The selected text file is not recognized as a domain list.</value>
+  </data>
+  <data name="BlockCheck2SiteListFileFilter" xml:space="preserve">
+    <value>Site lists (*.txt)|*.txt</value>
+  </data>
+  <data name="BlockCheck2LocalSiteListSource" xml:space="preserve">
+    <value>Local file</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeCard.Header" xml:space="preserve">
+    <value>Approximate time remaining</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeCalculating" xml:space="preserve">
+    <value>Calculating after the first completed strategies…</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeFinalizing" xml:space="preserve">
+    <value>Final config validation is in progress</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeUnderMinute" xml:space="preserve">
+    <value>Less than a minute</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeMinutesFormat" xml:space="preserve">
+    <value>About {0} min</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeHoursFormat" xml:space="preserve">
+    <value>About {0} h {1} min</value>
+  </data>
+  <data name="BlockCheck2ResultProbesPivot.Header" xml:space="preserve">
+    <value>Checks</value>
+  </data>
+  <data name="BlockCheck2AdvancedOptionsExpander.Header" xml:space="preserve">
+    <value>Advanced selection options</value>
+  </data>
+  <data name="BlockCheck2AdvancedOptionsExpander.Description" xml:space="preserve">
+    <value>Connection, request, and Zapret 2 startup timeouts</value>
+  </data>
+  <data name="BlockCheck2ConnectTimeoutCard.Header" xml:space="preserve">
+    <value>Connection timeout, sec</value>
+  </data>
+  <data name="BlockCheck2ConnectTimeoutCard.Description" xml:space="preserve">
+    <value>How long to wait for a TCP, TLS, or QUIC connection: 1 to 60 seconds</value>
+  </data>
+  <data name="BlockCheck2RequestTimeoutCard.Header" xml:space="preserve">
+    <value>Total request timeout, sec</value>
+  </data>
+  <data name="BlockCheck2RequestTimeoutCard.Description" xml:space="preserve">
+    <value>Total limit for one check; must not be shorter than the connection timeout</value>
+  </data>
+  <data name="BlockCheck2StartupGraceCard.Header" xml:space="preserve">
+    <value>Zapret 2 startup wait, sec</value>
+  </data>
+  <data name="BlockCheck2StartupGraceCard.Description" xml:space="preserve">
+    <value>Delay before probing after a strategy starts: 0.25 to 10 seconds</value>
+  </data>
+  <data name="BlockCheck2WorkTitle.Text" xml:space="preserve">
+    <value>Zapret 2 config selection</value>
+  </data>
+  <data name="BlockCheck2WorkDescription.Text" xml:space="preserve">
+    <value>Please wait. BlockCheck is checking website access, strategies, and the final config.</value>
+  </data>
+  <data name="BlockCheck2DetailsHeader.Text" xml:space="preserve">
+    <value>Selection details</value>
+  </data>
+  <data name="BlockCheck2CurrentStageLabel.Text" xml:space="preserve">
+    <value>Currently running</value>
+  </data>
+  <data name="BlockCheck2OverallRemainingLabel.Text" xml:space="preserve">
+    <value>Overall time remaining</value>
+  </data>
+  <data name="BlockCheck2CurrentSelectionLabel.Text" xml:space="preserve">
+    <value>Current check</value>
+  </data>
+  <data name="BlockCheck2CurrentUrlLabel.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="BlockCheck2ConnectionDetailsLabel.Text" xml:space="preserve">
+    <value>Connection type</value>
+  </data>
+  <data name="BlockCheck2CurrentStrategyLabel.Text" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="BlockCheck2StageRemainingLabel.Text" xml:space="preserve">
+    <value>Time remaining in this stage</value>
+  </data>
+  <data name="BlockCheck2StageProgressLabel.Text" xml:space="preserve">
+    <value>Stage progress</value>
+  </data>
+  <data name="BlockCheck2IntermediateStatsLabel.Text" xml:space="preserve">
+    <value>Intermediate stage statistics</value>
+  </data>
+  <data name="BlockCheck2CompletedChecksLabel.Text" xml:space="preserve">
+    <value>Requests completed</value>
+  </data>
+  <data name="BlockCheck2SuccessfulChecksLabel.Text" xml:space="preserve">
+    <value>Successful responses</value>
+  </data>
+  <data name="BlockCheck2FailedChecksLabel.Text" xml:space="preserve">
+    <value>Failed responses</value>
+  </data>
+  <data name="BlockCheck2SuccessfulStrategiesLabel.Text" xml:space="preserve">
+    <value>Working strategies found</value>
+  </data>
+  <data name="BlockCheck2OverallTimeCalculating" xml:space="preserve">
+    <value>Calculating time remaining…</value>
+  </data>
+  <data name="BlockCheck2BestEffortCompletedTitle" xml:space="preserve">
+    <value>A preliminary config was generated</value>
+  </data>
+  <data name="BlockCheck2BestEffortCompletedMessage" xml:space="preserve">
+    <value>No fully working strategy was found. BlockCheck generated the strongest option observed; some sites may remain unavailable.</value>
+  </data>
+  <data name="BlockCheck2ResultBestEffortTitle" xml:space="preserve">
+    <value>Best available result</value>
+  </data>
+  <data name="BlockCheck2ResultBestEffortMessage" xml:space="preserve">
+    <value>This config improved on the no-Zapret 2 baseline but did not pass the full availability threshold. You can use or save it for manual refinement.</value>
+  </data>
+  <data name="ClassicMarkupDescription" xml:space="preserve">
+    <value>GoodbyeDPI-UI like main page design. Components are displayed vertically. Page contains minimum information </value>
+  </data>
+  <data name="ModernMarkupDescription" xml:space="preserve">
+    <value>Modern look of main page. Components are displayed horizontally in tiles, who size can be changed. Tiles contains quick links to components features and quick config settings </value>
+  </data>
+  <data name="BlockCheck2HttpOnlyInfoBar.Title" xml:space="preserve">
+    <value>Only HTTP is being tested</value>
+  </data>
+  <data name="BlockCheck2HttpOnlyInfoBar.Message" xml:space="preserve">
+    <value>HTTP tests TCP/80 only. A successful response or redirect does not mean that the HTTPS page will load in a browser. Enable TLS 1.2 and automatic HTTPS for YouTube and most websites.</value>
+  </data>
+  <data name="BlockCheck2EditInConfigsButtonText.Text" xml:space="preserve">
+    <value>Open in Configs</value>
+  </data>
+  <data name="BlockCheck2CopyConfigButtonText.Text" xml:space="preserve">
+    <value>Copy config</value>
+  </data>
+  <data name="BlockCheck2SaveConfigButtonText.Text" xml:space="preserve">
+    <value>Save config</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportButtonText.Text" xml:space="preserve">
+    <value>Export JSON report</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportButtonText.Text" xml:space="preserve">
+    <value>Export TXT report</value>
+  </data>
+  <data name="BlockCheck2ManualStrategiesTab.Header" xml:space="preserve">
+    <value>Selection result</value>
+  </data>
+  <data name="BlockCheck2ManualPresetTab.Header" xml:space="preserve">
+    <value>Preset builder</value>
+  </data>
+  <data name="BlockCheck2DiagnosticsTab.Header" xml:space="preserve">
+    <value>Diagnostic information</value>
+  </data>
+  <data name="BlockCheck2StrategySearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search sites or strategies</value>
+  </data>
+  <data name="BlockCheck2SortBestFirst.Content" xml:space="preserve">
+    <value>Best results first</value>
+  </data>
+  <data name="BlockCheck2SortWorstFirst.Content" xml:space="preserve">
+    <value>Worst results first</value>
+  </data>
+  <data name="BlockCheck2SortSiteAZ.Content" xml:space="preserve">
+    <value>Sites: A–Z</value>
+  </data>
+  <data name="BlockCheck2SortSiteZA.Content" xml:space="preserve">
+    <value>Sites: Z–A</value>
+  </data>
+  <data name="BlockCheck2SortFastFirst.Content" xml:space="preserve">
+    <value>Fast responses first</value>
+  </data>
+  <data name="BlockCheck2SortSlowFirst.Content" xml:space="preserve">
+    <value>Slow responses first</value>
+  </data>
+  <data name="BlockCheck2SortStrategyAZ.Content" xml:space="preserve">
+    <value>Strategies: A–Z</value>
+  </data>
+  <data name="BlockCheck2SortStrategyZA.Content" xml:space="preserve">
+    <value>Strategies: Z–A</value>
+  </data>
+  <data name="BlockCheck2FilterAll.Content" xml:space="preserve">
+    <value>All results</value>
+  </data>
+  <data name="BlockCheck2FilterSuccessful.Content" xml:space="preserve">
+    <value>Successful</value>
+  </data>
+  <data name="BlockCheck2FilterPartial.Content" xml:space="preserve">
+    <value>Partial</value>
+  </data>
+  <data name="BlockCheck2FilterFailed.Content" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="BlockCheck2SiteColumn.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="BlockCheck2ConnectionColumn.Text" xml:space="preserve">
+    <value>Connection</value>
+  </data>
+  <data name="BlockCheck2StrategyColumn.Text" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="BlockCheck2ResultColumn.Text" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="BlockCheck2ResponseColumn.Text" xml:space="preserve">
+    <value>Response</value>
+  </data>
+  <data name="BlockCheck2ScopeColumn.Text" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="BlockCheck2NoStrategiesTitle.Text" xml:space="preserve">
+    <value>No strategies found</value>
+  </data>
+  <data name="BlockCheck2NoStrategiesDescription.Text" xml:space="preserve">
+    <value>Change the search or result filter.</value>
+  </data>
+  <data name="BlockCheck2TestStrategyButton.Content" xml:space="preserve">
+    <value>Test with CURL</value>
+  </data>
+  <data name="BlockCheck2AddForSiteButton.Content" xml:space="preserve">
+    <value>Add for site</value>
+  </data>
+  <data name="BlockCheck2AddForListButton.Content" xml:space="preserve">
+    <value>Add for site list</value>
+  </data>
+  <data name="BlockCheck2RemoveAssignmentButtonText.Text" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="BlockCheck2ClearAssignmentsButtonText.Text" xml:space="preserve">
+    <value>Remove all</value>
+  </data>
+  <data name="BlockCheck2EmptyAssignmentsTitle.Text" xml:space="preserve">
+    <value>The manual config is empty</value>
+  </data>
+  <data name="BlockCheck2EmptyAssignmentsDescription.Text" xml:space="preserve">
+    <value>Select a strategy and add it for a site or site list.</value>
+  </data>
+  <data name="BlockCheck2RecommendationsHeader.Text" xml:space="preserve">
+    <value>Warnings and recommendations</value>
+  </data>
+  <data name="BlockCheck2NoRecommendationsText.Text" xml:space="preserve">
+    <value>No conflicts were found.</value>
+  </data>
+  <data name="BlockCheck2IssuesHeader.Text" xml:space="preserve">
+    <value>Run issues</value>
+  </data>
+  <data name="BlockCheck2ResultSessionSummary" xml:space="preserve">
+    <value>{0} · targets: {1} · {2:g}</value>
+  </data>
+  <data name="BlockCheck2StrategyCountFormat" xml:space="preserve">
+    <value>Showing {0} of {1}</value>
+  </data>
+  <data name="BlockCheck2SelectStrategyText" xml:space="preserve">
+    <value>Select a strategy in the table</value>
+  </data>
+  <data name="BlockCheck2BaselineEvidenceFormat" xml:space="preserve">
+    <value>Without Zapret 2: {0}</value>
+  </data>
+  <data name="BlockCheck2StrategyTestCompletedTitle" xml:space="preserve">
+    <value>Test completed</value>
+  </data>
+  <data name="BlockCheck2StrategyTestFailedMessage" xml:space="preserve">
+    <value>The strategy could not be tested.</value>
+  </data>
+  <data name="BlockCheck2StrategyTestResultFormat" xml:space="preserve">
+    <value>{0} of {1} attempts succeeded ({2:P0}).</value>
+  </data>
+  <data name="BlockCheck2ChooseSiteListTitle" xml:space="preserve">
+    <value>Choose a site list</value>
+  </data>
+  <data name="BlockCheck2AddButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="BlockCheck2CancelDialogButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="BlockCheck2AssignmentAddedTitle" xml:space="preserve">
+    <value>Strategy added</value>
+  </data>
+  <data name="BlockCheck2AssignmentAddedMessage" xml:space="preserve">
+    <value>The manual config was rebuilt for the selected scope.</value>
+  </data>
+  <data name="BlockCheck2AssignmentNotAddedTitle" xml:space="preserve">
+    <value>Strategy not added</value>
+  </data>
+  <data name="BlockCheck2AssignmentDuplicateMessage" xml:space="preserve">
+    <value>This strategy is already assigned to that scope.</value>
+  </data>
+  <data name="BlockCheck2AssignmentCountFormat" xml:space="preserve">
+    <value>Strategies in manual config: {0}</value>
+  </data>
+  <data name="BlockCheck2NoBypassRequiredTitle" xml:space="preserve">
+    <value>No config is needed for the tested connections</value>
+  </data>
+  <data name="BlockCheck2NoBypassRequiredMessage" xml:space="preserve">
+    <value>The selected URLs and connection types passed the curl transport check without Zapret2. This conclusion applies only to the connections listed in the report.</value>
+  </data>
+  <data name="BlockCheck2HttpOnlyNoBypassRequiredMessage" xml:space="preserve">
+    <value>The HTTP/TCP:80 check passed without Zapret2, but HTTPS was not tested. This does not mean that YouTube or another HTTPS page will load in a browser. Run the selection again with TLS 1.2 and automatic HTTPS.</value>
+  </data>
+  <data name="ShowAdCheckBox.Content" xml:space="preserve">
+    <value>Show sponsored content on application main page or main window</value>
+  </data>
+  <data name="DeveloperProjects" xml:space="preserve">
+    <value>Other projects from that developer </value>
+  </data>
+  <data name="DeveloperAsk" xml:space="preserve">
+    <value>Surveys about this app</value>
+  </data>
+  <data name="Internal" xml:space="preserve">
+    <value>Application internal recommendations (about new components, for example)</value>
+  </data>
+  <data name="TrustedServices" xml:space="preserve">
+    <value>Sponsored ad from other trusted services </value>
+  </data>
+  <data name="AdSettingsExpander.Header" xml:space="preserve">
+    <value>Advertising</value>
+  </data>
+  <data name="AdSettingsExpander.Description" xml:space="preserve">
+    <value>Setup ad types can be shown in application main window</value>
+  </data>
+  <data name="ShowAppFeaturesCheckBox.Content" xml:space="preserve">
+    <value>Show application features</value>
+  </data>
+  <data name="CompleteButton.Content" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="SkipButton.Content" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="NoBundlesAvailableNoContentToDisplayUserControl.Text" xml:space="preserve">
+    <value>There is no bundles available for now. Open Store to find out other options.
+
+If error persist, contact application support.</value>
+  </data>
+  <data name="BlockCheck2TlsAutoCheckBox.Content" xml:space="preserve">
+    <value>HTTPS (automatic TLS)</value>
+  </data>
+  <data name="OpenBlockCheck2ReportSettingsCard.Header" xml:space="preserve">
+    <value>Open a BlockCheck2 report</value>
+  </data>
+  <data name="OpenBlockCheck2ReportSettingsCard.Description" xml:space="preserve">
+    <value>View a saved report and continue building a config manually without running a new scan</value>
+  </data>
+  <data name="BlockCheck2ReportFileFilter" xml:space="preserve">
+    <value>BlockCheck2 reports (*.json;*.txt;*.bc2report)|*.json;*.txt;*.bc2report|All files (*.*)|*.*</value>
+  </data>
+  <data name="BlockCheck2ReportOpenFailedTitle" xml:space="preserve">
+    <value>Could not open the BlockCheck2 report</value>
+  </data>
+  <data name="BlockCheck2CloseButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="OpenStoreURIButton.UriName" xml:space="preserve">
+    <value>Open Store</value>
+  </data>
+  <data name="ConfigMakerSettingsCard.Header" xml:space="preserve">
+    <value>Config maker</value>
+  </data>
+  <data name="ConfigMakerSettingsCard.Description" xml:space="preserve">
+    <value>Create and test component configs using help provided by the component</value>
+  </data>
+  <data name="ConfigMakerWindowTitle" xml:space="preserve">
+    <value>Config maker</value>
+  </data>
+  <data name="ConfigMakerNewButton.Label" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="ConfigMakerSaveTextButton.Label" xml:space="preserve">
+    <value>Save TXT</value>
+  </data>
+  <data name="ConfigMakerFormatButton.Label" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="ConfigMakerStartTestButton.Label" xml:space="preserve">
+    <value>Start test</value>
+  </data>
+  <data name="ConfigMakerStopTestButton.Label" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="ConfigMakerCommandsHeader.Text" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="ConfigMakerRefreshHelpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Refresh help</value>
+  </data>
+  <data name="ConfigMakerCommandSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Find a flag</value>
+  </data>
+  <data name="ConfigMakerCopyCommandButton.Content" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="ConfigMakerInsertCommandButton.Content" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="ConfigMakerSelectComponentMessage" xml:space="preserve">
+    <value>Select an installed component to load its --help reference and syntax highlighting.</value>
+  </data>
+  <data name="ConfigMakerLoadingHelpMessage" xml:space="preserve">
+    <value>Loading --help…</value>
+  </data>
+  <data name="ConfigMakerHelpOptionsLoadedMessage" xml:space="preserve">
+    <value>Loaded flags: {0}</value>
+  </data>
+  <data name="ConfigMakerHelpLoadFailedMessage" xml:space="preserve">
+    <value>Could not load --help: {0}</value>
+  </data>
+  <data name="ConfigMakerHelpParseEmptyMessage" xml:space="preserve">
+    <value>The component returned help text, but no flags could be recognized. The editor remains available.</value>
+  </data>
+  <data name="ConfigMakerHelpNotFoundNote" xml:space="preserve">
+    <value>[NOTE] Help could not be found for this flag.</value>
+  </data>
+  <data name="ConfigMakerNoDescriptionMessage" xml:space="preserve">
+    <value>No description was provided.</value>
+  </data>
+  <data name="ConfigMakerRequiredArgumentLabel" xml:space="preserve">
+    <value>Required parameter: {0}</value>
+  </data>
+  <data name="ConfigMakerOptionalArgumentLabel" xml:space="preserve">
+    <value>Optional parameter: {0}</value>
+  </data>
+  <data name="ConfigMakerRequiredArgumentMissingMessage" xml:space="preserve">
+    <value>Enter the required parameter before inserting the flag.</value>
+  </data>
+  <data name="ConfigMakerNewConfirmationTitle" xml:space="preserve">
+    <value>Create a new config?</value>
+  </data>
+  <data name="ConfigMakerNewConfirmationMessage" xml:space="preserve">
+    <value>The current command will be cleared.</value>
+  </data>
+  <data name="ConfigMakerTextFileFilter" xml:space="preserve">
+    <value>Text configs (*.txt)|*.txt|All files (*.*)|*.*</value>
+  </data>
+  <data name="ConfigMakerTextSavedMessage" xml:space="preserve">
+    <value>The TXT config was saved.</value>
+  </data>
+  <data name="ConfigMakerTextSaveFailedMessage" xml:space="preserve">
+    <value>Could not save the TXT config: {0}</value>
+  </data>
+  <data name="ConfigMakerEmptyArgumentsMessage" xml:space="preserve">
+    <value>Enter at least one command-line flag before starting the test.</value>
+  </data>
+  <data name="ConfigMakerTestStartedMessage" xml:space="preserve">
+    <value>The component is running with the command from the editor. Test the required sites or application, then stop the test.</value>
+  </data>
+  <data name="ConfigMakerTestStoppedMessage" xml:space="preserve">
+    <value>The test was stopped. The previously running component was restored when applicable.</value>
+  </data>
+  <data name="ConfigMakerTestStartFailedMessage" xml:space="preserve">
+    <value>Could not start the test: {0}</value>
+  </data>
+  <data name="ConfigMakerTestExitedMessage" xml:space="preserve">
+    <value>The component stopped during the test.</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="ConfigMakerComponentComboBox.Header" xml:space="preserve">
+    <value>Component</value>
+  </data>
+  <data name="ConfigMakerReplaceRunningComponentTitle" xml:space="preserve">
+    <value>Temporarily replace the running component?</value>
+  </data>
+  <data name="ConfigMakerReplaceRunningComponentMessage" xml:space="preserve">
+    <value>The active component will be stopped for the test and restored when the test finishes.</value>
+  </data>
+  <data name="ConfigMakerModuleComboBox.Header" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="ConfigMakerAllModules" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ConfigMakerGeneralModule" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="ConfigMakerOutputTab.Header" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="ConfigMakerDiagnosticsTab.Header" xml:space="preserve">
+    <value>Warnings and errors</value>
+  </data>
+  <data name="ConfigMakerDiagnosticSeverityColumn.Content" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="ConfigMakerDiagnosticCodeColumn.Content" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="ConfigMakerDiagnosticDescriptionColumn.Content" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ConfigMakerDiagnosticFlagColumn.Content" xml:space="preserve">
+    <value>Flag</value>
+  </data>
+  <data name="ConfigMakerDiagnosticLineColumn.Content" xml:space="preserve">
+    <value>Line</value>
+  </data>
+  <data name="ConfigMakerDiagnosticErrorSeverity" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ConfigMakerDiagnosticWarningSeverity" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ConfigMakerDiagnosticErrorCount" xml:space="preserve">
+    <value>{0} errors</value>
+  </data>
+  <data name="ConfigMakerDiagnosticWarningCount" xml:space="preserve">
+    <value>{0} warnings</value>
+  </data>
+  <data name="ConfigMakerUnknownFlagDiagnostic" xml:space="preserve">
+    <value>Flag {0} was not found in the component help.</value>
+  </data>
+  <data name="ConfigMakerMissingArgumentDiagnostic" xml:space="preserve">
+    <value>Required value for {0} is missing.</value>
+  </data>
+  <data name="ConfigMakerUnterminatedQuoteDiagnostic" xml:space="preserve">
+    <value>The quoted value is not terminated on this line.</value>
+  </data>
+  <data name="ConfigMakerNewMenuItem.Text" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
+    <value>Export config to universal format...</value>
+  </data>
+  <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ConfigMakerFormatMenuItem.Text" xml:space="preserve">
+    <value>Format by flags</value>
+  </data>
+  <data name="ConfigMakerCommandPanelMenuItem.Text" xml:space="preserve">
+    <value>Command reference</value>
+  </data>
+  <data name="ConfigMakerBottomPanelMenuItem.Text" xml:space="preserve">
+    <value>Output panel</value>
+  </data>
+  <data name="ConfigMakerShowOutputMenuItem.Text" xml:space="preserve">
+    <value>Show output</value>
+  </data>
+  <data name="ConfigMakerShowDiagnosticsMenuItem.Text" xml:space="preserve">
+    <value>Show warnings and errors</value>
+  </data>
+  <data name="ConfigMakerStartTestMenuItem.Text" xml:space="preserve">
+    <value>Start test</value>
+  </data>
+  <data name="ConfigMakerStopTestMenuItem.Text" xml:space="preserve">
+    <value>Stop test</value>
+  </data>
+  <data name="ConfigMakerRefreshHelpMenuItem.Text" xml:space="preserve">
+    <value>Refresh component help</value>
+  </data>
+  <data name="ConfigMakerSearchToolTip.Content" xml:space="preserve">
+    <value>Find (Ctrl+F)</value>
+  </data>
+  <data name="ConfigMakerReplaceToolTip.Content" xml:space="preserve">
+    <value>Find and replace (Ctrl+H)</value>
+  </data>
+  <data name="ConfigMakerZoomOut.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
+  <data name="ConfigMakerZoomIn.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zoom In</value>
+  </data>
+  <data name="ConfigMakerBackgroundToolTip.Content" xml:space="preserve">
+    <value>Editor background</value>
+  </data>
+  <data name="ConfigMakerSelectComponentDialogTitle" xml:space="preserve">
+    <value>Select a component</value>
+  </data>
+  <data name="ConfigMakerSelectComponentDialogMessage" xml:space="preserve">
+    <value>Select the component whose command line you want to create or test.</value>
+  </data>
+  <data name="ConfigMakerNoComponentsDialogMessage" xml:space="preserve">
+    <value>No installed components with an available executable were found.</value>
+  </data>
+  <data name="BlockCheck2PresetFilesHeader.Text" xml:space="preserve">
+    <value>Used files</value>
+  </data>
+  <data name="BlockCheck2PresetGroupsHeader.Text" xml:space="preserve">
+    <value>Preset groups</value>
+  </data>
+  <data name="ConfigMakerPresetFilesHeader.Text" xml:space="preserve">
+    <value>Used files</value>
+  </data>
+  <data name="ConfigMakerPresetGroupsHeader.Text" xml:space="preserve">
+    <value>Preset structure</value>
+  </data>
+  <data name="ConfigMakerPresetFilesPanelMenuItem.Text" xml:space="preserve">
+    <value>Used files</value>
+  </data>
+  <data name="ConfigMakerShowPresetGroupsMenuItem.Text" xml:space="preserve">
+    <value>Show preset structure</value>
+  </data>
+  <data name="ConfigMakerPresetGroupsTab.Header" xml:space="preserve">
+    <value>Preset structure</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategorySiteLists" xml:space="preserve">
+    <value>TXT lists</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategoryLibraries" xml:space="preserve">
+    <value>Libraries</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategoryPayloads" xml:space="preserve">
+    <value>Payloads</value>
+  </data>
+  <data name="ConfigMakerPresetFileOpenMenuItem.Text" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ConfigMakerPresetFileShowInFolderMenuItem.Text" xml:space="preserve">
+    <value>Show in folder</value>
+  </data>
+  <data name="ConfigMakerPresetFileMissingMessage" xml:space="preserve">
+    <value>The referenced file was not found: {0}</value>
+  </data>
+  <data name="BlockCheck2BackToBuilderButtonText.Text" xml:space="preserve">
+    <value>Back to builder</value>
+  </data>
+  <data name="BlockCheck2PresetReviewTitle.Text" xml:space="preserve">
+    <value>Preset review</value>
+  </data>
+  <data name="BlockCheck2AllowExpertEditingCheckBox.Content" xml:space="preserve">
+    <value>Allow editing</value>
+  </data>
+  <data name="BlockCheck2AllowExpertEditingToolTip.Content" xml:space="preserve">
+    <value>Enables expert mode. Returning to the builder discards direct text changes and regenerates the preset from its groups.</value>
+  </data>
+  <data name="BlockCheck2ExpertEditingInfoBar.Title" xml:space="preserve">
+    <value>Expert mode</value>
+  </data>
+  <data name="BlockCheck2ExpertEditingInfoBar.Message" xml:space="preserve">
+    <value>The command text is editable. These direct changes are not written back to the structured preset groups.</value>
+  </data>
+  <data name="BlockCheck2PresetOriginAutomatic" xml:space="preserve">
+    <value>Automatically suggested</value>
+  </data>
+  <data name="BlockCheck2PresetOriginModifiedAutomatic" xml:space="preserve">
+    <value>Modified automatic</value>
+  </data>
+  <data name="BlockCheck2PresetOriginManual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingTitle" xml:space="preserve">
+    <value>Enable expert editing?</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingMessage" xml:space="preserve">
+    <value>Direct text changes cannot be converted reliably back into site and strategy selections. Going back to the builder will discard them.</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingButton" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesTitle" xml:space="preserve">
+    <value>Discard expert changes?</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesMessage" xml:space="preserve">
+    <value>The preset will be regenerated from the selections shown in the builder.</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesButton" xml:space="preserve">
+    <value>Discard and go back</value>
+  </data>
+  <data name="BlockCheck2ReviewPresetButton.Content" xml:space="preserve">
+    <value>Proceed to testing and saving the config</value>
+  </data>
+  <data name="BlockCheck2SelectionColumn.Text" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="BlockCheck2OpenPresetReviewMenuItem.Text" xml:space="preserve">
+    <value>Preset review</value>
+  </data>
+  <data name="BlockCheck2OpenInConfigsMenuItem" xml:space="preserve">
+    <value>Open in Configs...</value>
+  </data>
+  <data name="BlockCheck2CopyPresetMenuItem" xml:space="preserve">
+    <value>Copy preset</value>
+  </data>
+  <data name="BlockCheck2ResultModeDialogTitle" xml:space="preserve">
+    <value>How do you want to continue?</value>
+  </data>
+  <data name="BlockCheck2ResultModeDialogMessage" xml:space="preserve">
+    <value>Open the automatically suggested preset immediately, or review the per-site strategies and assemble it manually.</value>
+  </data>
+  <data name="BlockCheck2ResultModeAutomaticButton" xml:space="preserve">
+    <value>Automatically suggested</value>
+  </data>
+  <data name="BlockCheck2ResultModeManualButton" xml:space="preserve">
+    <value>Manual builder</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormat" xml:space="preserve">
+    <value>Preset review</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormat" xml:space="preserve">
+    <value>Builder</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportMenuItem" xml:space="preserve">
+    <value>Save JSON report...</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportMenuItem" xml:space="preserve">
+    <value>Save text report...</value>
+  </data>
+  <data name="StatusNotificationsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="StatusNotificationsHeader.Text" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="StatusNotificationsClearButton.Content" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="StatusNotificationsEmpty.Text" xml:space="preserve">
+    <value>No notifications</value>
+  </data>
+  <data name="BlockCheck2SitesOverviewHeader.Text" xml:space="preserve">
+    <value>Sites</value>
+  </data>
+  <data name="BlockCheck2ManualIssueSourcesLabel.Text" xml:space="preserve">
+    <value>Applies to:</value>
+  </data>
+  <data name="HideButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Hide panel</value>
+  </data>
+  <data name="BlockCheck2PartialScopeWarningToolTip.Content" xml:space="preserve">
+    <value>The strategy passed this check but was not confirmed for every connection variant of the site (for example, another IP version).</value>
+  </data>
+  <data name="BlockCheck2ManualIssueQuickFixButton.Content" xml:space="preserve">
+    <value>Accept order</value>
+  </data>
+  <data name="BlockCheck2ManualIssueQuickFixCompletedTitle" xml:space="preserve">
+    <value>Scope order accepted</value>
+  </data>
+  <data name="BlockCheck2ManualScopeOverlapAcceptedMessage" xml:space="preserve">
+    <value>The more specific scope is already placed before the general one. The warning will return if the preset structure changes.</value>
+  </data>
+  <data name="BlockCheck2PresetReadinessFormat" xml:space="preserve">
+    <value>Strategies: {0} · warnings: {1}</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationButtonText.Text" xml:space="preserve">
+    <value>Save as new config</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationMenuItem" xml:space="preserve">
+    <value>Save as new config...</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogTitle" xml:space="preserve">
+    <value>Save preset to the application</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogMessage" xml:space="preserve">
+    <value>Related user site lists and external files will be copied to application storage. Built-in Zapret2 files will remain linked to the component.</value>
+  </data>
+  <data name="BlockCheck2PresetNameFieldHeader" xml:space="preserve">
+    <value>Config name</value>
+  </data>
+  <data name="BlockCheck2PresetNameFieldPlaceholder" xml:space="preserve">
+    <value>For example, YouTube and Discord</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="BlockCheck2PresetSavedTitle" xml:space="preserve">
+    <value>Config saved</value>
+  </data>
+  <data name="BlockCheck2PresetSavedRefreshFailedTitle" xml:space="preserve">
+    <value>Config saved, but the list was not refreshed</value>
+  </data>
+  <data name="BlockCheck2PresetSavedMessageFormat" xml:space="preserve">
+    <value>“{0}” was added to Configs. Related files copied: {1}.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveFailedTitle" xml:space="preserve">
+    <value>Could not save the config</value>
+  </data>
+  <data name="BlockCheck2PresetSaveComponentUnavailableMessage" xml:space="preserve">
+    <value>The Zapret2 component is not installed or its working folder is unavailable.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveFileMissingMessageFormat" xml:space="preserve">
+    <value>A related file was not found: {0}. The config was not saved.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveStorageErrorMessageFormat" xml:space="preserve">
+    <value>Application storage returned an error: {0}</value>
+  </data>
+  <data name="BlockCheck2PresetSaveEmptyMessage" xml:space="preserve">
+    <value>The preset has no arguments to save.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveUnknownMessage" xml:space="preserve">
+    <value>An unknown save error occurred.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Replace missing file</value>
+  </data>
+  <data name="ConfigMakerPresetFileOpenButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ConfigMakerPresetFileShowInFolderButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Show in folder</value>
+  </data>
+  <data name="ConfigMakerPresetFileInvalidPathMessage" xml:space="preserve">
+    <value>The missing file path could not be resolved.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceDialogTitle" xml:space="preserve">
+    <value>Replace missing file</value>
+  </data>
+  <data name="ConfigMakerPresetFileCreateEmptyButton" xml:space="preserve">
+    <value>Create empty</value>
+  </data>
+  <data name="ConfigMakerPresetFileUseSuggestionButton" xml:space="preserve">
+    <value>Use suggestion</value>
+  </data>
+  <data name="ConfigMakerPresetFileEmptySuggestionMessage" xml:space="preserve">
+    <value>An empty file can safely be created for this auxiliary file.</value>
+  </data>
+  <data name="ConfigMakerPresetFileSuggestionMessage" xml:space="preserve">
+    <value>Autocorrect found a replacement: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileNoSuggestionMessage" xml:space="preserve">
+    <value>Autocorrect could not find a suitable replacement. Select a file manually.</value>
+  </data>
+  <data name="ConfigMakerPresetFileEmptyCreatedMessage" xml:space="preserve">
+    <value>Created an empty file: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileReferenceNotFoundMessage" xml:space="preserve">
+    <value>The file reference was not found in the current preset command.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplacedMessage" xml:space="preserve">
+    <value>Replaced the file reference: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceFailedMessage" xml:space="preserve">
+    <value>Could not replace the file: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetCommonFiltersGroup" xml:space="preserve">
+    <value>Preset-wide filters</value>
+  </data>
+  <data name="ConfigMakerPresetCommonOptionsGroup" xml:space="preserve">
+    <value>Preset-wide options</value>
+  </data>
+  <data name="ConfigMakerPresetProfileFallbackName" xml:space="preserve">
+    <value>Group {0}</value>
+  </data>
+  <data name="ConfigMakerPresetProfileFiltersGroup" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="ConfigMakerPresetProfileActionsGroup" xml:space="preserve">
+    <value>Applied actions</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceText.Text" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="ConfigMakerPresetFileApplyAutoCorrectionButton" xml:space="preserve">
+    <value>Apply autocorrection</value>
+  </data>
+  <data name="ConfigMakerPresetFileChooseManuallyButton" xml:space="preserve">
+    <value>Choose manually</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplacementChoiceMessage" xml:space="preserve">
+    <value>Autocorrect will try to find a suitable file among installed components and lists. You can also select a replacement manually.</value>
+  </data>
+  <data name="ConfigPreviewPanelTitle.Text" xml:space="preserve">
+    <value>Config preview</value>
+  </data>
+  <data name="ConfigMakerZapret2CommonFiltersDescription" xml:space="preserve">
+    <value>The WinDivert interception filter for the whole preset. It decides which packets enter Zapret2 at all; a narrower filter reduces processing overhead.</value>
+  </data>
+  <data name="ConfigMakerZapret2CommonOptionsDescription" xml:space="preserve">
+    <value>Common startup and Lua initialization options. They appear before the first profile and apply to the entire preset.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileDescription" xml:space="preserve">
+    <value>A separate traffic profile with its own filters and ordered Lua actions. Profile order matters when filter scopes overlap.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileFiltersDescription" xml:space="preserve">
+    <value>Determine which traffic the profile applies to: IP version, protocols, ports, domains, and address lists.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileActionsDescription" xml:space="preserve">
+    <value>Payload and range filters affect following Lua instances until redefined. Lua instances run strictly in their listed order.</value>
+  </data>
+  <data name="ConfigMakerZapret2DebugDescription" xml:space="preserve">
+    <value>Enables diagnostic logging to the console, syslog, Android log, or the specified file.</value>
+  </data>
+  <data name="ConfigMakerZapret2DryRunDescription" xml:space="preserve">
+    <value>Checks command-line options and referenced files without starting interception. It does not validate Lua syntax.</value>
+  </data>
+  <data name="ConfigMakerZapret2InterceptDescription" xml:space="preserve">
+    <value>Enables or disables interception. With 0, lua-init scripts run and the process exits without intercepting traffic.</value>
+  </data>
+  <data name="ConfigMakerZapret2ReassemblyDescription" xml:space="preserve">
+    <value>Disables multi-packet reassembly for selected payload types; without a value it disables all reassembly.</value>
+  </data>
+  <data name="ConfigMakerZapret2BlobDescription" xml:space="preserve">
+    <value>Loads a file or HEX data into a named Lua blob variable for later use by Lua functions.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInitDescription" xml:space="preserve">
+    <value>Executes Lua code or a Lua file once at startup. Multiple lua-init entries run in order.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaGcDescription" xml:space="preserve">
+    <value>Sets the Lua garbage collector interval in seconds; 0 disables periodic collection.</value>
+  </data>
+  <data name="ConfigMakerZapret2NewProfileDescription" xml:space="preserve">
+    <value>Starts a new profile and can optionally assign its name at the same time.</value>
+  </data>
+  <data name="ConfigMakerZapret2SkipProfileDescription" xml:space="preserve">
+    <value>Marks the current profile as disabled so Zapret2 ignores it during traffic processing.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileNameDescription" xml:space="preserve">
+    <value>Sets a readable name for the current profile without changing its filters or actions.</value>
+  </data>
+  <data name="ConfigMakerZapret2TemplateDescription" xml:space="preserve">
+    <value>Saves the current profile as a template that other profiles can import.</value>
+  </data>
+  <data name="ConfigMakerZapret2ImportDescription" xml:space="preserve">
+    <value>Imports a named template: scalar settings are replaced, list settings are appended, and the template number and name are not copied.</value>
+  </data>
+  <data name="ConfigMakerZapret2CookieDescription" xml:space="preserve">
+    <value>Passes an arbitrary desync.cookie value to Lua instances in the current profile.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL3Description" xml:space="preserve">
+    <value>Limits the profile to the selected IP version: IPv4 or IPv6.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterDescription" xml:space="preserve">
+    <value>Limits the profile to selected TCP or UDP ports and ranges. A leading ~ means exclusion.</value>
+  </data>
+  <data name="ConfigMakerZapret2IcmpFilterDescription" xml:space="preserve">
+    <value>Limits the profile to ICMP types and codes; * allows any type.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpProtocolFilterDescription" xml:space="preserve">
+    <value>Limits the profile to raw IP protocol numbers. TCP, UDP, and ICMP use their own separate filter groups.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL7Description" xml:space="preserve">
+    <value>Applies the profile only to flows recognized as the listed application protocols, such as http, tls, or quic.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetDescription" xml:space="preserve">
+    <value>Inclusion filter: the profile applies only to IP addresses and subnets from the file or inline list.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeDescription" xml:space="preserve">
+    <value>Exclusion filter: addresses and subnets from the file or inline list are not processed by this profile.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListDescription" xml:space="preserve">
+    <value>Domain inclusion filter: the profile applies only to names from the TXT file or inline list.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeDescription" xml:space="preserve">
+    <value>Domain exclusion filter: listed names are not processed by this profile.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoDescription" xml:space="preserve">
+    <value>An automatically populated domain inclusion list. A host is added after a detected sequence of connection failures.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoSettingDescription" xml:space="preserve">
+    <value>Configures failure detection and the conditions for adding a domain to the automatic host list.</value>
+  </data>
+  <data name="ConfigMakerZapret2PayloadDescription" xml:space="preserve">
+    <value>Passes only selected payload types to following Lua instances. It remains active until the next --payload; the default is all.</value>
+  </data>
+  <data name="ConfigMakerZapret2OutRangeDescription" xml:space="preserve">
+    <value>Limits following Lua instances by outgoing conntrack counters: n — packet, d — data packet, s — relative sequence, p — data position; a — always, x — never.</value>
+  </data>
+  <data name="ConfigMakerZapret2InRangeDescription" xml:space="preserve">
+    <value>Limits following Lua instances by incoming conntrack counters: n — packet, d — data packet, s — relative sequence, p — data position; a — always, x — never.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaDesyncDescription" xml:space="preserve">
+    <value>Adds a Lua function call with arguments. Calls run strictly in order and use the active payload/in-range/out-range set before them.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertInterfaceDescription" xml:space="preserve">
+    <value>Restricts WinDivert to a specific network interface and optional subinterface.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertL3Description" xml:space="preserve">
+    <value>Restricts the common WinDivert interception filter to IPv4 or IPv6 traffic.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertIncomingDescription" xml:space="preserve">
+    <value>Adds the ports, ICMP types, or IP protocol numbers named by this flag to the incoming WinDivert filter.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertOutgoingDescription" xml:space="preserve">
+    <value>Adds the ports, ICMP types, or IP protocol numbers named by this flag to the outgoing WinDivert filter.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertTcpEmptyDescription" xml:space="preserve">
+    <value>Intercepts empty TCP ACK packets on selected ports. This is needed for an accurate n counter but increases processing overhead.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawPartDescription" xml:space="preserve">
+    <value>Adds a partial raw WinDivert filter combined with other parts using OR. The flag may be repeated.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawFilterDescription" xml:space="preserve">
+    <value>Adds one partial raw filter combined with the constructed filter using AND.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertFilterLanDescription" xml:space="preserve">
+    <value>Controls whether non-global LAN addresses are excluded from interception; they are excluded by default.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawDescription" xml:space="preserve">
+    <value>Sets a complete raw WinDivert filter and replaces the filter constructed from all other --wf flags.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertDuplicateDescription" xml:space="preserve">
+    <value>Controls protection against running another winws2 instance with the same WinDivert filter; enabled by default.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertSaveDescription" xml:space="preserve">
+    <value>Saves the final complete WinDivert filter to a file for inspection and debugging.</value>
+  </data>
+  <data name="ConfigMakerZapret2SsidFilterDescription" xml:space="preserve">
+    <value>Enables interception only while connected to one of the listed Wi-Fi networks.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmFilterDescription" xml:space="preserve">
+    <value>Enables interception only while connected to one of the listed Windows Network List Manager networks.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmListDescription" xml:space="preserve">
+    <value>Lists connected Windows Network List Manager networks; all also includes other known networks.</value>
+  </data>
+  <data name="ConfigMakerZapret2NoFlagDescription" xml:space="preserve">
+    <value>No description for this flag was found in the loaded Zapret2 help.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeDescription" xml:space="preserve">
+    <value>fake sends a separate decoy packet or packet group and does not suppress the original; fooling is normally needed so the server rejects the decoy.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultisplitDescription" xml:space="preserve">
+    <value>multisplit cuts the current dissect or reassembly at pos markers and sends real segments in their normal order. After a successful send it drops the original unless nodrop is set.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultidisorderDescription" xml:space="preserve">
+    <value>multidisorder cuts data like multisplit but sends the segments in reverse order, from last to first. The original is preserved only with nodrop.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaHostFakeSplitDescription" xml:space="preserve">
+    <value>hostfakesplit cuts HTTP/TLS around the host name and mixes real parts with decoys; fooling must prevent the server from accepting the decoy parts.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSendDescription" xml:space="preserve">
+    <value>send transmits the current dissect with selected modifications and does not cancel normal delivery. A following drop is needed to suppress the original.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaDropDescription" xml:space="preserve">
+    <value>drop prevents normal delivery of a matching packet by issuing VERDICT_DROP.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaCircularDescription" xml:space="preserve">
+    <value>circular counts failures and rotates through instances marked strategy=N; final prevents cycling back to the beginning.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultidisorderLegacyDescription" xml:space="preserve">
+    <value>multidisorder_legacy is the nfqws1-compatible variant: it processes separate replay parts, preserves original segmentation, and reorders segments only within each part.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeSplitDescription" xml:space="preserve">
+    <value>fakedsplit cuts data at one position and interleaves real parts with same-sized decoys. The decoys need fooling; nodrop preserves the original.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeDisorderDescription" xml:space="preserve">
+    <value>fakeddisorder combines reversed real parts with same-sized decoys. The decoys need fooling; nodrop preserves the original.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaTcpSegmentDescription" xml:space="preserve">
+    <value>tcpseg separately sends part of a dissect, reassembly, or blob between two pos markers. It issues no verdict; combine it with drop to replace the original data.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaOobDescription" xml:space="preserve">
+    <value>oob shifts the TCP sequence and inserts one urgent OOB byte into the first payload, expecting the OS to discard it while the DPI counts it. This is a zero-phase technique with important compatibility limits.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaPacketModifyDescription" xml:space="preserve">
+    <value>pktmod applies selected modifications to the current dissect but does not send anything or issue a verdict by itself.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaWindowSizeDescription" xml:space="preserve">
+    <value>wssize temporarily reduces the TCP window and/or scaling factor so the server splits replies. It reduces throughput and is recommended only when alternatives fail.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSynDataDescription" xml:space="preserve">
+    <value>syndata adds a blob payload to TCP SYN, sends the modified SYN instead of the original, and repeats the action for SYN retransmissions.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSynAckDescription" xml:space="preserve">
+    <value>synack sends SYN,ACK before the outgoing SYN to confuse DPI about connection direction. It is incompatible with NAT and does not suppress the original.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaResetDescription" xml:space="preserve">
+    <value>rst sends an empty TCP RST or RST,ACK packet and does not suppress normal delivery of the original.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaUdpLengthDescription" xml:space="preserve">
+    <value>udplen changes UDP payload length: shrinking truncates data, while growing appends pattern data. Exceeding MTU may cause IP fragmentation or a send failure.</value>
+  </data>
+  <data name="ConfigMakerZapret2CurrentValueDescription" xml:space="preserve">
+    <value>Current value: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL3SpecificDescription" xml:space="preserve">
+    <value>Limits this profile to {0} only.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertL3SpecificDescription" xml:space="preserve">
+    <value>The common WinDivert filter intercepts {0} traffic only.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterIncludedSpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to {0} ports {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterExcludedSpecificDescription" xml:space="preserve">
+    <value>Applies this profile to all {0} ports except {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterAllSpecificDescription" xml:space="preserve">
+    <value>Applies this profile to all {0} ports.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL7SpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to recognized L7 traffic: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListFileSpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to domains from “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListDomainsSpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to domains: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeFileSpecificDescription" xml:space="preserve">
+    <value>Does not apply this profile to domains from “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeDomainsSpecificDescription" xml:space="preserve">
+    <value>Does not apply this profile to domains: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoSpecificDescription" xml:space="preserve">
+    <value>Writes automatically detected problem domains to “{0}” and applies this profile to them.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetFileSpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to IP addresses and subnets from “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetInlineSpecificDescription" xml:space="preserve">
+    <value>Applies this profile only to IP addresses and subnets: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeFileSpecificDescription" xml:space="preserve">
+    <value>Does not apply this profile to IP addresses and subnets from “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeInlineSpecificDescription" xml:space="preserve">
+    <value>Does not apply this profile to IP addresses and subnets: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2PayloadSpecificDescription" xml:space="preserve">
+    <value>Following strategy actions process only these payload types: {0}. The restriction remains active until the next --payload.</value>
+  </data>
+  <data name="ConfigMakerZapret2OutRangeSpecificDescription" xml:space="preserve">
+    <value>Could not explain outgoing traffic condition “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2InRangeSpecificDescription" xml:space="preserve">
+    <value>Could not explain incoming traffic condition “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileNameSpecificDescription" xml:space="preserve">
+    <value>Names the current profile “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInitSpecificDescription" xml:space="preserve">
+    <value>Runs Lua file or code “{0}” at startup; multiple lua-init entries run in order.</value>
+  </data>
+  <data name="ConfigMakerZapret2BlobSpecificDescription" xml:space="preserve">
+    <value>Loads “{0}” into the Lua blob variable named “{1}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInvocationWithArgumentsDescription" xml:space="preserve">
+    <value>Calls Lua function {0} with arguments: {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInvocationDescription" xml:space="preserve">
+    <value>Calls Lua function {0} without additional arguments.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertInterfaceSpecificDescription" xml:space="preserve">
+    <value>Restricts WinDivert interception to network interface “{0}”.</value>
+  </data>
+  <data name="ConfigMakerZapret2SsidFilterSpecificDescription" xml:space="preserve">
+    <value>Enables interception only while connected to Wi-Fi network: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmFilterSpecificDescription" xml:space="preserve">
+    <value>Enables interception only while connected to NLM network: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeOutgoingDirection" xml:space="preserve">
+    <value>outgoing</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeIncomingDirection" xml:space="preserve">
+    <value>incoming</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeAlwaysDescription" xml:space="preserve">
+    <value>Following strategy actions apply to every packet in the {0} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeNeverDescription" xml:space="preserve">
+    <value>Following strategy actions do not apply to packets in the {0} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketSingular" xml:space="preserve">
+    <value>packet</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketPlural" xml:space="preserve">
+    <value>packets</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketSingular" xml:space="preserve">
+    <value>data packet</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketPlural" xml:space="preserve">
+    <value>data packets</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFirstPacketDescription" xml:space="preserve">
+    <value>Following strategy actions apply only to the first {0} in the {1} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFirstPacketsDescription" xml:space="preserve">
+    <value>Following strategy actions apply only to the first {0} {1} in the {2} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFromPacketDescription" xml:space="preserve">
+    <value>Following strategy actions apply starting with {0} #{1} in the {2} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketIntervalDescription" xml:space="preserve">
+    <value>Following strategy actions apply only to {0} #{1}–{2} in the {3} direction.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeLowerCondition" xml:space="preserve">
+    <value>{0} is at least {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUpperExclusiveCondition" xml:space="preserve">
+    <value>{0} is less than {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUpperInclusiveCondition" xml:space="preserve">
+    <value>{0} is at most {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeConditionsDescription" xml:space="preserve">
+    <value>Following strategy actions apply to packets in the {0} direction only while {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeConditionSeparator" xml:space="preserve">
+    <value> and </value>
+  </data>
+  <data name="ConfigMakerZapret2RangeByteCounter" xml:space="preserve">
+    <value>the transmitted data position in bytes</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeSequenceStartCounter" xml:space="preserve">
+    <value>the TCP packet start position relative to the beginning of the stream</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeSequenceEndCounter" xml:space="preserve">
+    <value>the TCP packet end position relative to the beginning of the stream</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketNumberCounter" xml:space="preserve">
+    <value>the packet number</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketNumberCounter" xml:space="preserve">
+    <value>the data packet number</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUnknownCounter" xml:space="preserve">
+    <value>the counter value</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormatGroups" xml:space="preserve">
+    <value>Groups: {0}</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormatFiles" xml:space="preserve">
+    <value>Files: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormatSelected" xml:space="preserve">
+    <value>Selected: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormatStrategies" xml:space="preserve">
+    <value>Strategies: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusTargetCount" xml:space="preserve">
+    <value>Targets: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusTime" xml:space="preserve">
+    <value>Selection time: {0:g}</value>
+  </data>
+  <data name="ConfigActionsPanelTitle.Text" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="MoveUpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="MoveDownButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="ShowOnlyMonospaceFonts.Content" xml:space="preserve">
+    <value>Show only monospace fonts</value>
+  </data>
+  <data name="ManualTesting" xml:space="preserve">
+    <value>Strategy manual test</value>
+  </data>
+  <data name="BlockCheck2TestStrategyButton.Label" xml:space="preserve">
+    <value>Test with CURL</value>
+  </data>
+  <data name="BlockCheck2AddForSiteButton.Label" xml:space="preserve">
+    <value>Add for site</value>
+  </data>
+  <data name="BlockCheck2AddForListButton.Label" xml:space="preserve">
+    <value>Add for site list</value>
+  </data>
+  <data name="CopyViewAppBarButton.Label" xml:space="preserve">
+    <value>Copy displayed strategy </value>
+  </data>
+  <data name="CopyFullAppBarButton.Label" xml:space="preserve">
+    <value>Copy full strategy</value>
+  </data>
+  <data name="SiteViewPanel.Text" xml:space="preserve">
+    <value>URL-address</value>
+  </data>
+  <data name="ZoomResetButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Restore zoom by default </value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationWindowMenuItem.Text" xml:space="preserve">
+    <value>Save as new config...</value>
+  </data>
+  <data name="BlockCheck2CopyPresetWindowMenuItem.Text" xml:space="preserve">
+    <value>Copy preset</value>
+  </data>
+  <data name="BlockCheck2ProceedToPresetReviewMenuItem.Text" xml:space="preserve">
+    <value>Proceed to preset testing and saving</value>
+  </data>
+  <data name="BlockCheck2TestStrategyMenuItem.Text" xml:space="preserve">
+    <value>Test with CURL</value>
+  </data>
+  <data name="BlockCheck2ToggleManualTestMenuItem.Text" xml:space="preserve">
+    <value>Manual component test</value>
+  </data>
+  <data name="BlockCheck2AddForSiteMenuItem.Text" xml:space="preserve">
+    <value>Add for this site</value>
+  </data>
+  <data name="BlockCheck2AddForListMenuItem.Text" xml:space="preserve">
+    <value>Add for site list…</value>
+  </data>
+  <data name="BlockCheck2CopyDisplayedStrategyMenuItem.Text" xml:space="preserve">
+    <value>Copy displayed strategy</value>
+  </data>
+  <data name="BlockCheck2CopyFullStrategyMenuItem.Text" xml:space="preserve">
+    <value>Copy ready-to-use strategy</value>
+  </data>
+  <data name="BlockCheck2ShowStrategyOverviewMenuItem.Text" xml:space="preserve">
+    <value>Site overview</value>
+  </data>
+  <data name="BlockCheck2ShowStrategyDetailsMenuItem.Text" xml:space="preserve">
+    <value>Strategy overview</value>
+  </data>
+  <data name="ActionsMenuItem.Title" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="BlockCheck2StartSelectionCardTitle" xml:space="preserve">
+    <value>Start a new scan</value>
+  </data>
+  <data name="BlockCheck2StartSelectionCardDescription" xml:space="preserve">
+    <value>Choose websites and build a combined Zapret 2 config for them</value>
+  </data>
+  <data name="BlockCheck2ReportsSettingsCard.Header" xml:space="preserve">
+    <value>Scan reports</value>
+  </data>
+  <data name="BlockCheck2ReportsSettingsCard.Description" xml:space="preserve">
+    <value>Open a recent report or load a report from a file</value>
+  </data>
+  <data name="BlockCheck2AskStopSelection" xml:space="preserve">
+    <value>The Zapret 2 scan is still running. Stop it and close the window?</value>
+  </data>
+  <data name="BlockCheck2SiteListsStep.Header" xml:space="preserve">
+    <value>Websites to check</value>
+  </data>
+  <data name="BlockCheck2SiteListsStep.Description" xml:space="preserve">
+    <value>Add your own addresses or existing site lists and choose how each list should be processed</value>
+  </data>
+  <data name="BlockCheck2SelectedSiteListsLabel.Text" xml:space="preserve">
+    <value>Selected:</value>
+  </data>
+  <data name="BlockCheck2AdvancedStep.Header" xml:space="preserve">
+    <value>Advanced options</value>
+  </data>
+  <data name="BlockCheck2AdvancedStep.Description" xml:space="preserve">
+    <value>Configure scan depth, network request timeouts, and the Zapret 2 startup delay</value>
+  </data>
+  <data name="BlockCheck2ResetAdvancedButton.Content" xml:space="preserve">
+    <value>Restore recommended values</value>
+  </data>
+  <data name="BlockCheck2ReviewStep.Header" xml:space="preserve">
+    <value>Review settings</value>
+  </data>
+  <data name="BlockCheck2ReviewStep.Description" xml:space="preserve">
+    <value>Review the selected targets and options before starting a potentially long scan</value>
+  </data>
+  <data name="BlockCheck2ReviewSourcesCard.Header" xml:space="preserve">
+    <value>Website sources</value>
+  </data>
+  <data name="BlockCheck2ReviewConnectionsCard.Header" xml:space="preserve">
+    <value>Connections to check</value>
+  </data>
+  <data name="BlockCheck2ReviewModeCard.Header" xml:space="preserve">
+    <value>Scan mode</value>
+  </data>
+  <data name="BlockCheck2ReviewTimeoutsCard.Header" xml:space="preserve">
+    <value>Timeouts</value>
+  </data>
+  <data name="BlockCheck2ConnectionSelectionRequired" xml:space="preserve">
+    <value>Select at least one protocol and one IP version.</value>
+  </data>
+  <data name="BlockCheck2TargetSourceRequired" xml:space="preserve">
+    <value>Enter at least one domain or URL, or select a site list.</value>
+  </data>
+  <data name="BlockCheck2AdvancedInvalidTitle" xml:space="preserve">
+    <value>Check the advanced settings</value>
+  </data>
+  <data name="BlockCheck2AdvancedInvalidMessage" xml:space="preserve">
+    <value>The request timeout must not be shorter than the connection timeout, all values must be within their displayed ranges, and the number of requests must be a whole number.</value>
+  </data>
+  <data name="BlockCheck2ReviewSourcesFormat" xml:space="preserve">
+    <value>Site lists: {0}. Addresses in them: {1}. Targets after applying protocols and IP versions: {2}.</value>
+  </data>
+  <data name="BlockCheck2ReviewConnectionsFormat" xml:space="preserve">
+    <value>Protocols: {0}. IP versions: {1}.</value>
+  </data>
+  <data name="BlockCheck2ReviewTimeoutsFormat" xml:space="preserve">
+    <value>Connection: {0} s; request: {1} s; Zapret 2 startup grace: {2} s.</value>
+  </data>
+  <data name="BlockCheck2TlsAutoShortName" xml:space="preserve">
+    <value>TLS (automatic)</value>
+  </data>
+  <data name="BlockCheck2HistorySaveFailedMessage" xml:space="preserve">
+    <value>The result is available, but it could not be added to recent scans.</value>
+  </data>
+  <data name="BlockCheck2HistoryPageTitle.Text" xml:space="preserve">
+    <value>Zapret 2 scan reports</value>
+  </data>
+  <data name="BlockCheck2HistoryPageDescription.Text" xml:space="preserve">
+    <value>The latest results are saved here automatically, including failed and partially successful scans.</value>
+  </data>
+  <data name="BlockCheck2HistoryOpenFileButton.Content" xml:space="preserve">
+    <value>Open report from file…</value>
+  </data>
+  <data name="BlockCheck2HistoryOpenFolderButton.Content" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="BlockCheck2HistoryRefreshButton.Content" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="BlockCheck2HistoryEmptyText.Text" xml:space="preserve">
+    <value>There are no recent scans yet. The next completed scan will appear here automatically.</value>
+  </data>
+  <data name="BlockCheck2HistoryShowFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Show file in folder</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove from recent scans</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusSuccess" xml:space="preserve">
+    <value>successful</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusBestEffort" xml:space="preserve">
+    <value>partial result</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusFailed" xml:space="preserve">
+    <value>failed</value>
+  </data>
+  <data name="BlockCheck2HistoryItemTitleFormat" xml:space="preserve">
+    <value>Scan {0:g}</value>
+  </data>
+  <data name="BlockCheck2HistoryItemDescriptionFormat" xml:space="preserve">
+    <value>{0} • {1} • targets: {2} • profiles: {3} • {4:F0} KB</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteDialogTitle" xml:space="preserve">
+    <value>Delete this report?</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteDialogMessage" xml:space="preserve">
+    <value>The report file will be removed from the application's internal history.</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteButtonText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="BlockCheck2AddSiteListButtonText.Text" xml:space="preserve">
+    <value>Add a site list</value>
+  </data>
+  <data name="BlockCheck2SelectSiteListFromTemplate.Text" xml:space="preserve">
+    <value>Select an existing list</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListTile.Text" xml:space="preserve">
+    <value>Custom site list</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogCreateTitle" xml:space="preserve">
+    <value>Add a custom site list</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogEditTitle" xml:space="preserve">
+    <value>Edit the custom site list</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogDescription" xml:space="preserve">
+    <value>Enter one domain or URL per line.</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListPlaceholder" xml:space="preserve">
+    <value>youtube.com
+https://discord.com/app</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogSaveButton" xml:space="preserve">
+    <value>Save list</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListName" xml:space="preserve">
+    <value>Custom site list</value>
+  </data>
+  <data name="BlockCheck2EmptySiteListsTip1.Text" xml:space="preserve">
+    <value>No site lists have been added</value>
+  </data>
+  <data name="BlockCheck2EmptySiteListsTip2.Text" xml:space="preserve">
+    <value>Add custom addresses, an existing list, or drag TXT files here</value>
+  </data>
+  <data name="BlockCheck2SitesCountLabel.Text" xml:space="preserve">
+    <value>sites:</value>
+  </data>
+  <data name="BlockCheck2WholeListModeItem.Content" xml:space="preserve">
+    <value>One strategy for the whole list</value>
+  </data>
+  <data name="BlockCheck2EachSiteModeItem.Content" xml:space="preserve">
+    <value>Select for every site</value>
+  </data>
+  <data name="BlockCheck2EditSiteListButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Edit or open the list</value>
+  </data>
+  <data name="BlockCheck2RemoveSiteListButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove the list from this scan</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeCard.Header" xml:space="preserve">
+    <value>Maximum expected time</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeFormat" xml:space="preserve">
+    <value>Around {0}. Strategy starts: up to {1}; network requests: up to {2}.</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeUnavailable" xml:space="preserve">
+    <value>The duration could not be calculated for the selected options.</value>
+  </data>
+  <data name="BlockCheck2DurationDaysFormat" xml:space="preserve">
+    <value>{0} d {1} h {2} min</value>
+  </data>
+  <data name="BlockCheck2DurationHoursFormat" xml:space="preserve">
+    <value>{0} h {1} min</value>
+  </data>
+  <data name="BlockCheck2DurationMinutesFormat" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeCard.Description" xml:space="preserve">
+    <value>This estimate assumes that 80% of checks do not produce a working strategy and failed network requests consume the configured timeout.</value>
+  </data>
+  <data name="BlockCheck2SiteListDropCaption" xml:space="preserve">
+    <value>Add TXT site lists</value>
+  </data>
+  <data name="BlockCheck2SiteListDropPartialTitle" xml:space="preserve">
+    <value>Some files were skipped</value>
+  </data>
+  <data name="BlockCheck2SiteListDropPartialFormat" xml:space="preserve">
+    <value>Added: {0}. Skipped: {1}. Only valid TXT domain lists are supported.{2}</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogDescriptionText.Text" xml:space="preserve">
+    <value>Enter one domain or URL per line.</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListTextBox.PlaceholderText" xml:space="preserve">
+    <value>youtube.com
+https://discord.com/app</value>
+  </data>
+  <data name="BlockCheck2WorkCompleteStep.Header" xml:space="preserve">
+    <value>Selection is complete</value>
+  </data>
+  <data name="BlockCheck2WorkCompleteStep.Description" xml:space="preserve">
+    <value>The config selection for Zapret 2 is complete. You can access the results of this selection at any time via the [Recent Selections] menu on the main page of this wizard.
+
+Click [Show Results] to view the results.</value>
+  </data>
+  <data name="BlockCheck2TestAllStrategiesCard.Header" xml:space="preserve">
+    <value>Continue after finding the best strategies</value>
+  </data>
+  <data name="BlockCheck2TestAllStrategiesCard.Description" xml:space="preserve">
+    <value>Test every available strategy in the selected mode even after enough successful options are found. This can substantially increase scan time</value>
+  </data>
+  <data name="BlockCheck2ReviewAllStrategies" xml:space="preserve">
+    <value>Every available strategy in this mode will be tested</value>
+  </data>
+  <data name="BlockCheck2RequestsPerDomainCard.Header" xml:space="preserve">
+    <value>Requests per domain</value>
+  </data>
+  <data name="BlockCheck2RequestsPerDomainCard.Description" xml:space="preserve">
+    <value>Number of repeated checks for each target: a whole number from 1 to 20. </value>
+  </data>
+  <data name="BlockCheck2ReviewRequestsCard.Header" xml:space="preserve">
+    <value>Requests per domain</value>
+  </data>
+  <data name="BlockCheck2ReviewRequestsFormat" xml:space="preserve">
+    <value>{0} repeated checks will be run for every target.</value>
+  </data>
+  <data name="CallHelpMenuItem.Text" xml:space="preserve">
+    <value>Open offline help</value>
+  </data>
+  <data name="RateThisAppMenuItem.Text" xml:space="preserve">
+    <value>Rate this application feature</value>
   </data>
 </root>

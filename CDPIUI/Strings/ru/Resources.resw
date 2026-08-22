@@ -2499,10 +2499,10 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   <data name="TestBestConfigSettingsCard.Description" xml:space="preserve">
     <value>Протестировать все установленные пресеты и предложить лучший</value>
   </data>
-  <data name="CreateNewViaGoodCheckSettingsCard.Header" xml:space="preserve">
+  <data name="CreateNewViaGoodCheckSettingsCardTitle" xml:space="preserve">
     <value>Создать новый пресет с лучшими параметрами через GoodCheck</value>
   </data>
-  <data name="CreateNewViaGoodCheckSettingsCard.Description" xml:space="preserve">
+  <data name="CreateNewViaGoodCheckSettingsCardDescription" xml:space="preserve">
     <value>Создайте свой собственный пресет с параметрами, подобранными под вашего провайдера</value>
   </data>
   <data name="CreateYouOwnConfigSettingsCard.Description" xml:space="preserve">
@@ -2633,7 +2633,7 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Персонализация</value>
   </data>
   <data name="PersonalizationSettingsCard.Description" xml:space="preserve">
-    <value>Выбрать тему приложения. Изменить макет главной страницы</value>
+    <value>Выбрать тему приложения. Изменить макет главной страницы. Настроить показ рекламы</value>
   </data>
   <data name="Personalization" xml:space="preserve">
     <value>Персонализация</value>
@@ -3768,5 +3768,1827 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
   </data>
   <data name="ReadyKitItemFailedMessage" xml:space="preserve">
     <value>Не удалось получить «{0}». Код ошибки: {1}</value>
+  </data>
+  <data name="BlockCheck2WindowTitle" xml:space="preserve">
+    <value>Подбор пресета Zapret 2</value>
+  </data>
+  <data name="BlockCheck2ResultWindowTitle" xml:space="preserve">
+    <value>Результат подбора Zapret 2</value>
+  </data>
+  <data name="BlockCheck2SettingsCard.Header" xml:space="preserve">
+    <value>Подбор пресета Zapret 2</value>
+  </data>
+  <data name="BlockCheck2SettingsCard.Description" xml:space="preserve">
+    <value>Проверить сайты, подобрать совместимые стратегии и собрать общий пресет</value>
+  </data>
+  <data name="BlockCheck2TargetsStep.Header" xml:space="preserve">
+    <value>Цели проверки</value>
+  </data>
+  <data name="BlockCheck2TargetsStep.Description" xml:space="preserve">
+    <value>Укажите домены или URL и выберите проверяемые протоколы</value>
+  </data>
+  <data name="BlockCheck2ModeStep.Header" xml:space="preserve">
+    <value>Режим подбора</value>
+  </data>
+  <data name="BlockCheck2ModeStep.Description" xml:space="preserve">
+    <value>Выберите баланс между скоростью проверки и устойчивостью результата</value>
+  </data>
+  <data name="BlockCheck2ProgressStep.Header" xml:space="preserve">
+    <value>Идет работа над этим</value>
+  </data>
+  <data name="BlockCheck2ProgressStep.Description" xml:space="preserve">
+    <value>Выполняется подбор лучшего пресета. Интернет на этом устройстве может быть недоступен до окончания подбора.</value>
+  </data>
+  <data name="BlockCheck2TargetsLabel.Text" xml:space="preserve">
+    <value>Домены и URL — по одному в строке</value>
+  </data>
+  <data name="BlockCheck2TargetInputTextBox.PlaceholderText" xml:space="preserve">
+    <value>example.com
+https://example.org/path</value>
+  </data>
+  <data name="BlockCheck2ProtocolsCard.Header" xml:space="preserve">
+    <value>Протоколы</value>
+  </data>
+  <data name="BlockCheck2ProtocolsCard.Description" xml:space="preserve">
+    <value>Для доменов без схемы будут созданы выбранные варианты проверки</value>
+  </data>
+  <data name="BlockCheck2HttpCheckBox.Content" xml:space="preserve">
+    <value>HTTP</value>
+  </data>
+  <data name="BlockCheck2Tls12CheckBox.Content" xml:space="preserve">
+    <value>TLS 1.2</value>
+  </data>
+  <data name="BlockCheck2Tls13CheckBox.Content" xml:space="preserve">
+    <value>TLS 1.3 (точный)</value>
+  </data>
+  <data name="BlockCheck2QuicCheckBox.Content" xml:space="preserve">
+    <value>QUIC / HTTP/3</value>
+  </data>
+  <data name="BlockCheck2IpVersionsCard.Header" xml:space="preserve">
+    <value>Версии IP</value>
+  </data>
+  <data name="BlockCheck2IpVersionsCard.Description" xml:space="preserve">
+    <value>IPv6 следует включать только при наличии рабочего IPv6-подключения</value>
+  </data>
+  <data name="BlockCheck2Ipv4CheckBox.Content" xml:space="preserve">
+    <value>IPv4</value>
+  </data>
+  <data name="BlockCheck2Ipv6CheckBox.Content" xml:space="preserve">
+    <value>IPv6</value>
+  </data>
+  <data name="BlockCheck2QuickModeTitle.Text" xml:space="preserve">
+    <value>Быстрый</value>
+  </data>
+  <data name="BlockCheck2QuickModeDescription.Text" xml:space="preserve">
+    <value>Минимальный набор стратегий и две попытки. Подходит для первого запуска.</value>
+  </data>
+  <data name="BlockCheck2BalancedModeTitle.Text" xml:space="preserve">
+    <value>Сбалансированный — рекомендуется</value>
+  </data>
+  <data name="BlockCheck2BalancedModeDescription.Text" xml:space="preserve">
+    <value>Расширенный набор стратегий, три попытки и автоматическое исправление итогового пресета.</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeTitle.Text" xml:space="preserve">
+    <value>Тщательный</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeDescription.Text" xml:space="preserve">
+    <value>Полный каталог, пять попыток и усиленная проверка стабильности. Занимает больше времени.</value>
+  </data>
+  <data name="BlockCheck2ModeNoticeInfoBar.Title" xml:space="preserve">
+    <value>Во время подбора сетевые компоненты будут временно остановлены</value>
+  </data>
+  <data name="BlockCheck2ModeNoticeInfoBar.Message" xml:space="preserve">
+    <value>После завершения или отмены BlockCheck восстановит компоненты, работавшие до запуска.</value>
+  </data>
+  <data name="BlockCheck2CurrentTargetCard.Header" xml:space="preserve">
+    <value>Текущая цель</value>
+  </data>
+  <data name="BlockCheck2CurrentStrategyCard.Header" xml:space="preserve">
+    <value>Текущая стратегия</value>
+  </data>
+  <data name="BlockCheck2CancelButton.Content" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="BlockCheck2OpenResultButton.Content" xml:space="preserve">
+    <value>Просмотреть результат</value>
+  </data>
+  <data name="BlockCheck2NextButton" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="BlockCheck2StartButton" xml:space="preserve">
+    <value>Начать подбор</value>
+  </data>
+  <data name="BlockCheck2WorkingState" xml:space="preserve">
+    <value>Выполняется проверка сайтов и стратегий</value>
+  </data>
+  <data name="BlockCheck2InputIssueTitle" xml:space="preserve">
+    <value>Проверьте исходные данные</value>
+  </data>
+  <data name="BlockCheck2InputRequired" xml:space="preserve">
+    <value>Введите хотя бы один домен или URL и выберите протокол и версию IP.</value>
+  </data>
+  <data name="BlockCheck2PhasePreparing" xml:space="preserve">
+    <value>Подготовка к проверке</value>
+  </data>
+  <data name="BlockCheck2PhaseBaseline" xml:space="preserve">
+    <value>Проверка доступа без обхода</value>
+  </data>
+  <data name="BlockCheck2PhaseStartingStrategy" xml:space="preserve">
+    <value>Запуск стратегии</value>
+  </data>
+  <data name="BlockCheck2PhaseProbing" xml:space="preserve">
+    <value>Проверка сайта</value>
+  </data>
+  <data name="BlockCheck2PhaseStrategyCompleted" xml:space="preserve">
+    <value>Обработка результатов стратегии</value>
+  </data>
+  <data name="BlockCheck2PhaseValidatingConfig" xml:space="preserve">
+    <value>Проверка общего пресета</value>
+  </data>
+  <data name="BlockCheck2PhaseRepairingConfig" xml:space="preserve">
+    <value>Исправление общего пресета</value>
+  </data>
+  <data name="BlockCheck2ProgressCounterFormat" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="BlockCheck2CompletedTitle" xml:space="preserve">
+    <value>Пресет успешно подобран</value>
+  </data>
+  <data name="BlockCheck2CompletedMessage" xml:space="preserve">
+    <value>Лучший пресет был успешно найден.</value>
+  </data>
+  <data name="BlockCheck2CanceledTitle" xml:space="preserve">
+    <value>Подбор остановлен</value>
+  </data>
+  <data name="BlockCheck2CanceledMessage" xml:space="preserve">
+    <value>Подбор остановлен пользователем.</value>
+  </data>
+  <data name="BlockCheck2FailedTitle" xml:space="preserve">
+    <value>Во время подбора произошла ошибка.</value>
+  </data>
+  <data name="BlockCheck2UnknownFailure" xml:space="preserve">
+    <value>Подробности ошибки отсутствуют.</value>
+  </data>
+  <data name="BlockCheck2ResultTitle.Text" xml:space="preserve">
+    <value>Результат BlockCheck Zapret 2</value>
+  </data>
+  <data name="BlockCheck2ResultModeLabel.Text" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="BlockCheck2ResultTargetsLabel.Text" xml:space="preserve">
+    <value>Целей</value>
+  </data>
+  <data name="BlockCheck2ResultProfilesLabel.Text" xml:space="preserve">
+    <value>Профилей</value>
+  </data>
+  <data name="BlockCheck2ResultCreatedLabel.Text" xml:space="preserve">
+    <value>Создан</value>
+  </data>
+  <data name="BlockCheck2ResultConfigsPivot.Header" xml:space="preserve">
+    <value>Пресеты</value>
+  </data>
+  <data name="BlockCheck2ResultProfilesPivot.Header" xml:space="preserve">
+    <value>Профили</value>
+  </data>
+  <data name="BlockCheck2ResultIssuesPivot.Header" xml:space="preserve">
+    <value>Замечания</value>
+  </data>
+  <data name="BlockCheck2PrimaryStrategyLabel.Text" xml:space="preserve">
+    <value>Основная стратегия</value>
+  </data>
+  <data name="BlockCheck2FallbackStrategiesLabel.Text" xml:space="preserve">
+    <value>Резервные стратегии</value>
+  </data>
+  <data name="BlockCheck2NoIssuesText.Text" xml:space="preserve">
+    <value>Замечаний нет</value>
+  </data>
+  <data name="BlockCheck2EditInConfigsButton.Label" xml:space="preserve">
+    <value>Открыть в «Пресетах»</value>
+  </data>
+  <data name="BlockCheck2CopyConfigButton.Label" xml:space="preserve">
+    <value>Копировать пресет</value>
+  </data>
+  <data name="BlockCheck2SaveConfigButton.Label" xml:space="preserve">
+    <value>Сохранить пресет</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportButton.Label" xml:space="preserve">
+    <value>Экспорт отчёта в JSON</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportButton.Label" xml:space="preserve">
+    <value>Экспорт отчёта в текстовом формате</value>
+  </data>
+  <data name="BlockCheck2ResultEmptyTitle" xml:space="preserve">
+    <value>Результат ещё не передан</value>
+  </data>
+  <data name="BlockCheck2ResultEmptyMessage" xml:space="preserve">
+    <value>Завершите подбор в окне BlockCheck.</value>
+  </data>
+  <data name="BlockCheck2ResultSuccessTitle" xml:space="preserve">
+    <value>Проверенный пресет готов</value>
+  </data>
+  <data name="BlockCheck2ResultSuccessMessage" xml:space="preserve">
+    <value>Можно сохранить пресет или открыть его для дальнейшего редактирования.</value>
+  </data>
+  <data name="BlockCheck2ResultPartialTitle" xml:space="preserve">
+    <value>Подбор завершён с замечаниями</value>
+  </data>
+  <data name="BlockCheck2ResultPartialMessage" xml:space="preserve">
+    <value>Изучите профили и замечания перед использованием результата.</value>
+  </data>
+  <data name="BlockCheck2QuickModeName" xml:space="preserve">
+    <value>Быстрый</value>
+  </data>
+  <data name="BlockCheck2BalancedModeName" xml:space="preserve">
+    <value>Сбалансированный</value>
+  </data>
+  <data name="BlockCheck2ExhaustiveModeName" xml:space="preserve">
+    <value>Тщательный</value>
+  </data>
+  <data name="BlockCheck2ConfigCopiedMessage" xml:space="preserve">
+    <value>Пресет скопирован в буфер обмена.</value>
+  </data>
+  <data name="BlockCheck2FileSavedMessage" xml:space="preserve">
+    <value>Файл сохранён.</value>
+  </data>
+  <data name="BlockCheck2ActionCompletedTitle" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="BlockCheck2ActionFailedTitle" xml:space="preserve">
+    <value>Не удалось выполнить действие</value>
+  </data>
+  <data name="BlockCheck2SaveConfigDialogTitle" xml:space="preserve">
+    <value>Сохранить пресет Zapret 2</value>
+  </data>
+  <data name="BlockCheck2SaveReportDialogTitle" xml:space="preserve">
+    <value>Сохранить отчёт BlockCheck</value>
+  </data>
+  <data name="BlockCheck2TextFileFilter" xml:space="preserve">
+    <value>Текстовые файлы (*.txt)|*.txt</value>
+  </data>
+  <data name="BlockCheck2JsonFileFilter" xml:space="preserve">
+    <value>Файлы JSON (*.json)|*.json</value>
+  </data>
+  <data name="BlockCheck2SiteListsLabel.Text" xml:space="preserve">
+    <value>Готовые списки сайтов</value>
+  </data>
+  <data name="BlockCheck2SiteListsDescription.Text" xml:space="preserve">
+    <value>Можно выбрать один или несколько установленных списков. Их домены будут проверены, а готовый пресет сохранит ссылки на файлы списков.</value>
+  </data>
+  <data name="BlockCheck2ChooseSiteListFileButton.Content" xml:space="preserve">
+    <value>Выбрать файл списка</value>
+  </data>
+  <data name="BlockCheck2SiteListsLoadFailedTitle" xml:space="preserve">
+    <value>Не удалось загрузить установленные списки</value>
+  </data>
+  <data name="BlockCheck2SiteListInvalidTitle" xml:space="preserve">
+    <value>Список не поддерживается</value>
+  </data>
+  <data name="BlockCheck2SiteListInvalidMessage" xml:space="preserve">
+    <value>Выбранный текстовый файл не распознан как список доменов.</value>
+  </data>
+  <data name="BlockCheck2SiteListFileFilter" xml:space="preserve">
+    <value>Списки сайтов (*.txt)|*.txt</value>
+  </data>
+  <data name="BlockCheck2LocalSiteListSource" xml:space="preserve">
+    <value>Локальный файл</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeCard.Header" xml:space="preserve">
+    <value>Примерно осталось</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeCalculating" xml:space="preserve">
+    <value>Расчёт после первых завершённых стратегий…</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeFinalizing" xml:space="preserve">
+    <value>Выполняется итоговая проверка пресета</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeUnderMinute" xml:space="preserve">
+    <value>Меньше минуты</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeMinutesFormat" xml:space="preserve">
+    <value>Около {0} мин</value>
+  </data>
+  <data name="BlockCheck2RemainingTimeHoursFormat" xml:space="preserve">
+    <value>Около {0} ч {1} мин</value>
+  </data>
+  <data name="BlockCheck2ResultProbesPivot.Header" xml:space="preserve">
+    <value>Проверки</value>
+  </data>
+  <data name="BlockCheck2AdvancedOptionsExpander.Header" xml:space="preserve">
+    <value>Дополнительные параметры подбора</value>
+  </data>
+  <data name="BlockCheck2AdvancedOptionsExpander.Description" xml:space="preserve">
+    <value>Таймауты подключения, запроса и запуска Zapret 2</value>
+  </data>
+  <data name="BlockCheck2ConnectTimeoutCard.Header" xml:space="preserve">
+    <value>Ожидание подключения, с</value>
+  </data>
+  <data name="BlockCheck2ConnectTimeoutCard.Description" xml:space="preserve">
+    <value>Сколько ждать установления TCP-, TLS- или QUIC-подключения: от 1 до 60 секунд</value>
+  </data>
+  <data name="BlockCheck2RequestTimeoutCard.Header" xml:space="preserve">
+    <value>Полное время запроса, с</value>
+  </data>
+  <data name="BlockCheck2RequestTimeoutCard.Description" xml:space="preserve">
+    <value>Общий лимит одной проверки; должен быть не меньше времени подключения</value>
+  </data>
+  <data name="BlockCheck2StartupGraceCard.Header" xml:space="preserve">
+    <value>Ожидание запуска Zapret 2, с</value>
+  </data>
+  <data name="BlockCheck2StartupGraceCard.Description" xml:space="preserve">
+    <value>Пауза перед проверкой после запуска стратегии: от 0,25 до 10 секунд</value>
+  </data>
+  <data name="BlockCheck2WorkTitle.Text" xml:space="preserve">
+    <value>Подбор пресета Zapret 2</value>
+  </data>
+  <data name="BlockCheck2WorkDescription.Text" xml:space="preserve">
+    <value>Пожалуйста, подождите. BlockCheck проверяет доступность сайтов, стратегии и итоговую конфигурацию.</value>
+  </data>
+  <data name="BlockCheck2DetailsHeader.Text" xml:space="preserve">
+    <value>Сведения о подборе</value>
+  </data>
+  <data name="BlockCheck2CurrentStageLabel.Text" xml:space="preserve">
+    <value>Сейчас выполняется</value>
+  </data>
+  <data name="BlockCheck2OverallRemainingLabel.Text" xml:space="preserve">
+    <value>Общее оставшееся время</value>
+  </data>
+  <data name="BlockCheck2CurrentSelectionLabel.Text" xml:space="preserve">
+    <value>Текущая проверка</value>
+  </data>
+  <data name="BlockCheck2CurrentUrlLabel.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="BlockCheck2ConnectionDetailsLabel.Text" xml:space="preserve">
+    <value>Тип подключения</value>
+  </data>
+  <data name="BlockCheck2CurrentStrategyLabel.Text" xml:space="preserve">
+    <value>Стратегия</value>
+  </data>
+  <data name="BlockCheck2StageRemainingLabel.Text" xml:space="preserve">
+    <value>Осталось на текущем этапе</value>
+  </data>
+  <data name="BlockCheck2StageProgressLabel.Text" xml:space="preserve">
+    <value>Прогресс этапа</value>
+  </data>
+  <data name="BlockCheck2IntermediateStatsLabel.Text" xml:space="preserve">
+    <value>Промежуточная статистика этапа</value>
+  </data>
+  <data name="BlockCheck2CompletedChecksLabel.Text" xml:space="preserve">
+    <value>Выполнено запросов</value>
+  </data>
+  <data name="BlockCheck2SuccessfulChecksLabel.Text" xml:space="preserve">
+    <value>Успешных ответов</value>
+  </data>
+  <data name="BlockCheck2FailedChecksLabel.Text" xml:space="preserve">
+    <value>Неуспешных ответов</value>
+  </data>
+  <data name="BlockCheck2SuccessfulStrategiesLabel.Text" xml:space="preserve">
+    <value>Найдено рабочих стратегий</value>
+  </data>
+  <data name="BlockCheck2OverallTimeCalculating" xml:space="preserve">
+    <value>Расчёт оставшегося времени…</value>
+  </data>
+  <data name="BlockCheck2BestEffortCompletedTitle" xml:space="preserve">
+    <value>Собран предварительный пресет</value>
+  </data>
+  <data name="BlockCheck2BestEffortCompletedMessage" xml:space="preserve">
+    <value>Полностью рабочая стратегия не найдена. BlockCheck собрал лучший вариант по фактическим результатам; часть сайтов может остаться недоступной.</value>
+  </data>
+  <data name="BlockCheck2ResultBestEffortTitle" xml:space="preserve">
+    <value>Лучший из найденных вариантов</value>
+  </data>
+  <data name="BlockCheck2ResultBestEffortMessage" xml:space="preserve">
+    <value>Этот пресет улучшил результат относительно проверки без Zapret 2, но не прошёл полный порог доступности. Его можно использовать или сохранить для ручной доработки.</value>
+  </data>
+  <data name="ClassicMarkupDescription" xml:space="preserve">
+    <value>Дизайн главной, как в GoodbyeDPI-UI. Компоненты расположены вертикально. На странице отображается минимальное кол-во контента</value>
+  </data>
+  <data name="ModernMarkupDescription" xml:space="preserve">
+    <value>Современный вид главной. Компоненты расположены горизонтально в плитках, размер которых может быть изменен. Плитки содержат ссылки на возможности компонентов и быстрые настройки пресетов</value>
+  </data>
+  <data name="BlockCheck2HttpOnlyInfoBar.Title" xml:space="preserve">
+    <value>Проверяется только HTTP</value>
+  </data>
+  <data name="BlockCheck2HttpOnlyInfoBar.Message" xml:space="preserve">
+    <value>HTTP проверяет только TCP/80. Успешный ответ или перенаправление не означают, что HTTPS-страница загрузится в браузере. Для YouTube и большинства сайтов включите TLS 1.2 и HTTPS с автовыбором TLS.</value>
+  </data>
+  <data name="BlockCheck2EditInConfigsButtonText.Text" xml:space="preserve">
+    <value>Открыть в «Пресетах»</value>
+  </data>
+  <data name="BlockCheck2CopyConfigButtonText.Text" xml:space="preserve">
+    <value>Копировать пресет</value>
+  </data>
+  <data name="BlockCheck2SaveConfigButtonText.Text" xml:space="preserve">
+    <value>Сохранить пресет</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportButtonText.Text" xml:space="preserve">
+    <value>Экспорт отчёта в JSON</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportButtonText.Text" xml:space="preserve">
+    <value>Экспорт отчёта в текстовом формате</value>
+  </data>
+  <data name="BlockCheck2ManualStrategiesTab.Header" xml:space="preserve">
+    <value>Результат подбора</value>
+  </data>
+  <data name="BlockCheck2ManualPresetTab.Header" xml:space="preserve">
+    <value>Сборка пресета</value>
+  </data>
+  <data name="BlockCheck2DiagnosticsTab.Header" xml:space="preserve">
+    <value>Диагностические сведения</value>
+  </data>
+  <data name="BlockCheck2StrategySearchBox.PlaceholderText" xml:space="preserve">
+    <value>Поиск по сайту или стратегии</value>
+  </data>
+  <data name="BlockCheck2SortBestFirst.Content" xml:space="preserve">
+    <value>Сначала самые удачные</value>
+  </data>
+  <data name="BlockCheck2SortWorstFirst.Content" xml:space="preserve">
+    <value>Сначала самые неудачные</value>
+  </data>
+  <data name="BlockCheck2SortSiteAZ.Content" xml:space="preserve">
+    <value>Сайты: А–Я</value>
+  </data>
+  <data name="BlockCheck2SortSiteZA.Content" xml:space="preserve">
+    <value>Сайты: Я–А</value>
+  </data>
+  <data name="BlockCheck2SortFastFirst.Content" xml:space="preserve">
+    <value>Сначала быстрые ответы</value>
+  </data>
+  <data name="BlockCheck2SortSlowFirst.Content" xml:space="preserve">
+    <value>Сначала медленные ответы</value>
+  </data>
+  <data name="BlockCheck2SortStrategyAZ.Content" xml:space="preserve">
+    <value>Стратегии: А–Я</value>
+  </data>
+  <data name="BlockCheck2SortStrategyZA.Content" xml:space="preserve">
+    <value>Стратегии: Я–А</value>
+  </data>
+  <data name="BlockCheck2FilterAll.Content" xml:space="preserve">
+    <value>Все результаты</value>
+  </data>
+  <data name="BlockCheck2FilterSuccessful.Content" xml:space="preserve">
+    <value>Удачные</value>
+  </data>
+  <data name="BlockCheck2FilterPartial.Content" xml:space="preserve">
+    <value>Частичные</value>
+  </data>
+  <data name="BlockCheck2FilterFailed.Content" xml:space="preserve">
+    <value>Неудачные</value>
+  </data>
+  <data name="BlockCheck2SiteColumn.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="BlockCheck2ConnectionColumn.Text" xml:space="preserve">
+    <value>Подключение</value>
+  </data>
+  <data name="BlockCheck2StrategyColumn.Text" xml:space="preserve">
+    <value>Стратегия</value>
+  </data>
+  <data name="BlockCheck2ResultColumn.Text" xml:space="preserve">
+    <value>Результат</value>
+  </data>
+  <data name="BlockCheck2ResponseColumn.Text" xml:space="preserve">
+    <value>Ответ</value>
+  </data>
+  <data name="BlockCheck2ScopeColumn.Text" xml:space="preserve">
+    <value>Область применения</value>
+  </data>
+  <data name="BlockCheck2NoStrategiesTitle.Text" xml:space="preserve">
+    <value>Стратегии не найдены</value>
+  </data>
+  <data name="BlockCheck2NoStrategiesDescription.Text" xml:space="preserve">
+    <value>Измените поиск или фильтр результатов.</value>
+  </data>
+  <data name="BlockCheck2TestStrategyButton.Content" xml:space="preserve">
+    <value>Протестировать через CURL</value>
+  </data>
+  <data name="BlockCheck2AddForSiteButton.Content" xml:space="preserve">
+    <value>Добавить для этого сайта</value>
+  </data>
+  <data name="BlockCheck2AddForListButton.Content" xml:space="preserve">
+    <value>Добавить для списка сайтов</value>
+  </data>
+  <data name="BlockCheck2RemoveAssignmentButtonText.Text" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="BlockCheck2ClearAssignmentsButtonText.Text" xml:space="preserve">
+    <value>Удалить все</value>
+  </data>
+  <data name="BlockCheck2EmptyAssignmentsTitle.Text" xml:space="preserve">
+    <value>Ручной пресет пока пуст</value>
+  </data>
+  <data name="BlockCheck2EmptyAssignmentsDescription.Text" xml:space="preserve">
+    <value>Выберите стратегию и добавьте её для сайта или списка сайтов.</value>
+  </data>
+  <data name="BlockCheck2RecommendationsHeader.Text" xml:space="preserve">
+    <value>Предупреждения и рекомендации</value>
+  </data>
+  <data name="BlockCheck2NoRecommendationsText.Text" xml:space="preserve">
+    <value>Конфликтов не обнаружено.</value>
+  </data>
+  <data name="BlockCheck2IssuesHeader.Text" xml:space="preserve">
+    <value>Замечания подбора</value>
+  </data>
+  <data name="BlockCheck2ResultSessionSummary" xml:space="preserve">
+    <value>{0} · целей: {1} · {2:g}</value>
+  </data>
+  <data name="BlockCheck2StrategyCountFormat" xml:space="preserve">
+    <value>Показано {0} из {1}</value>
+  </data>
+  <data name="BlockCheck2SelectStrategyText" xml:space="preserve">
+    <value>Выберите стратегию в таблице</value>
+  </data>
+  <data name="BlockCheck2BaselineEvidenceFormat" xml:space="preserve">
+    <value>Без Zapret 2: {0}</value>
+  </data>
+  <data name="BlockCheck2StrategyTestCompletedTitle" xml:space="preserve">
+    <value>Проверка завершена</value>
+  </data>
+  <data name="BlockCheck2StrategyTestFailedMessage" xml:space="preserve">
+    <value>Стратегию не удалось проверить.</value>
+  </data>
+  <data name="BlockCheck2StrategyTestResultFormat" xml:space="preserve">
+    <value>Успешно {0} из {1} попыток ({2:P0}).</value>
+  </data>
+  <data name="BlockCheck2ChooseSiteListTitle" xml:space="preserve">
+    <value>Выберите список сайтов</value>
+  </data>
+  <data name="BlockCheck2AddButtonText" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="BlockCheck2CancelDialogButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="BlockCheck2AssignmentAddedTitle" xml:space="preserve">
+    <value>Стратегия добавлена</value>
+  </data>
+  <data name="BlockCheck2AssignmentAddedMessage" xml:space="preserve">
+    <value>Ручной пресет пересобран с учётом выбранной области применения.</value>
+  </data>
+  <data name="BlockCheck2AssignmentNotAddedTitle" xml:space="preserve">
+    <value>Стратегия не добавлена</value>
+  </data>
+  <data name="BlockCheck2AssignmentDuplicateMessage" xml:space="preserve">
+    <value>Такая стратегия уже добавлена для этой области применения.</value>
+  </data>
+  <data name="BlockCheck2AssignmentCountFormat" xml:space="preserve">
+    <value>Стратегий в ручном пресете: {0}</value>
+  </data>
+  <data name="BlockCheck2NoBypassRequiredTitle" xml:space="preserve">
+    <value>Для проверенных подключений пресет не требуется</value>
+  </data>
+  <data name="BlockCheck2NoBypassRequiredMessage" xml:space="preserve">
+    <value>Выбранные URL и типы подключения прошли транспортную проверку curl без Zapret2. Вывод относится только к подключениям, указанным в отчёте.</value>
+  </data>
+  <data name="BlockCheck2HttpOnlyNoBypassRequiredMessage" xml:space="preserve">
+    <value>Проверка HTTP/TCP:80 прошла без Zapret2, но HTTPS не проверялся. Это не означает, что YouTube или другая HTTPS-страница загрузится в браузере. Повторите подбор с TLS 1.2 и HTTPS с автовыбором TLS.</value>
+  </data>
+  <data name="ShowAdCheckBox.Content" xml:space="preserve">
+    <value>Показать спонсируемый контент на главной странице приложения или на главном окне </value>
+  </data>
+  <data name="DeveloperProjects" xml:space="preserve">
+    <value>Другие проекты от этого разработчика</value>
+  </data>
+  <data name="DeveloperAsk" xml:space="preserve">
+    <value>Опросы об этом приложении </value>
+  </data>
+  <data name="Internal" xml:space="preserve">
+    <value>Внутренние рекомендации приложения (например, выход нового компонента)</value>
+  </data>
+  <data name="TrustedServices" xml:space="preserve">
+    <value>Проспонсированная реклама доверенных сервисов от других разработчиков</value>
+  </data>
+  <data name="AdSettingsExpander.Header" xml:space="preserve">
+    <value>Реклама</value>
+  </data>
+  <data name="AdSettingsExpander.Description" xml:space="preserve">
+    <value>Настройка типов рекламы, которые могут быть отображены на главной</value>
+  </data>
+  <data name="ShowAppFeaturesCheckBox.Content" xml:space="preserve">
+    <value>Показать окно возможностей этого приложения</value>
+  </data>
+  <data name="CompleteButton.Content" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="SkipButton.Content" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="NoBundlesAvailableNoContentToDisplayUserControl.Text" xml:space="preserve">
+    <value>Сейчас нет доступных готовых наборов. Перейдите в Магазин, чтобы изучить доступные варианты.
+
+Если ошибка повторится, свяжитесь с поддержкой приложения.</value>
+  </data>
+  <data name="BlockCheck2TlsAutoCheckBox.Content" xml:space="preserve">
+    <value>HTTPS (автовыбор TLS)</value>
+  </data>
+  <data name="OpenBlockCheck2ReportSettingsCard.Header" xml:space="preserve">
+    <value>Открыть отчёт BlockCheck2</value>
+  </data>
+  <data name="OpenBlockCheck2ReportSettingsCard.Description" xml:space="preserve">
+    <value>Просмотреть сохранённый отчёт и продолжить ручную сборку пресета без нового подбора</value>
+  </data>
+  <data name="BlockCheck2ReportFileFilter" xml:space="preserve">
+    <value>Отчёты BlockCheck2 (*.json;*.txt;*.bc2report)|*.json;*.txt;*.bc2report|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="BlockCheck2ReportOpenFailedTitle" xml:space="preserve">
+    <value>Не удалось открыть отчёт BlockCheck2</value>
+  </data>
+  <data name="BlockCheck2CloseButtonText" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="OpenStoreURIButton.UriName" xml:space="preserve">
+    <value>Открыть Магазин</value>
+  </data>
+  <data name="ConfigMakerSettingsCard.Header" xml:space="preserve">
+    <value>Редактор пресетов</value>
+  </data>
+  <data name="ConfigMakerSettingsCard.Description" xml:space="preserve">
+    <value>Создание и тестирование пресетов с использованием справки компонента</value>
+  </data>
+  <data name="ConfigMakerWindowTitle" xml:space="preserve">
+    <value>Редактор пресетов</value>
+  </data>
+  <data name="ConfigMakerNewButton.Label" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="ConfigMakerSaveTextButton.Label" xml:space="preserve">
+    <value>Сохранить TXT</value>
+  </data>
+  <data name="ConfigMakerFormatButton.Label" xml:space="preserve">
+    <value>Форматировать</value>
+  </data>
+  <data name="ConfigMakerStartTestButton.Label" xml:space="preserve">
+    <value>Запустить тест</value>
+  </data>
+  <data name="ConfigMakerStopTestButton.Label" xml:space="preserve">
+    <value>Остановить</value>
+  </data>
+  <data name="ConfigMakerCommandsHeader.Text" xml:space="preserve">
+    <value>Справочник</value>
+  </data>
+  <data name="ConfigMakerRefreshHelpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Обновить справку</value>
+  </data>
+  <data name="ConfigMakerCommandSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Найти флаг</value>
+  </data>
+  <data name="ConfigMakerCopyCommandButton.Content" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="ConfigMakerInsertCommandButton.Content" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="ConfigMakerSelectComponentMessage" xml:space="preserve">
+    <value>Выберите установленный компонент, чтобы загрузить его справку --help и подсветку синтаксиса.</value>
+  </data>
+  <data name="ConfigMakerLoadingHelpMessage" xml:space="preserve">
+    <value>Загрузка --help…</value>
+  </data>
+  <data name="ConfigMakerHelpOptionsLoadedMessage" xml:space="preserve">
+    <value>Загружено флагов: {0}</value>
+  </data>
+  <data name="ConfigMakerHelpLoadFailedMessage" xml:space="preserve">
+    <value>Не удалось загрузить --help: {0}</value>
+  </data>
+  <data name="ConfigMakerHelpParseEmptyMessage" xml:space="preserve">
+    <value>Компонент вернул справку, но распознать флаги не удалось. Редактор остаётся доступным.</value>
+  </data>
+  <data name="ConfigMakerHelpNotFoundNote" xml:space="preserve">
+    <value>[ПРИМЕЧАНИЕ] Не удалось найти справку для этого флага.</value>
+  </data>
+  <data name="ConfigMakerNoDescriptionMessage" xml:space="preserve">
+    <value>Описание не предоставлено.</value>
+  </data>
+  <data name="ConfigMakerRequiredArgumentLabel" xml:space="preserve">
+    <value>Обязательный параметр: {0}</value>
+  </data>
+  <data name="ConfigMakerOptionalArgumentLabel" xml:space="preserve">
+    <value>Необязательный параметр: {0}</value>
+  </data>
+  <data name="ConfigMakerRequiredArgumentMissingMessage" xml:space="preserve">
+    <value>Введите обязательный параметр перед вставкой флага.</value>
+  </data>
+  <data name="ConfigMakerNewConfirmationTitle" xml:space="preserve">
+    <value>Создать новый пресет?</value>
+  </data>
+  <data name="ConfigMakerNewConfirmationMessage" xml:space="preserve">
+    <value>Текущая команда будет очищена.</value>
+  </data>
+  <data name="ConfigMakerTextFileFilter" xml:space="preserve">
+    <value>Текстовые пресеты (*.txt)|*.txt|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="ConfigMakerTextSavedMessage" xml:space="preserve">
+    <value>TXT-пресет сохранён.</value>
+  </data>
+  <data name="ConfigMakerTextSaveFailedMessage" xml:space="preserve">
+    <value>Не удалось сохранить TXT-пресет: {0}</value>
+  </data>
+  <data name="ConfigMakerEmptyArgumentsMessage" xml:space="preserve">
+    <value>Перед запуском теста добавьте хотя бы один флаг командной строки.</value>
+  </data>
+  <data name="ConfigMakerTestStartedMessage" xml:space="preserve">
+    <value>Компонент запущен с командой из редактора. Проверьте нужные сайты или приложение, затем остановите тест.</value>
+  </data>
+  <data name="ConfigMakerTestStoppedMessage" xml:space="preserve">
+    <value>Тест остановлен. Ранее запущенный компонент восстановлен, если это требовалось.</value>
+  </data>
+  <data name="ConfigMakerTestStartFailedMessage" xml:space="preserve">
+    <value>Не удалось запустить тест: {0}</value>
+  </data>
+  <data name="ConfigMakerTestExitedMessage" xml:space="preserve">
+    <value>Компонент остановился во время теста.</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Внимание</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="ConfigMakerComponentComboBox.Header" xml:space="preserve">
+    <value>Компонент</value>
+  </data>
+  <data name="ConfigMakerReplaceRunningComponentTitle" xml:space="preserve">
+    <value>Временно заменить запущенный компонент?</value>
+  </data>
+  <data name="ConfigMakerReplaceRunningComponentMessage" xml:space="preserve">
+    <value>Активный компонент будет остановлен на время теста и восстановлен после его завершения.</value>
+  </data>
+  <data name="ConfigMakerModuleComboBox.Header" xml:space="preserve">
+    <value>Модуль</value>
+  </data>
+  <data name="ConfigMakerAllModules" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="ConfigMakerGeneralModule" xml:space="preserve">
+    <value>Общие</value>
+  </data>
+  <data name="ConfigMakerOutputTab.Header" xml:space="preserve">
+    <value>Вывод</value>
+  </data>
+  <data name="ConfigMakerDiagnosticsTab.Header" xml:space="preserve">
+    <value>Предупреждения и ошибки</value>
+  </data>
+  <data name="ConfigMakerDiagnosticSeverityColumn.Content" xml:space="preserve">
+    <value>Важность</value>
+  </data>
+  <data name="ConfigMakerDiagnosticCodeColumn.Content" xml:space="preserve">
+    <value>Код</value>
+  </data>
+  <data name="ConfigMakerDiagnosticDescriptionColumn.Content" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="ConfigMakerDiagnosticFlagColumn.Content" xml:space="preserve">
+    <value>Флаг</value>
+  </data>
+  <data name="ConfigMakerDiagnosticLineColumn.Content" xml:space="preserve">
+    <value>Строка</value>
+  </data>
+  <data name="ConfigMakerDiagnosticErrorSeverity" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="ConfigMakerDiagnosticWarningSeverity" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="ConfigMakerDiagnosticErrorCount" xml:space="preserve">
+    <value>Ошибок: {0}</value>
+  </data>
+  <data name="ConfigMakerDiagnosticWarningCount" xml:space="preserve">
+    <value>Предупреждений: {0}</value>
+  </data>
+  <data name="ConfigMakerUnknownFlagDiagnostic" xml:space="preserve">
+    <value>Флаг {0} не найден в справке компонента.</value>
+  </data>
+  <data name="ConfigMakerMissingArgumentDiagnostic" xml:space="preserve">
+    <value>Не указано обязательное значение для {0}.</value>
+  </data>
+  <data name="ConfigMakerUnterminatedQuoteDiagnostic" xml:space="preserve">
+    <value>Значение в кавычках не завершено в этой строке.</value>
+  </data>
+  <data name="ConfigMakerNewMenuItem.Text" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
+    <value>Экспорт пресета в универсальный формат...</value>
+  </data>
+  <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="ConfigMakerFormatMenuItem.Text" xml:space="preserve">
+    <value>Форматировать по флагам</value>
+  </data>
+  <data name="ConfigMakerCommandPanelMenuItem.Text" xml:space="preserve">
+    <value>Справочник команд</value>
+  </data>
+  <data name="ConfigMakerBottomPanelMenuItem.Text" xml:space="preserve">
+    <value>Панель вывода</value>
+  </data>
+  <data name="ConfigMakerShowOutputMenuItem.Text" xml:space="preserve">
+    <value>Показать вывод</value>
+  </data>
+  <data name="ConfigMakerShowDiagnosticsMenuItem.Text" xml:space="preserve">
+    <value>Показать предупреждения и ошибки</value>
+  </data>
+  <data name="ConfigMakerStartTestMenuItem.Text" xml:space="preserve">
+    <value>Запустить тест</value>
+  </data>
+  <data name="ConfigMakerStopTestMenuItem.Text" xml:space="preserve">
+    <value>Остановить тест</value>
+  </data>
+  <data name="ConfigMakerRefreshHelpMenuItem.Text" xml:space="preserve">
+    <value>Обновить справку компонента</value>
+  </data>
+  <data name="ConfigMakerSearchToolTip.Content" xml:space="preserve">
+    <value>Поиск (Ctrl+F)</value>
+  </data>
+  <data name="ConfigMakerReplaceToolTip.Content" xml:space="preserve">
+    <value>Поиск и замена (Ctrl+H)</value>
+  </data>
+  <data name="ConfigMakerZoomOut.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Отдалить</value>
+  </data>
+  <data name="ConfigMakerZoomIn.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Приблизить</value>
+  </data>
+  <data name="ConfigMakerBackgroundToolTip.Content" xml:space="preserve">
+    <value>Фон редактора</value>
+  </data>
+  <data name="ConfigMakerSelectComponentDialogTitle" xml:space="preserve">
+    <value>Выбор компонента</value>
+  </data>
+  <data name="ConfigMakerSelectComponentDialogMessage" xml:space="preserve">
+    <value>Выберите компонент, для которого нужно создать или протестировать командную строку.</value>
+  </data>
+  <data name="ConfigMakerNoComponentsDialogMessage" xml:space="preserve">
+    <value>Не найдено установленных компонентов с доступным исполняемым файлом.</value>
+  </data>
+  <data name="BlockCheck2PresetFilesHeader.Text" xml:space="preserve">
+    <value>Используемые файлы</value>
+  </data>
+  <data name="BlockCheck2PresetGroupsHeader.Text" xml:space="preserve">
+    <value>Группы пресета</value>
+  </data>
+  <data name="ConfigMakerPresetFilesHeader.Text" xml:space="preserve">
+    <value>Используемые файлы</value>
+  </data>
+  <data name="ConfigMakerPresetGroupsHeader.Text" xml:space="preserve">
+    <value>Структурный просмотр</value>
+  </data>
+  <data name="ConfigMakerPresetFilesPanelMenuItem.Text" xml:space="preserve">
+    <value>Используемые файлы</value>
+  </data>
+  <data name="ConfigMakerShowPresetGroupsMenuItem.Text" xml:space="preserve">
+    <value>Показать структуру пресета</value>
+  </data>
+  <data name="ConfigMakerPresetGroupsTab.Header" xml:space="preserve">
+    <value>Структурный просмотр</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategorySiteLists" xml:space="preserve">
+    <value>TXT-списки</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategoryLibraries" xml:space="preserve">
+    <value>Библиотеки</value>
+  </data>
+  <data name="ConfigMakerPresetFileCategoryPayloads" xml:space="preserve">
+    <value>Пэйлоады</value>
+  </data>
+  <data name="ConfigMakerPresetFileOpenMenuItem.Text" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="ConfigMakerPresetFileShowInFolderMenuItem.Text" xml:space="preserve">
+    <value>Показать в папке</value>
+  </data>
+  <data name="ConfigMakerPresetFileMissingMessage" xml:space="preserve">
+    <value>Указанный файл не найден: {0}</value>
+  </data>
+  <data name="BlockCheck2BackToBuilderButtonText.Text" xml:space="preserve">
+    <value>Назад к сборке</value>
+  </data>
+  <data name="BlockCheck2PresetReviewTitle.Text" xml:space="preserve">
+    <value>Просмотр пресета</value>
+  </data>
+  <data name="BlockCheck2AllowExpertEditingCheckBox.Content" xml:space="preserve">
+    <value>Разрешить редактирование</value>
+  </data>
+  <data name="BlockCheck2AllowExpertEditingToolTip.Content" xml:space="preserve">
+    <value>Включает экспертный режим. При возврате к сборке прямые изменения текста будут удалены, а пресет заново собран из групп.</value>
+  </data>
+  <data name="BlockCheck2ExpertEditingInfoBar.Title" xml:space="preserve">
+    <value>Экспертный режим</value>
+  </data>
+  <data name="BlockCheck2ExpertEditingInfoBar.Message" xml:space="preserve">
+    <value>Строку команды можно редактировать. Прямые изменения не переносятся обратно в структурированные группы пресета.</value>
+  </data>
+  <data name="BlockCheck2PresetOriginAutomatic" xml:space="preserve">
+    <value>Автоматически предложенный</value>
+  </data>
+  <data name="BlockCheck2PresetOriginModifiedAutomatic" xml:space="preserve">
+    <value>Изменённый автоматический</value>
+  </data>
+  <data name="BlockCheck2PresetOriginManual" xml:space="preserve">
+    <value>Ручной</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingTitle" xml:space="preserve">
+    <value>Разрешить экспертное редактирование?</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingMessage" xml:space="preserve">
+    <value>Прямые изменения текста нельзя надёжно преобразовать обратно в выбор сайтов и стратегий. При возврате к сборке они будут удалены.</value>
+  </data>
+  <data name="BlockCheck2EnableExpertEditingButton" xml:space="preserve">
+    <value>Разрешить</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesTitle" xml:space="preserve">
+    <value>Удалить экспертные изменения?</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesMessage" xml:space="preserve">
+    <value>Пресет будет заново собран из выборов, показанных на странице сборки.</value>
+  </data>
+  <data name="BlockCheck2DiscardExpertChangesButton" xml:space="preserve">
+    <value>Удалить и вернуться</value>
+  </data>
+  <data name="BlockCheck2ReviewPresetButton.Content" xml:space="preserve">
+    <value>Перейти к тестированию и сохранению пресета</value>
+  </data>
+  <data name="BlockCheck2SelectionColumn.Text" xml:space="preserve">
+    <value>Выбор</value>
+  </data>
+  <data name="BlockCheck2OpenPresetReviewMenuItem.Text" xml:space="preserve">
+    <value>Просмотр пресета</value>
+  </data>
+  <data name="BlockCheck2OpenInConfigsMenuItem" xml:space="preserve">
+    <value>Открыть в «Пресетах»...</value>
+  </data>
+  <data name="BlockCheck2CopyPresetMenuItem" xml:space="preserve">
+    <value>Копировать пресет</value>
+  </data>
+  <data name="BlockCheck2ResultModeDialogTitle" xml:space="preserve">
+    <value>Как продолжить?</value>
+  </data>
+  <data name="BlockCheck2ResultModeDialogMessage" xml:space="preserve">
+    <value>Сразу открыть автоматически предложенный пресет или просмотреть стратегии по сайтам и собрать его вручную.</value>
+  </data>
+  <data name="BlockCheck2ResultModeAutomaticButton" xml:space="preserve">
+    <value>Автоматически предложенный</value>
+  </data>
+  <data name="BlockCheck2ResultModeManualButton" xml:space="preserve">
+    <value>Ручная сборка</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormat" xml:space="preserve">
+    <value>Просмотр пресета</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormat" xml:space="preserve">
+    <value>Сборка</value>
+  </data>
+  <data name="BlockCheck2SaveJsonReportMenuItem" xml:space="preserve">
+    <value>Сохранить отчёт JSON...</value>
+  </data>
+  <data name="BlockCheck2SaveTextReportMenuItem" xml:space="preserve">
+    <value>Сохранить текстовый отчёт...</value>
+  </data>
+  <data name="StatusNotificationsButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="StatusNotificationsHeader.Text" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="StatusNotificationsClearButton.Content" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="StatusNotificationsEmpty.Text" xml:space="preserve">
+    <value>Нет уведомлений</value>
+  </data>
+  <data name="BlockCheck2SitesOverviewHeader.Text" xml:space="preserve">
+    <value>Сайты</value>
+  </data>
+  <data name="BlockCheck2ManualIssueSourcesLabel.Text" xml:space="preserve">
+    <value>Относится к:</value>
+  </data>
+  <data name="HideButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Спрятать панель</value>
+  </data>
+  <data name="BlockCheck2PartialScopeWarningToolTip.Content" xml:space="preserve">
+    <value>Стратегия прошла эту проверку, но не подтверждена для всех вариантов подключения сайта (например, для другой версии IP).</value>
+  </data>
+  <data name="BlockCheck2ManualIssueQuickFixButton.Content" xml:space="preserve">
+    <value>Принять порядок</value>
+  </data>
+  <data name="BlockCheck2ManualIssueQuickFixCompletedTitle" xml:space="preserve">
+    <value>Порядок областей принят</value>
+  </data>
+  <data name="BlockCheck2ManualScopeOverlapAcceptedMessage" xml:space="preserve">
+    <value>Более узкая область уже расположена перед общей. Предупреждение появится снова, если состав пресета изменится.</value>
+  </data>
+  <data name="BlockCheck2PresetReadinessFormat" xml:space="preserve">
+    <value>Стратегий: {0} · предупреждений: {1}</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationButtonText.Text" xml:space="preserve">
+    <value>Сохранить как новый пресет</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationMenuItem" xml:space="preserve">
+    <value>Сохранить как новый пресет...</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogTitle" xml:space="preserve">
+    <value>Сохранение пресета в приложение</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogMessage" xml:space="preserve">
+    <value>Связанные пользовательские списки и внешние файлы будут скопированы в хранилище приложения. Встроенные файлы Zapret2 останутся привязаны к компоненту.</value>
+  </data>
+  <data name="BlockCheck2PresetNameFieldHeader" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="BlockCheck2PresetNameFieldPlaceholder" xml:space="preserve">
+    <value>Например, YouTube и Discord</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationDialogButton" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="BlockCheck2PresetSavedTitle" xml:space="preserve">
+    <value>Пресет сохранён</value>
+  </data>
+  <data name="BlockCheck2PresetSavedRefreshFailedTitle" xml:space="preserve">
+    <value>Пресет сохранён, но список не обновлён</value>
+  </data>
+  <data name="BlockCheck2PresetSavedMessageFormat" xml:space="preserve">
+    <value>«{0}» добавлен в «Пресеты». Скопировано связанных файлов: {1}.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveFailedTitle" xml:space="preserve">
+    <value>Не удалось сохранить пресет</value>
+  </data>
+  <data name="BlockCheck2PresetSaveComponentUnavailableMessage" xml:space="preserve">
+    <value>Компонент Zapret2 не установлен или его рабочая папка недоступна.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveFileMissingMessageFormat" xml:space="preserve">
+    <value>Не найден связанный файл: {0}. Пресет не был сохранён.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveStorageErrorMessageFormat" xml:space="preserve">
+    <value>Хранилище приложения вернуло ошибку: {0}</value>
+  </data>
+  <data name="BlockCheck2PresetSaveEmptyMessage" xml:space="preserve">
+    <value>В пресете нет параметров для сохранения.</value>
+  </data>
+  <data name="BlockCheck2PresetSaveUnknownMessage" xml:space="preserve">
+    <value>Произошла неизвестная ошибка сохранения.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Заменить отсутствующий файл</value>
+  </data>
+  <data name="ConfigMakerPresetFileOpenButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="ConfigMakerPresetFileShowInFolderButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать в папке</value>
+  </data>
+  <data name="ConfigMakerPresetFileInvalidPathMessage" xml:space="preserve">
+    <value>Не удалось определить путь к отсутствующему файлу.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceDialogTitle" xml:space="preserve">
+    <value>Замена отсутствующего файла</value>
+  </data>
+  <data name="ConfigMakerPresetFileCreateEmptyButton" xml:space="preserve">
+    <value>Создать пустой</value>
+  </data>
+  <data name="ConfigMakerPresetFileUseSuggestionButton" xml:space="preserve">
+    <value>Использовать найденный</value>
+  </data>
+  <data name="ConfigMakerPresetFileEmptySuggestionMessage" xml:space="preserve">
+    <value>Для этого служебного файла можно безопасно создать пустой файл.</value>
+  </data>
+  <data name="ConfigMakerPresetFileSuggestionMessage" xml:space="preserve">
+    <value>Автокорректор нашёл замену: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileNoSuggestionMessage" xml:space="preserve">
+    <value>Автокорректор не нашёл подходящую замену. Выберите файл вручную.</value>
+  </data>
+  <data name="ConfigMakerPresetFileEmptyCreatedMessage" xml:space="preserve">
+    <value>Создан пустой файл: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileReferenceNotFoundMessage" xml:space="preserve">
+    <value>Ссылка на файл не найдена в текущей строке пресета.</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplacedMessage" xml:space="preserve">
+    <value>Ссылка на файл заменена: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceFailedMessage" xml:space="preserve">
+    <value>Не удалось заменить файл: {0}</value>
+  </data>
+  <data name="ConfigMakerPresetCommonFiltersGroup" xml:space="preserve">
+    <value>Общие фильтры пресета</value>
+  </data>
+  <data name="ConfigMakerPresetCommonOptionsGroup" xml:space="preserve">
+    <value>Общие параметры пресета</value>
+  </data>
+  <data name="ConfigMakerPresetProfileFallbackName" xml:space="preserve">
+    <value>Группа {0}</value>
+  </data>
+  <data name="ConfigMakerPresetProfileFiltersGroup" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="ConfigMakerPresetProfileActionsGroup" xml:space="preserve">
+    <value>Применяемые действия</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplaceText.Text" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ConfigMakerPresetFileApplyAutoCorrectionButton" xml:space="preserve">
+    <value>Применить автокоррекцию</value>
+  </data>
+  <data name="ConfigMakerPresetFileChooseManuallyButton" xml:space="preserve">
+    <value>Выбрать вручную</value>
+  </data>
+  <data name="ConfigMakerPresetFileReplacementChoiceMessage" xml:space="preserve">
+    <value>Автокорректор попытается найти подходящий файл среди установленных компонентов и списков. Также можно выбрать замену вручную.</value>
+  </data>
+  <data name="ConfigPreviewPanelTitle.Text" xml:space="preserve">
+    <value>Предпросмотр пресета</value>
+  </data>
+  <data name="ConfigMakerZapret2CommonFiltersDescription" xml:space="preserve">
+    <value>Фильтр перехвата WinDivert для всего пресета. Он определяет, какие пакеты вообще попадут в Zapret2; более узкий фильтр снижает нагрузку.</value>
+  </data>
+  <data name="ConfigMakerZapret2CommonOptionsDescription" xml:space="preserve">
+    <value>Общие параметры запуска и инициализации Lua. Они задаются до первого профиля и действуют на весь пресет.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileDescription" xml:space="preserve">
+    <value>Отдельный профиль трафика со своими фильтрами и последовательностью Lua-действий. При пересекающихся условиях порядок профилей имеет значение.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileFiltersDescription" xml:space="preserve">
+    <value>Определяют, к какому трафику применяется профиль: версия IP, протоколы, порты, домены и списки адресов.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileActionsDescription" xml:space="preserve">
+    <value>Фильтры payload и диапазонов действуют на следующие Lua-инстансы до их переопределения. Lua-инстансы выполняются строго в указанном порядке.</value>
+  </data>
+  <data name="ConfigMakerZapret2DebugDescription" xml:space="preserve">
+    <value>Включает диагностический журнал: в консоль, syslog, Android log или указанный файл.</value>
+  </data>
+  <data name="ConfigMakerZapret2DryRunDescription" xml:space="preserve">
+    <value>Проверяет параметры и наличие файлов без запуска перехвата. Синтаксис Lua-кода при этом не проверяется.</value>
+  </data>
+  <data name="ConfigMakerZapret2InterceptDescription" xml:space="preserve">
+    <value>Разрешает или запрещает перехват. При значении 0 выполняются lua-init, после чего процесс завершается без перехвата трафика.</value>
+  </data>
+  <data name="ConfigMakerZapret2ReassemblyDescription" xml:space="preserve">
+    <value>Отключает сборку многопакетных payload указанного типа; без значения отключает reassembly полностью.</value>
+  </data>
+  <data name="ConfigMakerZapret2BlobDescription" xml:space="preserve">
+    <value>Загружает файл или HEX-данные в именованную Lua-переменную blob, которую затем используют Lua-функции.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInitDescription" xml:space="preserve">
+    <value>Один раз при запуске выполняет Lua-код или Lua-файл. Несколько lua-init выполняются по порядку.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaGcDescription" xml:space="preserve">
+    <value>Задаёт интервал запуска сборщика мусора Lua в секундах; 0 отключает периодический запуск.</value>
+  </data>
+  <data name="ConfigMakerZapret2NewProfileDescription" xml:space="preserve">
+    <value>Начинает новый профиль и при необходимости сразу задаёт его имя.</value>
+  </data>
+  <data name="ConfigMakerZapret2SkipProfileDescription" xml:space="preserve">
+    <value>Помечает текущий профиль как отключённый: Zapret2 игнорирует его при обработке трафика.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileNameDescription" xml:space="preserve">
+    <value>Задаёт читаемое имя текущего профиля и не меняет его фильтры или действия.</value>
+  </data>
+  <data name="ConfigMakerZapret2TemplateDescription" xml:space="preserve">
+    <value>Сохраняет текущий профиль как шаблон, который можно импортировать в другие профили.</value>
+  </data>
+  <data name="ConfigMakerZapret2ImportDescription" xml:space="preserve">
+    <value>Импортирует именованный шаблон: простые параметры замещаются, списочные добавляются в конец; номер и имя шаблона не копируются.</value>
+  </data>
+  <data name="ConfigMakerZapret2CookieDescription" xml:space="preserve">
+    <value>Передаёт Lua-инстансам текущего профиля произвольное значение desync.cookie.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL3Description" xml:space="preserve">
+    <value>Ограничивает профиль указанной версией IP: IPv4 или IPv6.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterDescription" xml:space="preserve">
+    <value>Ограничивает профиль указанными TCP- или UDP-портами и диапазонами. Знак ~ означает исключение.</value>
+  </data>
+  <data name="ConfigMakerZapret2IcmpFilterDescription" xml:space="preserve">
+    <value>Ограничивает профиль типами и кодами ICMP; * разрешает любой тип.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpProtocolFilterDescription" xml:space="preserve">
+    <value>Ограничивает профиль номерами raw IP-протоколов. TCP, UDP и ICMP проверяются своими отдельными фильтрами.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL7Description" xml:space="preserve">
+    <value>Применяет профиль только к потокам, распознанным как указанные протоколы прикладного уровня, например http, tls или quic.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetDescription" xml:space="preserve">
+    <value>Включающий фильтр: профиль применяется только к IP-адресам и подсетям из файла либо указанного списка.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeDescription" xml:space="preserve">
+    <value>Исключающий фильтр: адреса и подсети из файла либо указанного списка не обрабатываются этим профилем.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListDescription" xml:space="preserve">
+    <value>Включающий фильтр доменов: профиль применяется только к именам из TXT-файла либо указанного списка.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeDescription" xml:space="preserve">
+    <value>Исключающий фильтр доменов: указанные имена не обрабатываются этим профилем.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoDescription" xml:space="preserve">
+    <value>Автоматически пополняемый включающий список доменов. Хост добавляется после серии обнаруженных неудач соединения.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoSettingDescription" xml:space="preserve">
+    <value>Настраивает детектор неудач и условия добавления домена в автоматический хостлист.</value>
+  </data>
+  <data name="ConfigMakerZapret2PayloadDescription" xml:space="preserve">
+    <value>Пропускает к следующим Lua-инстансам только указанные типы payload. Действует до следующего --payload; по умолчанию используется all.</value>
+  </data>
+  <data name="ConfigMakerZapret2OutRangeDescription" xml:space="preserve">
+    <value>Ограничивает следующие Lua-инстансы диапазоном исходящих счётчиков conntrack: n — пакет, d — пакет с данными, s — relative sequence, p — позиция данных; a — всегда, x — никогда.</value>
+  </data>
+  <data name="ConfigMakerZapret2InRangeDescription" xml:space="preserve">
+    <value>Ограничивает следующие Lua-инстансы диапазоном входящих счётчиков conntrack: n — пакет, d — пакет с данными, s — relative sequence, p — позиция данных; a — всегда, x — никогда.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaDesyncDescription" xml:space="preserve">
+    <value>Добавляет вызов Lua-функции с параметрами. Вызовы выполняются строго по порядку и используют действующие перед ними payload/in-range/out-range.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertInterfaceDescription" xml:space="preserve">
+    <value>Ограничивает WinDivert конкретным сетевым интерфейсом и, при наличии, подинтерфейсом.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertL3Description" xml:space="preserve">
+    <value>Ограничивает общий перехват WinDivert трафиком IPv4 или IPv6.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertIncomingDescription" xml:space="preserve">
+    <value>Добавляет во входящий фильтр WinDivert указанные этим флагом порты, типы ICMP или номера IP-протоколов.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertOutgoingDescription" xml:space="preserve">
+    <value>Добавляет в исходящий фильтр WinDivert указанные этим флагом порты, типы ICMP или номера IP-протоколов.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertTcpEmptyDescription" xml:space="preserve">
+    <value>Включает перехват пустых TCP ACK на выбранных портах. Нужен для точного счётчика пакетов n, но увеличивает нагрузку.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawPartDescription" xml:space="preserve">
+    <value>Добавляет частичный raw-фильтр WinDivert, объединяемый с другими такими частями по ИЛИ. Флаг можно повторять.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawFilterDescription" xml:space="preserve">
+    <value>Добавляет единственный частичный raw-фильтр, объединяемый с построенным фильтром по И.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertFilterLanDescription" xml:space="preserve">
+    <value>Управляет исключением неглобальных LAN-адресов из перехвата; по умолчанию они исключены.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertRawDescription" xml:space="preserve">
+    <value>Задаёт полный raw-фильтр WinDivert и полностью заменяет фильтр, собранный из остальных --wf-флагов.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertDuplicateDescription" xml:space="preserve">
+    <value>Управляет защитой от повторного запуска winws2 с тем же WinDivert-фильтром; по умолчанию защита включена.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertSaveDescription" xml:space="preserve">
+    <value>Сохраняет итоговый полный WinDivert-фильтр в файл для просмотра и отладки.</value>
+  </data>
+  <data name="ConfigMakerZapret2SsidFilterDescription" xml:space="preserve">
+    <value>Включает перехват только при подключении к одной из указанных Wi-Fi-сетей.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmFilterDescription" xml:space="preserve">
+    <value>Включает перехват только при подключении к одной из указанных сетей Windows Network List Manager.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmListDescription" xml:space="preserve">
+    <value>Выводит подключённые сети Windows Network List Manager; значение all также показывает остальные известные сети.</value>
+  </data>
+  <data name="ConfigMakerZapret2NoFlagDescription" xml:space="preserve">
+    <value>Для этого флага не найдено описание в загруженной справке Zapret2.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeDescription" xml:space="preserve">
+    <value>fake отправляет отдельный ложный пакет или набор пакетов и не блокирует отправку оригинала; фейк обычно требует fooling, чтобы сервер его не принял.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultisplitDescription" xml:space="preserve">
+    <value>multisplit разрезает текущий dissect или reassembly в позициях pos и отправляет реальные сегменты в обычном порядке. После успешной отправки оригинал отбрасывается, если не задан nodrop.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultidisorderDescription" xml:space="preserve">
+    <value>multidisorder разрезает данные как multisplit, но отправляет сегменты в обратном порядке — от последнего к первому. Оригинал сохраняется только при nodrop.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaHostFakeSplitDescription" xml:space="preserve">
+    <value>hostfakesplit режет HTTP/TLS около имени хоста и перемешивает реальные части с фейками; fooling должен не дать серверу принять ложные части.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSendDescription" xml:space="preserve">
+    <value>send отправляет текущий dissect с выбранными модификациями и не отменяет его штатную отправку. Для отмены оригинала нужен следующий drop.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaDropDescription" xml:space="preserve">
+    <value>drop запрещает дальнейшую штатную передачу подходящего пакета, вынося VERDICT_DROP.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaCircularDescription" xml:space="preserve">
+    <value>circular считает неудачи и переключает помеченные strategy=N варианты по кругу; параметр final запрещает возвращение к началу.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaMultidisorderLegacyDescription" xml:space="preserve">
+    <value>multidisorder_legacy — совместимый с nfqws1 вариант: обрабатывает отдельные части replay, сохраняет исходную сегментацию и меняет порядок сегментов только внутри каждой части.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeSplitDescription" xml:space="preserve">
+    <value>fakedsplit разрезает данные в одной позиции и перемежает реальные части фейками того же размера. Фейкам нужен fooling; nodrop сохраняет оригинал.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaFakeDisorderDescription" xml:space="preserve">
+    <value>fakeddisorder сочетает обратный порядок реальных частей с фейками того же размера. Фейкам нужен fooling; nodrop сохраняет оригинал.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaTcpSegmentDescription" xml:space="preserve">
+    <value>tcpseg отдельно отправляет часть dissect, reassembly или blob между двумя маркерами pos. Вердикт не меняет; для замещения исходных данных его комбинируют с drop.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaOobDescription" xml:space="preserve">
+    <value>oob сдвигает TCP sequence и вставляет один срочный OOB-байт в первый payload, рассчитывая, что ОС отбросит его, а DPI учтёт. Это техника нулевой фазы с особыми ограничениями совместимости.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaPacketModifyDescription" xml:space="preserve">
+    <value>pktmod применяет выбранные модификации к текущему dissect, но сам ничего не отправляет и не выносит вердикт.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaWindowSizeDescription" xml:space="preserve">
+    <value>wssize временно уменьшает TCP window и/или scaling factor, заставляя сервер дробить ответы. Техника снижает скорость и рекомендована только при отсутствии альтернатив.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSynDataDescription" xml:space="preserve">
+    <value>syndata добавляет payload из blob в TCP SYN, отправляет изменённый SYN вместо оригинала и повторяет воздействие для ретрансмиссий SYN.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaSynAckDescription" xml:space="preserve">
+    <value>synack отправляет SYN,ACK перед исходным SYN, чтобы запутать DPI относительно направления соединения. Техника несовместима с NAT и не блокирует оригинал.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaResetDescription" xml:space="preserve">
+    <value>rst отправляет пустой TCP-пакет RST либо RST,ACK и не блокирует штатную отправку оригинала.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaUdpLengthDescription" xml:space="preserve">
+    <value>udplen изменяет длину UDP payload: при уменьшении обрезает данные, при увеличении дополняет их pattern. Превышение MTU может привести к IP-фрагментации или отказу отправки.</value>
+  </data>
+  <data name="ConfigMakerZapret2CurrentValueDescription" xml:space="preserve">
+    <value>Текущее значение: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL3SpecificDescription" xml:space="preserve">
+    <value>Ограничивает профиль только для {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertL3SpecificDescription" xml:space="preserve">
+    <value>Общий фильтр WinDivert перехватывает только трафик {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterIncludedSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к {0}-портам {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterExcludedSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль ко всем {0}-портам, кроме {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2TransportFilterAllSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль ко всем {0}-портам.</value>
+  </data>
+  <data name="ConfigMakerZapret2FilterL7SpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к распознанному L7-трафику: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListFileSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к доменам из списка «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListDomainsSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к доменам: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeFileSpecificDescription" xml:space="preserve">
+    <value>Не применяет профиль к доменам из списка «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListExcludeDomainsSpecificDescription" xml:space="preserve">
+    <value>Не применяет профиль к доменам: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2HostListAutoSpecificDescription" xml:space="preserve">
+    <value>Записывает автоматически обнаруженные проблемные домены в «{0}» и применяет к ним профиль.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetFileSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к IP-адресам и подсетям из «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetInlineSpecificDescription" xml:space="preserve">
+    <value>Применяет профиль только к IP-адресам и подсетям: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeFileSpecificDescription" xml:space="preserve">
+    <value>Не применяет профиль к IP-адресам и подсетям из «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2IpSetExcludeInlineSpecificDescription" xml:space="preserve">
+    <value>Не применяет профиль к IP-адресам и подсетям: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2PayloadSpecificDescription" xml:space="preserve">
+    <value>Следующие действия стратегии обрабатывают только типы данных: {0}. Ограничение действует до следующего --payload.</value>
+  </data>
+  <data name="ConfigMakerZapret2OutRangeSpecificDescription" xml:space="preserve">
+    <value>Не удалось расшифровать условие «{0}» для исходящего трафика.</value>
+  </data>
+  <data name="ConfigMakerZapret2InRangeSpecificDescription" xml:space="preserve">
+    <value>Не удалось расшифровать условие «{0}» для входящего трафика.</value>
+  </data>
+  <data name="ConfigMakerZapret2ProfileNameSpecificDescription" xml:space="preserve">
+    <value>Задаёт текущему профилю имя «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInitSpecificDescription" xml:space="preserve">
+    <value>При запуске выполняет Lua-файл или код «{0}»; несколько lua-init выполняются по порядку.</value>
+  </data>
+  <data name="ConfigMakerZapret2BlobSpecificDescription" xml:space="preserve">
+    <value>Загружает «{0}» в Lua-переменную blob с именем «{1}».</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInvocationWithArgumentsDescription" xml:space="preserve">
+    <value>Вызывает Lua-функцию {0} с параметрами: {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2LuaInvocationDescription" xml:space="preserve">
+    <value>Вызывает Lua-функцию {0} без дополнительных параметров.</value>
+  </data>
+  <data name="ConfigMakerZapret2WinDivertInterfaceSpecificDescription" xml:space="preserve">
+    <value>Ограничивает перехват WinDivert сетевым интерфейсом «{0}».</value>
+  </data>
+  <data name="ConfigMakerZapret2SsidFilterSpecificDescription" xml:space="preserve">
+    <value>Включает перехват только при подключении к Wi-Fi-сети: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2NlmFilterSpecificDescription" xml:space="preserve">
+    <value>Включает перехват только при подключении к сети NLM: {0}.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeOutgoingDirection" xml:space="preserve">
+    <value>исходящем</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeIncomingDirection" xml:space="preserve">
+    <value>входящем</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeAlwaysDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются для всех пакетов в {0} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeNeverDescription" xml:space="preserve">
+    <value>Следующие действия стратегии не выполняются для пакетов в {0} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketSingular" xml:space="preserve">
+    <value>пакета</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketPlural" xml:space="preserve">
+    <value>пакетов</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketSingular" xml:space="preserve">
+    <value>пакета с данными</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketPlural" xml:space="preserve">
+    <value>пакетов с данными</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFirstPacketDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются только для первого {0} в {1} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFirstPacketsDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются только для первых {0} {1} в {2} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeFromPacketDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются начиная с {0} №{1} в {2} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketIntervalDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются только для {0} №{1}–{2} в {3} направлении.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeLowerCondition" xml:space="preserve">
+    <value>{0} не меньше {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUpperExclusiveCondition" xml:space="preserve">
+    <value>{0} меньше {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUpperInclusiveCondition" xml:space="preserve">
+    <value>{0} не больше {1}</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeConditionsDescription" xml:space="preserve">
+    <value>Следующие действия стратегии выполняются для пакетов в {0} направлении, только когда {1}.</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeConditionSeparator" xml:space="preserve">
+    <value> и </value>
+  </data>
+  <data name="ConfigMakerZapret2RangeByteCounter" xml:space="preserve">
+    <value>позиция переданных данных в байтах</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeSequenceStartCounter" xml:space="preserve">
+    <value>позиция начала TCP-пакета относительно начала потока</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeSequenceEndCounter" xml:space="preserve">
+    <value>позиция конца TCP-пакета относительно начала потока</value>
+  </data>
+  <data name="ConfigMakerZapret2RangePacketNumberCounter" xml:space="preserve">
+    <value>номер пакета</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeDataPacketNumberCounter" xml:space="preserve">
+    <value>номер пакета с данными</value>
+  </data>
+  <data name="ConfigMakerZapret2RangeUnknownCounter" xml:space="preserve">
+    <value>значение счётчика</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormatGroups" xml:space="preserve">
+    <value>Группы: {0}</value>
+  </data>
+  <data name="BlockCheck2ReviewStatusFormatFiles" xml:space="preserve">
+    <value>Файлы: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormatSelected" xml:space="preserve">
+    <value>Выбрано: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusFormatStrategies" xml:space="preserve">
+    <value>Стратегии: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusTargetCount" xml:space="preserve">
+    <value>Всего целей: {0}</value>
+  </data>
+  <data name="BlockCheck2BuilderStatusTime" xml:space="preserve">
+    <value>Время подбора: {0:g}</value>
+  </data>
+  <data name="ConfigActionsPanelTitle.Text" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="MoveUpButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переместить вверх</value>
+  </data>
+  <data name="MoveDownButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Переместить вниз</value>
+  </data>
+  <data name="ShowOnlyMonospaceFonts.Content" xml:space="preserve">
+    <value>Только моноширинные шрифты</value>
+  </data>
+  <data name="ManualTesting" xml:space="preserve">
+    <value>Ручная проверка стратегии</value>
+  </data>
+  <data name="BlockCheck2TestStrategyButton.Label" xml:space="preserve">
+    <value>Протестировать через CURL</value>
+  </data>
+  <data name="BlockCheck2AddForSiteButton.Label" xml:space="preserve">
+    <value>Добавить для этого сайта</value>
+  </data>
+  <data name="BlockCheck2AddForListButton.Label" xml:space="preserve">
+    <value>Добавить для списка...</value>
+  </data>
+  <data name="CopyViewAppBarButton.Label" xml:space="preserve">
+    <value>Скопировать отображаемую стратегию</value>
+  </data>
+  <data name="CopyFullAppBarButton.Label" xml:space="preserve">
+    <value>Скопировать готовую для использования стратегию</value>
+  </data>
+  <data name="SiteViewPanel.Text" xml:space="preserve">
+    <value>URL-адрес</value>
+  </data>
+  <data name="ZoomResetButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Восстановить масштаб по умолчанию</value>
+  </data>
+  <data name="BlockCheck2SaveToApplicationWindowMenuItem.Text" xml:space="preserve">
+    <value>Сохранить как новый пресет...</value>
+  </data>
+  <data name="BlockCheck2CopyPresetWindowMenuItem.Text" xml:space="preserve">
+    <value>Копировать пресет</value>
+  </data>
+  <data name="BlockCheck2ProceedToPresetReviewMenuItem.Text" xml:space="preserve">
+    <value>Перейти к тестированию и сохранению пресета</value>
+  </data>
+  <data name="BlockCheck2TestStrategyMenuItem.Text" xml:space="preserve">
+    <value>Протестировать через CURL</value>
+  </data>
+  <data name="BlockCheck2ToggleManualTestMenuItem.Text" xml:space="preserve">
+    <value>Ручное тестирование компонента</value>
+  </data>
+  <data name="BlockCheck2AddForSiteMenuItem.Text" xml:space="preserve">
+    <value>Добавить для этого сайта</value>
+  </data>
+  <data name="BlockCheck2AddForListMenuItem.Text" xml:space="preserve">
+    <value>Добавить для списка сайтов…</value>
+  </data>
+  <data name="BlockCheck2CopyDisplayedStrategyMenuItem.Text" xml:space="preserve">
+    <value>Копировать отображаемую стратегию</value>
+  </data>
+  <data name="BlockCheck2CopyFullStrategyMenuItem.Text" xml:space="preserve">
+    <value>Копировать готовую для использования стратегию</value>
+  </data>
+  <data name="BlockCheck2ShowStrategyOverviewMenuItem.Text" xml:space="preserve">
+    <value>Обзор по сайтам</value>
+  </data>
+  <data name="BlockCheck2ShowStrategyDetailsMenuItem.Text" xml:space="preserve">
+    <value>Обзор по стратегиям</value>
+  </data>
+  <data name="ActionsMenuItem.Title" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="BlockCheck2StartSelectionCardTitle" xml:space="preserve">
+    <value>Начать новый подбор</value>
+  </data>
+  <data name="BlockCheck2StartSelectionCardDescription" xml:space="preserve">
+    <value>Указать сайты и подобрать для них общий пресет Zapret 2</value>
+  </data>
+  <data name="BlockCheck2ReportsSettingsCard.Header" xml:space="preserve">
+    <value>Недавние подборы</value>
+  </data>
+  <data name="BlockCheck2ReportsSettingsCard.Description" xml:space="preserve">
+    <value>Открыть недавний отчёт или загрузить отчёт из файла</value>
+  </data>
+  <data name="BlockCheck2AskStopSelection" xml:space="preserve">
+    <value>Подбор Zapret 2 ещё выполняется. Остановить его и закрыть окно?</value>
+  </data>
+  <data name="BlockCheck2SiteListsStep.Header" xml:space="preserve">
+    <value>Сайты для проверки</value>
+  </data>
+  <data name="BlockCheck2SiteListsStep.Description" xml:space="preserve">
+    <value>Добавьте собственные адреса или готовые списки сайтов и выберите способ обработки каждого списка</value>
+  </data>
+  <data name="BlockCheck2SelectedSiteListsLabel.Text" xml:space="preserve">
+    <value>Выбрано:</value>
+  </data>
+  <data name="BlockCheck2AdvancedStep.Header" xml:space="preserve">
+    <value>Дополнительные параметры</value>
+  </data>
+  <data name="BlockCheck2AdvancedStep.Description" xml:space="preserve">
+    <value>Настройте глубину подбора, время ожидания сетевых запросов и запуска Zapret 2</value>
+  </data>
+  <data name="BlockCheck2ResetAdvancedButton.Content" xml:space="preserve">
+    <value>Восстановить рекомендуемые</value>
+  </data>
+  <data name="BlockCheck2ReviewStep.Header" xml:space="preserve">
+    <value>Проверка параметров</value>
+  </data>
+  <data name="BlockCheck2ReviewStep.Description" xml:space="preserve">
+    <value>Проверьте выбранные цели и параметры перед запуском длительного подбора</value>
+  </data>
+  <data name="BlockCheck2ReviewSourcesCard.Header" xml:space="preserve">
+    <value>Источники сайтов</value>
+  </data>
+  <data name="BlockCheck2ReviewConnectionsCard.Header" xml:space="preserve">
+    <value>Проверяемые подключения</value>
+  </data>
+  <data name="BlockCheck2ReviewModeCard.Header" xml:space="preserve">
+    <value>Режим подбора</value>
+  </data>
+  <data name="BlockCheck2ReviewTimeoutsCard.Header" xml:space="preserve">
+    <value>Время ожидания</value>
+  </data>
+  <data name="BlockCheck2ConnectionSelectionRequired" xml:space="preserve">
+    <value>Выберите хотя бы один протокол и одну версию IP.</value>
+  </data>
+  <data name="BlockCheck2TargetSourceRequired" xml:space="preserve">
+    <value>Введите хотя бы один домен или URL либо выберите список сайтов.</value>
+  </data>
+  <data name="BlockCheck2AdvancedInvalidTitle" xml:space="preserve">
+    <value>Проверьте дополнительную настройку</value>
+  </data>
+  <data name="BlockCheck2AdvancedInvalidMessage" xml:space="preserve">
+    <value>Время ожидания запроса должно быть не меньше времени подключения, все значения должны находиться в указанном диапазоне, а количество запросов должно быть целым.</value>
+  </data>
+  <data name="BlockCheck2ReviewSourcesFormat" xml:space="preserve">
+    <value>Списков сайтов: {0}. Адресов в них: {1}. Получится целей с учётом протоколов и версий IP: {2}.</value>
+  </data>
+  <data name="BlockCheck2ReviewConnectionsFormat" xml:space="preserve">
+    <value>Протоколы: {0}. Версии IP: {1}.</value>
+  </data>
+  <data name="BlockCheck2ReviewTimeoutsFormat" xml:space="preserve">
+    <value>Подключение: {0} с; запрос: {1} с; ожидание запуска Zapret 2: {2} с.</value>
+  </data>
+  <data name="BlockCheck2TlsAutoShortName" xml:space="preserve">
+    <value>TLS (автоматически)</value>
+  </data>
+  <data name="BlockCheck2HistorySaveFailedMessage" xml:space="preserve">
+    <value>Результат доступен, но его не удалось добавить в недавние подборы.</value>
+  </data>
+  <data name="BlockCheck2HistoryPageTitle.Text" xml:space="preserve">
+    <value>Отчёты подборов Zapret 2</value>
+  </data>
+  <data name="BlockCheck2HistoryPageDescription.Text" xml:space="preserve">
+    <value>Здесь автоматически сохраняются последние результаты, включая неудачные и частично успешные подборы.</value>
+  </data>
+  <data name="BlockCheck2HistoryOpenFileButton.Content" xml:space="preserve">
+    <value>Открыть отчёт из файла…</value>
+  </data>
+  <data name="BlockCheck2HistoryOpenFolderButton.Content" xml:space="preserve">
+    <value>Открыть папку</value>
+  </data>
+  <data name="BlockCheck2HistoryRefreshButton.Content" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="BlockCheck2HistoryEmptyText.Text" xml:space="preserve">
+    <value>Недавних подборов пока нет. После завершения следующего подбора отчёт появится здесь автоматически.</value>
+  </data>
+  <data name="BlockCheck2HistoryShowFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Показать файл в папке</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить из недавних</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusSuccess" xml:space="preserve">
+    <value>успешно</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusBestEffort" xml:space="preserve">
+    <value>частичный результат</value>
+  </data>
+  <data name="BlockCheck2HistoryStatusFailed" xml:space="preserve">
+    <value>не удалось</value>
+  </data>
+  <data name="BlockCheck2HistoryItemTitleFormat" xml:space="preserve">
+    <value>Подбор {0:g}</value>
+  </data>
+  <data name="BlockCheck2HistoryItemDescriptionFormat" xml:space="preserve">
+    <value>{0} • {1} • целей: {2} • профилей: {3} • {4:F0} КБ</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteDialogTitle" xml:space="preserve">
+    <value>Удалить отчёт?</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteDialogMessage" xml:space="preserve">
+    <value>Файл отчёта будет удалён из внутренней истории приложения.</value>
+  </data>
+  <data name="BlockCheck2HistoryDeleteButtonText" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="BlockCheck2AddSiteListButtonText.Text" xml:space="preserve">
+    <value>Добавить список сайтов</value>
+  </data>
+  <data name="BlockCheck2SelectSiteListFromTemplate.Text" xml:space="preserve">
+    <value>Выберите готовый список</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListTile.Text" xml:space="preserve">
+    <value>Собственный список сайтов</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogCreateTitle" xml:space="preserve">
+    <value>Добавить собственный список сайтов</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogEditTitle" xml:space="preserve">
+    <value>Изменить собственный список сайтов</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogDescription" xml:space="preserve">
+    <value>Введите домены или URL — по одному в строке.</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListPlaceholder" xml:space="preserve">
+    <value>youtube.com
+https://discord.com/app</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogSaveButton" xml:space="preserve">
+    <value>Сохранить список</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListName" xml:space="preserve">
+    <value>Собственный список сайтов</value>
+  </data>
+  <data name="BlockCheck2EmptySiteListsTip1.Text" xml:space="preserve">
+    <value>Списки сайтов пока не добавлены</value>
+  </data>
+  <data name="BlockCheck2EmptySiteListsTip2.Text" xml:space="preserve">
+    <value>Добавьте собственные адреса, готовый список или перетащите сюда TXT-файлы</value>
+  </data>
+  <data name="BlockCheck2SitesCountLabel.Text" xml:space="preserve">
+    <value>сайтов:</value>
+  </data>
+  <data name="BlockCheck2WholeListModeItem.Content" xml:space="preserve">
+    <value>Одна стратегия для всего списка</value>
+  </data>
+  <data name="BlockCheck2EachSiteModeItem.Content" xml:space="preserve">
+    <value>Подбирать для каждого сайта</value>
+  </data>
+  <data name="BlockCheck2EditSiteListButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Изменить или открыть список</value>
+  </data>
+  <data name="BlockCheck2RemoveSiteListButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить список из подбора</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeCard.Header" xml:space="preserve">
+    <value>Максимальное ожидаемое время</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeFormat" xml:space="preserve">
+    <value>Около {0}. Запусков стратегий: до {1}; сетевых запросов: до {2}.</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeUnavailable" xml:space="preserve">
+    <value>Не удалось рассчитать время для выбранных параметров.</value>
+  </data>
+  <data name="BlockCheck2DurationDaysFormat" xml:space="preserve">
+    <value>{0} д. {1} ч. {2} мин.</value>
+  </data>
+  <data name="BlockCheck2DurationHoursFormat" xml:space="preserve">
+    <value>{0} ч. {1} мин.</value>
+  </data>
+  <data name="BlockCheck2DurationMinutesFormat" xml:space="preserve">
+    <value>{0} мин.</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="BlockCheck2ReviewMaximumTimeCard.Description" xml:space="preserve">
+    <value>Оценка предполагает, что 80% проверок не приведут к успешной стратегии, а неудачные сетевые запросы исчерпают заданное время ожидания. </value>
+  </data>
+  <data name="BlockCheck2SiteListDropCaption" xml:space="preserve">
+    <value>Добавить TXT-списки сайтов</value>
+  </data>
+  <data name="BlockCheck2SiteListDropPartialTitle" xml:space="preserve">
+    <value>Некоторые файлы пропущены</value>
+  </data>
+  <data name="BlockCheck2SiteListDropPartialFormat" xml:space="preserve">
+    <value>Добавлено: {0}. Пропущено: {1}. Поддерживаются только корректные TXT-списки доменов.{2}</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListDialogDescriptionText.Text" xml:space="preserve">
+    <value>Введите домены или URL — по одному в строке.</value>
+  </data>
+  <data name="BlockCheck2CustomSiteListTextBox.PlaceholderText" xml:space="preserve">
+    <value>youtube.com
+https://discord.com/app</value>
+  </data>
+  <data name="BlockCheck2WorkCompleteStep.Header" xml:space="preserve">
+    <value>Подбор завершен</value>
+  </data>
+  <data name="BlockCheck2WorkCompleteStep.Description" xml:space="preserve">
+    <value>Подбор пресета для Zapret 2 завершен. Вы можете получить доступ к результатам этого подбора в любой момент через меню [Недавние подборы] на главной этого мастера.
+
+Нажмите [Показать результаты], чтобы перейти к просмотру результатов.</value>
+  </data>
+  <data name="BlockCheck2TestAllStrategiesCard.Header" xml:space="preserve">
+    <value>Не завершать после нахождения лучших стратегий</value>
+  </data>
+  <data name="BlockCheck2TestAllStrategiesCard.Description" xml:space="preserve">
+    <value>Проверить все доступные стратегии выбранного режима, даже если уже найдено достаточно успешных вариантов. Это заметно увеличит время подбора</value>
+  </data>
+  <data name="BlockCheck2ReviewAllStrategies" xml:space="preserve">
+    <value>Будут проверены все доступные стратегии этого режима</value>
+  </data>
+  <data name="BlockCheck2RequestsPerDomainCard.Header" xml:space="preserve">
+    <value>Кол-во запросов к домену</value>
+  </data>
+  <data name="BlockCheck2RequestsPerDomainCard.Description" xml:space="preserve">
+    <value>Число повторных проверок каждой цели: целое значение от 1 до 20. </value>
+  </data>
+  <data name="BlockCheck2ReviewRequestsCard.Header" xml:space="preserve">
+    <value>Кол-во запросов к домену</value>
+  </data>
+  <data name="BlockCheck2ReviewRequestsFormat" xml:space="preserve">
+    <value>Для каждой цели будет выполнено повторных проверок: {0}.</value>
+  </data>
+  <data name="CallHelpMenuItem.Text" xml:space="preserve">
+    <value>Получить справку об этом средстве оффлайн</value>
+  </data>
+  <data name="RateThisAppMenuItem.Text" xml:space="preserve">
+    <value>Оценить эту функцию приложения</value>
   </data>
 </root>

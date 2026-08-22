@@ -150,6 +150,12 @@ Disagreement with license will closed application.</value>
   <data name="PersonalizationAnimatedHorizontalContentItem.Header" xml:space="preserve">
     <value>Make it your's</value>
   </data>
+  <data name="StoreAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>This ready-to-use bundles contains component and required items for it. After installing bundle you can straightaway use component (after setup config). Select bundle to install, we're complete installation in background.</value>
+  </data>
+  <data name="StoreAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Recommended bundles </value>
+  </data>
   <data name="UnableLoadLicense" xml:space="preserve">
     <value>We're unable load license file. Continuation is impossible. 
 Try reinstall application

@@ -209,4 +209,58 @@
   <data name="TriggersAndActions" xml:space="preserve">
     <value>Триггеры и действия</value>
   </data>
+  <data name="Zapret2PresetSelection" xml:space="preserve">
+    <value>Подбор пресета для Zapret2</value>
+  </data>
+  <data name="1AboutPresetSelection" xml:space="preserve">
+    <value>Возможности и ограничения</value>
+  </data>
+  <data name="2ChooseSitesAndMode" xml:space="preserve">
+    <value>Подготовка к подбору</value>
+  </data>
+  <data name="3DuringPresetSelection" xml:space="preserve">
+    <value>Запуск и ход подбора</value>
+  </data>
+  <data name="4ResultsAndPreset" xml:space="preserve">
+    <value>Результаты и сборка пресета</value>
+  </data>
+  <data name="5SavePreset" xml:space="preserve">
+    <value>Проверка и сохранение пресета</value>
+  </data>
+  <data name="6TroubleshootingPresetSelection" xml:space="preserve">
+    <value>Если результат не подошёл</value>
+  </data>
+  <data name="Zapret2ManualPresetBuilding" xml:space="preserve">
+    <value>Сборка пресета вручную</value>
+  </data>
+  <data name="1ManualPresetOverview" xml:space="preserve">
+    <value>Когда нужна ручная сборка</value>
+  </data>
+  <data name="2ChooseManualStrategies" xml:space="preserve">
+    <value>Выбор стратегий</value>
+  </data>
+  <data name="3OrganizeManualPreset" xml:space="preserve">
+    <value>Области и предупреждения</value>
+  </data>
+  <data name="4FinishManualPreset" xml:space="preserve">
+    <value>Проверка и завершение</value>
+  </data>
+  <data name="ConfigImport" xml:space="preserve">
+    <value>Импорт пресетов</value>
+  </data>
+  <data name="1AboutConfigImport" xml:space="preserve">
+    <value>Возможности и безопасность</value>
+  </data>
+  <data name="2ChooseImportFiles" xml:space="preserve">
+    <value>Выбор и подготовка файлов</value>
+  </data>
+  <data name="3ResolveMissingFiles" xml:space="preserve">
+    <value>Отсутствующие файлы</value>
+  </data>
+  <data name="4ReviewTestAndSave" xml:space="preserve">
+    <value>Проверка и сохранение</value>
+  </data>
+  <data name="5ConfigImportTroubleshooting" xml:space="preserve">
+    <value>Ошибки и ограничения</value>
+  </data>
 </root>

@@ -150,6 +150,12 @@
   <data name="PersonalizationAnimatedHorizontalContentItem.Header" xml:space="preserve">
     <value>Персонализация</value>
   </data>
+  <data name="StoreAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Этот готовый к использованию пакет содержит компонент и необходимые для него элементы. После установки пакета вы можете сразу же использовать компонент (после выбора пресета). Выберите пакет для установки, и мы завершим все необходимое в фоновом режиме.</value>
+  </data>
+  <data name="StoreAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Рекомендованные готовые наборы</value>
+  </data>
   <data name="UnableLoadLicense" xml:space="preserve">
     <value>Мы не смогли загрузить файл соглашения. Продолжение невозможно.
 Попробуйте переустановить приложение

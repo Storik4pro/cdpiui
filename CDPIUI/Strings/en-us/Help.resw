@@ -209,4 +209,58 @@ Unfortunately we can't find page your looking for. Please, make sure program has
   <data name="TriggersAndActions" xml:space="preserve">
     <value>Triggers and actions</value>
   </data>
+  <data name="Zapret2PresetSelection" xml:space="preserve">
+    <value>Selecting a config for Zapret2</value>
+  </data>
+  <data name="1AboutPresetSelection" xml:space="preserve">
+    <value>Features and limitations</value>
+  </data>
+  <data name="2ChooseSitesAndMode" xml:space="preserve">
+    <value>Preparing for a scan</value>
+  </data>
+  <data name="3DuringPresetSelection" xml:space="preserve">
+    <value>Starting and monitoring the scan</value>
+  </data>
+  <data name="4ResultsAndPreset" xml:space="preserve">
+    <value>Results and config assembly</value>
+  </data>
+  <data name="5SavePreset" xml:space="preserve">
+    <value>Checking and saving a config</value>
+  </data>
+  <data name="6TroubleshootingPresetSelection" xml:space="preserve">
+    <value>If the result is not suitable</value>
+  </data>
+  <data name="Zapret2ManualPresetBuilding" xml:space="preserve">
+    <value>Build a config manually</value>
+  </data>
+  <data name="1ManualPresetOverview" xml:space="preserve">
+    <value>When to use the manual builder</value>
+  </data>
+  <data name="2ChooseManualStrategies" xml:space="preserve">
+    <value>Choosing strategies</value>
+  </data>
+  <data name="3OrganizeManualPreset" xml:space="preserve">
+    <value>Scopes and warnings</value>
+  </data>
+  <data name="4FinishManualPreset" xml:space="preserve">
+    <value>Testing and finishing</value>
+  </data>
+  <data name="ConfigImport" xml:space="preserve">
+    <value>Import presets</value>
+  </data>
+  <data name="1AboutConfigImport" xml:space="preserve">
+    <value>Features and safety</value>
+  </data>
+  <data name="2ChooseImportFiles" xml:space="preserve">
+    <value>Choose and prepare files</value>
+  </data>
+  <data name="3ResolveMissingFiles" xml:space="preserve">
+    <value>Missing files</value>
+  </data>
+  <data name="4ReviewTestAndSave" xml:space="preserve">
+    <value>Review, test, and save</value>
+  </data>
+  <data name="5ConfigImportTroubleshooting" xml:space="preserve">
+    <value>Errors and limitations</value>
+  </data>
 </root>
