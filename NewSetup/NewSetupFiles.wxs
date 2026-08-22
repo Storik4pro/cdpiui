@@ -36,9 +36,6 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
-        <File Source="$(var.SourceDir)\Assets\Icons\Import.ico" KeyPath="yes" />
-      </Component>
-      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\find_error.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -55,6 +52,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Help.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Import.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\OpenInNewWindow.png" KeyPath="yes" />
@@ -260,6 +260,21 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
         <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\1AboutConfigImport.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\2ChooseImportFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\3ResolveMissingFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\4ReviewTestAndSave.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\5ConfigImportTroubleshooting.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
         <File Source="$(var.SourceDir)\Help\EN\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
       </Component>
@@ -293,6 +308,36 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN">
         <File Source="$(var.SourceDir)\Help\EN\WelcomeToHelp.md" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\1ManualPresetOverview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\2ChooseManualStrategies.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\3OrganizeManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\4FinishManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\1AboutPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\2ChooseSitesAndMode.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\3DuringPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\4ResultsAndPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\5SavePreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\6TroubleshootingPresetSelection.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
         <File Source="$(var.SourceDir)\Help\RU\Autoselection\1WhatAutoSelectionIs.md" KeyPath="yes" />
       </Component>
@@ -307,6 +352,21 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
         <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\1AboutConfigImport.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\2ChooseImportFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\3ResolveMissingFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\4ReviewTestAndSave.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\5ConfigImportTroubleshooting.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\CreateConfigHelper">
         <File Source="$(var.SourceDir)\Help\RU\CreateConfigHelper\SaveConfigKitAs.md" KeyPath="yes" />
@@ -343,6 +403,36 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU">
         <File Source="$(var.SourceDir)\Help\RU\WelcomeToHelp.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\1ManualPresetOverview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\2ChooseManualStrategies.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\3OrganizeManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\4FinishManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\1AboutPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\2ChooseSitesAndMode.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\3DuringPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\4ResultsAndPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\5SavePreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\6TroubleshootingPresetSelection.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\HtmlAgilityPack.dll" KeyPath="yes" />
