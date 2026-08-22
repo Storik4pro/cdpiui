@@ -5591,4 +5591,7 @@ https://discord.com/app</value>
   <data name="RateThisAppMenuItem.Text" xml:space="preserve">
     <value>Оценить эту функцию приложения</value>
   </data>
+  <data name="RecentBlockCheck2Selections" xml:space="preserve">
+    <value>Недавние поборы пресета для Zapret2</value>
+  </data>
 </root>

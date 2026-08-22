@@ -5589,4 +5589,7 @@ Click [Show Results] to view the results.</value>
   <data name="RateThisAppMenuItem.Text" xml:space="preserve">
     <value>Rate this application feature</value>
   </data>
+  <data name="RecentBlockCheck2Selections" xml:space="preserve">
+    <value>Recent Zapret2 config selections</value>
+  </data>
 </root>
