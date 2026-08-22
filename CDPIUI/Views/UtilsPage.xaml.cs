@@ -51,6 +51,11 @@ namespace CDPIUI.Views
             _ = ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
         }
 
+        private void ConfigMakerSettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((App)Application.Current).SafeCreateNewWindow<ConfigMakerWindow>();
+        }
+
         private void ConfigImportUtilSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<ConfigImportUtilWindow>();
