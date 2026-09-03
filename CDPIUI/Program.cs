@@ -2,9 +2,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CDPIUI.Shared.Migration;
+using Windows.ApplicationModel.Activation;
 
 namespace CDPIUI
 {
@@ -12,12 +15,25 @@ namespace CDPIUI
     public class Program
     {
         private static SynchronizationContext uiContext;
+        private static readonly object activationSyncRoot = new();
+        private static readonly Queue<AppActivationArguments> pendingActivations = new();
+        private static int migrationActivationPending;
+
         internal static AppActivationArguments InitialActivationArguments { get; private set; }
+        internal static bool IsMigrationActivationPending =>
+            Volatile.Read(ref migrationActivationPending) != 0;
+
+        internal static void MarkMigrationActivationPending() =>
+            Interlocked.Exchange(ref migrationActivationPending, 1);
+
+        internal static void CompleteMigrationActivation() =>
+            Interlocked.Exchange(ref migrationActivationPending, 0);
 
         [STAThread]
         static int Main(string[] args)
         {
             WinRT.ComWrappersSupport.InitializeComWrappers();
+            ObserveMigrationArguments(args);
             bool isRedirect = DecideRedirection();
 
             if (!isRedirect)
@@ -27,9 +43,12 @@ namespace CDPIUI
                     var context = new DispatcherQueueSynchronizationContext(
                         DispatcherQueue.GetForCurrentThread());
                     SynchronizationContext.SetSynchronizationContext(context);
+                    lock (activationSyncRoot)
+                    {
+                        uiContext = context;
+                    }
                     _ = new App();
-
-                    uiContext = SynchronizationContext.Current;
+                    DispatchPendingActivations();
                 });
             }
 
@@ -41,6 +60,7 @@ namespace CDPIUI
             bool isRedirect = false;
             AppActivationArguments args = AppInstance.GetCurrent().GetActivatedEventArgs();
             ExtendedActivationKind kind = args.Kind;
+            ObserveMigrationActivation(args);
             AppInstance keyInstance = AppInstance.FindOrRegisterForKey("CDPI_GUIApp");
 
             if (keyInstance.IsCurrent)
@@ -59,23 +79,75 @@ namespace CDPIUI
 
         private static void OnActivated(object sender, AppActivationArguments args)
         {
-            ExtendedActivationKind kind = args.Kind;
+            ObserveMigrationActivation(args);
+            DispatchOrQueueActivation(args);
+        }
 
-            if (uiContext != null)
+        private static void DispatchOrQueueActivation(AppActivationArguments args)
+        {
+            SynchronizationContext context;
+            lock (activationSyncRoot)
             {
-                uiContext.Post(_ =>
+                context = uiContext;
+                if (context == null)
                 {
-                    try
-                    {
-                        var app = (App)Application.Current;
-                        if (app != null)
-                        {
-                            app.PrefferRequestedActions(args);
-                            
-                        }
-                    }
-                    catch { }
-                }, null);
+                    pendingActivations.Enqueue(args);
+                    return;
+                }
+            }
+
+            context.Post(_ => DispatchActivation(args), null);
+        }
+
+        private static void DispatchPendingActivations()
+        {
+            AppActivationArguments[] activations;
+            lock (activationSyncRoot)
+            {
+                activations = pendingActivations.ToArray();
+                pendingActivations.Clear();
+            }
+
+            foreach (AppActivationArguments activation in activations)
+            {
+                DispatchOrQueueActivation(activation);
+            }
+        }
+
+        private static void DispatchActivation(AppActivationArguments args)
+        {
+            try
+            {
+                if (Application.Current is App app)
+                {
+                    app.PrefferRequestedActions(args);
+                }
+            }
+            catch { }
+        }
+
+        private static void ObserveMigrationActivation(AppActivationArguments args)
+        {
+            if (args.Kind is ExtendedActivationKind.Launch &&
+                args.Data is ILaunchActivatedEventArgs launchArguments)
+            {
+                ObserveMigrationArguments(launchArguments.Arguments);
+            }
+        }
+
+        private static void ObserveMigrationArguments(IEnumerable<string> arguments)
+        {
+            if (GoodbyeDpiMigrationActivation.TryFindArgument(arguments, out _))
+            {
+                MarkMigrationActivationPending();
+            }
+        }
+
+        private static void ObserveMigrationArguments(string arguments)
+        {
+            if (GoodbyeDpiMigrationActivation.TryFindArgument(arguments, out _))
+            {
+                MarkMigrationActivationPending();
             }
         }
 
