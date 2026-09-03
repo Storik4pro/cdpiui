@@ -2,6 +2,8 @@ using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration.Converters;
 using CDPIUI.Core.JSON;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -15,8 +17,10 @@ public sealed partial class ConfigImportService
 {
     public const string CurrentVersionPlaceholder = "%CURRENT%";
 
-    public ConfigImportResult Import(string filePath, ConfigImportTarget target)
+    public ConfigImportResult Import(string filePath, ConfigImportTarget? target = null, string requestedTarget = "")
     {
+        target ??= GetConfigImportTarget(filePath, requestedTarget);
+
         string fullPath = TryGetFullPath(filePath) ?? filePath;
         if (!ValidateRequest(fullPath, target, out ConfigImportResult? invalidResult))
             return invalidResult!;
@@ -971,6 +975,29 @@ public sealed partial class ConfigImportService
             MissingFileResolutions = [],
             GeneratedFiles = [],
         };
+
+    private static ConfigImportTarget CreateTarget(DatabaseStoreItem item) => new(
+        item.Id!,
+        item.ShortName ?? item.Name ?? item.Id!,
+        item.Executable!,
+        item.CurrentVersion,
+        item.Directory);
+
+    private ConfigImportTarget GetConfigImportTarget(string filePath, string requestedTarget)
+    {
+        var components = DatabaseHelper.Instance.GetItemsByType("component");
+        List<ConfigImportTarget> targets = [.. components.Select(CreateTarget)];
+
+        var matches = FindMatchingTargets(filePath, targets);
+        return matches.FirstOrDefault()
+            ?? FindRequestedTarget(targets, requestedTarget)
+            ?? targets.FirstOrDefault()
+            ?? new ConfigImportTarget(string.Empty, string.Empty, string.Empty, null);
+    }
+
+    private ConfigImportTarget? FindRequestedTarget(IReadOnlyList<ConfigImportTarget> targets, string requestedTarget) =>
+        targets.FirstOrDefault(target =>
+            string.Equals(target.ComponentId, requestedTarget, StringComparison.OrdinalIgnoreCase));
 
     private sealed class GenericImportContext(ConfigImportTarget target, string sourcePath)
     {
