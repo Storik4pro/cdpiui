@@ -92,10 +92,13 @@ public sealed partial class AnimatedHorizontalContentViewer : UserControl
 
     public void GoTo(int index)
     {
-        if (Items.Count < index || index < 0)
+        if (index < 0 || index >= Items.Count)
             return;
 
         UpdateCurrentText(index);
+
+        if (index == _selectedIndex)
+            return;
 
         ShowAnimated(index);
     }
