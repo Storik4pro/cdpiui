@@ -138,8 +138,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="© 2025 Storik4. License: Apache License, Version 2.0." IsTextSelectionEnabled="True" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                        <HyperlinkButton x:Name="LicenseButton" Grid.Column="1" Content="More..." Padding="0" Click="LicenseButton_Click"/>
+                        <TextBlock l:Uids.Uid="AboutLicenseTextBlock" IsTextSelectionEnabled="True" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                        <HyperlinkButton l:Uids.Uid="LicenseButton" x:Name="LicenseButton" Grid.Column="1" Padding="0" Click="LicenseButton_Click"/>
                     </Grid>
                     <TextBlock l:Uids.Uid="DeveloperTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
                     <TextBlock Margin="20 0 0 0" Text="Storik4" IsTextSelectionEnabled="True"/>
