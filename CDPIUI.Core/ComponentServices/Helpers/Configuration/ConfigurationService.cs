@@ -33,12 +33,12 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             Target = target;
         }
 
-        private List<ConfigItem>? InitConfigDirectory(DatabaseStoreItem item)
+        private List<ConfigItem> InitConfigDirectory(DatabaseStoreItem item)
         {
             string directory = item.Directory;
             string id = item.Id;
 
-            if (string.IsNullOrEmpty(id)) return null;
+            if (string.IsNullOrEmpty(id)) return [];
 
             List<ConfigItem> configItems = new List<ConfigItem>();
 
@@ -66,16 +66,10 @@ namespace CDPIUI.Core.ComponentServices.Configuration
 
                 try
                 {
-                    ConfigItem configItem = JSONConvertor.LoadJson<ConfigItem>(jsonFile);
+                    ConfigItem? configItem = JSONConvertor.LoadJson<ConfigItem>(jsonFile);
 
-                    Logger.Instance.CreateDebugLog(nameof(ConfigurationService), $"Now work at {jsonFile}");
-
-                    string? configTarget = configItem.target?.FirstOrDefault();
-                    bool isLegacyZapretConfig =
-                        Target == HardcodedItemIds.ComponentIds[Components.Zapret2] &&
-                        configTarget == HardcodedItemIds.ComponentIds[Components.Zapret];
-
-                    if (configTarget != Target && Target != "$ANY" && !isLegacyZapretConfig)
+                    if (configItem == null ||
+                        !MatchesTarget(configItem, Target, out bool isLegacyZapretConfig))
                         continue;
 
                     configItem.IsLegacy = isLegacyZapretConfig;
@@ -119,6 +113,67 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             return [.. array];
         }
 
+        private static bool MatchesTarget(
+            ConfigItem? configItem,
+            string target,
+            out bool isLegacyZapretConfig)
+        {
+            if (configItem == null)
+            {
+                isLegacyZapretConfig = false;
+                return false;
+            }
+
+            string? configTarget = configItem.target?.FirstOrDefault();
+            isLegacyZapretConfig =
+                target == HardcodedItemIds.ComponentIds[Components.Zapret2] &&
+                configTarget == HardcodedItemIds.ComponentIds[Components.Zapret];
+
+            return target == "$ANY" || configTarget == target || isLegacyZapretConfig;
+        }
+
+        public static ConfigItem? LoadConfigItemFromPack(
+            string filename,
+            string packId,
+            string target)
+        {
+            if (string.IsNullOrWhiteSpace(filename) ||
+                string.IsNullOrWhiteSpace(packId) ||
+                string.IsNullOrWhiteSpace(target) ||
+                !string.Equals(filename, Path.GetFileName(filename), StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            try
+            {
+                DatabaseStoreItem? pack = DatabaseHelper.Instance.GetItemById(packId);
+                if (string.IsNullOrWhiteSpace(pack?.Directory))
+                    return null;
+
+                string configPath = Path.Combine(pack.Directory, filename);
+                if (!File.Exists(configPath))
+                    return null;
+
+                ConfigItem? configItem = JSONConvertor.LoadJson<ConfigItem>(configPath);
+                if (configItem == null ||
+                    !MatchesTarget(configItem, target, out bool isLegacyZapretConfig))
+                    return null;
+
+                configItem.file_name = filename;
+                configItem.packId = packId;
+                configItem.IsLegacy = isLegacyZapretConfig;
+                return configItem;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(ConfigurationService),
+                    $"Cannot load selected config '{packId}/{filename}': {ex.Message}");
+                return null;
+            }
+        }
+
         public void Init(string itemId = "")
         {
             lock (_lock)
@@ -151,7 +206,7 @@ namespace CDPIUI.Core.ComponentServices.Configuration
         {
             lock (_lock)
             {
-                return Items;
+                return [.. Items];
             }
         }
 

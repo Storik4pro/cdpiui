@@ -26,12 +26,47 @@ namespace CDPIUI.Core.ComponentServices.Helpers.Configuration
         public Dictionary<string, string>? commaVars { get; set; }
         public List<AvailableVarValues>? availableCommaVarsValues { get; set; }
         public string? startup_string { get; set; }
+        public ConfigMakerPresetMetadata? configMaker { get; set; }
         public List<string>? toggle_lists;
 
         [Newtonsoft.Json.JsonIgnore]
         public bool IsLegacy { get; set; }
 
         public bool MarkAsRemoved = false;
+    }
+
+    /// <summary>
+    /// Optional editor metadata. Runtime configuration remains in the legacy ConfigItem fields;
+    /// this section only preserves information required to reopen a preset in ConfigMaker.
+    /// </summary>
+    public class ConfigMakerPresetMetadata
+    {
+        public int schemaVersion { get; set; } = 1;
+        public List<ConfigMakerVariableMetadata>? variables { get; set; }
+        public List<ConfigMakerResourceMetadata>? resources { get; set; }
+    }
+
+    public class ConfigMakerVariableMetadata
+    {
+        public string? id { get; set; }
+        public string? name { get; set; }
+        public string? kind { get; set; }
+        public string? storageKind { get; set; }
+        public string? value { get; set; }
+        public string? description { get; set; }
+        public List<string>? values { get; set; }
+        public string? onValue { get; set; }
+        public string? offValue { get; set; }
+        public string? internalParameterName { get; set; }
+        public bool isSwitchEnabled { get; set; }
+    }
+
+    public class ConfigMakerResourceMetadata
+    {
+        public string? alias { get; set; }
+        public string? path { get; set; }
+        public string? kind { get; set; }
+        public bool isBuiltIn { get; set; }
     }
 
     public class VariableItem
