@@ -54,6 +54,7 @@
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml" />
     <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
     <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
+    <None Remove="Controls\Dialogs\EditConfig\EditConfigWindowWelcomeContentDialog.xaml" />
     <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
     <None Remove="Controls\Dialogs\MainPage\CommunityContentDialog.xaml" />
     <None Remove="Controls\Dialogs\Q\QContentDialog.xaml" />
@@ -92,6 +93,8 @@
     <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
     <None Remove="Controls\Universal\HorizontalSeparatedListView.xaml" />
     <None Remove="Controls\Universal\IconButton.xaml" />
+    <None Remove="Controls\Universal\LargeButton.xaml" />
+    <None Remove="Controls\Universal\LargeToggleButton.xaml" />
     <None Remove="Controls\Universal\LinkedSettingsUserControl.xaml" />
     <None Remove="Controls\Universal\NoContentToDisplayUserControl.xaml" />
     <None Remove="Controls\Universal\SearchUserControl.xaml" />
@@ -144,6 +147,7 @@
     <None Remove="Views\Store\Settings\Memory\MemoryViewConditionalLaunchDetailsPage.xaml" />
     <None Remove="Views\Troubleshooting\MainPage.xaml" />
     <None Remove="Views\Troubleshooting\WorkPage.xaml" />
+    <None Remove="Windows\AppFeaturesWindow.xaml" />
     <None Remove="Windows\ConditionalLaunchWindow.xaml" />
     <None Remove="Windows\ConditionalTaskEditorWindow.xaml" />
     <None Remove="Controls\Navigation\AnimatedSelectorBar.xaml" />
@@ -317,6 +321,9 @@
     <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="Assets\Welcome\ThemeView.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Windows\ConditionalLaunchWindow.xaml">
@@ -480,8 +487,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.6.8.0</FileVersion>
-    <AssemblyVersion>0.6.8.0</AssemblyVersion>
+    <FileVersion>0.6.9.0</FileVersion>
+    <AssemblyVersion>0.6.9.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>
@@ -658,6 +665,15 @@
     <Page Update="Controls\Universal\HorizontalSeparatedListView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Universal\LargeButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\EditConfig\EditConfigWindowWelcomeContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\LargeToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Template\Hosts\hosts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -668,6 +684,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Settings\PersonalizePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\AppFeaturesWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Windows\WelcomeWindow.xaml">
