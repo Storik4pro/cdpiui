@@ -5,6 +5,7 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper.AddOns.ConfigImport;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -89,32 +90,9 @@ public sealed partial class MainPage : TemplatePage
 
     private async Task<bool> ImportConfigsAsync()
     {
-        string[] filePaths;
-        using (System.Windows.Forms.OpenFileDialog openFileDialog = new())
-        {
-            openFileDialog.Title = localizer.GetLocalizedString("ImportConfig");
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            openFileDialog.Multiselect = true;
-
-            openFileDialog.Filter = 
-                $"{localizer.GetLocalizedString("TextFiles")} (*.txt)|*.txt|" +
-                $"{localizer.GetLocalizedString("BatchFiles")} (*.bat;*.cmd)|*.bat;*.cmd|" +
-                $"{localizer.GetLocalizedString("JsonFiles")} (*.json)|*.json|" +
-                $"{localizer.GetLocalizedString("AllSupported")} (*.txt;*.bat;*.cmd;*.json)|*.txt;*.bat;*.cmd;*.json";
-            openFileDialog.RestoreDirectory = true;
-
-            openFileDialog.FilterIndex = 4;
-
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                filePaths = openFileDialog.FileNames;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        var result = ConfigImportHelper.OpenFileSelectionDialog(true);
+        if (!result.Success) return false;
+        string[] filePaths = result.Result;
 
         if (filePaths.Length == 0)
             return false;
