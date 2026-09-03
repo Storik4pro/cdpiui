@@ -16,7 +16,8 @@
     xmlns:vm="using:CDPIUI.ViewModels"
     xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock" 
     xmlns:media="using:Microsoft.UI.Xaml.Media" 
-    xmlns:scontrols="using:CDPIUI.Controls.Settings">
+    xmlns:scontrols="using:CDPIUI.Controls.Settings" 
+    xmlns:storecontrol="using:CDPIUI.Controls.Store">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -139,11 +140,111 @@
                     x:Name="StoreItem"
                     l:Uids.Uid="/WelcomeWizard/StoreAnimatedHorizontalContentItem">
                     <Grid x:Name="Content">
-                        <StackPanel x:Name="ErrorStackPanel" Spacing="10" Margin="20 0">
-                            <ucontrols:NoContentToDisplayUserControl l:Uids.Uid="NoBundlesAvailableNoContentToDisplayUserControl" Margin="20"/>
-                            <ucontrols:URIButton URI="cdpiui://Store" l:Uids.Uid="OpenStoreURIButton"/>
-                        </StackPanel>
-                        
+                        <Grid x:Name="ReadyBundlesContent">
+                            <StackPanel x:Name="ErrorStackPanel" Spacing="10" Margin="20 0">
+                                <ucontrols:NoContentToDisplayUserControl l:Uids.Uid="NoBundlesAvailableNoContentToDisplayUserControl" Margin="20"/>
+                                <ucontrols:URIButton URI="cdpiui://Store" l:Uids.Uid="OpenStoreURIButton"/>
+                            </StackPanel>
+                            <ListView 
+                                x:Name="StoreViewBundles"
+                                SelectionMode="Multiple"
+                                SelectionChanged="StoreViewBundles_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="storecontrol:StoreViewBundleItem">
+                                        <Grid Padding="0 10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="10*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid CornerRadius="5">
+                                                <Rectangle Fill="{x:Bind CardBackgroundBrush}"/>
+                                                <Image Source="{x:Bind CardImageSource}" Width="45" Margin="10"/>
+                                            </Grid>
+                                            <Grid Grid.Column="2" VerticalAlignment="Center">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{x:Bind CardTitle}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="1" Text="{x:Bind CardSubtitle}" Style="{ThemeResource CaptionTextBlockStyle}" MaxLines="2"/>
+                                            </Grid>
+                                            <ListView 
+                                                ItemsSource="{x:Bind Items}" 
+                                                Grid.Column="4" 
+                                                ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}" 
+                                                HorizontalAlignment="Right">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:ViewStoreItemModel">
+                                                        <Grid x:Name="ViewIconGrid" Height="30" Width="30" ToolTipService.ToolTip="{x:Bind Name}" Margin="1">
+                                                            <Border 
+                                                                Background="{x:Bind ColorBrush}" 
+                                                                CornerRadius="5" 
+                                                                BorderThickness="1" 
+                                                                BorderBrush="{ThemeResource SystemChromeBlackMediumColor}"/>
+                                                            <Image x:Name="ViewIconImage" Source="{x:Bind ImageSource, Mode=OneWay}" Height="20"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                                <ListView.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <ItemsWrapGrid MaximumRowsOrColumns="2" Margin="0 0 10 0"/>
+                                                    </ItemsPanelTemplate>
+                                                </ListView.ItemsPanel>
+                                            </ListView>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+
+                        <ScrollViewer x:Name="MigrationContent" Visibility="Collapsed">
+                            <StackPanel Margin="20 0 20 20" Spacing="14">
+                                <InfoBar
+                                    x:Name="MigrationStatusInfoBar"
+                                    IsOpen="True"
+                                    IsClosable="False"
+                                    Severity="Informational"/>
+                                <ProgressBar
+                                    x:Name="MigrationProgressBar"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    Value="0"/>
+                                <ListView
+                                    x:Name="MigrationComponentsListView"
+                                    SelectionMode="None"
+                                    IsItemClickEnabled="False">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="4 8" ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap"/>
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    Text="{Binding Status}"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <TextBlock
+                                    x:Name="MigrationSummaryTextBlock"
+                                    TextWrapping="Wrap"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <Button
+                                    x:Name="RetryMigrationButton"
+                                    l:Uids.Uid="/WelcomeWizard/RetryMigrationButton"
+                                    Click="RetryMigrationButton_Click"
+                                    HorizontalAlignment="Left"
+                                    Visibility="Collapsed"/>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </ncontrols:AnimatedHorizontalContentItem>
                 <ncontrols:AnimatedHorizontalContentItem
