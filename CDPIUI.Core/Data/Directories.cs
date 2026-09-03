@@ -87,7 +87,7 @@ namespace CDPIUI.Core.Data
         private string TryGetDataDirectory()
         {
             if (DataDirectoryProperty != null) return DataDirectoryProperty;
-            var result = DirectoriesManager.GetDataDirectory(Environment.ProcessPath, false);
+            var result = DirectoriesManager.GetDataDirectory(Environment.ProcessPath, false, State.IsApplicationBuildAsMsi);
 
             if (result.Success)
             {
