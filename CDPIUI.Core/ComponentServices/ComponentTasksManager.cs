@@ -55,12 +55,16 @@ namespace CDPIUI.Core.ComponentServices
             var task = await GetTaskFromId(id);
             if (task != null && DatabaseHelper.Instance.IsItemInstalled(task.Id))
             {
-                ComponentHelper componentHelper =
+                ComponentHelper? componentHelper =
                     ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(task.Id);
 
                 try
                 {
-                    if (componentHelper != null && string.IsNullOrEmpty(componentHelper.GetStartupParams()))
+                    string startupParams = componentHelper == null
+                        ? string.Empty
+                        : await Task.Run(componentHelper.GetStartupParams);
+
+                    if (string.IsNullOrEmpty(startupParams))
                     {
                         await PipeHelper.SendSettingsPacket(
                             Shared.Pipe.Models.SettingsMessageIds.ComponentSetupNotFinished,
