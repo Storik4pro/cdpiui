@@ -12,6 +12,7 @@ namespace CDPIUI.Commands
     {
         private static readonly CommandRoute[] Routes =
         [
+            CreateWindowRoute("AppFeatures", [], "AppFeaturesWindow"),
             CreateWindowRoute("Welcome", [], "WelcomeWindow"),
 
             CreateWindowRoute("Main", [], "MainWindow"),
@@ -122,7 +123,18 @@ namespace CDPIUI.Commands
                 "StoreWindow",
                 "Settings.Memory.MemoryViewConditionalLaunchDetailsPage"),
 
-            CreateWindowRoute("Tools", ["Console"], "ViewWindow"),
+            new(
+                "Tools", 
+                ["Console", "{componentId}"],
+                parameters => CreateShowWindowCommand(
+                    "ViewWindow",
+                    null,
+                    new NameValueCollection
+                    {
+                        { "id", parameters["componentId"] }
+                    }
+                 )   
+                ),
             CreateWindowRoute("Tools", ["ConditionalLaunch"], "ConditionalLaunchWindow"),
             CreateWindowRoute("Tools", ["AutoConfig"], "CreateConfigUtilWindow"),
             new(
@@ -157,7 +169,8 @@ namespace CDPIUI.Commands
                     {
                         { "componentId", parameters["componentId"] }
                     })),
-            CreateWindowRoute("Tools", ["ConfigEditor"], "CreateConfigHelperWindow"),
+            CreateWindowRoute("Tools", ["ConfigEditor"], "ConfigMakerWindow"),
+            CreateWindowRoute("Tools", ["ConfigEditorLegacy"], "CreateConfigHelperWindow"),
             CreateWindowRoute("Tools", ["ImportConfig"], "ConfigImportUtilWindow"),
             new(
                 "Tools",
@@ -173,16 +186,15 @@ namespace CDPIUI.Commands
                 "Tools",
                 ["CreateConfig", "{componentId}"],
                 parameters => CreateShowWindowCommand(
-                    "CreateConfigHelperWindow",
-                    "CreateNewConfigPage",
+                    "ConfigMakerWindow",
+                    null,
                     new NameValueCollection
                     {
-                        { "type", "CFGCREATEBYID" },
-                        { "componentId", parameters["componentId"] }
+                        { "id", parameters["componentId"] }
                     })),
             new(
                 "Tools",
-                ["EditConfig", "{kitId}"],
+                ["EditConfigKit", "{kitId}"],
                 parameters => CreateShowWindowCommand(
                     "CreateConfigHelperWindow",
                     "EditConfigKitPage",
