@@ -3,6 +3,7 @@ using CDPIUI.Shared;
 using CDPIUI.Shared.Pipe;
 using CDPIUI.Shared.Pipe.Models;
 using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.Shared.Migration;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Security.Principal;
@@ -75,6 +76,11 @@ namespace CDPIUI.Core.Communication
                 try
                 {
                     string startupString = SettingsManager.Instance.GetValue<bool>("APPEARANCE", "hideToTrayOnStartup") ? "--autorun" : "--show-ui";
+                    if (GoodbyeDpiMigrationActivation.TryFindArgument(
+                        Environment.GetCommandLineArgs(), out var migrationRequest))
+                    {
+                        startupString = $"--show-ui {migrationRequest!.RawArgument}";
+                    }
                     var psi = new ProcessStartInfo(Path.Combine(Data.Directories.CurrentDirectory, "CDPIUI_TrayIcon.exe"), startupString)
                     {
                         UseShellExecute = true,
