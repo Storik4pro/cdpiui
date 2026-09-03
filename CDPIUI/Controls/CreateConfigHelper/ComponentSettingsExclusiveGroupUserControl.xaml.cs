@@ -221,12 +221,22 @@ namespace CDPIUI.Controls.CreateConfigHelper
 
         private void CheckSelectedItem()
         {
-            SelectorBar.SelectedItem = SelectorBar.Items.FirstOrDefault(x => x.Tag.ToString() == SelectedItemGuid);
+            SelectorBar.SelectedItem = SelectorBar.Items.FirstOrDefault(item =>
+                string.Equals(
+                    item.Tag?.ToString(),
+                    SelectedItemGuid,
+                    StringComparison.Ordinal));
         }
 
         private void SelectorBar_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
         {
-            SelectedItemGuid = SelectorBar.SelectedItem.Tag.ToString();
+            if (sender.SelectedItem?.Tag is not object selectedTag)
+            {
+                MainComponentSettingsUserControl.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            SelectedItemGuid = selectedTag.ToString() ?? string.Empty;
             var item = AvailableVariants?.FirstOrDefault(x => x.Guid == SelectedItemGuid);
             if (item != null)
             {
