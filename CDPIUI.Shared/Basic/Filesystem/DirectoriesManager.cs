@@ -9,13 +9,13 @@ namespace CDPIUI.Shared.Basic.Filesystem
 {
     public class DirectoriesManager
     {
-        public static UnprocessedOperationResultModel<string> GetDataDirectory(string? procPath, bool getCurrent = false)
+        public static UnprocessedOperationResultModel<string> GetDataDirectory(string? procPath, bool getCurrent = false, bool forceAppData = false)
         {
             try
             {
                 if (procPath == null) throw new ArgumentNullException(nameof(procPath));
 
-                if (DirectoryWritePermissionCheckService.HasWritePermission(Path.GetDirectoryName(procPath)).Success || getCurrent)
+                if ((DirectoryWritePermissionCheckService.HasWritePermission(Path.GetDirectoryName(procPath)).Success || getCurrent) && !forceAppData)
                     return UnprocessedOperationResultModel<string>.SuccessResult(Path.GetDirectoryName(procPath)!);
                 else
                 {
