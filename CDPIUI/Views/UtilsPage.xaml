@@ -98,20 +98,12 @@
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
-                <controls:SettingsCard l:Uids.Uid="ConfigMakerSettingsCard" x:Name="ConfigMakerSettingsCard" IsClickEnabled="True" Click="ConfigMakerSettingsCard_Click" Visibility="Collapsed">
+                <controls:SettingsCard l:Uids.Uid="ConfigMakerSettingsCard" x:Name="ConfigMakerSettingsCard" IsClickEnabled="True" Click="ConfigMakerSettingsCard_Click">
                     <controls:SettingsCard.ActionIcon>
                         <FontIcon Glyph="&#xE8A7;" />
                     </controls:SettingsCard.ActionIcon>
                     <controls:SettingsCard.HeaderIcon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png" ShowAsMonochrome="False" Width="20" Height="20"/>
-                    </controls:SettingsCard.HeaderIcon>
-                </controls:SettingsCard>
-                <controls:SettingsCard l:Uids.Uid="CreateConfigHelperSettingsCard" x:Name="CreateConfigHelperSettingsCard" IsClickEnabled="True" Click="CreateConfigHelperSettingsCard_Click">
-                    <controls:SettingsCard.ActionIcon>
-                        <FontIcon Glyph="&#xE8A7;" />
-                    </controls:SettingsCard.ActionIcon>
-                    <controls:SettingsCard.HeaderIcon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Edit.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
                     </controls:SettingsCard.HeaderIcon>
                 </controls:SettingsCard>
                 <controls:SettingsCard l:Uids.Uid="ConfigImportUtilSettingsCard" x:Name="ConfigImportUtilSettingsCard" IsClickEnabled="True" Click="ConfigImportUtilSettingsCard_Click">
