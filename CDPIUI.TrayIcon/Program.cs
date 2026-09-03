@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Windows.Foundation.Collections;
 using Application = System.Windows.Forms.Application;
 using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.Shared.Migration;
 using CDPIUI.TrayIcon.ConditionalLaunch;
 
 class Programm
@@ -34,9 +35,13 @@ class Programm
             return;
         }
 
-        if (args.Contains("--show-ui") || args.Contains("--after-patching") || args.Contains("--after-failed-update"))
+        GoodbyeDpiMigrationActivation.TryFindArgument(args, out var migrationRequest);
+        if (args.Contains("--show-ui") || args.Contains("--after-patching") ||
+            args.Contains("--after-failed-update") || migrationRequest != null)
         {
-            RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), string.Empty);
+            RunHelper.RunAsDesktopUser(
+                Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"),
+                migrationRequest?.RawArgument ?? string.Empty);
         }
 
         string updateFilePath = Path.Combine(Utils.GetDataDirectory(), "Update.exe");
