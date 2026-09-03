@@ -1,23 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template:TemplateWindow
-    x:Class="CDPIUI.ConfigMakerWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:configMaker="using:CDPIUI.Controls.CreateConfigHelper"
-    xmlns:template="using:CDPIUI.Default"
-    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+	x:Class="CDPIUI.ConfigMakerWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:configMaker="using:CDPIUI.Controls.CreateConfigHelper"
+	xmlns:l="using:WinUI3Localizer"
+	xmlns:template="using:CDPIUI.Default"
+	xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal">
 
-    <template:TemplateWindow.SystemBackdrop>
-        <MicaBackdrop />
-    </template:TemplateWindow.SystemBackdrop>
+	<template:TemplateWindow.SystemBackdrop>
+		<MicaBackdrop />
+	</template:TemplateWindow.SystemBackdrop>
 
-    <Grid x:Name="RootGrid" Loaded="RootGrid_Loaded">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+	<Grid x:Name="RootGrid" Loaded="RootGrid_Loaded">
+		<Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <wc:TitleBarUserControl x:Name="TitleBarUserControl" Height="48" />
-        <configMaker:ConfigMakerUserControl x:Name="ConfigMaker" Grid.Row="2" />
+		</Grid.RowDefinitions>
+		<wc:TitleBarUserControl x:Name="TitleBarUserControl" Height="36" />
+		<Grid Grid.Row="1" Height="36">
+			<Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" />
+            <MenuBar Height="36" Margin="0 -2 0 0">
+                <MenuBarItem
+				   l:Uids.Uid="FileMenuItem"
+                    >
+                    <MenuFlyoutItem
+                        x:Name="OpenWelcomeDialog"
+                        l:Uids.Uid="HomeMenuItem"
+                        Click="OpenWelcomeDialog_Click">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE80F;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem
+						x:Name="CreateNewMenuItem"
+						l:Uids.Uid="ConfigMakerNewMenuItem"
+						Click="NewMenuItem_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="N" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE710;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+						x:Name="EditConfigMenuItem"
+						l:Uids.Uid="EditConfigMenuItem"
+						Click="EditConfigMenuItem_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="O" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE70F;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+						x:Name="OpenFileMenuItem"
+						l:Uids.Uid="OpenFileMenuItem"
+						Click="OpenFileMenuItem_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="O" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8E5;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem
+						x:Name="SaveToApplicationMenuItem"
+						l:Uids.Uid="BlockCheck2SaveToApplicationWindowMenuItem"
+						Click="SaveToApplicationMenuItem_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE792;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerSaveTextMenuItem"
+                        x:Name="SaveTextMenuItem"
+						Click="SaveTextMenuItem_Click"
+						Icon="Save">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerExitMenuItem"
+						Click="CloseMenuItem_Click">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="W" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+                <MenuBarItem
+					l:Uids.Uid="EditMenuItem">
+                    <MenuFlyoutItem x:Name="FontMenuItem" l:Uids.Uid="FontMenuItem" Click="FontMenuItem_Click">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8D2;" />
+                        </MenuFlyoutItem.Icon>
+
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerFormatMenuItem"
+						Click="FormatMenuItem_Click"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem x:Name="Search" l:Uids.Uid="SearchMenuItem" Icon="Find" Command="{x:Bind ConfigMaker.Search, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="F"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="SearchAndReplace" l:Uids.Uid="SearchAndReplaceMenuItem" Command="{x:Bind ConfigMaker.Replace, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="H"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+                <MenuBarItem
+					l:Uids.Uid="ViewMenuItem">
+
+                    <MenuFlyoutItem l:Uids.Uid="ZoomInMenuItem" x:Name="ZoomInMenuItem" Command="{x:Bind ConfigMaker.ZoomIn, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Add"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8A3;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem l:Uids.Uid="ZoomOutMenuItem" x:Name="ZoomOutMenuItem" Command="{x:Bind ConfigMaker.ZoomOut, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Subtract"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE71F;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem l:Uids.Uid="ZoomReturnMenuItem" x:Name="ZoomReturnMenuItem" Command="{x:Bind ConfigMaker.ZoomReset, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator/>
+                    <ToggleMenuFlyoutItem
+						l:Uids.Uid="ConfigMakerPresetFilesPanelMenuItem"
+                        x:Name="PresetFilesPanelMenuItem"
+						Click="PresetFilesPanelMenuItem_Click"/>
+                    <ToggleMenuFlyoutItem
+						l:Uids.Uid="ConfigMakerCommandPanelMenuItem"
+                        x:Name="CommandPanelMenuItem"
+						Click="CommandPanelMenuItem_Click"/>
+                    <ToggleMenuFlyoutItem
+						l:Uids.Uid="ConfigMakerBottomPanelMenuItem"
+                        x:Name="BottomPanelMenuItem"
+						Click="BottomPanelMenuItem_Click"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerShowOutputMenuItem"
+						Click="ShowOutputMenuItem_Click"
+                        />
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerShowDiagnosticsMenuItem"
+						Click="ShowDiagnosticsMenuItem_Click"/>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerShowPresetGroupsMenuItem"
+						Click="ShowPresetGroupsMenuItem_Click"
+						IsEnabled="{x:Bind ConfigMaker.HasPresetGroups, Mode=OneWay}"/>
+                </MenuBarItem>
+                <MenuBarItem
+					l:Uids.Uid="ProcessMenuItem">
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerStartTestMenuItem"
+                        x:Name="StartTestMenuItem"
+						Click="StartTestMenuItem_Click"
+						Icon="Play">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="F5"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerStopTestMenuItem"
+                        x:Name="StopTestMenuItem"
+						Click="StopTestMenuItem_Click"
+						Icon="Stop">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Shift" Key="F5"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+                <MenuBarItem
+					l:Uids.Uid="HelpMenuItem">
+                    <MenuFlyoutItem
+						l:Uids.Uid="ConfigMakerRefreshHelpMenuItem"
+						Click="RefreshHelpMenuItem_Click">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE72C;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+            </MenuBar>
+        </Grid>
+		<configMaker:ConfigMakerUserControl x:Name="ConfigMaker" Grid.Row="2" UseInlineStatusMessages="False" />
+        <ucontrols:StatusNotificationControl 
+            x:Name="NotificationControl"
+            Grid.Row="1" 
+            Grid.RowSpan="3" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top" 
+            PlacementMode="Bottom"
+            ButtonHeight="36"/>
     </Grid>
 </template:TemplateWindow>
