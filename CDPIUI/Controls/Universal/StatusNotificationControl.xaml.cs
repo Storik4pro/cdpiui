@@ -1,10 +1,12 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace CDPIUI.Controls.Universal;
 
@@ -60,6 +62,12 @@ public sealed class StatusNotificationItem
     };
 }
 
+public enum PlacementModes
+{
+    Top,
+    Bottom
+}
+
 public sealed partial class StatusNotificationControl : UserControl
 {
     private const int MaximumNotifications = 50;
@@ -67,6 +75,20 @@ public sealed partial class StatusNotificationControl : UserControl
     private Storyboard showStoryboard;
     private Storyboard hideStoryboard;
     private int unreadCount;
+
+    public static readonly DependencyProperty PlacementModeProperty =
+        DependencyProperty.Register(
+            nameof(PlacementMode),
+            typeof(PlacementModes),
+            typeof(StatusNotificationControl),
+            new PropertyMetadata(PlacementModes.Top));
+
+    public static readonly DependencyProperty ButtonHeightProperty =
+        DependencyProperty.Register(
+            nameof(ButtonHeight),
+            typeof(double),
+            typeof(StatusNotificationControl),
+            new PropertyMetadata((double)28));
 
     public StatusNotificationControl()
     {
@@ -79,6 +101,42 @@ public sealed partial class StatusNotificationControl : UserControl
         toastTimer.IsRepeating = false;
         toastTimer.Tick += ToastTimer_Tick;
         UpdateNotificationState();
+    }
+
+    public PlacementModes PlacementMode
+    {
+        get => (PlacementModes)GetValue(PlacementModeProperty);
+        set
+        {
+            SetValue(PlacementModeProperty, value);
+            RecalcPlacement();
+        }
+    }
+
+    public double ButtonHeight
+    {
+        get => (double)GetValue(ButtonHeightProperty);
+        set
+        {
+            SetValue(ButtonHeightProperty, value);
+            RecalcPlacement();
+        }
+    }
+
+    private void RecalcPlacement()
+    {
+        if (PlacementMode == PlacementModes.Top)
+        {
+            NotificationFlyout.Placement = FlyoutPlacementMode.TopEdgeAlignedRight;
+            ToastCard.Margin = new(0, 0, 10, ButtonHeight + 8);
+            NotificationButton.VerticalAlignment = VerticalAlignment.Bottom;
+        }
+        else if (PlacementMode == PlacementModes.Bottom)
+        {
+            NotificationFlyout.Placement = FlyoutPlacementMode.BottomEdgeAlignedRight;
+            ToastCard.Margin = new(0, ButtonHeight + 8, 10, 0);
+            NotificationButton.VerticalAlignment = VerticalAlignment.Top;
+        }
     }
 
     public ObservableCollection<StatusNotificationItem> Notifications { get; } = [];

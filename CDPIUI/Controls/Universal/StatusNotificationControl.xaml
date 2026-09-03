@@ -68,7 +68,7 @@
         <Button
             x:Name="NotificationButton"
             Width="36"
-            Height="28"
+            Height="{x:Bind ButtonHeight, Mode=OneWay}"
             Padding="0"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
