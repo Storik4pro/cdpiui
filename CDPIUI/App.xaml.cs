@@ -44,6 +44,8 @@ using CDPIUI.Commands;
 using CDPIUI.Shared.Pipe.Models;
 using CDPIUI.Shared.ConditionalLaunch;
 using CDPIUI.Helper.WindowHelper;
+using CDPIUI.Helper.Migration;
+using CDPIUI.Shared.Migration;
 
 namespace CDPIUI
 {
@@ -56,6 +58,7 @@ namespace CDPIUI
 
         private Dictionary<IntPtr, bool> _disabledWindows = new Dictionary<IntPtr, bool>();
         private object _modalLock = new object();
+        private readonly SemaphoreSlim migrationWindowActivationLock = new(1, 1);
 
         public App()
         {
@@ -77,7 +80,8 @@ namespace CDPIUI
         {
             try
             {
-                if (isWorking && OpenWindows.Count == 0)
+                if (isWorking && OpenWindows.Count == 0 &&
+                    !Program.IsMigrationActivationPending)
                 {
                     _ = SafeCreateNewWindow<PrepareWindow>(activate: false);
                 }
@@ -108,9 +112,18 @@ namespace CDPIUI
 
             bool isFileProcessed = false;
             bool isActionPreffered = false;
+            bool isMigrationProcessed = false;
 
             try
             {
+                isMigrationProcessed = await TryHandleMigrationActivationAsync(arguments);
+                if (!isMigrationProcessed &&
+                    Program.InitialActivationArguments?.Kind is ExtendedActivationKind.Launch &&
+                    Program.InitialActivationArguments.Data is ILaunchActivatedEventArgs initialLaunchArgs)
+                {
+                    isMigrationProcessed = await TryHandleMigrationActivationAsync(initialLaunchArgs.Arguments);
+                }
+
                 if (Program.InitialActivationArguments?.Kind is ExtendedActivationKind.File &&
                     Program.InitialActivationArguments.Data is IFileActivatedEventArgs initialFileArgs)
                 {
@@ -147,9 +160,16 @@ namespace CDPIUI
                         PipeModelConvertor.ConvertBack(value));
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(App),
+                    $"Cannot process startup activation: {ex}");
+            }
 
-            if (!isFileProcessed && !isActionPreffered) await SafeCreateNewWindow<ModernMainWindow>();
+            if (!isFileProcessed && !isActionPreffered && !isMigrationProcessed &&
+                !Program.IsMigrationActivationPending)
+                await SafeCreateNewWindow<ModernMainWindow>();
 
             GetCurrentWindowFromType<PrepareWindow>()?.Close();
             ExitIfIdle();
@@ -235,7 +255,16 @@ namespace CDPIUI
             string[] arguments = Environment.GetCommandLineArgs();
             string directArgs = arguments.FirstOrDefault(x => x.StartsWith("--direct:"));
 
-            _ = SafeCreateNewWindow<PrepareWindow>(string.IsNullOrEmpty(directArgs));
+            if (GoodbyeDpiMigrationActivation.TryFindArgument(arguments, out _) ||
+                GoodbyeDpiMigrationActivation.TryFindArgument(args.Arguments, out _))
+            {
+                Program.MarkMigrationActivationPending();
+            }
+
+            if (!Program.IsMigrationActivationPending)
+            {
+                _ = SafeCreateNewWindow<PrepareWindow>(string.IsNullOrEmpty(directArgs));
+            }
 
             PipeClientService.Instance.Start();
         }
@@ -243,29 +272,95 @@ namespace CDPIUI
         public async void PrefferRequestedActions(AppActivationArguments appActivationArguments)
         {
             bool result = false;
-
-            if (appActivationArguments.Kind is ExtendedActivationKind.Protocol &&
-                appActivationArguments.Data is IProtocolActivatedEventArgs protocolActivatedEventArgs)
+            try
             {
-                string value = protocolActivatedEventArgs.Uri.ToString();
-                result = await CommandsHandler.HandleCommandAsync(value);
+                if (appActivationArguments.Kind is ExtendedActivationKind.Protocol &&
+                    appActivationArguments.Data is IProtocolActivatedEventArgs protocolActivatedEventArgs)
+                {
+                    string value = protocolActivatedEventArgs.Uri.ToString();
+                    result = await CommandsHandler.HandleCommandAsync(value);
+                }
+
+                if (appActivationArguments.Kind is ExtendedActivationKind.File &&
+                    appActivationArguments.Data is IFileActivatedEventArgs activatedFileArgs)
+                {
+                    result = await ProcessFiles(
+                        activatedFileArgs.Files.Select(file => file.Path).ToArray());
+                }
+                else if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
+                    appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)
+                {
+                    result = await TryHandleMigrationActivationAsync(fileActivatedEventArgs.Arguments);
+                    if (!result)
+                    {
+                        string[] args = GetFilesFromStringRegex().Split(fileActivatedEventArgs.Arguments);
+                        result = await ProcessFiles(args);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.CreateWarningLog(
+                    nameof(App),
+                    $"Cannot process redirected activation: {ex}");
+                result = Program.IsMigrationActivationPending;
             }
 
-            if (appActivationArguments.Kind is ExtendedActivationKind.File &&
-                appActivationArguments.Data is IFileActivatedEventArgs activatedFileArgs)
-            {
-                result = await ProcessFiles(
-                    activatedFileArgs.Files.Select(file => file.Path).ToArray());
-            }
-            else if (appActivationArguments.Kind is ExtendedActivationKind.Launch &&
-                appActivationArguments.Data is ILaunchActivatedEventArgs fileActivatedEventArgs)
-            {
-                string[] args = GetFilesFromStringRegex().Split(fileActivatedEventArgs.Arguments);
-
-                result = await ProcessFiles(args);
-            }
-            if (!result) await SafeCreateNewWindow<ModernMainWindow>();
+            if (!result && !Program.IsMigrationActivationPending)
+                await SafeCreateNewWindow<ModernMainWindow>();
             else ExitIfIdle();
+        }
+
+        private Task<bool> TryHandleMigrationActivationAsync(string? arguments)
+        {
+            if (!GoodbyeDpiMigrationActivation.TryFindArgument(arguments, out var request))
+                return Task.FromResult(false);
+            Program.MarkMigrationActivationPending();
+            return OpenMigrationWelcomeAsync(request!);
+        }
+
+        private Task<bool> TryHandleMigrationActivationAsync(IEnumerable<string> arguments)
+        {
+            if (!GoodbyeDpiMigrationActivation.TryFindArgument(arguments, out var request))
+                return Task.FromResult(false);
+            Program.MarkMigrationActivationPending();
+            return OpenMigrationWelcomeAsync(request!);
+        }
+
+        private async Task<bool> OpenMigrationWelcomeAsync(
+            GoodbyeDpiMigrationActivationRequest request)
+        {
+            await migrationWindowActivationLock.WaitAsync();
+            try
+            {
+                if (!GoodbyeDpiMigrationCoordinator.Instance.TryAccept(request, out var session) ||
+                    session == null)
+                {
+                    WelcomeWindow existingWindow = OpenWindows
+                        .OfType<WelcomeWindow>()
+                        .FirstOrDefault(window => string.Equals(
+                            window.Id,
+                            WelcomeWindow.MigrationWindowId,
+                            StringComparison.OrdinalIgnoreCase));
+                    if (existingWindow != null)
+                        ActivateWindow(existingWindow);
+                    return true;
+                }
+
+                WelcomeWindow window = await UnsafeCreateNewWindow<WelcomeWindow>(
+                    activate: false,
+                    id: WelcomeWindow.MigrationWindowId);
+                window.SetMigrationSession(session);
+                CloseWindow<ModernMainWindow>();
+                CloseWindow<MainWindow>();
+                CloseWindow<PrepareWindow>();
+                ActivateWindow(window);
+                return true;
+            }
+            finally
+            {
+                migrationWindowActivationLock.Release();
+            }
         }
 
 
@@ -507,6 +602,11 @@ namespace CDPIUI
             if (sender is not Window window) return;
             if (e.Handled) return;
             var dispatcherQueue = window.DispatcherQueue;
+            bool migrationWindowClosed = window is WelcomeWindow welcomeWindow &&
+                string.Equals(
+                    welcomeWindow.Id,
+                    WelcomeWindow.MigrationWindowId,
+                    StringComparison.OrdinalIgnoreCase);
 
             try
             {
@@ -531,10 +631,23 @@ namespace CDPIUI
             finally
             {
                 try { OpenWindows.Remove(window); } catch { }
+                if (migrationWindowClosed)
+                    Program.CompleteMigrationActivation();
                 GC.SuppressFinalize(window);
                 GC.Collect();
             }
-            
+
+            if (migrationWindowClosed)
+            {
+                if (!dispatcherQueue.TryEnqueue(
+                    Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+                    ExitIfIdle))
+                {
+                    ExitIfIdle();
+                }
+                return;
+            }
+
             if (OpenWindows.Count == 0 && ApplicationTaskMonitor.IsStoreWorking())
             {
                 _ = SafeCreateNewWindow<PrepareWindow>(activate:false);
@@ -553,6 +666,10 @@ namespace CDPIUI
 
         private void ExitIfIdle()
         {
+            if (Program.IsMigrationActivationPending && OpenWindows.Count == 0)
+            {
+                return;
+            }
             if (OpenWindows.Count != 0 ||
                 ApplicationTaskMonitor.IsStoreWorking() ||
                 ApplicationTaskMonitor.IsGoodCheckRunned())
