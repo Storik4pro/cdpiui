@@ -22,6 +22,7 @@ namespace CDPIUI.Shared
         public static string LocalUserItemsId = "LocalUserStorage";
         public static string ConvertedZapretStoreItemId = "__ConvertedZPRT";
         public static string BlockCheck2HistoryStoreItemId = "BlockCheck2";
+        public static string MigratedGoodbyeDpiUiStoreItemId = "MigratedFromGoodbyeDPIUI";
 
         public static string LocalUserItemSiteListsFolder = "List";
         public static string LocalUserItemBinsFolder = "Bin";
