@@ -4481,7 +4481,7 @@ https://example.org/path</value>
     <value>Текущая команда будет очищена.</value>
   </data>
   <data name="ConfigMakerTextFileFilter" xml:space="preserve">
-    <value>Текстовые пресеты (*.txt)|*.txt|Все файлы (*.*)|*.*</value>
+    <value>Текстовые пресеты (*.txt)|*.txt</value>
   </data>
   <data name="ConfigMakerTextSavedMessage" xml:space="preserve">
     <value>TXT-пресет сохранён.</value>
@@ -4577,7 +4577,7 @@ https://example.org/path</value>
     <value>Создать</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
-    <value>Экспортировать пресет в TXT...</value>
+    <value>Экспортировать пресет в файл...</value>
   </data>
   <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
     <value>Выход</value>
@@ -5703,7 +5703,7 @@ https://discord.com/app</value>
     <value>Сохранить пресет в приложение...</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Недоступно для пресетов с переменными</value>
+    <value>Экспорт в универсальный (не поддерживает переменные) или проприетарный формат приложения (полная поддержка)</value>
   </data>
   <data name="ConfigMakerTextExportVariablesNotSupportedMessage" xml:space="preserve">
     <value>Пресет с переменными нельзя экспортировать в TXT. Сохраните его в приложение, чтобы не потерять описание переменных.</value>
@@ -5832,5 +5832,137 @@ https://discord.com/app</value>
   </data>
   <data name="AppFeatureReviewThemeSettings" xml:space="preserve">
     <value>Перейти к настройкам темы</value>
+  </data>
+  <data name="ConfigShareTitleContentDialog.Title" xml:space="preserve">
+    <value>Поделиться этим пресетом</value>
+  </data>
+  <data name="ConfigSharePresetName" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="ConfigShareDeveloper" xml:space="preserve">
+    <value>Имя разработчика</value>
+  </data>
+  <data name="ExportToFileTextBlock.Text" xml:space="preserve">
+    <value>Сохранить в файл</value>
+  </data>
+  <data name="ShareToFileTextBlock.Text" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="ConfigShareCancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ConfigShareClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="ConfigShareCollecting" xml:space="preserve">
+    <value>Сбор файлов пресета…</value>
+  </data>
+  <data name="ConfigShareSharing" xml:space="preserve">
+    <value>Завершите отправку в меню «Поделиться».</value>
+  </data>
+  <data name="ConfigShareFileType" xml:space="preserve">
+    <value>Пресет CDPIUI</value>
+  </data>
+  <data name="ConfigShareImportTitle" xml:space="preserve">
+    <value>Добавить пресет</value>
+  </data>
+  <data name="ConfigShareAddTo" xml:space="preserve">
+    <value>Добавить к…</value>
+  </data>
+  <data name="ConfigShareNewKit" xml:space="preserve">
+    <value>Как новый набор</value>
+  </data>
+  <data name="ConfigShareKitName" xml:space="preserve">
+    <value>Название набора</value>
+  </data>
+  <data name="ConfigShareKitBy" xml:space="preserve">
+    <value>Пресеты от {0}</value>
+  </data>
+  <data name="ConfigShareLocal" xml:space="preserve">
+    <value>К локальным (LocalUserData)</value>
+  </data>
+  <data name="ConfigShareImportButton" xml:space="preserve">
+    <value>Добавить пресет</value>
+  </data>
+  <data name="ConfigShareReading" xml:space="preserve">
+    <value>Чтение пресета…</value>
+  </data>
+  <data name="ConfigShareInstalling" xml:space="preserve">
+    <value>Добавление пресета и файлов…</value>
+  </data>
+  <data name="ConfigShareImported" xml:space="preserve">
+    <value>Пресет добавлен. Его можно выбрать в настройках компонента.</value>
+  </data>
+  <data name="ConfigShareError" xml:space="preserve">
+    <value>Не удалось обработать пресет.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_FILE_MISSING" xml:space="preserve">
+    <value>Один из используемых файлов не найден. Проверьте пути и повторите экспорт.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_ARCHIVE_INVALID" xml:space="preserve">
+    <value>Файл повреждён или не является поддерживаемым архивом пресета.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_VERSION_UNSUPPORTED" xml:space="preserve">
+    <value>Этот формат пресета требует более новой версии CDPIUI.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_CHECKSUM_FAILED" xml:space="preserve">
+    <value>Содержимое архива повреждено. Получите файл повторно.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_TOO_LARGE" xml:space="preserve">
+    <value>Пресет превышает допустимый размер или число файлов.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_NAME_REQUIRED" xml:space="preserve">
+    <value>Укажите название и имя разработчика.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_DESTINATION_INVALID" xml:space="preserve">
+    <value>Выбранный набор недоступен для добавления пресетов.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_CONFIG_INVALID" xml:space="preserve">
+    <value>Пресет не содержит корректной команды запуска или компонента.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_DATABASE_FAILED" xml:space="preserve">
+    <value>Не удалось зарегистрировать набор. Изменения отменены.</value>
+  </data>
+  <data name="ConfigShareMissingComponentTitle" xml:space="preserve">
+    <value>Необходим компонент</value>
+  </data>
+  <data name="ConfigShareMissingComponentMessage" xml:space="preserve">
+    <value>Для пресета «{0}» требуется компонент {1}, который не установлен. Открыть его установку?</value>
+  </data>
+  <data name="ConfigShareInstallComponent" xml:space="preserve">
+    <value>Установить компонент</value>
+  </data>
+  <data name="ConfigShareLater" xml:space="preserve">
+    <value>Позже</value>
+  </data>
+  <data name="StoreSmallAddItemName" xml:space="preserve">
+    <value>Добавить {0}?</value>
+  </data>
+  <data name="InstallSettingsTextBlock.Text" xml:space="preserve">
+    <value>Параметры добавления</value>
+  </data>
+  <data name="AddAsKitSettingsStoreSmallInstallDialogCard.Header" xml:space="preserve">
+    <value>Целевой набор пресетов</value>
+  </data>
+  <data name="AddAsNewKitSettingsStoreSmallInstallDialogCard.Header" xml:space="preserve">
+    <value>Название нового набора</value>
+  </data>
+  <data name="AsKit" xml:space="preserve">
+    <value>Добавить к существующему</value>
+  </data>
+  <data name="AsNewKit" xml:space="preserve">
+    <value>Создать новый набор</value>
+  </data>
+  <data name="ShareToFileTipTextBlock.Text" xml:space="preserve">
+    <value>Обмен с устройствами поблизости, отправить по почте, поделиться в Telegram и т.д.</value>
+  </data>
+  <data name="ExportToFileTipTextBlock.Text" xml:space="preserve">
+    <value>Выбор директории для сохранения файла пресета</value>
+  </data>
+  <data name="ShareButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Поделиться</value>
+  </data>
+  <data name="ConfigMakerCCFileFilter" xml:space="preserve">
+    <value>Пресеты для CDPIUI (*.cdpiconfig)|*.cdpiconfig</value>
   </data>
 </root>

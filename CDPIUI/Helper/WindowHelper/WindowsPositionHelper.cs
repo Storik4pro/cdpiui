@@ -58,6 +58,7 @@ namespace CDPIUI.Helper.WindowHelper
             { nameof(CriticalErrorHandlerWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(StoreSmallDownloadDialog), WindowResizeOptions.Message },
             { nameof(StoreLocalItemInstallingDialog), WindowResizeOptions.ExtendedMessage },
+            { nameof(ConfigShareImportDialog), WindowResizeOptions.Message },
             { nameof(ApplicationUpdateFileDialogWindow), WindowResizeOptions.ExtendedMessage },
             { nameof(ModernMainWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(TroubleshootingWindow), WindowResizeOptions.OnlyPositionWizard },

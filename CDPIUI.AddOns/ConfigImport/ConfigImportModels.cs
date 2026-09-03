@@ -36,6 +36,9 @@ public sealed record ConfigImportTarget(
 
 public sealed class ConfigImportResult
 {
+    // The import view owns this temporary extraction until save, reset, or close.
+    public ConfigShare.ConfigSharePackage? SharedPackage { get; init; }
+
     public ConfigItem? Config { get; init; }
 
     public required ConfigImportTarget Target { get; init; }

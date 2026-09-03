@@ -125,7 +125,6 @@ public sealed partial class ConfigMakerWindow : TemplateWindow
 
     private void UpdateActionMenu()
     {
-        SaveTextMenuItem.IsEnabled = ConfigMaker.CanExportText;
         PresetFilesPanelMenuItem.IsChecked = ConfigMaker.IsPresetFilesPanelVisible;
         CommandPanelMenuItem.IsChecked = ConfigMaker.IsCommandPanelVisible;
         BottomPanelMenuItem.IsChecked = ConfigMaker.IsBottomPanelVisible;

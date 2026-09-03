@@ -178,7 +178,7 @@ namespace CDPIUI
         }
 
         private static readonly string[] SupportedFilePaths =
-            [".cdpisignedpack", ".cdpiconfigpack", ".cdpipatch", ".cdpitask"];
+            [".cdpisignedpack", ".cdpiconfigpack", ".cdpipatch", ".cdpitask", ".cdpiconfig"];
 
         private async Task<bool> ProcessFiles(string[] files)
         {
@@ -191,6 +191,14 @@ namespace CDPIUI
                     Path.GetExtension(_file),
                     StringComparer.OrdinalIgnoreCase))
                 {
+                    if (CDPIUI.AddOns.ConfigShare.ConfigShareService.IsSupported(_file))
+                    {
+                        var importDialog = await UnsafeCreateNewWindow<ConfigShareImportDialog>(activate: false);
+                        ActivateWindow(importDialog);
+                        await importDialog.SetFileAsync(_file);
+                        return true;
+                    }
+
                     if (Path.GetExtension(_file).Equals(".cdpitask", StringComparison.OrdinalIgnoreCase))
                     {
                         var imported = ConditionalTaskFileService.Load(_file);

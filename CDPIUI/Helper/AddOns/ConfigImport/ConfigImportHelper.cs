@@ -1,5 +1,6 @@
 ﻿using CDPIUI.AddOns.ConfigImport;
 using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.AddOns.ConfigShare;
 using CDPIUI.Shared.Models;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.ViewModels;
@@ -23,6 +24,7 @@ namespace CDPIUI.Helper.AddOns.ConfigImport
         /// </returns>
         public static OperationResultModel<ConfigImportResult> ImportConfigFromFile(string requestedTarget = null)
         {
+            // Legacy editor callers retain only ConfigItem and cannot own a temporary package.
             var result = OpenFileSelectionDialog(false);
             if (!result.Success) return OperationResultModel<ConfigImportResult>.UnSuccessResult();
 
@@ -52,10 +54,11 @@ namespace CDPIUI.Helper.AddOns.ConfigImport
                     $"{localizer.GetLocalizedString("TextFiles")} (*.txt)|*.txt|" +
                     $"{localizer.GetLocalizedString("BatchFiles")} (*.bat;*.cmd)|*.bat;*.cmd|" +
                     $"{localizer.GetLocalizedString("JsonFiles")} (*.json)|*.json|" +
-                    $"{localizer.GetLocalizedString("AllSupported")} (*.txt;*.bat;*.cmd;*.json)|*.txt;*.bat;*.cmd;*.json";
+                    $"{localizer.GetLocalizedString("ConfigShareFileType")} (*{ConfigShareService.Extension})|*{ConfigShareService.Extension}|" +
+                    $"{localizer.GetLocalizedString("AllSupported")}|*.txt;*.bat;*.cmd;*.json" + ";*" + ConfigShareService.Extension;
                 openFileDialog.RestoreDirectory = true;
 
-                openFileDialog.FilterIndex = 4;
+                openFileDialog.FilterIndex = openFileDialog.Filter.Count();
 
                 if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {

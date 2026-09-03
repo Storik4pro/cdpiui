@@ -36,7 +36,7 @@ public sealed class ConfigImportPresetViewModel : INotifyPropertyChanged
         Result = result;
         Components = components;
         this.targetWasDetected = targetWasDetected;
-        name = Path.GetFileNameWithoutExtension(result.SourcePath);
+        name = result.SharedPackage?.Manifest.Name ?? Path.GetFileNameWithoutExtension(result.SourcePath);
         selectedComponent = initialComponent;
     }
 

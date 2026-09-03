@@ -159,7 +159,7 @@ public sealed class ConfigMakerPresetStorageService
                 document.ComponentId,
                 DatabaseHelper.Instance.GetItemById(document.ComponentId)?.CurrentVersion ?? "%CURRENT%",
             ];
-            RewritePresetReferences(config, replacements);
+            config.RewritePresetReferences(replacements);
             config.configMaker ??= new ConfigMakerPresetMetadata();
             config.configMaker.resources = storedResources;
 
@@ -199,7 +199,7 @@ public sealed class ConfigMakerPresetStorageService
         ConfigItem runtimeConfig = document.ToConfigItem(
             SharedConstants.LocalUserItemsId,
             document.Name);
-        RewritePresetReferences(runtimeConfig, replacements);
+        runtimeConfig.RewritePresetReferences(replacements);
         return ConfigurationService.GetStartupParametersByConfigItem(runtimeConfig);
     }
 
@@ -242,75 +242,8 @@ public sealed class ConfigMakerPresetStorageService
 
     public static string RewritePresetReferences(
         string commandText,
-        IReadOnlyDictionary<string, string> replacements)
-    {
-        string result = commandText ?? string.Empty;
-        foreach ((string alias, string replacement) in replacements
-                     .OrderByDescending(item => item.Key.Length))
-        {
-            if (string.IsNullOrWhiteSpace(alias))
-            {
-                continue;
-            }
-            string reference = $"preset://{alias}";
-            string escapedReference = Regex.Escape(reference);
-            string escapedPath = replacement.Replace("\"", "\\\"");
-            result = Regex.Replace(
-                result,
-                $"[\"']{escapedReference}[\"']",
-                _ => $"\"{escapedPath}\"",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-            result = Regex.Replace(
-                result,
-                $"{escapedReference}(?![A-Za-z0-9_.-])",
-                _ => NeedsQuotes(replacement) ? $"\"{escapedPath}\"" : replacement,
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        }
-        return result;
-    }
-
-    private static void RewritePresetReferences(
-        ConfigItem config,
-        IReadOnlyDictionary<string, string> replacements)
-    {
-        config.startup_string = RewritePresetReferences(
-            config.startup_string ?? string.Empty,
-            replacements);
-
-        if (config.variables != null)
-        {
-            for (int index = 0; index < config.variables.Count; index++)
-            {
-                config.variables[index] = RewritePresetReferences(
-                    config.variables[index],
-                    replacements);
-            }
-        }
-
-        if (config.commaVars != null)
-        {
-            foreach (string key in config.commaVars.Keys.ToArray())
-            {
-                config.commaVars[key] = RewritePresetReferences(
-                    config.commaVars[key],
-                    replacements);
-            }
-        }
-
-        foreach (AvailableVarValues availableValues in config.availableCommaVarsValues ?? [])
-        {
-            if (availableValues.Values == null)
-            {
-                continue;
-            }
-            for (int index = 0; index < availableValues.Values.Count; index++)
-            {
-                availableValues.Values[index] = RewritePresetReferences(
-                    availableValues.Values[index],
-                    replacements);
-            }
-        }
-    }
+        IReadOnlyDictionary<string, string> replacements) =>
+        ConfigFileReferences.RewritePresetReferences(commandText, replacements);
 
     private static string? ResolveResourcePath(
         string sourcePath,
@@ -340,9 +273,6 @@ public sealed class ConfigMakerPresetStorageService
         ];
         return candidates.Select(Path.GetFullPath).FirstOrDefault(File.Exists);
     }
-
-    private static bool NeedsQuotes(string path) =>
-        path.Any(char.IsWhiteSpace) || path.Contains('&') || path.Contains(';');
 
     private static bool IsPathInside(string path, string root)
     {

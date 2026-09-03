@@ -394,24 +394,8 @@ public sealed class ConfigMakerPresetDocument : INotifyPropertyChanged
 
     private static string RestoreResourceReferences(
         string commandText,
-        IEnumerable<ConfigMakerResourceMetadata> resources)
-    {
-        string result = commandText ?? string.Empty;
-        foreach (ConfigMakerResourceMetadata resource in resources
-                     .Where(resource =>
-                         !string.IsNullOrWhiteSpace(resource.alias) &&
-                         !string.IsNullOrWhiteSpace(resource.path))
-                     .OrderByDescending(resource => resource.path!.Length))
-        {
-            string reference = $"preset://{resource.alias}";
-            result = Regex.Replace(
-                result,
-                Regex.Escape(resource.path!),
-                _ => reference,
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        }
-        return result;
-    }
+        IEnumerable<ConfigMakerResourceMetadata> resources) =>
+        ConfigFileReferences.RestorePresetReferences(commandText, resources);
 
     private static void RestoreVariableResourceReferences(
         IEnumerable<ConfigMakerVariableDefinition> variables,

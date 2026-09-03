@@ -1,4 +1,5 @@
 using CDPIUI.AddOns.ConfigImport;
+using CDPIUI.AddOns.ConfigShare;
 using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Universal;
 using CDPIUI.Core.ComponentServices;
@@ -6,6 +7,7 @@ using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper.AddOns.ConfigImport;
+using CDPIUI.Helper.AddOns.ConfigShare;
 using CDPIUI.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -48,6 +50,8 @@ public sealed partial class MainPage : TemplatePage
     private ConfigImportPresetViewModel activeTestItem;
     private string activeTestComponentId = string.Empty;
     private ConfigImportTestPlaceholder activeTestPlaceholder;
+    private bool isUnloaded;
+    private readonly HashSet<ConfigSharePackage> packagesBeingSaved = [];
 
     public MainPage()
     {
@@ -60,6 +64,7 @@ public sealed partial class MainPage : TemplatePage
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
+        isUnloaded = false;
         requestedTargetId = Parameter.Get("componentId") ?? string.Empty;
     }
 
@@ -101,10 +106,15 @@ public sealed partial class MainPage : TemplatePage
 
         MainContent.GoTo(ProgressStep);
 
+        foreach (var item in results) item.Result.SharedPackage?.Dispose();
         results.Clear();
         missingFiles.Clear();
 
         await Task.Run(() => ImportWork(filePaths));
+        if (isUnloaded) return false;
+
+        await PrepareSharedComponentsAsync();
+        if (isUnloaded) return false;
 
         await PrepareMissingFilesAsync();
 
@@ -136,14 +146,49 @@ public sealed partial class MainPage : TemplatePage
             AnalyzedImport analyzed = await Task.Run(() => AnalyzeFile(Path.GetFullPath(filePaths[index]), targets));
             DatabaseStoreItem initialComponent = GetInitialComponent(analyzed.Result.Target.ComponentId);
 
-            DispatcherQueue.TryEnqueue(() =>
+            bool queued = DispatcherQueue.TryEnqueue(() =>
             {
+                if (isUnloaded)
+                {
+                    analyzed.Result.SharedPackage?.Dispose();
+                    return;
+                }
                 results.Add(new ConfigImportPresetViewModel(
                 analyzed.Result,
                 components,
                 initialComponent,
                 analyzed.TargetWasDetected));
             });
+            if (!queued) analyzed.Result.SharedPackage?.Dispose();
+        }
+    }
+
+    private async Task PrepareSharedComponentsAsync()
+    {
+        var shared = results.Where(item => item.Result.SharedPackage != null).ToArray();
+        if (shared.Length == 0) return;
+        var selections = results.ToDictionary(item => item, item => item.SelectedComponent?.Id);
+        var offered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in shared)
+        {
+            if (isUnloaded) return;
+            string missingId = ConfigShareService.GetMissingComponentId(item.Result.Config);
+            if (missingId == null || !offered.Add(missingId)) continue;
+            try { await ConfigShareUI.OfferComponentInstallAsync(XamlRoot, item.Result.Config); }
+            catch (Exception exception)
+            {
+                CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(nameof(MainPage), exception.ToString());
+                if (!isUnloaded) item.SetOperationError(ConfigShareUI.ErrorText(exception));
+            }
+        }
+        if (isUnloaded) return;
+        LoadComponents();
+        foreach (var item in results)
+        {
+            string selectedId = selections[item];
+            if (selectedId == null && item.Result.SharedPackage != null)
+                selectedId = ConfigShareService.GetInstalledComponentId(item.Result.Config);
+            item.SelectedComponent = components.FirstOrDefault(component => component.Id == selectedId);
         }
     }
 
@@ -179,6 +224,11 @@ public sealed partial class MainPage : TemplatePage
 
     private AnalyzedImport AnalyzeFile(string filePath, IReadOnlyList<ConfigImportTarget> targets)
     {
+        if (ConfigShareService.IsSupported(filePath))
+        {
+            ConfigImportResult shared = importService.Import(filePath);
+            return new AnalyzedImport(shared, targets.Any(target => target.ComponentId == shared.Target.ComponentId));
+        }
         IReadOnlyList<ConfigImportTarget> matches = importService.FindMatchingTargets(filePath, targets);
         ConfigImportTarget target = matches.FirstOrDefault()
             ?? FindRequestedTarget(targets)
@@ -261,6 +311,7 @@ public sealed partial class MainPage : TemplatePage
             await StopActiveTestAsync();
 
         item.SetSaving(true);
+        if (item.Result.SharedPackage != null) packagesBeingSaved.Add(item.Result.SharedPackage);
         try
         {
             ConfigImportResult selectedResult = GetSelectedResult(item);
@@ -276,12 +327,21 @@ public sealed partial class MainPage : TemplatePage
                 .GetComponentHelperFromId(item.SelectedComponent.Id!)
                 ?.ReInitConfigs();
             item.SetSaved();
+            item.Result.SharedPackage?.Dispose();
             return true;
         }
         catch (Exception exception)
         {
             item.SetOperationError(exception.Message);
             return false;
+        }
+        finally
+        {
+            if (item.Result.SharedPackage != null)
+            {
+                packagesBeingSaved.Remove(item.Result.SharedPackage);
+                if (isUnloaded) item.Result.SharedPackage.Dispose();
+            }
         }
     }
 
@@ -495,7 +555,11 @@ public sealed partial class MainPage : TemplatePage
 
     private async void MainPage_Unloaded(object sender, RoutedEventArgs e)
     {
+        isUnloaded = true;
         await StopActiveTestAsync();
+        foreach (var item in results)
+            if (item.Result.SharedPackage != null && !packagesBeingSaved.Contains(item.Result.SharedPackage))
+                item.Result.SharedPackage.Dispose();
     }
 
     private static ConfigImportTarget CreateTarget(DatabaseStoreItem item) => new(

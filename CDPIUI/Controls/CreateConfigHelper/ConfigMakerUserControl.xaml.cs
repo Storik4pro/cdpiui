@@ -1,6 +1,7 @@
 using CDPIUI.AddOns.ConfigImport;
-using CDPIUI.Controls.Dialogs.CreateConfigHelper;
+using CDPIUI.AddOns.ConfigShare;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
+using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Controls.Universal;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
@@ -12,6 +13,8 @@ using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.CreateConfigHelper;
 using CDPIUI.Helper.UserExperience;
+using CDPIUI.Shared;
+using CDPIUI.Shared.Basic.Filesystem;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
@@ -33,6 +36,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.UI;
 using WinUI3Localizer;
+using ParsedPresetOption = CDPIUI.Core.ComponentServices.Helpers.Configuration.ConfigCommandOption;
 
 namespace CDPIUI.Controls.CreateConfigHelper;
 
@@ -1665,44 +1669,11 @@ public sealed partial class ConfigMakerUserControl : UserControl
         return (element.DataContext as ConfigMakerPresetFileTreeItem)?.File;
     }
 
-    private string ResolvePresetFilePath(string sourcePath)
-    {
-        string path = (sourcePath ?? string.Empty).Trim().Trim('"', '\'');
-        if (path.StartsWith("preset://", StringComparison.OrdinalIgnoreCase))
-        {
-            ConfigMakerPresetResource resource = FindAttachedResource(path);
-            if (resource == null)
-            {
-                throw new FileNotFoundException(null, path);
-            }
-            path = resource.Path.Trim().Trim('"', '\'');
-        }
-
-        path = ExpandPresetVariableReferences(path).Trim().Trim('"', '\'');
-        path = StripPresetFileMarker(path);
-        string presetDirectory = GetPresetBaseDirectory();
-        if (path.StartsWith("$GETCURRENTDIR()", StringComparison.OrdinalIgnoreCase))
-        {
-            if (string.IsNullOrWhiteSpace(presetDirectory))
-            {
-                throw new DirectoryNotFoundException(ComponentId);
-            }
-            string suffix = path["$GETCURRENTDIR()".Length..]
-                .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            return Path.GetFullPath(Path.Combine(presetDirectory, suffix));
-        }
-        if (Path.IsPathFullyQualified(path))
-        {
-            return Path.GetFullPath(path);
-        }
-
-        path = path.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        string componentDirectory = DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? string.Empty;
-        return string.IsNullOrWhiteSpace(componentDirectory)
-            ? Path.GetFullPath(path)
-            : Path.GetFullPath(Path.Combine(componentDirectory, path));
-    }
+    private string ResolvePresetFilePath(string sourcePath) =>
+        CreateResourceConfigSnapshot().ResolveFilePath(
+            sourcePath,
+            DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? Directories.CurrentDirectory,
+            GetPresetBaseDirectory());
 
     private string GetPresetBaseDirectory()
     {
@@ -1724,38 +1695,6 @@ public sealed partial class ConfigMakerUserControl : UserControl
         return !string.IsNullOrWhiteSpace(registeredDirectory)
             ? Path.GetFullPath(registeredDirectory)
             : Path.GetFullPath(Path.Combine(Directories.StoreItemsDirectory, packId));
-    }
-
-    private string ExpandPresetVariableReferences(string value)
-    {
-        string result = value ?? string.Empty;
-        HashSet<string> visitedValues = new(StringComparer.Ordinal);
-        for (int depth = 0; depth < 16 && visitedValues.Add(result); depth++)
-        {
-            bool replaced = false;
-            string expanded = Regex.Replace(
-                result,
-                "%[A-Za-z0-9_]+%",
-                match =>
-                {
-                    string name = match.Value.Trim('%');
-                    ConfigMakerVariableDefinition variable = presetDocument.Variables.FirstOrDefault(candidate =>
-                        string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase));
-                    if (variable == null)
-                    {
-                        return match.Value;
-                    }
-                    replaced = true;
-                    return variable.DisplayValue ?? string.Empty;
-                },
-                RegexOptions.CultureInvariant);
-            result = expanded;
-            if (!replaced)
-            {
-                break;
-            }
-        }
-        return result;
     }
 
     private ConfigMakerPresetResource FindAttachedResource(string reference)
@@ -1781,211 +1720,56 @@ public sealed partial class ConfigMakerUserControl : UserControl
         }
     }
 
-    private string MakePresetCommandPath(string fullPath)
-    {
-        string componentDirectory = DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(componentDirectory))
-        {
-            try
-            {
-                string relativePath = Path.GetRelativePath(
-                    Path.GetFullPath(componentDirectory),
-                    Path.GetFullPath(fullPath));
-                if (!Path.IsPathRooted(relativePath) &&
-                    !relativePath.Equals("..", StringComparison.Ordinal) &&
-                    !relativePath.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-                {
-                    return $"/{relativePath.Replace(Path.DirectorySeparatorChar, '/')}";
-                }
-            }
-            catch
-            {
-            }
-        }
-        return Path.GetFullPath(fullPath);
-    }
-
-    private static string GetPresetDisplayFolder(string path)
-    {
-        string normalized = NormalizePresetPath(path);
-        int separator = normalized.LastIndexOf('/');
-        return separator > 0 ? normalized[..separator] : string.Empty;
-    }
+    private static string GetPresetDisplayFolder(string path) =>
+        ConfigFileReferences.GetDisplayFolder(path);
 
     private static bool PresetPathsEqual(string left, string right) =>
-        string.Equals(
-            NormalizePresetPath(left).TrimStart('/'),
-            NormalizePresetPath(right).TrimStart('/'),
-            StringComparison.OrdinalIgnoreCase);
-
-    private static string NormalizePresetPath(string value)
-    {
-        string normalized = StripPresetFileMarker(UnquoteOptionValue(value).Trim());
-        return normalized.Replace('\\', '/');
-    }
-
-    private static string StripPresetFileMarker(string value)
-    {
-        string normalized = value ?? string.Empty;
-        if (normalized.StartsWith('@'))
-        {
-            return normalized[1..];
-        }
-        if (normalized.StartsWith('$') &&
-            !normalized.StartsWith("$GETCURRENTDIR()", StringComparison.OrdinalIgnoreCase))
-        {
-            return normalized[1..];
-        }
-        return normalized;
-    }
+        ConfigFileReferences.PathsEqual(left, right);
 
     private string ReplacePresetFileInCommand(
         string commandText,
         ConfigMakerPresetFileInfo file,
-        string replacementPath)
+        string replacementPath) =>
+        ConfigFileReferences.ReplaceFileInText(commandText, file.Path, ToCoreFileKind(file.Kind), replacementPath);
+
+    private ConfigItem CreateResourceConfigSnapshot(string commandText = null)
     {
-        List<string> tokens = ComponentCommandLineFormatter.Tokenize(commandText).ToList();
-        bool replaced = false;
-        for (int index = 0; index < tokens.Count; index++)
-        {
-            string token = tokens[index];
-            if (!TryGetOptionName(token, out string optionName, out int equalsIndex))
-            {
-                continue;
-            }
-            if (equalsIndex >= 0)
-            {
-                string value = token[(equalsIndex + 1)..];
-                if (TryReplacePresetOptionValue(
-                    optionName,
-                    value,
-                    file.Path,
-                    file.Kind,
-                    replacementPath,
-                    out string updatedValue))
-                {
-                    tokens[index] = $"{token[..equalsIndex]}={updatedValue}";
-                    replaced = true;
-                }
-            }
-            else if (index + 1 < tokens.Count && !IsCommandOption(tokens[index + 1]) &&
-                TryReplacePresetOptionValue(
-                    optionName,
-                    tokens[index + 1],
-                    file.Path,
-                    file.Kind,
-                    replacementPath,
-                    out string updatedValue))
-            {
-                tokens[index + 1] = updatedValue;
-                replaced = true;
-            }
-        }
-        return replaced ? string.Join(' ', tokens) : commandText;
+        ConfigItem snapshot = presetDocument.ToConfigItem(string.Empty, presetDocument.Name);
+        snapshot.startup_string = commandText ?? CommandText;
+        return snapshot;
     }
 
-    private static bool TryReplacePresetOptionValue(
-        string optionName,
-        string value,
-        string missingPath,
-        ConfigMakerPresetFileKind missingKind,
-        string replacementPath,
-        out string updatedValue)
+    private static ConfigFileKind ToCoreFileKind(ConfigMakerPresetFileKind kind) => kind switch
     {
-        updatedValue = value;
-        ConfigMakerPresetFileInfo detected = TryExtractPresetFile(new ParsedPresetOption(
-            optionName,
-            $"{optionName}={value}",
-            value));
-        string detectedPath = detected?.Path ?? GetPresetOptionFileReference(optionName, value);
-        if ((detected != null && detected.Kind != missingKind) ||
-            !PresetPathsEqual(detectedPath, missingPath))
+        ConfigMakerPresetFileKind.Library => ConfigFileKind.Library,
+        ConfigMakerPresetFileKind.Payload => ConfigFileKind.Payload,
+        _ => ConfigFileKind.SiteList,
+    };
+
+    private static ConfigMakerPresetFileInfo ToEditorFile(ConfigUsedFile file) => file == null ? null : new(
+        file.Name,
+        file.Path,
+        file.Folder,
+        file.Kind switch
         {
-            return false;
-        }
+            ConfigFileKind.Library => ConfigMakerPresetFileKind.Library,
+            ConfigFileKind.Payload or ConfigFileKind.Other => ConfigMakerPresetFileKind.Payload,
+            _ => ConfigMakerPresetFileKind.SiteList,
+        },
+        file.OptionName,
+        file.IsAttachedResource);
 
-        string unquoted = UnquoteOptionValue(value);
-        if (IsSiteListOption(optionName))
-        {
-            updatedValue = QuoteOptionValue(replacementPath, force: true);
-            return true;
-        }
-        if (string.Equals(optionName, "--lua-init", StringComparison.OrdinalIgnoreCase))
-        {
-            char marker = unquoted.Length > 0 && (unquoted[0] == '@' || unquoted[0] == '$')
-                ? unquoted[0]
-                : '@';
-            updatedValue = QuoteOptionValue($"{marker}{replacementPath}", force: false);
-            return true;
-        }
-        if (string.Equals(optionName, "--blob", StringComparison.OrdinalIgnoreCase))
-        {
-            int separator = unquoted.IndexOf(':');
-            string prefix = separator >= 0 ? unquoted[..(separator + 1)] : string.Empty;
-            string source = separator >= 0 ? unquoted[(separator + 1)..] : unquoted;
-            char marker = source.Length > 0 && (source[0] == '@' || source[0] == '$')
-                ? source[0]
-                : '@';
-            updatedValue = QuoteOptionValue($"{prefix}{marker}{replacementPath}", force: false);
-            return true;
-        }
-
-        updatedValue = QuoteOptionValue(replacementPath, force: false);
-        return true;
-    }
-
-    private static string QuoteOptionValue(string value, bool force)
-    {
-        bool quote = force || value.Any(char.IsWhiteSpace) || value.Contains('"');
-        return quote
-            ? $"\"{value.Replace("\"", "\\\"")}\""
-            : value;
-    }
-
-    private IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFiles(string commandText)
-    {
-        IEnumerable<ConfigMakerPresetFileInfo> commandFiles = ExtractPresetFilesFromText(commandText);
-        IEnumerable<ConfigMakerPresetFileInfo> variableFiles = presetDocument.Variables
-            .SelectMany(GetPresetVariableCandidateValues)
-            .Distinct(StringComparer.Ordinal)
-            .SelectMany(value =>
-                ExtractPresetFilesFromText(value)
-                    .Append(TryExtractDirectPresetFile(value)))
-            .Where(file => file != null);
-
-        return commandFiles
-            .Concat(variableFiles)
-            .DistinctBy(file => (file.Kind, file.Path), PresetFileKeyComparer.Instance);
-    }
+    private IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFiles(string commandText) =>
+        CreateResourceConfigSnapshot(commandText).UsedFiles.Select(ToEditorFile);
 
     private IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFilesFromText(string text)
     {
-        return ParseCommandOptions(text)
-            .Select(option => TryExtractPresetFile(option, ExpandPresetVariableReferences))
-            .Where(file => file != null);
+        ConfigItem snapshot = CreateResourceConfigSnapshot();
+        return ConfigFileReferences.ExtractFromText(text, snapshot.ExpandFileReference).Select(ToEditorFile);
     }
 
-    private ConfigMakerPresetFileInfo TryExtractDirectPresetFile(string value)
-    {
-        string path = StripPresetFileMarker(UnquoteOptionValue(value).Trim());
-        string expandedPath = StripPresetFileMarker(
-            UnquoteOptionValue(ExpandPresetVariableReferences(path)).Trim());
-        ConfigMakerPresetFileKind? kind = InferPresetFileKind(expandedPath);
-        if (string.IsNullOrWhiteSpace(path) || kind == null || !LooksLikeFilePath(expandedPath))
-        {
-            return null;
-        }
-
-        string normalized = NormalizePresetPath(path);
-        string normalizedExpanded = NormalizePresetPath(expandedPath);
-        string name = normalizedExpanded.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()
-            ?? normalizedExpanded;
-        return new ConfigMakerPresetFileInfo(
-            name,
-            normalized,
-            GetPresetDisplayFolder(normalizedExpanded),
-            kind.Value);
-    }
+    private ConfigMakerPresetFileInfo TryExtractDirectPresetFile(string value) =>
+        ToEditorFile(ConfigFileReferences.ExtractDirectFile(value, CreateResourceConfigSnapshot().ExpandFileReference));
 
     private static IEnumerable<string> GetPresetVariableCandidateValues(
         ConfigMakerVariableDefinition variable)
@@ -2008,167 +1792,8 @@ public sealed partial class ConfigMakerUserControl : UserControl
         }
     }
 
-    private static ConfigMakerPresetFileInfo TryExtractPresetFile(
-        ParsedPresetOption option,
-        Func<string, string> pathExpander = null)
-    {
-        if (string.IsNullOrWhiteSpace(option.Value))
-        {
-            return null;
-        }
-
-        ConfigMakerPresetFileKind? kind = null;
-        string path = UnquoteOptionValue(option.Value);
-        if (IsSiteListOption(option.Name))
-        {
-            kind = ConfigMakerPresetFileKind.SiteList;
-        }
-        else if (string.Equals(option.Name, "--lua-init", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = ConfigMakerPresetFileKind.Library;
-        }
-        else if (string.Equals(option.Name, "--blob", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = ConfigMakerPresetFileKind.Payload;
-            int separator = path.IndexOf(':');
-            path = separator >= 0 ? path[(separator + 1)..] : path;
-        }
-
-        path = StripPresetFileMarker(path.Trim());
-        path = UnquoteOptionValue(path);
-        string expandedPath = StripPresetFileMarker(
-            UnquoteOptionValue(pathExpander?.Invoke(path) ?? path).Trim());
-        kind ??= InferPresetFileKind(expandedPath);
-        if (string.IsNullOrWhiteSpace(path) ||
-            kind == null ||
-            (kind != ConfigMakerPresetFileKind.SiteList && !LooksLikeFilePath(expandedPath)))
-        {
-            return null;
-        }
-
-        string normalized = NormalizePresetPath(path);
-        string normalizedExpanded = NormalizePresetPath(expandedPath);
-        string name = normalizedExpanded.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()
-            ?? normalizedExpanded;
-        return new ConfigMakerPresetFileInfo(
-            name,
-            normalized,
-            GetPresetDisplayFolder(normalizedExpanded),
-            kind.Value,
-            option.Name);
-    }
-
-    private static ConfigMakerPresetFileKind? InferPresetFileKind(string path) =>
-        Path.GetExtension(path).ToLowerInvariant() switch
-        {
-            ".txt" or ".list" => ConfigMakerPresetFileKind.SiteList,
-            ".lua" => ConfigMakerPresetFileKind.Library,
-            ".bin" or ".dat" or ".der" or ".pem" => ConfigMakerPresetFileKind.Payload,
-            _ => null,
-        };
-
-    private static string GetPresetOptionFileReference(string optionName, string value)
-    {
-        string path = UnquoteOptionValue(value);
-        if (string.Equals(optionName, "--blob", StringComparison.OrdinalIgnoreCase))
-        {
-            int separator = path.IndexOf(':');
-            path = separator >= 0 ? path[(separator + 1)..] : path;
-        }
-        return NormalizePresetPath(path);
-    }
-
-    private static bool LooksLikeFilePath(string path) =>
-        path.Contains('/') || path.Contains('\\') || !string.IsNullOrWhiteSpace(Path.GetExtension(path));
-
-    private static bool IsSiteListOption(string optionName) => optionName.ToLowerInvariant() is
-        "--hostlist" or
-        "--hostlist-exclude" or
-        "--hostlist-auto" or
-        "--ipset" or
-        "--ipset-exclude";
-
-    private static IReadOnlyList<ParsedPresetOption> ParseCommandOptions(string commandText)
-    {
-        commandText ??= string.Empty;
-        IReadOnlyList<string> tokens = ComponentCommandLineFormatter.Tokenize(commandText);
-        List<ParsedPresetOption> result = [];
-        int searchIndex = 0;
-        for (int index = 0; index < tokens.Count; index++)
-        {
-            string token = tokens[index];
-            if (!TryGetOptionName(token, out string name, out int equalsIndex))
-            {
-                continue;
-            }
-
-            string value = equalsIndex >= 0 ? token[(equalsIndex + 1)..] : string.Empty;
-            string displayText = token;
-            int sourceIndex = commandText.IndexOf(token, searchIndex, StringComparison.Ordinal);
-            int sourceEnd = sourceIndex >= 0 ? sourceIndex + token.Length : -1;
-            if (equalsIndex < 0 && index + 1 < tokens.Count && !IsCommandOption(tokens[index + 1]))
-            {
-                value = tokens[++index];
-                displayText = $"{token} {value}";
-                int valueIndex = commandText.IndexOf(
-                    value,
-                    Math.Max(searchIndex, sourceEnd),
-                    StringComparison.Ordinal);
-                if (valueIndex >= 0)
-                {
-                    sourceEnd = valueIndex + value.Length;
-                }
-            }
-            int sourceLength = sourceIndex >= 0 && sourceEnd >= sourceIndex
-                ? sourceEnd - sourceIndex
-                : 0;
-            (int sourceLine, int sourceColumn) = GetSourcePosition(commandText, sourceIndex);
-            result.Add(new ParsedPresetOption(
-                name,
-                displayText,
-                value,
-                sourceIndex,
-                sourceLength,
-                sourceLine,
-                sourceColumn));
-            if (sourceEnd >= 0)
-            {
-                searchIndex = sourceEnd;
-            }
-        }
-        return result;
-    }
-
-    private static (int Line, int Column) GetSourcePosition(string text, int sourceIndex)
-    {
-        if (sourceIndex < 0)
-        {
-            return (0, 0);
-        }
-
-        int line = 0;
-        int lineStart = 0;
-        for (int index = 0; index < sourceIndex; index++)
-        {
-            if (text[index] == '\n')
-            {
-                line++;
-                lineStart = index + 1;
-            }
-        }
-        return (line, sourceIndex - lineStart);
-    }
-
-    private static bool TryGetOptionName(string token, out string name, out int equalsIndex)
-    {
-        equalsIndex = token.IndexOf('=');
-        name = equalsIndex >= 0 ? token[..equalsIndex] : token;
-        return IsCommandOption(name);
-    }
-
-    private static bool IsCommandOption(string token) =>
-        token.StartsWith("--", StringComparison.Ordinal) ||
-        (token.Length > 1 && token[0] == '-');
+    private static IReadOnlyList<ParsedPresetOption> ParseCommandOptions(string commandText) =>
+        ConfigCommandLine.ParseOptions(commandText);
 
     private static bool IsCommonFilter(string optionName) =>
         optionName.StartsWith("--wf-", StringComparison.OrdinalIgnoreCase) ||
@@ -2188,26 +1813,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
         optionName.StartsWith("--ipset", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(optionName, "--name", StringComparison.OrdinalIgnoreCase);
 
-    private static string UnquoteOptionValue(string value)
-    {
-        string result = (value ?? string.Empty).Trim();
-        if (result.Length >= 2 &&
-            ((result[0] == '"' && result[^1] == '"') ||
-             (result[0] == '\'' && result[^1] == '\'')))
-        {
-            result = result[1..^1];
-        }
-        return result.Replace("\\\"", "\"");
-    }
-
-    private sealed record ParsedPresetOption(
-        string Name,
-        string DisplayText,
-        string Value,
-        int SourceIndex = -1,
-        int SourceLength = 0,
-        int SourceLine = 0,
-        int SourceColumn = 0);
+    private static string UnquoteOptionValue(string value) => ConfigCommandLine.Unquote(value);
 
     private readonly record struct Zapret2Range(
         Zapret2RangeBoundary? Lower,
@@ -3283,31 +2889,40 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     public async Task SaveTextAsync()
     {
-        if (HasVariables)
-        {
-            ShowEditorMessage(
-                localizer.GetLocalizedString("ConfigMakerTextExportVariablesNotSupportedMessage"),
-                InfoBarSeverity.Warning);
-            return;
-        }
-        Microsoft.Win32.SaveFileDialog dialog = new()
-        {
-            OverwritePrompt = true,
-            FileName = "config.txt",
-            DefaultExt = ".txt",
-            Filter = localizer.GetLocalizedString("ConfigMakerTextFileFilter"),
-        };
-        if (dialog.ShowDialog() != true)
-        {
-            return;
-        }
-
         try
         {
+            string filePath = string.Empty;
+
+            Microsoft.Win32.SaveFileDialog dialog = new()
+            {
+                OverwritePrompt = true,
+                FileName = "config.cdpiconfig",
+                DefaultExt = ".cdpiconfig",
+                Filter = (!HasVariables ? localizer.GetLocalizedString("ConfigMakerTextFileFilter") + "|" : "") + localizer.GetLocalizedString("ConfigMakerCCFileFilter"),
+            };
+            dialog.FilterIndex = dialog.Filter.Count();
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+            filePath = dialog.FileName;
+
             SyncDocumentFromEditor();
             string exportText = ConfigMakerPresetStorageService
                 .CreateResolvedCommandForTextExport(presetDocument);
-            await File.WriteAllTextAsync(dialog.FileName, exportText);
+
+            if (Path.GetExtension(filePath) == ".cdpiconfig")
+            {
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
+                using var package = await new ConfigShareService()
+                    .ExportAsync(
+                    presetDocument.ToConfigItem(Guid.NewGuid().ToString(), fileName),
+                    fileName,
+                    SettingsManager.Instance.GetValueOrDefault("CONFIGKIT", "lastUsedDevName", defaultValue: Environment.UserName));
+                await FileSystemService.CopyFileAsync(package.ArchivePath, filePath);
+            }
+            else await File.WriteAllTextAsync(filePath, exportText);
+
             ShowEditorMessage(
                 localizer.GetLocalizedString("ConfigMakerTextSavedMessage"),
                 InfoBarSeverity.Success);
@@ -3320,6 +2935,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
                     exception.Message),
                 InfoBarSeverity.Error);
         }
+        
     }
 
     public void FormatCommand()

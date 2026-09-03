@@ -19,6 +19,9 @@ public sealed partial class ConfigImportService
 
     public ConfigImportResult Import(string filePath, ConfigImportTarget? target = null, string requestedTarget = "")
     {
+        if (ConfigShare.ConfigShareService.IsSupported(filePath))
+            return ImportSharedPackage(filePath, target);
+
         target ??= GetConfigImportTarget(filePath, requestedTarget);
 
         string fullPath = TryGetFullPath(filePath) ?? filePath;
@@ -116,6 +119,7 @@ public sealed partial class ConfigImportService
 
         return new ConfigImportResult
         {
+            SharedPackage = result.SharedPackage,
             Config = result.Config,
             Target = result.Target,
             SourcePath = result.SourcePath,
@@ -135,6 +139,7 @@ public sealed partial class ConfigImportService
         IReadOnlyList<ConfigImportIssue> issues) =>
         new()
         {
+            SharedPackage = result.SharedPackage,
             Config = config,
             Target = target,
             SourcePath = result.SourcePath,
@@ -158,6 +163,15 @@ public sealed partial class ConfigImportService
             .Select(group => group.First())
             .ToList();
         string extension = Path.GetExtension(filePath);
+        if (ConfigShare.ConfigShareService.IsSupported(filePath))
+        {
+            try
+            {
+                using var package = new ConfigShare.ConfigShareService().Read(filePath);
+                return availableTargets.Where(target => target.ComponentId == package.Config.target![0]).ToList();
+            }
+            catch { return []; } // Import reports and logs the detailed archive error.
+        }
         if (extension.Equals(".json", StringComparison.OrdinalIgnoreCase))
         {
             try
@@ -993,6 +1007,38 @@ public sealed partial class ConfigImportService
             ?? FindRequestedTarget(targets, requestedTarget)
             ?? targets.FirstOrDefault()
             ?? new ConfigImportTarget(string.Empty, string.Empty, string.Empty, null);
+    }
+
+    private static ConfigImportResult ImportSharedPackage(string path, ConfigImportTarget? selectedTarget)
+    {
+        var target = selectedTarget ?? new ConfigImportTarget("", "", "", null);
+        try
+        {
+            var package = new ConfigShare.ConfigShareService().Read(path);
+            string componentId = package.Config.target![0];
+            var component = DatabaseHelper.Instance.GetItemById(componentId);
+            target = component == null
+                ? new ConfigImportTarget(componentId, componentId,
+                    componentId == HardcodedItemIds.ComponentIds[Components.Zapret] ? "winws" : "",
+                    package.Config.target.ElementAtOrDefault(1))
+                : CreateTarget(component);
+            return new ConfigImportResult
+            {
+                SharedPackage = package, Config = package.Config, Target = target, SourcePath = Path.GetFullPath(path),
+                Issues = [], SourceFiles = [path],
+                ReferencedFiles = package.Manifest.Resources.Select(resource => Path.Combine(package.DirectoryPath, resource.Path)).ToList(),
+                MissingReferencedFiles = [], MissingFileResolutions = [], GeneratedFiles = []
+            };
+        }
+        catch (ConfigShare.ConfigShareException exception)
+        {
+            return new ConfigImportResult
+            {
+                Target = target, SourcePath = path, Config = null,
+                Issues = [new(ConfigImportIssueSeverity.Error, exception.Code, exception.Message, path)],
+                SourceFiles = [path], ReferencedFiles = [], MissingReferencedFiles = [], MissingFileResolutions = [], GeneratedFiles = []
+            };
+        }
     }
 
     private ConfigImportTarget? FindRequestedTarget(IReadOnlyList<ConfigImportTarget> targets, string requestedTarget) =>

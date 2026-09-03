@@ -1,3 +1,4 @@
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Communication;
 using System;
@@ -606,33 +607,8 @@ public static partial class ComponentCommandLineFormatter
         .Distinct(StringComparer.OrdinalIgnoreCase)
         .ToList();
 
-    public static IReadOnlyList<string> Tokenize(string commandLine)
-    {
-        List<string> tokens = [];
-        StringBuilder current = new();
-        char quote = '\0';
-
-        foreach (char character in commandLine ?? string.Empty)
-        {
-            if ((character == '\"' || character == '\'') && (quote == '\0' || quote == character))
-            {
-                quote = quote == character ? '\0' : character;
-                current.Append(character);
-                continue;
-            }
-
-            if (char.IsWhiteSpace(character) && quote == '\0')
-            {
-                FlushToken(tokens, current);
-                continue;
-            }
-
-            current.Append(character);
-        }
-
-        FlushToken(tokens, current);
-        return tokens;
-    }
+    public static IReadOnlyList<string> Tokenize(string commandLine) =>
+        ConfigCommandLine.Tokenize(commandLine);
 
     private static bool IsFlag(string token) =>
         !NumericTokenRegex().IsMatch(token) &&
@@ -647,16 +623,6 @@ public static partial class ComponentCommandLineFormatter
             return;
         }
         lines.Add(current.ToString());
-        current.Clear();
-    }
-
-    private static void FlushToken(List<string> tokens, StringBuilder current)
-    {
-        if (current.Length == 0)
-        {
-            return;
-        }
-        tokens.Add(current.ToString());
         current.Clear();
     }
 }

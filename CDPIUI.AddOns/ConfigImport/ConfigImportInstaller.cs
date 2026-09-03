@@ -28,6 +28,20 @@ public sealed partial class ConfigImportInstaller
         if (!HasAllMissingFileResolutions(result))
             return Failure("IMPORT_MISSING_FILE_RESOLUTION_REQUIRED");
 
+        if (result.SharedPackage != null)
+        {
+            try
+            {
+                var installed = await new ConfigShare.ConfigShareService().InstallAsync(
+                    result.SharedPackage, displayName, editedConfig: result.Config);
+                return new ConfigImportInstallResult { ConfigFileName = installed.ConfigFileName, PackId = installed.PackId };
+            }
+            catch (ConfigShare.ConfigShareException exception)
+            {
+                return Failure($"{exception.Code}: {exception.Message}");
+            }
+        }
+
         string sourceDirectory = Path.GetDirectoryName(result.SourcePath)!;
         string localPackDirectory = ConfigurationService.GetItemFolderFromPackId(SharedConstants.LocalUserItemsId);
         string importId = $"{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}"[..24];

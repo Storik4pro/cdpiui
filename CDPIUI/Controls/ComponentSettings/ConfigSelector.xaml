@@ -3,8 +3,14 @@
     x:Class="CDPIUI.Controls.ComponentSettings.ConfigSelector"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CDPIUI.Controls.ComponentSettings">
+    xmlns:local="using:CDPIUI.Controls.ComponentSettings"
+    xmlns:l="using:WinUI3Localizer">
 
+    <Grid ColumnSpacing="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
     <ComboBox
         x:Name="Selector"
         MinHeight="47"
@@ -39,4 +45,9 @@
             </DataTemplate>
         </ComboBox.ItemTemplate>
     </ComboBox>
+        <Button x:Name="ShareButton" Grid.Column="1" Visibility="Collapsed" Width="47" Height="47"
+                VerticalAlignment="Center" Click="ShareButton_Click" l:Uids.Uid="ShareButton">
+            <FontIcon Glyph="&#xE72D;" FontSize="16" />
+        </Button>
+    </Grid>
 </UserControl>

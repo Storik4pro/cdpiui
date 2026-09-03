@@ -12,12 +12,13 @@ namespace CDPIUI.Helper.Basic
     internal static class FileAssociationService
     {
         private const string AutomaticRegistrationMarkerPath =
-            @"Software\CDPIUI\Registration\{B0DC091F-8A91-4EA4-AC76-ECA28C7ED986}";
+            @"Software\CDPIUI\Registration\{B0DC091F-8A91-4EA4-AC76-ECA28C7ED986}\ConfigShare-v2";
 
         private static readonly Association[] Associations =
         [
             new(".cdpitask", "CDPIUI.ConditionalTask", "ConditionalTaskFileTypeDisplayName"),
             new(".cdpiconfigpack", "CDPIUI.ConfigPack", "ConfigPackFileTypeDisplayName"),
+            new(".cdpiconfig", "CDPIUI.SharedConfig", "ConfigShareFileType"),
             new(".cdpisignedpack", "CDPIUI.SignedPack", "SignedPackFileTypeDisplayName"),
             new(".cdpipatch", "CDPIUI.Patch", "PatchFileTypeDisplayName")
         ];

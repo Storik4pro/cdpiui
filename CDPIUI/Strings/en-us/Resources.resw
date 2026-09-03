@@ -4479,7 +4479,7 @@ If error persist, contact application support.</value>
     <value>The current command will be cleared.</value>
   </data>
   <data name="ConfigMakerTextFileFilter" xml:space="preserve">
-    <value>Text configs (*.txt)|*.txt|All files (*.*)|*.*</value>
+    <value>|Text configs (*.txt)|*.txt</value>
   </data>
   <data name="ConfigMakerTextSavedMessage" xml:space="preserve">
     <value>The TXT config was saved.</value>
@@ -4575,7 +4575,7 @@ If error persist, contact application support.</value>
     <value>New</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
-    <value>Export config to TXT...</value>
+    <value>Export config to file...</value>
   </data>
   <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
     <value>Exit</value>
@@ -5701,7 +5701,7 @@ Click [Show Results] to view the results.</value>
     <value>Save config in the application...</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.ToolTipService.ToolTip" xml:space="preserve">
-    <value>Unavailable for configs that contain variables</value>
+    <value>Export to universal (not support vars) or embedded application format (full support)</value>
   </data>
   <data name="ConfigMakerTextExportVariablesNotSupportedMessage" xml:space="preserve">
     <value>A config containing variables cannot be exported to TXT. Save it in the application to preserve the variable definitions.</value>
@@ -5830,5 +5830,137 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
   </data>
   <data name="AppFeatureReviewThemeSettings" xml:space="preserve">
     <value>Review theme settings</value>
+  </data>
+  <data name="ConfigShareTitleContentDialog.Title" xml:space="preserve">
+    <value>Share this preset</value>
+  </data>
+  <data name="ConfigSharePresetName" xml:space="preserve">
+    <value>Preset name</value>
+  </data>
+  <data name="ConfigShareDeveloper" xml:space="preserve">
+    <value>Developer name</value>
+  </data>
+  <data name="ExportToFileTextBlock.Text" xml:space="preserve">
+    <value>Save to file</value>
+  </data>
+  <data name="ShareToFileTextBlock.Text" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="ConfigShareCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfigShareClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ConfigShareCollecting" xml:space="preserve">
+    <value>Collecting preset files…</value>
+  </data>
+  <data name="ConfigShareSharing" xml:space="preserve">
+    <value>Complete sharing in the Share menu.</value>
+  </data>
+  <data name="ConfigShareFileType" xml:space="preserve">
+    <value>CDPIUI preset</value>
+  </data>
+  <data name="ConfigShareImportTitle" xml:space="preserve">
+    <value>Add a preset</value>
+  </data>
+  <data name="ConfigShareAddTo" xml:space="preserve">
+    <value>Add to…</value>
+  </data>
+  <data name="ConfigShareNewKit" xml:space="preserve">
+    <value>As a new kit</value>
+  </data>
+  <data name="ConfigShareKitName" xml:space="preserve">
+    <value>Kit name</value>
+  </data>
+  <data name="ConfigShareKitBy" xml:space="preserve">
+    <value>Kit by {0}</value>
+  </data>
+  <data name="ConfigShareLocal" xml:space="preserve">
+    <value>Local presets (LocalUserData)</value>
+  </data>
+  <data name="ConfigShareImportButton" xml:space="preserve">
+    <value>Add preset</value>
+  </data>
+  <data name="ConfigShareReading" xml:space="preserve">
+    <value>Reading preset…</value>
+  </data>
+  <data name="ConfigShareInstalling" xml:space="preserve">
+    <value>Adding preset and files…</value>
+  </data>
+  <data name="ConfigShareImported" xml:space="preserve">
+    <value>The preset was added. Select it in the component settings.</value>
+  </data>
+  <data name="ConfigShareError" xml:space="preserve">
+    <value>The preset could not be processed.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_FILE_MISSING" xml:space="preserve">
+    <value>A referenced file is missing. Check its path and retry the export.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_ARCHIVE_INVALID" xml:space="preserve">
+    <value>The file is damaged or is not a supported preset archive.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_VERSION_UNSUPPORTED" xml:space="preserve">
+    <value>This preset format requires a newer CDPIUI version.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_CHECKSUM_FAILED" xml:space="preserve">
+    <value>The archive contents are damaged. Obtain another copy of the file.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_TOO_LARGE" xml:space="preserve">
+    <value>The preset exceeds the size or file count limit.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_NAME_REQUIRED" xml:space="preserve">
+    <value>Enter a name and a developer name.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_DESTINATION_INVALID" xml:space="preserve">
+    <value>The selected kit cannot receive presets.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_CONFIG_INVALID" xml:space="preserve">
+    <value>The preset has no valid startup command or component.</value>
+  </data>
+  <data name="ConfigShareError_SHARE_DATABASE_FAILED" xml:space="preserve">
+    <value>The kit could not be registered. Changes were rolled back.</value>
+  </data>
+  <data name="ConfigShareMissingComponentTitle" xml:space="preserve">
+    <value>Component required</value>
+  </data>
+  <data name="ConfigShareMissingComponentMessage" xml:space="preserve">
+    <value>The preset “{0}” requires {1}, which is not installed. Open its installation?</value>
+  </data>
+  <data name="ConfigShareInstallComponent" xml:space="preserve">
+    <value>Install component</value>
+  </data>
+  <data name="ConfigShareLater" xml:space="preserve">
+    <value>Later</value>
+  </data>
+  <data name="StoreSmallAddItemName" xml:space="preserve">
+    <value>Add {0}?</value>
+  </data>
+  <data name="InstallSettingsTextBlock.Text" xml:space="preserve">
+    <value>Installation settings</value>
+  </data>
+  <data name="AddAsKitSettingsStoreSmallInstallDialogCard.Header" xml:space="preserve">
+    <value>Target config kit</value>
+  </data>
+  <data name="AddAsNewKitSettingsStoreSmallInstallDialogCard.Header" xml:space="preserve">
+    <value>Name of new kit</value>
+  </data>
+  <data name="AsKit" xml:space="preserve">
+    <value>Add to existing kit</value>
+  </data>
+  <data name="AsNewKit" xml:space="preserve">
+    <value>Create new kit</value>
+  </data>
+  <data name="ShareToFileTipTextBlock.Text" xml:space="preserve">
+    <value>Nearby sharing, send via mail, send to Telegram, etc...</value>
+  </data>
+  <data name="ExportToFileTipTextBlock.Text" xml:space="preserve">
+    <value>Select directory to save config file</value>
+  </data>
+  <data name="ShareButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="ConfigMakerCCFileFilter" xml:space="preserve">
+    <value>CDPIUI Configs (*.cdpiconfig)|*.cdpiconfig</value>
   </data>
 </root>
