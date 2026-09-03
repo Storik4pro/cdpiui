@@ -15,7 +15,7 @@ namespace CDPIUI.Core.ComponentServices.Helpers
         private string? Directory;
         private DatabaseStoreItem? DatabaseStoreItem;
 
-        private readonly ConfigurationService ConfigHelper;
+        private readonly Lazy<ConfigurationService> ConfigHelper;
 
         public Action? ConfigListUpdated;
 
@@ -30,33 +30,50 @@ namespace CDPIUI.Core.ComponentServices.Helpers
                 DatabaseStoreItem.Directory!, 
                 DatabaseStoreItem.Executable + ".exe");
 
-            if (Id == HardcodedItemIds.ComponentIds[Components.Zapret2])
-            {
-                try
-                {
-                    Zapret2LegacyConfigService.EnsureStorageRegistered();
-                }
-                catch (Exception ex)
-                {
-                    Basic.Logger.Instance.CreateWarningLog(
-                        nameof(ComponentHelper),
-                        $"Cannot initialize the converted Zapret config storage: {ex}");
-                }
-            }
+            ConfigHelper = new Lazy<ConfigurationService>(
+                CreateConfigHelper,
+                LazyThreadSafetyMode.ExecutionAndPublication);
+        }
 
-            ConfigHelper = new(id);
-            ConfigHelper.Init();
+        private ConfigurationService CreateConfigHelper()
+        {
+            EnsureConvertedZapretStorageRegistered();
+
+            ConfigurationService configHelper = new(Id);
+            configHelper.Init();
+            return configHelper;
+        }
+
+        private void EnsureConvertedZapretStorageRegistered()
+        {
+            if (Id != HardcodedItemIds.ComponentIds[Components.Zapret2])
+                return;
+
+            try
+            {
+                Zapret2LegacyConfigService.EnsureStorageRegistered();
+            }
+            catch (Exception ex)
+            {
+                Basic.Logger.Instance.CreateWarningLog(
+                    nameof(ComponentHelper),
+                    $"Cannot initialize the converted Zapret config storage: {ex}");
+            }
         }
 
         public void ReInitConfigs()
         {
-            ConfigHelper.Init();
+            if (ConfigHelper.IsValueCreated)
+                ConfigHelper.Value.Init();
+            else
+                _ = ConfigHelper.Value;
+
             ConfigListUpdated?.Invoke();
         }
 
         public ConfigurationService GetConfigHelper()
         {
-            return ConfigHelper;
+            return ConfigHelper.Value;
         }
 
         public string? GetExecutablePath()
@@ -82,11 +99,21 @@ namespace CDPIUI.Core.ComponentServices.Helpers
             string configFile = 
                 SettingsManager.Instance.GetValue<string>(["CONFIGS", Id], "configFile");
 
-            ConfigItem? config = ConfigHelper.GetConfigItem(configFile!, configId!);
+            ConfigItem? config = ConfigHelper.IsValueCreated
+                ? ConfigHelper.Value.GetConfigItem(configFile!, configId!)
+                : null;
+
+            config ??= ConfigurationService.LoadConfigItemFromPack(
+                configFile!,
+                configId!,
+                Id);
             if (config == null)
             {
                 return string.Empty;
             }
+
+            if (config.IsLegacy)
+                EnsureConvertedZapretStorageRegistered();
 
             string startupString = ConfigurationService.GetStartupParametersByConfigItem(config);
             return startupString;
@@ -99,7 +126,7 @@ namespace CDPIUI.Core.ComponentServices.Helpers
                 return;
             }
 
-            ConfigItem? config = ConfigHelper.GetConfigItem(configFile, configId);
+            ConfigItem? config = ConfigHelper.Value.GetConfigItem(configFile, configId);
             if (config == null || !config.IsLegacy)
             {
                 return;
