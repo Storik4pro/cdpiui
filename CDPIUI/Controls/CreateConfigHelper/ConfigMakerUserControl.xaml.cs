@@ -1,15 +1,19 @@
 using CDPIUI.AddOns.ConfigImport;
+using CDPIUI.Controls.Dialogs.CreateConfigHelper;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Universal;
 using CDPIUI.Core;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Data;
 using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Core.System;
 using CDPIUI.Helper.CreateConfigHelper;
 using CDPIUI.Helper.UserExperience;
 using CDPIUI.ViewModels;
+using CDPIUI.Views.CreateConfigHelper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -19,11 +23,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TextControlBoxNS;
+using Unidecode.NET;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using Windows.UI;
 using WinUI3Localizer;
 
@@ -75,7 +82,8 @@ public sealed record ConfigMakerPresetFileInfo(
     string Path,
     string Folder,
     ConfigMakerPresetFileKind Kind = ConfigMakerPresetFileKind.SiteList,
-    string OptionName = "");
+    string OptionName = "",
+    bool IsAttachedResource = false);
 
 public enum ConfigMakerPresetFileKind
 {
@@ -100,6 +108,9 @@ public sealed class ConfigMakerPresetFileTreeItem
         ? Visibility.Visible
         : Visibility.Collapsed;
     public Visibility MissingVisibility => File != null && IsMissing
+        ? Visibility.Visible
+        : Visibility.Collapsed;
+    public Visibility RemoveVisibility => File?.IsAttachedResource == true
         ? Visibility.Visible
         : Visibility.Collapsed;
 }
@@ -146,6 +157,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private readonly ILocalizer localizer = Localizer.Get();
     private readonly ComponentCommandHelpService helpService = new();
+    private readonly ConfigMakerPresetDocument presetDocument = new();
     private ComponentCommandHelpDocument helpDocument = new();
     private CancellationTokenSource helpCancellation;
     private ConfigMakerCommandOptionViewModel selectedCommand;
@@ -167,15 +179,27 @@ public sealed partial class ConfigMakerUserControl : UserControl
     private string highlightSignature = string.Empty;
     private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer diagnosticsTimer;
     private string editorBackground = "Black";
+    private bool updatingDesigner;
+    private bool designerNeedsRefresh = true;
+    private string presetBaseDirectory = string.Empty;
 
     public ICommand ZoomIn { get; }
     public ICommand ZoomOut { get; }
     public ICommand ZoomReset { get; }
     public ICommand Search { get; }
     public ICommand Replace { get; }
+    public ICommand DesignerTextValueChangedCommand { get; }
+    public ICommand DesignerBoolValueToggledCommand { get; }
+    public ICommand DesignerSelectedGuidChangedCommand { get; }
 
     public ConfigMakerUserControl()
     {
+        DesignerTextValueChangedCommand = new RelayCommand(parameter =>
+            HandleDesignerTextValueChanged((Tuple<string, string>)parameter));
+        DesignerBoolValueToggledCommand = new RelayCommand(parameter =>
+            HandleDesignerBoolValueToggled((Tuple<string, bool>)parameter));
+        DesignerSelectedGuidChangedCommand = new RelayCommand(parameter =>
+            HandleDesignerSelectedGuidChanged((Tuple<string, string>)parameter));
         InitializeComponent();
 
         ZoomIn = new RelayCommand(p => ChangeZoom(5));
@@ -191,6 +215,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
         diagnosticsTimer.Interval = TimeSpan.FromMilliseconds(300);
         diagnosticsTimer.IsRepeating = false;
         diagnosticsTimer.Tick += DiagnosticsTimer_Tick;
+        presetDocument.ContentChanged += PresetDocument_ContentChanged;
         ApplyEditorTheme();
 
         Loaded += ConfigMakerUserControl_Loaded;
@@ -201,6 +226,11 @@ public sealed partial class ConfigMakerUserControl : UserControl
     public ObservableCollection<ConfigMakerCommandOptionViewModel> CommandOptions { get; } = [];
     public ObservableCollection<ConfigMakerCommandModuleViewModel> CommandModules { get; } = [];
     public ObservableCollection<ConfigMakerDiagnosticViewModel> Diagnostics { get; } = [];
+    public ObservableCollection<GraphicDesignerSettingItemModel> DesignerSettingItemModels { get; } = [];
+    public ObservableCollection<GraphicDesignerExclusiveSettingItemModel> DesignerExclusiveSettingItemModels { get; } = [];
+    public ObservableCollection<ConfigMakerVariableDefinition> PresetVariables => presetDocument.Variables;
+    public ObservableCollection<ConfigMakerPresetResource> PresetResources => presetDocument.Resources;
+    public ConfigMakerPresetDocument PresetDocument => presetDocument;
 
 
 
@@ -236,6 +266,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
     public event EventHandler PanelStateChanged;
     public event EventHandler<ConfigMakerPresetFileReplacedEventArgs> PresetFileReplaced;
     public event EventHandler<StatusNotificationRequestedEventArgs> StatusNotificationRequested;
+    public event EventHandler DocumentStateChanged;
 
     public bool IsTesting => isTesting;
     public bool IsCommandPanelVisible => CommandPanel.Visibility == Visibility.Visible;
@@ -244,6 +275,9 @@ public sealed partial class ConfigMakerUserControl : UserControl
     public bool IsPresetStructureVisible => hasPresetFiles || HasPresetGroups;
     public bool HasPresetFiles => hasPresetFiles;
     public bool HasPresetGroups => hasPresetGroups || !usesExplicitPresetStructure;
+    public bool HasVariables => presetDocument.HasVariables;
+    public bool CanExportText => !HasVariables;
+    public bool IsSimpleDesignerSupported => IsSimpleDesignerComponent(ComponentId);
 
     public void SetPresetStructure(
         IEnumerable<ConfigMakerPresetFileInfo> files,
@@ -274,9 +308,21 @@ public sealed partial class ConfigMakerUserControl : UserControl
     {
         bool filesPanelWasVisible = IsPresetFilesPanelVisible;
         ConfigMakerPresetFileInfo[] detectedFiles = ExtractPresetFiles(CommandText).ToArray();
-        ConfigMakerPresetFileInfo[] files = usesExplicitPresetStructure
+        ConfigMakerPresetFileInfo[] baseFiles = usesExplicitPresetStructure
             ? EnrichExplicitPresetFiles(explicitPresetFiles, detectedFiles)
             : detectedFiles;
+        ConfigMakerPresetFileInfo[] attachedFiles = presetDocument.Resources
+            .Select(resource => new ConfigMakerPresetFileInfo(
+                resource.Alias,
+                resource.Reference,
+                Path.GetDirectoryName(resource.Path) ?? string.Empty,
+                ToPresetFileKind(resource.Kind),
+                IsAttachedResource: true))
+            .ToArray();
+        ConfigMakerPresetFileInfo[] files = baseFiles
+            .Concat(attachedFiles)
+            .DistinctBy(file => (file.Kind, file.Path), PresetFileKeyComparer.Instance)
+            .ToArray();
 
         RebuildPresetFilesTree(files);
         RebuildPresetGroupsTree(ParseCommandOptions(CommandText));
@@ -286,10 +332,6 @@ public sealed partial class ConfigMakerUserControl : UserControl
         hasPresetFiles = files.Length > 0;
         hasPresetGroups = PresetGroupsTreeView.RootNodes.Count > 0;
 
-        if (filesPanelWasVisible && !hasPresetFiles)
-        {
-            SetPresetFilesPanelVisible(false);
-        }
         UpdatePresetGroupsTab();
         if (filesAvailabilityChanged || groupsAvailabilityChanged)
         {
@@ -349,7 +391,9 @@ public sealed partial class ConfigMakerUserControl : UserControl
                             ? string.Format(
                                 localizer.GetLocalizedString("ConfigMakerPresetFileMissingMessage"),
                                 resolvedPath ?? file.Path)
-                            : resolvedPath,
+                            : file.IsAttachedResource
+                                ? $"{file.Path}{Environment.NewLine}{resolvedPath}"
+                                : resolvedPath,
                         File = file,
                         IsMissing = isMissing,
                     },
@@ -923,7 +967,6 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     public void SetPresetFilesPanelVisible(bool visible)
     {
-        visible &= hasPresetFiles;
         PresetFilesPanel.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         PresetFilesContentSizer.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
         PresetFilesColumn.Width = visible ? GridLength.Auto : new GridLength(0);
@@ -1032,15 +1075,21 @@ public sealed partial class ConfigMakerUserControl : UserControl
         }
     }
 
-    private ConfigImportResult CreateAutoCorrectResult(string missingPath)
+    private ConfigImportResult CreateAutoCorrectResult(
+        string missingPath,
+        ConfigItem sourceConfig = null)
     {
         var component = DatabaseHelper.Instance.GetItemById(ComponentId);
         string componentDirectory = component?.Directory ?? string.Empty;
-        string sourceDirectory = Directory.Exists(componentDirectory)
-            ? componentDirectory
+        string presetDirectory = GetPresetBaseDirectory();
+        string sourceDirectory = Directory.Exists(presetDirectory)
+            ? presetDirectory
+            : Directory.Exists(componentDirectory)
+                ? componentDirectory
             : Path.GetDirectoryName(missingPath) ?? Environment.CurrentDirectory;
         return new ConfigImportResult
         {
+            Config = sourceConfig,
             Target = new ConfigImportTarget(
                 ComponentId ?? string.Empty,
                 component?.ShortName ?? ComponentId ?? string.Empty,
@@ -1093,7 +1142,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
             : string.Empty;
     }
 
-    private void TryCreateEmptyPresetFile(string missingPath)
+    private bool TryCreateEmptyPresetFile(string missingPath, bool showStatus = true)
     {
         try
         {
@@ -1110,23 +1159,37 @@ public sealed partial class ConfigMakerUserControl : UserControl
             {
             }
             RebuildPresetStructure();
-            ShowEditorMessage(
-                string.Format(
-                    localizer.GetLocalizedString("ConfigMakerPresetFileEmptyCreatedMessage"),
-                    missingPath),
-                InfoBarSeverity.Success);
+            if (showStatus)
+            {
+                ShowEditorMessage(
+                    string.Format(
+                        localizer.GetLocalizedString("ConfigMakerPresetFileEmptyCreatedMessage"),
+                        missingPath),
+                    InfoBarSeverity.Success);
+            }
+            return true;
         }
         catch (Exception ex)
         {
-            ShowEditorMessage(
-                string.Format(
-                    localizer.GetLocalizedString("ConfigMakerPresetFileReplaceFailedMessage"),
-                    ex.Message),
-                InfoBarSeverity.Error);
+            if (showStatus)
+            {
+                ShowEditorMessage(
+                    string.Format(
+                        localizer.GetLocalizedString("ConfigMakerPresetFileReplaceFailedMessage"),
+                        ex.Message),
+                    InfoBarSeverity.Error);
+            }
+            return false;
         }
     }
 
-    private void ApplyPresetFileReplacement(ConfigMakerPresetFileInfo file, string replacementPath)
+    private void ApplyPresetFileReplacement(ConfigMakerPresetFileInfo file, string replacementPath) =>
+        TryApplyPresetFileReplacement(file, replacementPath, showStatus: true);
+
+    private bool TryApplyPresetFileReplacement(
+        ConfigMakerPresetFileInfo file,
+        string replacementPath,
+        bool showStatus)
     {
         try
         {
@@ -1136,10 +1199,43 @@ public sealed partial class ConfigMakerUserControl : UserControl
                 throw new FileNotFoundException(null, fullReplacementPath);
             }
 
-            string commandPath = MakePresetCommandPath(fullReplacementPath);
-            string updatedCommand = ReplacePresetFileInCommand(CommandText, file, commandPath);
-            if (string.Equals(updatedCommand, CommandText, StringComparison.Ordinal))
+            ConfigMakerPresetResource attachedResource = FindAttachedResource(file.Path);
+            if (attachedResource != null)
             {
+                attachedResource.Path = fullReplacementPath;
+                attachedResource.IsBuiltIn = IsPathInsideComponent(fullReplacementPath);
+                RebuildPresetStructure();
+                if (showStatus)
+                {
+                    ShowEditorMessage(
+                        string.Format(
+                            localizer.GetLocalizedString("ConfigMakerPresetFileReplacedMessage"),
+                            fullReplacementPath),
+                        InfoBarSeverity.Success);
+                }
+                return true;
+            }
+
+            ConfigMakerPresetResource replacementResource = GetOrCreatePresetResource(
+                fullReplacementPath,
+                file.Kind,
+                out bool resourceAdded);
+            string replacementReference = replacementResource.Reference;
+            string updatedCommand = ReplacePresetFileInCommand(
+                CommandText,
+                file,
+                replacementReference);
+            bool commandChanged = !string.Equals(
+                updatedCommand,
+                CommandText,
+                StringComparison.Ordinal);
+            bool variablesChanged = ReplacePresetFileInVariables(file, replacementReference);
+            if (!commandChanged && !variablesChanged)
+            {
+                if (resourceAdded)
+                {
+                    presetDocument.Resources.Remove(replacementResource);
+                }
                 throw new InvalidOperationException(
                     localizer.GetLocalizedString("ConfigMakerPresetFileReferenceNotFoundMessage"));
             }
@@ -1152,33 +1248,103 @@ public sealed partial class ConfigMakerUserControl : UserControl
                             ? item with
                             {
                                 Name = Path.GetFileName(fullReplacementPath),
-                                Path = commandPath,
-                                Folder = GetPresetDisplayFolder(commandPath),
+                                Path = replacementReference,
+                                Folder = GetPresetDisplayFolder(replacementReference),
                             }
                             : item)
                     .ToArray();
             }
-            CommandText = ComponentCommandLineFormatter.FormatByFlags(updatedCommand);
+            if (commandChanged)
+            {
+                CommandText = ComponentCommandLineFormatter.FormatByFlags(updatedCommand);
+            }
+            RebuildPresetStructure();
             PresetFileReplaced?.Invoke(
                 this,
                 new ConfigMakerPresetFileReplacedEventArgs(
                     CommandText,
                     file.Path,
-                    commandPath));
-            ShowEditorMessage(
-                string.Format(
-                    localizer.GetLocalizedString("ConfigMakerPresetFileReplacedMessage"),
-                    fullReplacementPath),
-                InfoBarSeverity.Success);
+                    replacementReference));
+            if (showStatus)
+            {
+                ShowEditorMessage(
+                    string.Format(
+                        localizer.GetLocalizedString("ConfigMakerPresetFileReplacedMessage"),
+                        fullReplacementPath),
+                    InfoBarSeverity.Success);
+            }
+            return true;
         }
         catch (Exception ex)
         {
-            ShowEditorMessage(
-                string.Format(
-                    localizer.GetLocalizedString("ConfigMakerPresetFileReplaceFailedMessage"),
-                    ex.Message),
-                InfoBarSeverity.Error);
+            if (showStatus)
+            {
+                ShowEditorMessage(
+                    string.Format(
+                        localizer.GetLocalizedString("ConfigMakerPresetFileReplaceFailedMessage"),
+                        ex.Message),
+                    InfoBarSeverity.Error);
+            }
+            return false;
         }
+    }
+
+    private bool ReplacePresetFileInVariables(
+        ConfigMakerPresetFileInfo file,
+        string replacementPath)
+    {
+        bool replaced = false;
+        foreach (ConfigMakerVariableDefinition variable in presetDocument.Variables)
+        {
+            variable.Value = ReplacePresetFileInVariableValue(
+                variable.Value,
+                file,
+                replacementPath,
+                ref replaced);
+            variable.OnValue = ReplacePresetFileInVariableValue(
+                variable.OnValue,
+                file,
+                replacementPath,
+                ref replaced);
+            variable.OffValue = ReplacePresetFileInVariableValue(
+                variable.OffValue,
+                file,
+                replacementPath,
+                ref replaced);
+            for (int index = 0; index < variable.Values.Count; index++)
+            {
+                variable.Values[index] = ReplacePresetFileInVariableValue(
+                    variable.Values[index],
+                    file,
+                    replacementPath,
+                    ref replaced);
+            }
+        }
+        return replaced;
+    }
+
+    private string ReplacePresetFileInVariableValue(
+        string value,
+        ConfigMakerPresetFileInfo file,
+        string replacementPath,
+        ref bool replaced)
+    {
+        string updated = ReplacePresetFileInCommand(value ?? string.Empty, file, replacementPath);
+        if (!string.Equals(updated, value, StringComparison.Ordinal))
+        {
+            replaced = true;
+            return updated;
+        }
+
+        ConfigMakerPresetFileInfo directFile = TryExtractDirectPresetFile(value);
+        if (directFile != null &&
+            directFile.Kind == file.Kind &&
+            PresetPathsEqual(directFile.Path, file.Path))
+        {
+            replaced = true;
+            return replacementPath;
+        }
+        return value;
     }
 
     private async void OpenPresetFileItem_Click(object sender, RoutedEventArgs e)
@@ -1257,6 +1423,230 @@ public sealed partial class ConfigMakerUserControl : UserControl
         ShellHelper.LookupFileInDirectory(path);
     }
 
+    private void AddPresetFileButton_Click(object sender, RoutedEventArgs e)
+    {
+        using System.Windows.Forms.OpenFileDialog dialog = new()
+        {
+            Title = localizer.GetLocalizedString("ConfigMakerAddPresetFileDialogTitle"),
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            Filter = localizer.GetLocalizedString("ConfigMakerPresetResourceFileFilter"),
+            Multiselect = true,
+            RestoreDirectory = true,
+        };
+        if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+        {
+            return;
+        }
+        AddPresetFiles(dialog.FileNames);
+    }
+
+    public void AddPresetFiles(IEnumerable<string> filePaths)
+    {
+        ArgumentNullException.ThrowIfNull(filePaths);
+        int added = 0;
+        foreach (string sourcePath in filePaths)
+        {
+            if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+            {
+                continue;
+            }
+            string fullPath = Path.GetFullPath(sourcePath);
+            if (presetDocument.Resources.Any(resource =>
+                    string.Equals(
+                        TryResolvePresetFilePath(resource.Reference),
+                        fullPath,
+                        StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+            string alias = CreateUniqueResourceAlias(Path.GetFileName(fullPath));
+            presetDocument.Resources.Add(new ConfigMakerPresetResource
+            {
+                Alias = alias,
+                Path = fullPath,
+                Kind = InferResourceKind(fullPath),
+                IsBuiltIn = IsPathInsideComponent(fullPath),
+            });
+            added++;
+        }
+        if (added > 0)
+        {
+            AttachExistingPresetFiles();
+            RebuildPresetStructure();
+            SetPresetFilesPanelVisible(true);
+            ShowEditorMessage(
+                string.Format(
+                    localizer.GetLocalizedString("ConfigMakerPresetFilesAddedMessage"),
+                    added),
+                InfoBarSeverity.Success);
+        }
+    }
+
+    private void EditorPanel_DragOver(object sender, DragEventArgs e)
+    {
+        if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+        {
+            e.AcceptedOperation = DataPackageOperation.None;
+            return;
+        }
+
+        e.AcceptedOperation = DataPackageOperation.Copy;
+        e.DragUIOverride.Caption = localizer.GetLocalizedString("ConfigMakerAddPresetFileDialogTitle");
+        e.DragUIOverride.IsCaptionVisible = true;
+        e.Handled = true;
+    }
+
+    private async void EditorPanel_Drop(object sender, DragEventArgs e)
+    {
+        if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+        {
+            return;
+        }
+
+        try
+        {
+            IReadOnlyList<IStorageItem> droppedItems = await e.DataView.GetStorageItemsAsync();
+            AddPresetFiles(droppedItems
+                .OfType<StorageFile>()
+                .Select(file => file.Path)
+                .Where(path => !string.IsNullOrWhiteSpace(path)));
+        }
+        catch (Exception exception)
+        {
+            ShowEditorMessage(exception.Message, InfoBarSeverity.Error);
+        }
+        finally
+        {
+            e.Handled = true;
+        }
+    }
+
+    private async void RemovePresetFileItem_Click(object sender, RoutedEventArgs e)
+    {
+        ConfigMakerPresetFileInfo file = GetPresetFileFromMenuSender(sender);
+        ConfigMakerPresetResource resource = file == null ? null : FindAttachedResource(file.Path);
+        if (resource == null)
+        {
+            return;
+        }
+        bool isReferenced = CommandText.Contains(resource.Reference, StringComparison.OrdinalIgnoreCase) ||
+            presetDocument.Variables
+                .SelectMany(GetPresetVariableCandidateValues)
+                .Any(value => value.Contains(resource.Reference, StringComparison.OrdinalIgnoreCase));
+        if (isReferenced)
+        {
+            ContentDialog confirmation = new()
+            {
+                XamlRoot = XamlRoot,
+                Title = localizer.GetLocalizedString("ConfigMakerRemoveReferencedFileDialogTitle"),
+                Content = localizer.GetLocalizedString("ConfigMakerRemoveReferencedFileDialogMessage"),
+                PrimaryButtonText = localizer.GetLocalizedString("Remove"),
+                CloseButtonText = localizer.GetLocalizedString("Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+            };
+            if (await confirmation.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+        }
+        presetDocument.Resources.Remove(resource);
+        RebuildPresetStructure();
+        ScheduleDiagnostics();
+    }
+
+    private void PresetFilesTreeView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    {
+        if (IsEditorReadOnly ||
+            PresetFilesTreeView.SelectedNode?.Content is not ConfigMakerPresetFileTreeItem item ||
+            item.File == null)
+        {
+            return;
+        }
+        string reference = item.File.Path.Trim().Trim('"');
+        if (!reference.StartsWith("preset://", StringComparison.OrdinalIgnoreCase))
+        {
+            string resolvedPath = TryResolvePresetFilePath(reference);
+            if (!string.IsNullOrWhiteSpace(resolvedPath) && File.Exists(resolvedPath))
+            {
+                string fullPath = Path.GetFullPath(resolvedPath);
+                ConfigMakerPresetResource resource = presetDocument.Resources.FirstOrDefault(candidate =>
+                    string.Equals(
+                        TryResolvePresetFilePath(candidate.Reference),
+                        fullPath,
+                        StringComparison.OrdinalIgnoreCase));
+                if (resource == null)
+                {
+                    resource = new ConfigMakerPresetResource
+                    {
+                        Alias = CreateUniqueResourceAlias(Path.GetFileName(fullPath)),
+                        Path = fullPath,
+                        Kind = ToConfigMakerResourceKind(item.File.Kind),
+                        IsBuiltIn = IsPathInsideComponent(fullPath),
+                    };
+                    presetDocument.Resources.Add(resource);
+                    RebuildPresetStructure();
+                }
+                reference = resource.Reference;
+            }
+        }
+        InsertAtCursor($"\"{reference}\"");
+    }
+
+    private string CreateUniqueResourceAlias(string fileName)
+    {
+        string normalized = fileName.Unidecode();
+        normalized = string.Concat(normalized.Select(character =>
+            char.IsLetterOrDigit(character) || character is '.' or '_' or '-'
+                ? character
+                : '_'));
+        normalized = normalized.Trim('_');
+        if (normalized.Length == 0)
+        {
+            normalized = "resource.bin";
+        }
+        string stem = Path.GetFileNameWithoutExtension(normalized);
+        string extension = Path.GetExtension(normalized);
+        string candidate = normalized;
+        int suffix = 2;
+        while (presetDocument.Resources.Any(resource =>
+                   string.Equals(resource.Alias, candidate, StringComparison.OrdinalIgnoreCase)))
+        {
+            candidate = $"{stem}_{suffix++}{extension}";
+        }
+        return candidate;
+    }
+
+    private static ConfigMakerResourceKind InferResourceKind(string filePath) =>
+        Path.GetExtension(filePath).ToLowerInvariant() switch
+        {
+            ".txt" or ".list" => ConfigMakerResourceKind.SiteList,
+            ".lua" => ConfigMakerResourceKind.Library,
+            ".bin" or ".dat" or ".der" or ".pem" => ConfigMakerResourceKind.Payload,
+            _ => ConfigMakerResourceKind.Other,
+        };
+
+    private static ConfigMakerPresetFileKind ToPresetFileKind(ConfigMakerResourceKind kind) => kind switch
+    {
+        ConfigMakerResourceKind.Library => ConfigMakerPresetFileKind.Library,
+        ConfigMakerResourceKind.Payload or ConfigMakerResourceKind.Other => ConfigMakerPresetFileKind.Payload,
+        _ => ConfigMakerPresetFileKind.SiteList,
+    };
+
+    private bool IsPathInsideComponent(string filePath)
+    {
+        string componentDirectory = DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(componentDirectory))
+        {
+            return false;
+        }
+        string fullPath = Path.GetFullPath(filePath);
+        string fullRoot = Path.GetFullPath(componentDirectory).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar);
+        return string.Equals(fullPath, fullRoot, StringComparison.OrdinalIgnoreCase) ||
+               fullPath.StartsWith(fullRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static ConfigMakerPresetFileInfo GetPresetFileFromMenuSender(object sender)
     {
         if (sender is not FrameworkElement element)
@@ -1277,11 +1667,30 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private string ResolvePresetFilePath(string sourcePath)
     {
-        string path = (sourcePath ?? string.Empty).Trim().Trim('"');
-        if (path.StartsWith("@", StringComparison.Ordinal) ||
-            path.StartsWith("$", StringComparison.Ordinal))
+        string path = (sourcePath ?? string.Empty).Trim().Trim('"', '\'');
+        if (path.StartsWith("preset://", StringComparison.OrdinalIgnoreCase))
         {
-            path = path[1..];
+            ConfigMakerPresetResource resource = FindAttachedResource(path);
+            if (resource == null)
+            {
+                throw new FileNotFoundException(null, path);
+            }
+            path = resource.Path.Trim().Trim('"', '\'');
+        }
+
+        path = ExpandPresetVariableReferences(path).Trim().Trim('"', '\'');
+        path = StripPresetFileMarker(path);
+        string presetDirectory = GetPresetBaseDirectory();
+        if (path.StartsWith("$GETCURRENTDIR()", StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.IsNullOrWhiteSpace(presetDirectory))
+            {
+                throw new DirectoryNotFoundException(ComponentId);
+            }
+            string suffix = path["$GETCURRENTDIR()".Length..]
+                .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            return Path.GetFullPath(Path.Combine(presetDirectory, suffix));
         }
         if (Path.IsPathFullyQualified(path))
         {
@@ -1293,6 +1702,71 @@ public sealed partial class ConfigMakerUserControl : UserControl
         return string.IsNullOrWhiteSpace(componentDirectory)
             ? Path.GetFullPath(path)
             : Path.GetFullPath(Path.Combine(componentDirectory, path));
+    }
+
+    private string GetPresetBaseDirectory()
+    {
+        if (!string.IsNullOrWhiteSpace(presetBaseDirectory))
+        {
+            return presetBaseDirectory;
+        }
+        return DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? string.Empty;
+    }
+
+    private static string GetConfigItemBaseDirectory(ConfigItem item)
+    {
+        string packId = item?.packId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(packId))
+        {
+            return string.Empty;
+        }
+        string registeredDirectory = DatabaseHelper.Instance.GetItemById(packId)?.Directory ?? string.Empty;
+        return !string.IsNullOrWhiteSpace(registeredDirectory)
+            ? Path.GetFullPath(registeredDirectory)
+            : Path.GetFullPath(Path.Combine(Directories.StoreItemsDirectory, packId));
+    }
+
+    private string ExpandPresetVariableReferences(string value)
+    {
+        string result = value ?? string.Empty;
+        HashSet<string> visitedValues = new(StringComparer.Ordinal);
+        for (int depth = 0; depth < 16 && visitedValues.Add(result); depth++)
+        {
+            bool replaced = false;
+            string expanded = Regex.Replace(
+                result,
+                "%[A-Za-z0-9_]+%",
+                match =>
+                {
+                    string name = match.Value.Trim('%');
+                    ConfigMakerVariableDefinition variable = presetDocument.Variables.FirstOrDefault(candidate =>
+                        string.Equals(candidate.Name, name, StringComparison.OrdinalIgnoreCase));
+                    if (variable == null)
+                    {
+                        return match.Value;
+                    }
+                    replaced = true;
+                    return variable.DisplayValue ?? string.Empty;
+                },
+                RegexOptions.CultureInvariant);
+            result = expanded;
+            if (!replaced)
+            {
+                break;
+            }
+        }
+        return result;
+    }
+
+    private ConfigMakerPresetResource FindAttachedResource(string reference)
+    {
+        string alias = (reference ?? string.Empty).Trim().Trim('"', '\'');
+        if (alias.StartsWith("preset://", StringComparison.OrdinalIgnoreCase))
+        {
+            alias = alias["preset://".Length..];
+        }
+        return presetDocument.Resources.FirstOrDefault(resource =>
+            string.Equals(resource.Alias, alias, StringComparison.OrdinalIgnoreCase));
     }
 
     private string TryResolvePresetFilePath(string sourcePath)
@@ -1346,12 +1820,23 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private static string NormalizePresetPath(string value)
     {
-        string normalized = UnquoteOptionValue(value).Trim();
-        if (normalized.StartsWith('@') || normalized.StartsWith('$'))
-        {
-            normalized = normalized[1..];
-        }
+        string normalized = StripPresetFileMarker(UnquoteOptionValue(value).Trim());
         return normalized.Replace('\\', '/');
+    }
+
+    private static string StripPresetFileMarker(string value)
+    {
+        string normalized = value ?? string.Empty;
+        if (normalized.StartsWith('@'))
+        {
+            return normalized[1..];
+        }
+        if (normalized.StartsWith('$') &&
+            !normalized.StartsWith("$GETCURRENTDIR()", StringComparison.OrdinalIgnoreCase))
+        {
+            return normalized[1..];
+        }
+        return normalized;
     }
 
     private string ReplacePresetFileInCommand(
@@ -1412,9 +1897,9 @@ public sealed partial class ConfigMakerUserControl : UserControl
             optionName,
             $"{optionName}={value}",
             value));
-        if (detected == null ||
-            detected.Kind != missingKind ||
-            !PresetPathsEqual(detected.Path, missingPath))
+        string detectedPath = detected?.Path ?? GetPresetOptionFileReference(optionName, value);
+        if ((detected != null && detected.Kind != missingKind) ||
+            !PresetPathsEqual(detectedPath, missingPath))
         {
             return false;
         }
@@ -1457,22 +1942,82 @@ public sealed partial class ConfigMakerUserControl : UserControl
             : value;
     }
 
-    private static IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFiles(string commandText)
+    private IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFiles(string commandText)
     {
-        return ParseCommandOptions(commandText)
-            .Select(TryExtractPresetFile)
-            .Where(file => file != null)
+        IEnumerable<ConfigMakerPresetFileInfo> commandFiles = ExtractPresetFilesFromText(commandText);
+        IEnumerable<ConfigMakerPresetFileInfo> variableFiles = presetDocument.Variables
+            .SelectMany(GetPresetVariableCandidateValues)
+            .Distinct(StringComparer.Ordinal)
+            .SelectMany(value =>
+                ExtractPresetFilesFromText(value)
+                    .Append(TryExtractDirectPresetFile(value)))
+            .Where(file => file != null);
+
+        return commandFiles
+            .Concat(variableFiles)
             .DistinctBy(file => (file.Kind, file.Path), PresetFileKeyComparer.Instance);
     }
 
-    private static ConfigMakerPresetFileInfo TryExtractPresetFile(ParsedPresetOption option)
+    private IEnumerable<ConfigMakerPresetFileInfo> ExtractPresetFilesFromText(string text)
+    {
+        return ParseCommandOptions(text)
+            .Select(option => TryExtractPresetFile(option, ExpandPresetVariableReferences))
+            .Where(file => file != null);
+    }
+
+    private ConfigMakerPresetFileInfo TryExtractDirectPresetFile(string value)
+    {
+        string path = StripPresetFileMarker(UnquoteOptionValue(value).Trim());
+        string expandedPath = StripPresetFileMarker(
+            UnquoteOptionValue(ExpandPresetVariableReferences(path)).Trim());
+        ConfigMakerPresetFileKind? kind = InferPresetFileKind(expandedPath);
+        if (string.IsNullOrWhiteSpace(path) || kind == null || !LooksLikeFilePath(expandedPath))
+        {
+            return null;
+        }
+
+        string normalized = NormalizePresetPath(path);
+        string normalizedExpanded = NormalizePresetPath(expandedPath);
+        string name = normalizedExpanded.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()
+            ?? normalizedExpanded;
+        return new ConfigMakerPresetFileInfo(
+            name,
+            normalized,
+            GetPresetDisplayFolder(normalizedExpanded),
+            kind.Value);
+    }
+
+    private static IEnumerable<string> GetPresetVariableCandidateValues(
+        ConfigMakerVariableDefinition variable)
+    {
+        if (!string.IsNullOrWhiteSpace(variable.Value))
+        {
+            yield return variable.Value;
+        }
+        foreach (string value in variable.Values.Where(value => !string.IsNullOrWhiteSpace(value)))
+        {
+            yield return value;
+        }
+        if (!string.IsNullOrWhiteSpace(variable.OnValue))
+        {
+            yield return variable.OnValue;
+        }
+        if (!string.IsNullOrWhiteSpace(variable.OffValue))
+        {
+            yield return variable.OffValue;
+        }
+    }
+
+    private static ConfigMakerPresetFileInfo TryExtractPresetFile(
+        ParsedPresetOption option,
+        Func<string, string> pathExpander = null)
     {
         if (string.IsNullOrWhiteSpace(option.Value))
         {
             return null;
         }
 
-        ConfigMakerPresetFileKind kind;
+        ConfigMakerPresetFileKind? kind = null;
         string path = UnquoteOptionValue(option.Value);
         if (IsSiteListOption(option.Name))
         {
@@ -1488,31 +2033,49 @@ public sealed partial class ConfigMakerUserControl : UserControl
             int separator = path.IndexOf(':');
             path = separator >= 0 ? path[(separator + 1)..] : path;
         }
-        else
-        {
-            return null;
-        }
 
-        path = path.Trim();
-        if (path.StartsWith('@') || path.StartsWith('$'))
-        {
-            path = path[1..];
-        }
+        path = StripPresetFileMarker(path.Trim());
         path = UnquoteOptionValue(path);
+        string expandedPath = StripPresetFileMarker(
+            UnquoteOptionValue(pathExpander?.Invoke(path) ?? path).Trim());
+        kind ??= InferPresetFileKind(expandedPath);
         if (string.IsNullOrWhiteSpace(path) ||
-            (kind != ConfigMakerPresetFileKind.SiteList && !LooksLikeFilePath(path)))
+            kind == null ||
+            (kind != ConfigMakerPresetFileKind.SiteList && !LooksLikeFilePath(expandedPath)))
         {
             return null;
         }
 
         string normalized = NormalizePresetPath(path);
-        string name = normalized.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? normalized;
+        string normalizedExpanded = NormalizePresetPath(expandedPath);
+        string name = normalizedExpanded.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()
+            ?? normalizedExpanded;
         return new ConfigMakerPresetFileInfo(
             name,
             normalized,
-            GetPresetDisplayFolder(normalized),
-            kind,
+            GetPresetDisplayFolder(normalizedExpanded),
+            kind.Value,
             option.Name);
+    }
+
+    private static ConfigMakerPresetFileKind? InferPresetFileKind(string path) =>
+        Path.GetExtension(path).ToLowerInvariant() switch
+        {
+            ".txt" or ".list" => ConfigMakerPresetFileKind.SiteList,
+            ".lua" => ConfigMakerPresetFileKind.Library,
+            ".bin" or ".dat" or ".der" or ".pem" => ConfigMakerPresetFileKind.Payload,
+            _ => null,
+        };
+
+    private static string GetPresetOptionFileReference(string optionName, string value)
+    {
+        string path = UnquoteOptionValue(value);
+        if (string.Equals(optionName, "--blob", StringComparison.OrdinalIgnoreCase))
+        {
+            int separator = path.IndexOf(':');
+            path = separator >= 0 ? path[(separator + 1)..] : path;
+        }
+        return NormalizePresetPath(path);
     }
 
     private static bool LooksLikeFilePath(string path) =>
@@ -1667,6 +2230,579 @@ public sealed partial class ConfigMakerUserControl : UserControl
             HashCode.Combine(value.Kind, StringComparer.OrdinalIgnoreCase.GetHashCode(value.Path));
     }
 
+    public void LoadPresetDocument(ConfigMakerPresetDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        presetBaseDirectory = string.Empty;
+        presetDocument.Name = document.Name;
+        presetDocument.ComponentId = document.ComponentId;
+        presetDocument.Variables.Clear();
+        foreach (ConfigMakerVariableDefinition variable in document.Variables)
+        {
+            presetDocument.Variables.Add(CloneVariable(variable));
+        }
+        presetDocument.Resources.Clear();
+        foreach (ConfigMakerPresetResource resource in document.Resources)
+        {
+            presetDocument.Resources.Add(new ConfigMakerPresetResource
+            {
+                Alias = resource.Alias,
+                Path = resource.Path,
+                Kind = resource.Kind,
+                IsBuiltIn = resource.IsBuiltIn,
+            });
+        }
+        ComponentId = document.ComponentId;
+        SetEditorText(document.CommandText);
+        RebuildPresetStructure();
+        UpdateSimpleDesignerAvailability();
+        DocumentStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public async Task LoadConfigItem(
+        ConfigItem item,
+        bool applyAutoCorrectorSilently = false)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        LoadPresetDocument(ConfigMakerPresetDocument.FromConfigItem(item));
+        presetBaseDirectory = GetConfigItemBaseDirectory(item);
+        RebuildPresetStructure();
+        if (applyAutoCorrectorSilently)
+        {
+            await ApplyAutoCorrectorSilentlyAsync(item);
+        }
+        AttachExistingPresetFiles();
+        RebuildPresetStructure();
+    }
+
+    private async Task ApplyAutoCorrectorSilentlyAsync(ConfigItem sourceConfig)
+    {
+        ConfigImportAutoCorrector autoCorrector = new();
+        foreach (ConfigMakerPresetFileInfo file in ExtractPresetFiles(CommandText).ToArray())
+        {
+            string missingPath = TryResolvePresetFilePath(file.Path);
+            if (string.IsNullOrWhiteSpace(missingPath) || File.Exists(missingPath))
+            {
+                continue;
+            }
+            try
+            {
+                if (autoCorrector.ShouldSuggestEmptyFile(missingPath))
+                {
+                    TryCreateEmptyPresetFile(missingPath, showStatus: false);
+                    continue;
+                }
+                ConfigImportResult autoCorrectResult = CreateAutoCorrectResult(
+                    missingPath,
+                    sourceConfig);
+                string suggestion = await Task.Run(() => autoCorrector.FindReplacement(
+                    autoCorrectResult,
+                    missingPath));
+                if (!string.IsNullOrWhiteSpace(suggestion) && File.Exists(suggestion))
+                {
+                    TryApplyPresetFileReplacement(file, suggestion, showStatus: false);
+                }
+            }
+            catch
+            {
+                // A silent import leaves unresolved references unchanged.
+            }
+        }
+    }
+
+    private void AttachExistingPresetFiles()
+    {
+        string updatedCommand = CommandText;
+        foreach (ConfigMakerPresetFileInfo file in ExtractPresetFilesFromText(updatedCommand).ToArray())
+        {
+            ConfigMakerPresetResource resource = GetOrCreatePresetResource(file, out bool resourceAdded);
+            if (resource == null)
+            {
+                continue;
+            }
+
+            string rewritten = ReplacePresetFileInCommand(
+                updatedCommand,
+                file,
+                resource.Reference);
+            if (string.Equals(rewritten, updatedCommand, StringComparison.Ordinal))
+            {
+                if (resourceAdded)
+                {
+                    presetDocument.Resources.Remove(resource);
+                }
+                continue;
+            }
+            updatedCommand = rewritten;
+        }
+
+        AttachExistingPresetFilesInVariables();
+
+        if (!string.Equals(updatedCommand, CommandText, StringComparison.Ordinal))
+        {
+            SetEditorText(ComponentCommandLineFormatter.FormatByFlags(updatedCommand));
+        }
+    }
+
+    private ConfigMakerPresetResource GetOrCreatePresetResource(
+        ConfigMakerPresetFileInfo file,
+        out bool resourceAdded)
+    {
+        resourceAdded = false;
+        if (file == null || file.Path.StartsWith("preset://", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        string resolvedPath = TryResolvePresetFilePath(file.Path);
+        if (string.IsNullOrWhiteSpace(resolvedPath) || !File.Exists(resolvedPath))
+        {
+            return null;
+        }
+
+        return GetOrCreatePresetResource(
+            Path.GetFullPath(resolvedPath),
+            file.Kind,
+            out resourceAdded);
+    }
+
+    private ConfigMakerPresetResource GetOrCreatePresetResource(
+        string fullPath,
+        ConfigMakerPresetFileKind kind,
+        out bool resourceAdded)
+    {
+        resourceAdded = false;
+        ConfigMakerPresetResource resource = presetDocument.Resources.FirstOrDefault(candidate =>
+            string.Equals(
+                TryResolvePresetFilePath(candidate.Reference),
+                fullPath,
+                StringComparison.OrdinalIgnoreCase));
+        if (resource != null)
+        {
+            return resource;
+        }
+
+        resource = new ConfigMakerPresetResource
+        {
+            Alias = CreateUniqueResourceAlias(Path.GetFileName(fullPath)),
+            Path = fullPath,
+            Kind = ToConfigMakerResourceKind(kind),
+            IsBuiltIn = IsPathInsideComponent(fullPath),
+        };
+        presetDocument.Resources.Add(resource);
+        resourceAdded = true;
+        return resource;
+    }
+
+    private void AttachExistingPresetFilesInVariables()
+    {
+        foreach (ConfigMakerVariableDefinition variable in presetDocument.Variables)
+        {
+            variable.Value = AttachExistingPresetFilesInVariableValue(variable.Value);
+            variable.OnValue = AttachExistingPresetFilesInVariableValue(variable.OnValue);
+            variable.OffValue = AttachExistingPresetFilesInVariableValue(variable.OffValue);
+            for (int index = 0; index < variable.Values.Count; index++)
+            {
+                variable.Values[index] = AttachExistingPresetFilesInVariableValue(
+                    variable.Values[index]);
+            }
+        }
+    }
+
+    private string AttachExistingPresetFilesInVariableValue(string value)
+    {
+        string updatedValue = value ?? string.Empty;
+        ConfigMakerPresetFileInfo directFile = TryExtractDirectPresetFile(updatedValue);
+        ConfigMakerPresetFileInfo[] files = ExtractPresetFilesFromText(updatedValue)
+            .Append(directFile)
+            .Where(file => file != null)
+            .DistinctBy(file => (file.Kind, file.Path), PresetFileKeyComparer.Instance)
+            .ToArray();
+
+        foreach (ConfigMakerPresetFileInfo file in files)
+        {
+            ConfigMakerPresetResource resource = GetOrCreatePresetResource(file, out bool resourceAdded);
+            if (resource == null)
+            {
+                continue;
+            }
+
+            string rewritten = ReplacePresetFileInCommand(updatedValue, file, resource.Reference);
+            if (string.Equals(rewritten, updatedValue, StringComparison.Ordinal) &&
+                directFile != null &&
+                PresetPathsEqual(directFile.Path, file.Path))
+            {
+                rewritten = resource.Reference;
+            }
+            if (string.Equals(rewritten, updatedValue, StringComparison.Ordinal))
+            {
+                if (resourceAdded)
+                {
+                    presetDocument.Resources.Remove(resource);
+                }
+                continue;
+            }
+            updatedValue = rewritten;
+        }
+        return updatedValue;
+    }
+
+    private static ConfigMakerResourceKind ToConfigMakerResourceKind(ConfigMakerPresetFileKind kind) =>
+        kind switch
+        {
+            ConfigMakerPresetFileKind.Library => ConfigMakerResourceKind.Library,
+            ConfigMakerPresetFileKind.Payload => ConfigMakerResourceKind.Payload,
+            _ => ConfigMakerResourceKind.SiteList,
+        };
+
+    public ConfigItem CreateConfigItem(string packId, string presetName)
+    {
+        SyncDocumentFromEditor();
+        return presetDocument.ToConfigItem(packId, presetName);
+    }
+
+    public async Task<ConfigMakerPresetSaveResult> SaveToApplicationAsync()
+    {
+        SyncDocumentFromEditor();
+        ConfigMakerSavePresetContentDialog dialog = new(presetDocument.Name)
+        {
+            XamlRoot = XamlRoot,
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+        {
+            return ConfigMakerPresetSaveResult.Failed("CANCELED");
+        }
+        ConfigMakerPresetStorageService storageService = new();
+        ConfigMakerPresetSaveResult result = await storageService.SaveAsync(
+            dialog.PresetName,
+            presetDocument);
+        if (result.Success)
+        {
+            presetDocument.Name = dialog.PresetName;
+            ShowEditorMessage(
+                string.Format(
+                    localizer.GetLocalizedString("ConfigMakerPresetSavedMessage"),
+                    dialog.PresetName),
+                InfoBarSeverity.Success);
+        }
+        else if (!string.Equals(result.ErrorCode, "CANCELED", StringComparison.Ordinal))
+        {
+            ShowEditorMessage(
+                string.Format(
+                    localizer.GetLocalizedString("ConfigMakerPresetSaveFailedMessage"),
+                    string.IsNullOrWhiteSpace(result.ErrorDetails)
+                        ? result.ErrorCode
+                        : result.ErrorDetails),
+                InfoBarSeverity.Error);
+        }
+        return result;
+    }
+
+    private async void CreateVariableButton_Click(object sender, RoutedEventArgs e)
+    {
+        ConfigMakerVariableContentDialog dialog = new(presetDocument)
+        {
+            XamlRoot = XamlRoot,
+        };
+        if (await dialog.ShowAsync() == ContentDialogResult.Primary &&
+            dialog.ResultVariable != null)
+        {
+            presetDocument.Variables.Add(dialog.ResultVariable);
+            AttachExistingPresetFiles();
+            ToolsSelector.SelectIndex(1);
+            RebuildPresetStructure();
+            ScheduleDiagnostics();
+        }
+    }
+
+    private async void EditVariableButton_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is not ConfigMakerVariableDefinition variable)
+        {
+            return;
+        }
+        await EditVariableAsync(variable);
+    }
+
+    private async Task EditVariableAsync(ConfigMakerVariableDefinition variable)
+    {
+        ConfigMakerVariableContentDialog dialog = new(presetDocument, variable)
+        {
+            XamlRoot = XamlRoot,
+        };
+        if (await dialog.ShowAsync() != ContentDialogResult.Primary ||
+            dialog.ResultVariable == null)
+        {
+            return;
+        }
+        int index = presetDocument.Variables.IndexOf(variable);
+        if (index < 0)
+        {
+            return;
+        }
+        if (!string.Equals(dialog.OriginalName, dialog.ResultVariable.Name, StringComparison.Ordinal))
+        {
+            presetDocument.ReplaceVariableReference(
+                dialog.OriginalName,
+                dialog.ResultVariable.Name);
+            SetEditorText(presetDocument.CommandText);
+        }
+        presetDocument.Variables[index] = dialog.ResultVariable;
+        AttachExistingPresetFiles();
+        RebuildPresetStructure();
+        ScheduleDiagnostics();
+    }
+
+    private async void RemoveVariableButton_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.Tag is not ConfigMakerVariableDefinition variable)
+        {
+            return;
+        }
+        bool referenced = CommandText.Contains(variable.Reference, StringComparison.OrdinalIgnoreCase);
+        if (referenced)
+        {
+            ContentDialog confirmation = new()
+            {
+                XamlRoot = XamlRoot,
+                Title = localizer.GetLocalizedString("ConfigMakerRemoveReferencedVariableDialogTitle"),
+                Content = localizer.GetLocalizedString("ConfigMakerRemoveReferencedVariableDialogMessage"),
+                PrimaryButtonText = localizer.GetLocalizedString("Remove"),
+                CloseButtonText = localizer.GetLocalizedString("Cancel"),
+                DefaultButton = ContentDialogButton.Close,
+            };
+            if (await confirmation.ShowAsync() != ContentDialogResult.Primary)
+            {
+                return;
+            }
+        }
+        presetDocument.Variables.Remove(variable);
+        RebuildPresetStructure();
+        ScheduleDiagnostics();
+    }
+
+    private void PresetVariablesListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    {
+        if (!IsEditorReadOnly &&
+            PresetVariablesListView.SelectedItem is ConfigMakerVariableDefinition variable)
+        {
+            InsertAtCursor(variable.Reference);
+        }
+    }
+
+    private void PresetDocument_ContentChanged(object sender, EventArgs e)
+    {
+        DocumentStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SyncDocumentFromEditor()
+    {
+        presetDocument.ComponentId = ComponentId;
+        presetDocument.CommandText = CommandEditor.Text ?? string.Empty;
+    }
+
+    private static ConfigMakerVariableDefinition CloneVariable(ConfigMakerVariableDefinition source)
+    {
+        ConfigMakerVariableDefinition result = new()
+        {
+            Id = source.Id,
+            Name = source.Name,
+            Kind = source.Kind,
+            StorageKind = source.StorageKind,
+            Value = source.Value,
+            Description = source.Description,
+            OnValue = source.OnValue,
+            OffValue = source.OffValue,
+            InternalParameterName = source.InternalParameterName,
+            IsSwitchEnabled = source.IsSwitchEnabled,
+        };
+        foreach (string value in source.Values)
+        {
+            result.Values.Add(value);
+        }
+        return result;
+    }
+
+    private static bool IsSimpleDesignerComponent(string componentId) =>
+        string.Equals(componentId, HardcodedItemIds.ComponentIds[Components.GoodbyeDPI], StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(componentId, HardcodedItemIds.ComponentIds[Components.SpoofDPI], StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(componentId, HardcodedItemIds.ComponentIds[Components.NoDPI], StringComparison.OrdinalIgnoreCase);
+
+    private void UpdateSimpleDesignerAvailability()
+    {
+        if (EditorViewSelector == null || SimpleDesignerSelectorItem == null)
+        {
+            return;
+        }
+        bool supported = IsSimpleDesignerSupported;
+        bool contains = EditorViewSelector.Items.Contains(SimpleDesignerSelectorItem);
+        if (supported && !contains)
+        {
+            EditorViewSelector.Items.Add(SimpleDesignerSelectorItem);
+        }
+        else if (!supported && contains)
+        {
+            if (ReferenceEquals(EditorViewSelector.SelectedItem, SimpleDesignerSelectorItem))
+            {
+                EditorViewSelector.SelectIndex(0);
+            }
+            EditorViewSelector.Items.Remove(SimpleDesignerSelectorItem);
+            DesignerSettingItemModels.Clear();
+            DesignerExclusiveSettingItemModels.Clear();
+        }
+    }
+
+    private void EditorViewSelector_SelectionChanged(
+        object sender,
+        CDPIUI.Controls.Navigation.AnimatedSelectorBarSelectionChangedEventArgs e)
+    {
+        if (ReferenceEquals(e.OldItem, SimpleDesignerSelectorItem))
+        {
+            ApplySimpleDesignerToCommand();
+        }
+        if (ReferenceEquals(e.NewItem, SimpleDesignerSelectorItem) && designerNeedsRefresh)
+        {
+            LoadSimpleDesigner();
+        }
+    }
+
+    private void LoadSimpleDesigner()
+    {
+        if (!IsSimpleDesignerSupported)
+        {
+            return;
+        }
+        updatingDesigner = true;
+        try
+        {
+            DesignerSettingItemModels.Clear();
+            DesignerExclusiveSettingItemModels.Clear();
+            if (string.Equals(
+                    ComponentId,
+                    HardcodedItemIds.ComponentIds[Components.GoodbyeDPI],
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                GraphicDesignerHelper.LoadGoodbyeDPIDesignerConfig(
+                    DesignerSettingItemModels,
+                    DesignerExclusiveSettingItemModels);
+            }
+            else if (string.Equals(
+                         ComponentId,
+                         HardcodedItemIds.ComponentIds[Components.SpoofDPI],
+                         StringComparison.OrdinalIgnoreCase))
+            {
+                GraphicDesignerHelper.LoadSpoofDPIDesignerConfig(
+                    DesignerSettingItemModels,
+                    DesignerExclusiveSettingItemModels);
+            }
+            else
+            {
+                string componentDirectory = DatabaseHelper.Instance.GetItemById(ComponentId)?.Directory ?? string.Empty;
+                string annotationPath = Path.Combine(componentDirectory, "edannotationfile.xml");
+                if (!File.Exists(annotationPath))
+                {
+                    ShowEditorMessage(
+                        localizer.GetLocalizedString("ConfigMakerSimpleDesignerAnnotationMissingMessage"),
+                        InfoBarSeverity.Warning);
+                    return;
+                }
+                GraphicDesignerHelper.XML_LoadDesignerConfig(
+                    annotationPath,
+                    "nodpi",
+                    DesignerSettingItemModels,
+                    DesignerExclusiveSettingItemModels);
+            }
+            AttachSimpleDesignerCommands();
+            AdditionalDesignerArgumentsTextBox.Text =
+                GraphicDesignerHelper.ConvertStringToGraphicDesignerSettings(
+                    DesignerSettingItemModels,
+                    DesignerExclusiveSettingItemModels,
+                    ComponentCommandLineFormatter.ToSingleLine(CommandEditor.Text));
+            designerNeedsRefresh = false;
+        }
+        finally
+        {
+            updatingDesigner = false;
+        }
+    }
+
+    private void AttachSimpleDesignerCommands()
+    {
+        foreach (GraphicDesignerSettingItemModel item in DesignerSettingItemModels)
+        {
+            item.DesignerTextValueChangedCommand = DesignerTextValueChangedCommand;
+            item.DesignerBoolValueToggledCommand = DesignerBoolValueToggledCommand;
+        }
+        foreach (GraphicDesignerExclusiveSettingItemModel group in DesignerExclusiveSettingItemModels)
+        {
+            group.DesignerTextValueChangedCommand = DesignerTextValueChangedCommand;
+            group.DesignerBoolValueToggledCommand = DesignerBoolValueToggledCommand;
+            group.DesignerSelectedGuidChangedCommand = DesignerSelectedGuidChangedCommand;
+        }
+    }
+
+    private void HandleDesignerTextValueChanged(Tuple<string, string> change)
+    {
+        GraphicDesignerSettingItemModel item = FindDesignerItem(change.Item1);
+        if (item != null)
+        {
+            item.Value = change.Item2;
+            ApplySimpleDesignerToCommand();
+        }
+    }
+
+    private void HandleDesignerBoolValueToggled(Tuple<string, bool> change)
+    {
+        GraphicDesignerSettingItemModel item = FindDesignerItem(change.Item1);
+        if (item != null)
+        {
+            item.IsChecked = change.Item2;
+            ApplySimpleDesignerToCommand();
+        }
+    }
+
+    private void HandleDesignerSelectedGuidChanged(Tuple<string, string> change)
+    {
+        GraphicDesignerExclusiveSettingItemModel group = DesignerExclusiveSettingItemModels.FirstOrDefault(item =>
+            string.Equals(item.Guid, change.Item1, StringComparison.Ordinal));
+        if (group != null)
+        {
+            group.SelectedItemGuid = change.Item2;
+            ApplySimpleDesignerToCommand();
+        }
+    }
+
+    private GraphicDesignerSettingItemModel FindDesignerItem(string id) =>
+        DesignerSettingItemModels.FirstOrDefault(item => string.Equals(item.Guid, id, StringComparison.Ordinal)) ??
+        DesignerExclusiveSettingItemModels
+            .SelectMany(group => group.Items)
+            .FirstOrDefault(item => string.Equals(item.Guid, id, StringComparison.Ordinal));
+
+    private void AdditionalDesignerArgumentsTextBox_TextChanged(object sender, TextChangedEventArgs e) =>
+        ApplySimpleDesignerToCommand();
+
+    private void ApplySimpleDesignerToCommand()
+    {
+        if (updatingDesigner || !IsSimpleDesignerSupported)
+        {
+            return;
+        }
+        updatingDesigner = true;
+        try
+        {
+            string command = GraphicDesignerHelper.ConvertGraphicDesignerSettingsToString(
+                DesignerSettingItemModels,
+                DesignerExclusiveSettingItemModels,
+                AdditionalDesignerArgumentsTextBox.Text ?? string.Empty);
+            SetEditorText(ComponentCommandLineFormatter.FormatByFlags(command.Trim()));
+            designerNeedsRefresh = false;
+        }
+        finally
+        {
+            updatingDesigner = false;
+        }
+    }
+
     private static void OnIsEditorReadOnlyChanged(
         DependencyObject dependencyObject,
         DependencyPropertyChangedEventArgs args)
@@ -1721,9 +2857,14 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private static void OnComponentIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
     {
-        if (dependencyObject is ConfigMakerUserControl control &&
-            !control.updatingComponent &&
-            control.IsLoaded)
+        if (dependencyObject is not ConfigMakerUserControl control)
+        {
+            return;
+        }
+        control.presetDocument.ComponentId = (string)args.NewValue;
+        control.designerNeedsRefresh = true;
+        control.UpdateSimpleDesignerAvailability();
+        if (!control.updatingComponent && control.IsLoaded)
         {
             _ = control.SetComponentAsync((string)args.NewValue);
         }
@@ -1736,6 +2877,8 @@ public sealed partial class ConfigMakerUserControl : UserControl
             return;
         }
 
+        control.presetDocument.CommandText = (string)args.NewValue;
+        control.designerNeedsRefresh = true;
         control.SetEditorText((string)args.NewValue, updateProperty: false);
     }
 
@@ -1812,7 +2955,9 @@ public sealed partial class ConfigMakerUserControl : UserControl
         updatingComponent = true;
         ComponentId = componentId;
         updatingComponent = false;
+        presetDocument.ComponentId = componentId;
         ConfigOutput.ComponentId = componentId;
+        UpdateSimpleDesignerAvailability();
         RebuildPresetStructure();
         await LoadHelpAsync(componentId, forceRefresh: false);
     }
@@ -2108,7 +3253,9 @@ public sealed partial class ConfigMakerUserControl : UserControl
         {
             return;
         }
-        if (!string.IsNullOrWhiteSpace(CommandEditor.Text))
+        if (!string.IsNullOrWhiteSpace(CommandEditor.Text) ||
+            presetDocument.HasVariables ||
+            presetDocument.HasResources)
         {
             ContentDialog dialog = new()
             {
@@ -2126,11 +3273,23 @@ public sealed partial class ConfigMakerUserControl : UserControl
         }
 
         SetEditorText(string.Empty);
+        presetBaseDirectory = string.Empty;
+        presetDocument.Name = string.Empty;
+        presetDocument.Variables.Clear();
+        presetDocument.Resources.Clear();
+        ClearPresetStructure();
         CommandEditor.ClearUndoRedoHistory();
     }
 
     public async Task SaveTextAsync()
     {
+        if (HasVariables)
+        {
+            ShowEditorMessage(
+                localizer.GetLocalizedString("ConfigMakerTextExportVariablesNotSupportedMessage"),
+                InfoBarSeverity.Warning);
+            return;
+        }
         Microsoft.Win32.SaveFileDialog dialog = new()
         {
             OverwritePrompt = true,
@@ -2145,7 +3304,10 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
         try
         {
-            await File.WriteAllTextAsync(dialog.FileName, CommandEditor.Text ?? string.Empty);
+            SyncDocumentFromEditor();
+            string exportText = ConfigMakerPresetStorageService
+                .CreateResolvedCommandForTextExport(presetDocument);
+            await File.WriteAllTextAsync(dialog.FileName, exportText);
             ShowEditorMessage(
                 localizer.GetLocalizedString("ConfigMakerTextSavedMessage"),
                 InfoBarSeverity.Success);
@@ -2180,7 +3342,22 @@ public sealed partial class ConfigMakerUserControl : UserControl
             return;
         }
 
-        string arguments = ComponentCommandLineFormatter.ToSingleLine(CommandEditor.Text);
+        string arguments;
+        try
+        {
+            SyncDocumentFromEditor();
+            arguments = ComponentCommandLineFormatter.ToSingleLine(
+                ConfigMakerPresetStorageService.CreateResolvedCommandForTest(presetDocument));
+        }
+        catch (Exception exception)
+        {
+            ShowEditorMessage(
+                string.Format(
+                    localizer.GetLocalizedString("ConfigMakerResolvePresetFailedMessage"),
+                    exception.Message),
+                InfoBarSeverity.Error);
+            return;
+        }
         if (string.IsNullOrWhiteSpace(arguments))
         {
             ShowEditorMessage(
@@ -2276,6 +3453,8 @@ public sealed partial class ConfigMakerUserControl : UserControl
         updatingEditor = true;
         CommandText = sender.Text ?? string.Empty;
         updatingEditor = false;
+        presetDocument.CommandText = CommandText;
+        designerNeedsRefresh = true;
         RebuildPresetStructure();
         CommandTextChanged?.Invoke(CommandText);
         ScheduleDiagnostics();
@@ -2289,6 +3468,8 @@ public sealed partial class ConfigMakerUserControl : UserControl
         {
             CommandText = CommandEditor.Text;
         }
+        presetDocument.CommandText = CommandEditor.Text;
+        designerNeedsRefresh = true;
         updatingEditor = false;
         RebuildPresetStructure();
         RebuildDiagnostics();
@@ -2311,8 +3492,10 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private void RebuildDiagnostics()
     {
-        IReadOnlyList<ComponentCommandDiagnostic> results =
-            ComponentCommandValidationService.Validate(CommandEditor.Text, helpDocument.Options);
+        List<ComponentCommandDiagnostic> results = ComponentCommandValidationService
+            .Validate(CommandEditor.Text, helpDocument.Options)
+            .ToList();
+        AddPresetReferenceDiagnostics(CommandEditor.Text, results);
 
         Diagnostics.Clear();
         foreach (ComponentCommandDiagnostic diagnostic in results)
@@ -2332,6 +3515,12 @@ public sealed partial class ConfigMakerUserControl : UserControl
                     ComponentCommandDiagnosticKind.MissingRequiredArgument => string.Format(
                         localizer.GetLocalizedString("ConfigMakerMissingArgumentDiagnostic"),
                         diagnostic.Token),
+                    ComponentCommandDiagnosticKind.UnresolvedVariable => string.Format(
+                        localizer.GetLocalizedString("ConfigMakerUnresolvedVariableDiagnostic"),
+                        diagnostic.Token),
+                    ComponentCommandDiagnosticKind.UnresolvedResource => string.Format(
+                        localizer.GetLocalizedString("ConfigMakerUnresolvedResourceDiagnostic"),
+                        diagnostic.Token),
                     _ => localizer.GetLocalizedString("ConfigMakerUnterminatedQuoteDiagnostic"),
                 },
             });
@@ -2346,6 +3535,62 @@ public sealed partial class ConfigMakerUserControl : UserControl
             localizer.GetLocalizedString("ConfigMakerDiagnosticWarningCount"),
             warningCount);
         ApplyEditorTheme();
+    }
+
+    private void AddPresetReferenceDiagnostics(
+        string commandText,
+        ICollection<ComponentCommandDiagnostic> diagnostics)
+    {
+        string normalized = (commandText ?? string.Empty)
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace('\r', '\n');
+        string[] lines = normalized.Split('\n');
+        for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+        {
+            foreach (Match match in Regex.Matches(
+                         lines[lineIndex],
+                         "%[A-Za-z][A-Za-z0-9_]*%",
+                         RegexOptions.CultureInvariant))
+            {
+                string name = match.Value.Trim('%');
+                bool known = presetDocument.Variables.Any(variable =>
+                    string.Equals(variable.Name, name, StringComparison.OrdinalIgnoreCase));
+                if (known ||
+                    string.Equals(name, "CURRENT", StringComparison.OrdinalIgnoreCase) ||
+                    Environment.GetEnvironmentVariable(name) != null)
+                {
+                    continue;
+                }
+                diagnostics.Add(new ComponentCommandDiagnostic
+                {
+                    Code = "CFG004",
+                    Kind = ComponentCommandDiagnosticKind.UnresolvedVariable,
+                    Severity = ComponentCommandDiagnosticSeverity.Error,
+                    Token = match.Value,
+                    Line = lineIndex + 1,
+                    Column = match.Index + 1,
+                });
+            }
+            foreach (Match match in Regex.Matches(
+                         lines[lineIndex],
+                         "preset://[A-Za-z0-9_.-]+",
+                         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            {
+                if (FindAttachedResource(match.Value) != null)
+                {
+                    continue;
+                }
+                diagnostics.Add(new ComponentCommandDiagnostic
+                {
+                    Code = "CFG005",
+                    Kind = ComponentCommandDiagnosticKind.UnresolvedResource,
+                    Severity = ComponentCommandDiagnosticSeverity.Error,
+                    Token = match.Value,
+                    Line = lineIndex + 1,
+                    Column = match.Index + 1,
+                });
+            }
+        }
     }
 
     private void DiagnosticsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
