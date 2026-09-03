@@ -16,6 +16,8 @@ public enum ComponentCommandDiagnosticKind
     UnknownFlag,
     MissingRequiredArgument,
     UnterminatedQuote,
+    UnresolvedVariable,
+    UnresolvedResource,
 }
 
 public sealed class ComponentCommandDiagnostic
@@ -103,11 +105,15 @@ public static partial class ComponentCommandValidationService
         ComponentCommandHelpOption option,
         string flag)
     {
+        if (match.Groups["equals"].Success)
+        {
+            return !string.IsNullOrWhiteSpace(match.Groups["value"].Value);
+        }
+
         bool usesEquals = option.Syntax.Contains($"{flag}=", StringComparison.OrdinalIgnoreCase);
         if (usesEquals)
         {
-            return match.Groups["equals"].Success &&
-                !string.IsNullOrWhiteSpace(match.Groups["value"].Value);
+            return false;
         }
 
         int remainderStart = match.Index + match.Length;

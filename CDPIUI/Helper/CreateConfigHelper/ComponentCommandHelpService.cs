@@ -34,8 +34,21 @@ public sealed class ComponentCommandHelpOption
     public string ArgumentPlaceholder { get; init; } = string.Empty;
     public bool IsArgumentRequired { get; init; }
 
-    public bool Matches(string flag) => Names.Any(name =>
-        string.Equals(name, flag, StringComparison.OrdinalIgnoreCase));
+    public bool Matches(string flag)
+    {
+        string normalizedFlag = NormalizeOptionName(flag);
+        return Names.Any(name => string.Equals(
+            NormalizeOptionName(name),
+            normalizedFlag,
+            StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string NormalizeOptionName(string value)
+    {
+        string normalized = (value ?? string.Empty).Trim();
+        int equalsIndex = normalized.IndexOf('=');
+        return equalsIndex >= 0 ? normalized[..equalsIndex] : normalized;
+    }
 }
 
 public sealed partial class ComponentCommandHelpService
