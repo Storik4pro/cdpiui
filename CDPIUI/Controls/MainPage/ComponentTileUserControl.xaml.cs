@@ -32,6 +32,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
@@ -73,6 +74,7 @@ public sealed partial class ComponentTileUserControl : UserControl
     private ObservableCollection<ConfigSelectorItem> _configItems = new();
     private ObservableCollection<ConfigSettingsItem> ConfigSettingsList = [];
     private ObservableCollection<FeaturesViewModel> AvailableFeaturesList = [];
+    private int configLoadVersion;
 
     
 
@@ -355,18 +357,48 @@ public sealed partial class ComponentTileUserControl : UserControl
                 new DrillInNavigationTransitionInfo());
     }
 
-    private void LoadConfigItems()
+    private async void LoadConfigItems()
     {
+        int loadVersion = Interlocked.Increment(ref configLoadVersion);
+        string componentId = StoreId;
+
         ComponentItemsLoaderHelper.Instance.Init(forse:false);
 
         ComponentHelper componentHelper =
             ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                StoreId);
+                componentId);
 
         if (componentHelper is null)
             return;
 
-        List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
+        List<ConfigItem> items;
+        try
+        {
+            items = await Task.Run(() =>
+                componentHelper.GetConfigHelper().GetConfigItems().ToList());
+        }
+        catch (Exception ex)
+        {
+            CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(
+                nameof(ComponentTileUserControl),
+                $"Cannot load configs for component '{componentId}': {ex}");
+            items = [];
+        }
+
+        DispatcherQueue.TryEnqueue(() =>
+            ApplyLoadedConfigItems(componentId, loadVersion, items));
+    }
+
+    private void ApplyLoadedConfigItems(
+        string componentId,
+        int loadVersion,
+        IReadOnlyList<ConfigItem> items)
+    {
+        if (loadVersion != configLoadVersion ||
+            !string.Equals(componentId, StoreId, StringComparison.Ordinal))
+        {
+            return;
+        }
 
         _configItems.Clear();
 
