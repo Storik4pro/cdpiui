@@ -1027,101 +1027,11 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             return null;
         }
 
-        public static List<string> GetUsedFilesFromConfigItem(ConfigItem configItem)
-        {
-            List<string> files = [];
-
-            string startupString;
-
-            startupString = configItem.startup_string;
-
-            files = GetUsedFilesFromString(startupString, files);
-
-
-
-            if (configItem.commaVars == null)
-                return files;
-
-            foreach (var commaVar in configItem.commaVars)
-            {
-                files = GetUsedFilesFromString(commaVar.Value, files);
-            }
-
-            if (configItem.availableCommaVarsValues == null)
-                return files;
-
-            foreach (var availableVars in configItem.availableCommaVarsValues)
-            {
-                foreach (string valueString in availableVars.Values)
-                {
-                    files = GetUsedFilesFromString(valueString, files);
-                }
-            }
-
-            return files;
-        }
-
-        private static List<string> GetUsedFilesFromString(string startupString, List<string> files = null)
-        {
-            if (files == null) files = [];
-
-            string[] flags = startupString.Split(" ");
-
-            for (int i = 0; i < flags.Length; i++)
-            {
-                string flag = flags[i];
-                string flagName = flag.Split("=")[0];
-                string value;
-                if (flag.Split("=").Length < 2 && i + 1 < flags.Length)
-                {
-                    if (flags[i + 1].StartsWith("-"))
-                        continue;
-                    else
-                    {
-                        value = flags[i + 1];
-                        i++;
-                    }
-                }
-                else if (flag.Split("=").Length < 2 && i + 1 >= flags.Length)
-                {
-                    continue;
-                }
-                else
-                {
-                    value = flag.Replace($"{flagName}=", "");
-                }
-                value = value.Replace("%~dp0", "");
-                value = value.Replace("\"", "");
-                value = value.Replace("\'", "");
-
-                if (flag.StartsWith("--debug", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (flag.StartsWith("--hostlist", StringComparison.OrdinalIgnoreCase) || 
-                    flag.StartsWith("--ipset", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!value.EndsWith(".bin") && !value.EndsWith(".txt"))
-                        continue;
-
-                    if (!files.Contains(value))
-                        files.Add(value);
-                    continue;
-                }
-
-                if (value.EndsWith(".bin") || value.EndsWith(".txt"))
-                {
-                    if (!files.Contains(value))
-                    {
-                        files.Add(value);
-                        Debug.WriteLine($"Found file {value}");
-                    }
-                    continue;
-                }
-            }
-            return files;
-        }
+        public static List<string> GetUsedFilesFromConfigItem(ConfigItem configItem) =>
+            configItem.UsedFiles
+                .Select(file => file.ExpandedPath)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
         public static ConfigItem ReplaceFilesPath(ConfigItem configItem, Dictionary<string, string> files)
         {

@@ -13,7 +13,7 @@ namespace CDPIUI.Core.ComponentServices.Helpers.Configuration
     {
         public string? custom_parameters { get; set; }
     }
-    public class ConfigItem : INamedModel
+    public partial class ConfigItem : INamedModel
     {
         public string? file_name;
         public string? packId;
