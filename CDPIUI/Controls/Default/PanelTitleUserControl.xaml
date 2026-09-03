@@ -22,7 +22,8 @@
                 Margin="10,0"
                 VerticalAlignment="Center"
                 Text="{x:Bind Text, Mode=OneWay}"
-                Style="{ThemeResource CaptionTextBlockStyle}" />
+                Style="{ThemeResource CaptionTextBlockStyle}" 
+                TextWrapping="NoWrap"/>
 
             <ContentPresenter
                 Grid.Column="1"
