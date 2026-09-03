@@ -43,6 +43,7 @@ namespace CDPIUI.Helper.WindowHelper
 
         private static Dictionary<string, WindowResizeOptions> WindowsResizeModes = new()
         {
+            { nameof(AppFeaturesWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(PrepareWindow), WindowResizeOptions.AlwaysCenter },
             { nameof(ViewWindow), WindowResizeOptions.ResizeAndPositionUtility },
             { nameof(StoreWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
