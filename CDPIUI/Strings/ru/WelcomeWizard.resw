@@ -170,4 +170,103 @@ Cannot `GET:/{0}`</value>
   <data name="WelcomeAnimatedHorizontalContentItem.Header" xml:space="preserve">
     <value>Добро пожаловать в CDPIUI!</value>
   </data>
+  <data name="MigrationAnimatedHorizontalContentItemHeader" xml:space="preserve">
+    <value>Перенос из GoodbyeDPI-UI</value>
+  </data>
+  <data name="MigrationAnimatedHorizontalContentItemDescription" xml:space="preserve">
+    <value>CDPIUI установит компоненты, необходимые выбранным пресетам, а затем импортирует проверенный пакет данных.</value>
+  </data>
+  <data name="RetryMigrationButton.Content" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="MigrationPreparingTitle" xml:space="preserve">
+    <value>Подготовка перед первым запуском</value>
+  </data>
+  <data name="MigrationPreparingMessage" xml:space="preserve">
+    <value>Проверяем пакет переноса и создаём защищённую локальную копию. Настройки пока не изменяются.</value>
+  </data>
+  <data name="MigrationComponentsTitle" xml:space="preserve">
+    <value>Подготовка компонентов</value>
+  </data>
+  <data name="MigrationComponentsReadyMessage" xml:space="preserve">
+    <value>Пакет проверен. После раздела лицензии будут подготовлены необходимые компоненты.</value>
+  </data>
+  <data name="MigrationLoadingStoreMessage" xml:space="preserve">
+    <value>Загружаем каталог компонентов и проверяем совместимость.</value>
+  </data>
+  <data name="MigrationComponentLicenseTitle" xml:space="preserve">
+    <value>Лицензии компонентов</value>
+  </data>
+  <data name="MigrationComponentLicenseMessage" xml:space="preserve">
+    <value>Ознакомьтесь с лицензиями компонентов, необходимых перенесённым пресетам.</value>
+  </data>
+  <data name="MigrationComponentLicenseDeclined" xml:space="preserve">
+    <value>Перенос приостановлен до принятия лицензий необходимых компонентов.</value>
+  </data>
+  <data name="MigrationDownloadingMessage" xml:space="preserve">
+    <value>Скачиваем и устанавливаем компоненты, необходимые перенесённым пресетам.</value>
+  </data>
+  <data name="MigrationImportTitle" xml:space="preserve">
+    <value>Импорт данных</value>
+  </data>
+  <data name="MigrationImportMessage" xml:space="preserve">
+    <value>Создаём отдельный набор перенесённых пресетов и применяем совместимые настройки.</value>
+  </data>
+  <data name="MigrationCompletedTitle" xml:space="preserve">
+    <value>Перенос завершён</value>
+  </data>
+  <data name="MigrationCompletedMessage" xml:space="preserve">
+    <value>Выбранные данные GoodbyeDPI-UI готовы к использованию в CDPIUI.</value>
+  </data>
+  <data name="MigrationCompletedWithWarningsTitle" xml:space="preserve">
+    <value>Перенос завершён не полностью</value>
+  </data>
+  <data name="MigrationImportIncompleteMessage" xml:space="preserve">
+    <value>Эти сведения не удалось перенести из GoodbyeDPI-UI.</value>
+  </data>
+  <data name="MigrationImportWarningsSummary" xml:space="preserve">
+    <value>Не удалось перенести элементов: {0}. Остальные сведения доступны в CDPIUI.</value>
+  </data>
+  <data name="MigrationFailedTitle" xml:space="preserve">
+    <value>Не удалось продолжить перенос</value>
+  </data>
+  <data name="MigrationGenericError" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка переноса.</value>
+  </data>
+  <data name="MigrationAlreadyCompleted" xml:space="preserve">
+    <value>Этот пакет уже был импортирован. Дубликаты пресетов не созданы.</value>
+  </data>
+  <data name="MigrationStoreLoadFailed" xml:space="preserve">
+    <value>Не удалось загрузить каталог компонентов. Проверьте подключение и повторите попытку.</value>
+  </data>
+  <data name="MigrationComponentMissingFromStore" xml:space="preserve">
+    <value>В выбранном источнике Store отсутствует компонент, необходимый перенесённым пресетам.</value>
+  </data>
+  <data name="MigrationComponentUnsupported" xml:space="preserve">
+    <value>Один из необходимых компонентов несовместим с этой версией CDPIUI.</value>
+  </data>
+  <data name="MigrationComponentInstallFailed" xml:space="preserve">
+    <value>Не удалось установить необходимый компонент.</value>
+  </data>
+  <data name="MigrationComponentInstallStopped" xml:space="preserve">
+    <value>Установка остановилась до завершения подготовки всех необходимых компонентов.</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>Перенос отменён.</value>
+  </data>
+  <data name="MigrationImportSummary" xml:space="preserve">
+    <value>Импортировано пресетов: {0}; TXT/BIN-ресурсов: {1}; совместимых настроек: {2}. Требуют проверки: {3}.</value>
+  </data>
+  <data name="MigrationComponentInstalled" xml:space="preserve"><value>Установлен</value></data>
+  <data name="MigrationComponentDownloading" xml:space="preserve"><value>Скачивание</value></data>
+  <data name="MigrationComponentInstalling" xml:space="preserve"><value>Установка</value></data>
+  <data name="MigrationComponentFinishing" xml:space="preserve"><value>Завершение</value></data>
+  <data name="MigrationComponentError" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="MigrationComponentWaiting" xml:space="preserve"><value>Ожидание</value></data>
+  <data name="MigrationNoComponentsRequired" xml:space="preserve">
+    <value>Для выбранных данных дополнительные компоненты не требуются.</value>
+  </data>
+  <data name="MigrationComponentsCount" xml:space="preserve">
+    <value>Необходимо компонентов: {0}</value>
+  </data>
 </root>

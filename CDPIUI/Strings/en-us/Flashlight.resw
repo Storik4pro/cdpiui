@@ -371,7 +371,7 @@ Just go to [Autoselection] utility, select component you want and make some tea 
     <value>I'm not insist, but maybe using AI for every task is bad. </value>
   </data>
   <data name="Tip_14" xml:space="preserve">
-    <value>You can edit config kit by yourself and share it with friends! Just visit [Config edit&amp;create utility] and find [File/Edit Config Kit].</value>
+    <value>You can edit config kit by yourself and share it with friends! Just visit [Config Maker] and select [Edit Config Kit].</value>
   </data>
   <data name="AreYouKnow" xml:space="preserve">
     <value>Are you know?</value>

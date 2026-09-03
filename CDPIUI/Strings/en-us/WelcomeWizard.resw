@@ -170,4 +170,103 @@ It this right?</value>
   <data name="WelcomeAnimatedHorizontalContentItem.Header" xml:space="preserve">
     <value>Welcome to CDPIUI!</value>
   </data>
+  <data name="MigrationAnimatedHorizontalContentItemHeader" xml:space="preserve">
+    <value>Transfer from GoodbyeDPI-UI</value>
+  </data>
+  <data name="MigrationAnimatedHorizontalContentItemDescription" xml:space="preserve">
+    <value>CDPIUI will install the components required by your selected presets and then import the verified data package.</value>
+  </data>
+  <data name="RetryMigrationButton.Content" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="MigrationPreparingTitle" xml:space="preserve">
+    <value>Preparing before first launch</value>
+  </data>
+  <data name="MigrationPreparingMessage" xml:space="preserve">
+    <value>Checking the transfer package and protecting a local copy. No settings are being changed yet.</value>
+  </data>
+  <data name="MigrationComponentsTitle" xml:space="preserve">
+    <value>Preparing components</value>
+  </data>
+  <data name="MigrationComponentsReadyMessage" xml:space="preserve">
+    <value>The package is verified. Continue through the license step to prepare the required components.</value>
+  </data>
+  <data name="MigrationLoadingStoreMessage" xml:space="preserve">
+    <value>Loading the component catalog and checking compatibility.</value>
+  </data>
+  <data name="MigrationComponentLicenseTitle" xml:space="preserve">
+    <value>Component licenses</value>
+  </data>
+  <data name="MigrationComponentLicenseMessage" xml:space="preserve">
+    <value>Review the licenses of the components needed by the transferred presets.</value>
+  </data>
+  <data name="MigrationComponentLicenseDeclined" xml:space="preserve">
+    <value>The transfer is paused until the required component licenses are accepted.</value>
+  </data>
+  <data name="MigrationDownloadingMessage" xml:space="preserve">
+    <value>Downloading and installing the components required by the transferred presets.</value>
+  </data>
+  <data name="MigrationImportTitle" xml:space="preserve">
+    <value>Importing your data</value>
+  </data>
+  <data name="MigrationImportMessage" xml:space="preserve">
+    <value>Creating the separate migrated preset collection and applying compatible settings.</value>
+  </data>
+  <data name="MigrationCompletedTitle" xml:space="preserve">
+    <value>Transfer completed</value>
+  </data>
+  <data name="MigrationCompletedMessage" xml:space="preserve">
+    <value>Your selected GoodbyeDPI-UI data is ready in CDPIUI.</value>
+  </data>
+  <data name="MigrationCompletedWithWarningsTitle" xml:space="preserve">
+    <value>Transfer completed with warnings</value>
+  </data>
+  <data name="MigrationImportIncompleteMessage" xml:space="preserve">
+    <value>This information could not be transferred from GoodbyeDPI-UI.</value>
+  </data>
+  <data name="MigrationImportWarningsSummary" xml:space="preserve">
+    <value>Items that could not be transferred: {0}. The remaining information is available in CDPIUI.</value>
+  </data>
+  <data name="MigrationFailedTitle" xml:space="preserve">
+    <value>Transfer could not continue</value>
+  </data>
+  <data name="MigrationGenericError" xml:space="preserve">
+    <value>An unexpected migration error occurred.</value>
+  </data>
+  <data name="MigrationAlreadyCompleted" xml:space="preserve">
+    <value>This exact transfer package was already imported. No duplicate presets were created.</value>
+  </data>
+  <data name="MigrationStoreLoadFailed" xml:space="preserve">
+    <value>The component catalog could not be loaded. Check the connection and try again.</value>
+  </data>
+  <data name="MigrationComponentMissingFromStore" xml:space="preserve">
+    <value>A component required by the transferred presets is absent from the selected Store source.</value>
+  </data>
+  <data name="MigrationComponentUnsupported" xml:space="preserve">
+    <value>A required component is not compatible with this version of CDPIUI.</value>
+  </data>
+  <data name="MigrationComponentInstallFailed" xml:space="preserve">
+    <value>A required component could not be installed.</value>
+  </data>
+  <data name="MigrationComponentInstallStopped" xml:space="preserve">
+    <value>Component installation stopped before all required components were ready.</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>The transfer was canceled.</value>
+  </data>
+  <data name="MigrationImportSummary" xml:space="preserve">
+    <value>Imported presets: {0}; TXT/BIN resources: {1}; compatible settings: {2}. Presets marked for review: {3}.</value>
+  </data>
+  <data name="MigrationComponentInstalled" xml:space="preserve"><value>Installed</value></data>
+  <data name="MigrationComponentDownloading" xml:space="preserve"><value>Downloading</value></data>
+  <data name="MigrationComponentInstalling" xml:space="preserve"><value>Installing</value></data>
+  <data name="MigrationComponentFinishing" xml:space="preserve"><value>Finishing</value></data>
+  <data name="MigrationComponentError" xml:space="preserve"><value>Error</value></data>
+  <data name="MigrationComponentWaiting" xml:space="preserve"><value>Waiting</value></data>
+  <data name="MigrationNoComponentsRequired" xml:space="preserve">
+    <value>No additional components are required for the selected data.</value>
+  </data>
+  <data name="MigrationComponentsCount" xml:space="preserve">
+    <value>Required components: {0}</value>
+  </data>
 </root>

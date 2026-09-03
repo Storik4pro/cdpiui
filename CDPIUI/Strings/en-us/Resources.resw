@@ -2627,6 +2627,12 @@ Here is error code in case you need it: ERR_FLASHLIGHT_BUSY</value>
   <data name="AboutAppTextBlock.Text" xml:space="preserve">
     <value>About this app</value>
   </data>
+  <data name="AboutLicenseTextBlock.Text" xml:space="preserve">
+    <value>© 2025 Storik4. License: Apache License, Version 2.0.</value>
+  </data>
+  <data name="LicenseButton.Content" xml:space="preserve">
+    <value>More...</value>
+  </data>
   <data name="PersonalizationSettingsCard.Header" xml:space="preserve">
     <value>Personalization</value>
   </data>
@@ -4394,14 +4400,14 @@ If error persist, contact application support.</value>
   <data name="BlockCheck2CloseButtonText" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="OpenStoreURIButton.UriName" xml:space="preserve">
+  <data name="OpenStoreURIButton.DisplayText" xml:space="preserve">
     <value>Open Store</value>
   </data>
   <data name="ConfigMakerSettingsCard.Header" xml:space="preserve">
     <value>Config maker</value>
   </data>
   <data name="ConfigMakerSettingsCard.Description" xml:space="preserve">
-    <value>Create and test component configs using help provided by the component</value>
+    <value>Create, edit and test component configs</value>
   </data>
   <data name="ConfigMakerWindowTitle" xml:space="preserve">
     <value>Config maker</value>
@@ -4569,7 +4575,7 @@ If error persist, contact application support.</value>
     <value>New</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
-    <value>Export config to universal format...</value>
+    <value>Export config to TXT...</value>
   </data>
   <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
     <value>Exit</value>
@@ -4578,10 +4584,10 @@ If error persist, contact application support.</value>
     <value>Format by flags</value>
   </data>
   <data name="ConfigMakerCommandPanelMenuItem.Text" xml:space="preserve">
-    <value>Command reference</value>
+    <value>Tools</value>
   </data>
   <data name="ConfigMakerBottomPanelMenuItem.Text" xml:space="preserve">
-    <value>Output panel</value>
+    <value>Output and diagnostics</value>
   </data>
   <data name="ConfigMakerShowOutputMenuItem.Text" xml:space="preserve">
     <value>Show output</value>
@@ -5591,5 +5597,238 @@ Click [Show Results] to view the results.</value>
   </data>
   <data name="RecentBlockCheck2Selections" xml:space="preserve">
     <value>Recent Zapret2 config selections</value>
+  </data>
+  <data name="UpdatingStoreDatabase" xml:space="preserve">
+    <value>Updating Store database...</value>
+  </data>
+  <data name="ConfigMakerAdditionalDesignerArgumentsTitle.Text" xml:space="preserve">
+    <value>Additional arguments</value>
+  </data>
+  <data name="ConfigMakerAddPresetFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Add files to the config</value>
+  </data>
+  <data name="ConfigMakerCodeEditorTab.Header" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="ConfigMakerSimpleDesignerTab.Header" xml:space="preserve">
+    <value>Simple designer</value>
+  </data>
+  <data name="ConfigMakerToolsHeader.Text" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="ConfigMakerCommandsToolTab.Header" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="ConfigMakerVariablesToolTab.Header" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="ConfigMakerCreateVariableButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Create a config variable</value>
+  </data>
+  <data name="ConfigMakerCreateVariableButtonText.Text" xml:space="preserve">
+    <value>Create variable</value>
+  </data>
+  <data name="ConfigMakerPresetFileRemoveButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remove from the config</value>
+  </data>
+  <data name="ConfigMakerVariableNameTextBox.Header" xml:space="preserve">
+    <value>Variable name</value>
+  </data>
+  <data name="ConfigMakerVariableNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>For example, PORT</value>
+  </data>
+  <data name="ConfigMakerVariableKindComboBox.Header" xml:space="preserve">
+    <value>Variable type</value>
+  </data>
+  <data name="ConfigMakerVariableTextKind.Content" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="ConfigMakerVariableChoiceKind.Content" xml:space="preserve">
+    <value>Choice</value>
+  </data>
+  <data name="ConfigMakerVariableSwitchKind.Content" xml:space="preserve">
+    <value>Switch</value>
+  </data>
+  <data name="ConfigMakerVariableDescriptionTextBox.Header" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ConfigMakerVariableValueTextBox.Header" xml:space="preserve">
+    <value>Default value</value>
+  </data>
+  <data name="ConfigMakerVariableValuesTextBox.Header" xml:space="preserve">
+    <value>Available values</value>
+  </data>
+  <data name="ConfigMakerVariableValuesTextBox.PlaceholderText" xml:space="preserve">
+    <value>One value per line</value>
+  </data>
+  <data name="ConfigMakerVariableOnValueTextBox.Header" xml:space="preserve">
+    <value>Value when enabled</value>
+  </data>
+  <data name="ConfigMakerVariableOffValueTextBox.Header" xml:space="preserve">
+    <value>Value when disabled</value>
+  </data>
+  <data name="ConfigMakerVariableDefaultSwitch.Header" xml:space="preserve">
+    <value>Enabled by default</value>
+  </data>
+  <data name="ConfigMakerCreateVariableDialogTitle" xml:space="preserve">
+    <value>Create variable</value>
+  </data>
+  <data name="ConfigMakerEditVariableDialogTitle" xml:space="preserve">
+    <value>Edit variable</value>
+  </data>
+  <data name="ConfigMakerVariableInvalidNameMessage" xml:space="preserve">
+    <value>Use Latin letters, digits, and underscores. The name must start with a letter.</value>
+  </data>
+  <data name="ConfigMakerVariableDuplicateNameMessage" xml:space="preserve">
+    <value>A variable with this name already exists.</value>
+  </data>
+  <data name="ConfigMakerVariableSwitchValuesRequiredMessage" xml:space="preserve">
+    <value>Specify values for both switch states.</value>
+  </data>
+  <data name="ConfigMakerVariableChoiceValuesRequiredMessage" xml:space="preserve">
+    <value>Add at least one available value.</value>
+  </data>
+  <data name="ConfigMakerPresetNameTextBox.Header" xml:space="preserve">
+    <value>Config name</value>
+  </data>
+  <data name="ConfigMakerSavePresetDescription.Text" xml:space="preserve">
+    <value>The config and its attached files will be saved in the application. Its variables can then be changed without editing the command line.</value>
+  </data>
+  <data name="ConfigMakerSavePresetDialogTitle" xml:space="preserve">
+    <value>Save config in the application</value>
+  </data>
+  <data name="ConfigMakerSaveToApplicationMenuItem.Text" xml:space="preserve">
+    <value>Save config in the application...</value>
+  </data>
+  <data name="ConfigMakerSaveTextMenuItem.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Unavailable for configs that contain variables</value>
+  </data>
+  <data name="ConfigMakerTextExportVariablesNotSupportedMessage" xml:space="preserve">
+    <value>A config containing variables cannot be exported to TXT. Save it in the application to preserve the variable definitions.</value>
+  </data>
+  <data name="ConfigMakerPresetSavedMessage" xml:space="preserve">
+    <value>Config “{0}” and its associated files were saved in the application.</value>
+  </data>
+  <data name="ConfigMakerPresetSaveFailedMessage" xml:space="preserve">
+    <value>Could not save the config: {0}</value>
+  </data>
+  <data name="ConfigMakerAddPresetFileDialogTitle" xml:space="preserve">
+    <value>Add files to the config</value>
+  </data>
+  <data name="ConfigMakerPresetResourceFileFilter" xml:space="preserve">
+    <value>Config resources (*.txt;*.lua;*.bin;*.dat)|*.txt;*.lua;*.bin;*.dat|All files (*.*)|*.*</value>
+  </data>
+  <data name="ConfigMakerPresetFilesAddedMessage" xml:space="preserve">
+    <value>Files added: {0}. Double-click a file to insert its preset:// reference.</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedFileDialogTitle" xml:space="preserve">
+    <value>Remove a referenced file?</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedFileDialogMessage" xml:space="preserve">
+    <value>The command line still contains a reference to this file. Removing it will leave an unresolved preset:// reference.</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedVariableDialogTitle" xml:space="preserve">
+    <value>Remove a referenced variable?</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedVariableDialogMessage" xml:space="preserve">
+    <value>The command line still contains this variable. Removing it will leave an unresolved reference.</value>
+  </data>
+  <data name="ConfigMakerResolvePresetFailedMessage" xml:space="preserve">
+    <value>Could not prepare the config for testing: {0}</value>
+  </data>
+  <data name="ConfigMakerSimpleDesignerAnnotationMissingMessage" xml:space="preserve">
+    <value>The simple designer is unavailable because the NoDPI annotation file was not found. You can continue in the code editor.</value>
+  </data>
+  <data name="ConfigMakerUnresolvedVariableDiagnostic" xml:space="preserve">
+    <value>Variable {0} is used in the command line but is not defined.</value>
+  </data>
+  <data name="ConfigMakerUnresolvedResourceDiagnostic" xml:space="preserve">
+    <value>File reference {0} is used in the command line but is not attached to the config.</value>
+  </data>
+  <data name="OpenFileMenuItem.Text" xml:space="preserve">
+    <value>Open file...</value>
+  </data>
+  <data name="EditConfigWelcomeContentDialog.Title" xml:space="preserve">
+    <value>What do you want to do?</value>
+  </data>
+  <data name="CreateNewConfigButton.DisplayText" xml:space="preserve">
+    <value>Create new config</value>
+  </data>
+  <data name="SelectActionToTextBlock.Text" xml:space="preserve">
+    <value>Choose action to continue</value>
+  </data>
+  <data name="EditButton.Content" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="SelectConfigKitToEditTextBlock.Text" xml:space="preserve">
+    <value>Choose config kit you want to edit</value>
+  </data>
+  <data name="ConfigEditorWelcomeTip.Text" xml:space="preserve">
+    <value>Linked help&amp;features</value>
+  </data>
+  <data name="ViewGoodCheckRecentSelections.DisplayText" xml:space="preserve">
+    <value>View GoodCheck Recent selections</value>
+  </data>
+  <data name="ViewLegacyEditor.DisplayText" xml:space="preserve">
+    <value>Open legacy [Config easy Edit&amp;Create] utility</value>
+  </data>
+  <data name="SomethingWentWrongTextBlock.Text" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="AppFeaturesWindowTitle" xml:space="preserve">
+    <value>CDPIUI features</value>
+  </data>
+  <data name="AppFeaturesHeadingTextBlock.Text" xml:space="preserve">
+    <value>Discover CDPIUI features</value>
+  </data>
+  <data name="AppFeatureStoreTitle" xml:space="preserve">
+    <value>Component and Add-On Store</value>
+  </data>
+  <data name="AppFeatureStoreDescription" xml:space="preserve">
+    <value>Install components, Add-Ons and ready-made configuration kits, manage installed items and receive updates in one place.</value>
+  </data>
+  <data name="AppFeatureStoreOpenLink" xml:space="preserve">
+    <value>Open Store</value>
+  </data>
+  <data name="AppFeatureAutoConfigTitle" xml:space="preserve">
+    <value>Automatic configuration selection</value>
+  </data>
+  <data name="AppFeatureAutoConfigDescription" xml:space="preserve">
+    <value>Run automatic strategy selection for installed components and move from connection checks to a ready-to-use config.</value>
+  </data>
+  <data name="AppFeatureAutoConfigOpenLink" xml:space="preserve">
+    <value>Open automatic selection</value>
+  </data>
+  <data name="AppFeatureConfigToolsTitle" xml:space="preserve">
+    <value>Create and import configs</value>
+  </data>
+  <data name="AppFeatureConfigToolsDescription" xml:space="preserve">
+    <value>Create, import, edit and test component configs with the tools built into CDPIUI.</value>
+  </data>
+  <data name="AppFeatureConfigEditorOpenLink" xml:space="preserve">
+    <value>Open config editor</value>
+  </data>
+  <data name="AppFeatureConfigImportOpenLink" xml:space="preserve">
+    <value>Import a configuration</value>
+  </data>
+  <data name="AppFeatureTroubleshootingTitle" xml:space="preserve">
+    <value>Diagnose and fix problems</value>
+  </data>
+  <data name="AppFeatureTroubleshootingDescription" xml:space="preserve">
+    <value>Check components, connectivity and the Store, then apply suggested fixes for detected problems.</value>
+  </data>
+  <data name="AppFeatureTroubleshootingOpenLink" xml:space="preserve">
+    <value>Open troubleshooting</value>
+  </data>
+  <data name="AppFeatureLikeYouWantTitle" xml:space="preserve">
+    <value>Make it your's</value>
+  </data>
+  <data name="AppFeatureLikeYouWantDescription" xml:space="preserve">
+    <value>Change app theme and main page markup as you want. On any markup you can change visibility of widgets, tips and ad.
+Select [Modern] to enjoy new experience of this application
+Select [Classic] to use GoodbyeDPI-UI style markup</value>
+  </data>
+  <data name="AppFeatureReviewThemeSettings" xml:space="preserve">
+    <value>Review theme settings</value>
   </data>
 </root>

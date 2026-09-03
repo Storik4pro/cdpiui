@@ -480,7 +480,7 @@
     <value>Возможно, вам придется перезапустить приложение, чтобы применить настройки локализации ко всем элементам.</value>
   </data>
   <data name="LanguageSelector.Header" xml:space="preserve">
-    <value>Application language</value>
+    <value>Язык приложения</value>
   </data>
   <data name="LatestVersionInstalled" xml:space="preserve">
     <value>Установлена последняя версия</value>
@@ -2627,7 +2627,13 @@ ERR_STORE_LATEST_VERSION_ALREADY_INSTALLED</value>
     <value>Свернуть параметры компонента</value>
   </data>
   <data name="AboutAppTextBlock.Text" xml:space="preserve">
-    <value>About this app</value>
+    <value>О приложении</value>
+  </data>
+  <data name="AboutLicenseTextBlock.Text" xml:space="preserve">
+    <value>© 2025 Storik4. Лицензия: Apache License 2.0.</value>
+  </data>
+  <data name="LicenseButton.Content" xml:space="preserve">
+    <value>Подробнее...</value>
   </data>
   <data name="PersonalizationSettingsCard.Header" xml:space="preserve">
     <value>Персонализация</value>
@@ -4396,14 +4402,14 @@ https://example.org/path</value>
   <data name="BlockCheck2CloseButtonText" xml:space="preserve">
     <value>Закрыть</value>
   </data>
-  <data name="OpenStoreURIButton.UriName" xml:space="preserve">
+  <data name="OpenStoreURIButton.DisplayText" xml:space="preserve">
     <value>Открыть Магазин</value>
   </data>
   <data name="ConfigMakerSettingsCard.Header" xml:space="preserve">
     <value>Редактор пресетов</value>
   </data>
   <data name="ConfigMakerSettingsCard.Description" xml:space="preserve">
-    <value>Создание и тестирование пресетов с использованием справки компонента</value>
+    <value>Создание, редактирование и тестирование пресетов</value>
   </data>
   <data name="ConfigMakerWindowTitle" xml:space="preserve">
     <value>Редактор пресетов</value>
@@ -4571,7 +4577,7 @@ https://example.org/path</value>
     <value>Создать</value>
   </data>
   <data name="ConfigMakerSaveTextMenuItem.Text" xml:space="preserve">
-    <value>Экспорт пресета в универсальный формат...</value>
+    <value>Экспортировать пресет в TXT...</value>
   </data>
   <data name="ConfigMakerExitMenuItem.Text" xml:space="preserve">
     <value>Выход</value>
@@ -4580,10 +4586,10 @@ https://example.org/path</value>
     <value>Форматировать по флагам</value>
   </data>
   <data name="ConfigMakerCommandPanelMenuItem.Text" xml:space="preserve">
-    <value>Справочник команд</value>
+    <value>Инструменты</value>
   </data>
   <data name="ConfigMakerBottomPanelMenuItem.Text" xml:space="preserve">
-    <value>Панель вывода</value>
+    <value>Вывод и диагностика</value>
   </data>
   <data name="ConfigMakerShowOutputMenuItem.Text" xml:space="preserve">
     <value>Показать вывод</value>
@@ -5593,5 +5599,238 @@ https://discord.com/app</value>
   </data>
   <data name="RecentBlockCheck2Selections" xml:space="preserve">
     <value>Недавние поборы пресета для Zapret2</value>
+  </data>
+  <data name="UpdatingStoreDatabase" xml:space="preserve">
+    <value>Подключение к Магазину...</value>
+  </data>
+  <data name="ConfigMakerAdditionalDesignerArgumentsTitle.Text" xml:space="preserve">
+    <value>Дополнительные аргументы</value>
+  </data>
+  <data name="ConfigMakerAddPresetFileButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Добавить файлы в пресет</value>
+  </data>
+  <data name="ConfigMakerCodeEditorTab.Header" xml:space="preserve">
+    <value>Код</value>
+  </data>
+  <data name="ConfigMakerSimpleDesignerTab.Header" xml:space="preserve">
+    <value>Упрощенный дизайнер</value>
+  </data>
+  <data name="ConfigMakerToolsHeader.Text" xml:space="preserve">
+    <value>Инструменты</value>
+  </data>
+  <data name="ConfigMakerCommandsToolTab.Header" xml:space="preserve">
+    <value>Команды</value>
+  </data>
+  <data name="ConfigMakerVariablesToolTab.Header" xml:space="preserve">
+    <value>Переменные</value>
+  </data>
+  <data name="ConfigMakerCreateVariableButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Создать переменную пресета</value>
+  </data>
+  <data name="ConfigMakerCreateVariableButtonText.Text" xml:space="preserve">
+    <value>Создать переменную</value>
+  </data>
+  <data name="ConfigMakerPresetFileRemoveButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Удалить из пресета</value>
+  </data>
+  <data name="ConfigMakerVariableNameTextBox.Header" xml:space="preserve">
+    <value>Имя переменной</value>
+  </data>
+  <data name="ConfigMakerVariableNameTextBox.PlaceholderText" xml:space="preserve">
+    <value>Например, PORT</value>
+  </data>
+  <data name="ConfigMakerVariableKindComboBox.Header" xml:space="preserve">
+    <value>Тип переменной</value>
+  </data>
+  <data name="ConfigMakerVariableTextKind.Content" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="ConfigMakerVariableChoiceKind.Content" xml:space="preserve">
+    <value>Выбор</value>
+  </data>
+  <data name="ConfigMakerVariableSwitchKind.Content" xml:space="preserve">
+    <value>Переключатель</value>
+  </data>
+  <data name="ConfigMakerVariableDescriptionTextBox.Header" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="ConfigMakerVariableValueTextBox.Header" xml:space="preserve">
+    <value>Значение по умолчанию</value>
+  </data>
+  <data name="ConfigMakerVariableValuesTextBox.Header" xml:space="preserve">
+    <value>Доступные значения</value>
+  </data>
+  <data name="ConfigMakerVariableValuesTextBox.PlaceholderText" xml:space="preserve">
+    <value>Одно значение на строку</value>
+  </data>
+  <data name="ConfigMakerVariableOnValueTextBox.Header" xml:space="preserve">
+    <value>Значение во включенном состоянии</value>
+  </data>
+  <data name="ConfigMakerVariableOffValueTextBox.Header" xml:space="preserve">
+    <value>Значение в выключенном состоянии</value>
+  </data>
+  <data name="ConfigMakerVariableDefaultSwitch.Header" xml:space="preserve">
+    <value>Включено по умолчанию</value>
+  </data>
+  <data name="ConfigMakerCreateVariableDialogTitle" xml:space="preserve">
+    <value>Создание переменной</value>
+  </data>
+  <data name="ConfigMakerEditVariableDialogTitle" xml:space="preserve">
+    <value>Изменение переменной</value>
+  </data>
+  <data name="ConfigMakerVariableInvalidNameMessage" xml:space="preserve">
+    <value>Используйте латинские буквы, цифры и знак подчеркивания. Имя должно начинаться с буквы.</value>
+  </data>
+  <data name="ConfigMakerVariableDuplicateNameMessage" xml:space="preserve">
+    <value>Переменная с таким именем уже существует.</value>
+  </data>
+  <data name="ConfigMakerVariableSwitchValuesRequiredMessage" xml:space="preserve">
+    <value>Укажите значения для обоих состояний переключателя.</value>
+  </data>
+  <data name="ConfigMakerVariableChoiceValuesRequiredMessage" xml:space="preserve">
+    <value>Добавьте хотя бы одно доступное значение.</value>
+  </data>
+  <data name="ConfigMakerPresetNameTextBox.Header" xml:space="preserve">
+    <value>Название пресета</value>
+  </data>
+  <data name="ConfigMakerSavePresetDescription.Text" xml:space="preserve">
+    <value>Пресет и добавленные в него файлы будут сохранены в приложении. После этого значения переменных можно будет менять без редактирования строки запуска.</value>
+  </data>
+  <data name="ConfigMakerSavePresetDialogTitle" xml:space="preserve">
+    <value>Сохранение пресета в приложение</value>
+  </data>
+  <data name="ConfigMakerSaveToApplicationMenuItem.Text" xml:space="preserve">
+    <value>Сохранить пресет в приложение...</value>
+  </data>
+  <data name="ConfigMakerSaveTextMenuItem.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Недоступно для пресетов с переменными</value>
+  </data>
+  <data name="ConfigMakerTextExportVariablesNotSupportedMessage" xml:space="preserve">
+    <value>Пресет с переменными нельзя экспортировать в TXT. Сохраните его в приложение, чтобы не потерять описание переменных.</value>
+  </data>
+  <data name="ConfigMakerPresetSavedMessage" xml:space="preserve">
+    <value>Пресет «{0}» и связанные с ним файлы сохранены в приложении.</value>
+  </data>
+  <data name="ConfigMakerPresetSaveFailedMessage" xml:space="preserve">
+    <value>Не удалось сохранить пресет: {0}</value>
+  </data>
+  <data name="ConfigMakerAddPresetFileDialogTitle" xml:space="preserve">
+    <value>Добавление файлов в пресет</value>
+  </data>
+  <data name="ConfigMakerPresetResourceFileFilter" xml:space="preserve">
+    <value>Файлы пресета (*.txt;*.lua;*.bin;*.dat)|*.txt;*.lua;*.bin;*.dat|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="ConfigMakerPresetFilesAddedMessage" xml:space="preserve">
+    <value>Добавлено файлов: {0}. Дважды щелкните файл, чтобы вставить ссылку preset://.</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedFileDialogTitle" xml:space="preserve">
+    <value>Удалить используемый файл?</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedFileDialogMessage" xml:space="preserve">
+    <value>В строке запуска осталась ссылка на этот файл. После удаления ссылка preset:// станет неразрешенной.</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedVariableDialogTitle" xml:space="preserve">
+    <value>Удалить используемую переменную?</value>
+  </data>
+  <data name="ConfigMakerRemoveReferencedVariableDialogMessage" xml:space="preserve">
+    <value>В строке запуска осталась эта переменная. После удаления ссылка на нее станет неразрешенной.</value>
+  </data>
+  <data name="ConfigMakerResolvePresetFailedMessage" xml:space="preserve">
+    <value>Не удалось подготовить пресет к тестированию: {0}</value>
+  </data>
+  <data name="ConfigMakerSimpleDesignerAnnotationMissingMessage" xml:space="preserve">
+    <value>Упрощенный дизайнер недоступен: файл аннотаций NoDPI не найден. Можно продолжить работу в редакторе кода.</value>
+  </data>
+  <data name="ConfigMakerUnresolvedVariableDiagnostic" xml:space="preserve">
+    <value>Переменная {0} используется в строке запуска, но не объявлена.</value>
+  </data>
+  <data name="ConfigMakerUnresolvedResourceDiagnostic" xml:space="preserve">
+    <value>Ссылка на файл {0} используется в строке запуска, но такой файл не добавлен в пресет.</value>
+  </data>
+  <data name="OpenFileMenuItem.Text" xml:space="preserve">
+    <value>Открыть файл...</value>
+  </data>
+  <data name="EditConfigWelcomeContentDialog.Title" xml:space="preserve">
+    <value>Что вы хотите сделать?</value>
+  </data>
+  <data name="CreateNewConfigButton.DisplayText" xml:space="preserve">
+    <value>Создать новый пресет</value>
+  </data>
+  <data name="SelectActionToTextBlock.Text" xml:space="preserve">
+    <value>Выберите действие, чтобы продолжить</value>
+  </data>
+  <data name="EditButton.Content" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="SelectConfigKitToEditTextBlock.Text" xml:space="preserve">
+    <value>Выберите набор пресетов,который вы хотите изменить</value>
+  </data>
+  <data name="ConfigEditorWelcomeTip.Text" xml:space="preserve">
+    <value>Связанная справка и возможности</value>
+  </data>
+  <data name="ViewGoodCheckRecentSelections.DisplayText" xml:space="preserve">
+    <value>Посмотреть недавние подборы GoodCheck</value>
+  </data>
+  <data name="ViewLegacyEditor.DisplayText" xml:space="preserve">
+    <value>Открыть устаревшее средство работы с пресетами</value>
+  </data>
+  <data name="SomethingWentWrongTextBlock.Text" xml:space="preserve">
+    <value>Что-то пошло не так</value>
+  </data>
+  <data name="AppFeaturesWindowTitle" xml:space="preserve">
+    <value>Возможности CDPIUI</value>
+  </data>
+  <data name="AppFeaturesHeadingTextBlock.Text" xml:space="preserve">
+    <value>Возможности CDPIUI</value>
+  </data>
+  <data name="AppFeatureStoreTitle" xml:space="preserve">
+    <value>Магазин компонентов и дополнений</value>
+  </data>
+  <data name="AppFeatureStoreDescription" xml:space="preserve">
+    <value>Устанавливайте компоненты, дополнения и готовые наборы конфигураций, управляйте установленными элементами и получайте обновления в одном месте.</value>
+  </data>
+  <data name="AppFeatureStoreOpenLink" xml:space="preserve">
+    <value>Открыть Магазин</value>
+  </data>
+  <data name="AppFeatureAutoConfigTitle" xml:space="preserve">
+    <value>Автоматический подбор конфигурации</value>
+  </data>
+  <data name="AppFeatureAutoConfigDescription" xml:space="preserve">
+    <value>Запускайте мастера автоматического подбора рабочих стратегий для установленных компонентов и переходите от проверки соединения к готовому пресету.</value>
+  </data>
+  <data name="AppFeatureAutoConfigOpenLink" xml:space="preserve">
+    <value>Открыть автоподбор</value>
+  </data>
+  <data name="AppFeatureConfigToolsTitle" xml:space="preserve">
+    <value>Создание и импорт пресетов</value>
+  </data>
+  <data name="AppFeatureConfigToolsDescription" xml:space="preserve">
+    <value>Создавайте, импортируйте, редактируйте и тестируйте пресеты компонентов во встроенных инструментах CDPIUI.</value>
+  </data>
+  <data name="AppFeatureConfigEditorOpenLink" xml:space="preserve">
+    <value>Открыть редактор</value>
+  </data>
+  <data name="AppFeatureConfigImportOpenLink" xml:space="preserve">
+    <value>Импортировать конфигурацию</value>
+  </data>
+  <data name="AppFeatureTroubleshootingTitle" xml:space="preserve">
+    <value>Диагностика и исправление проблем</value>
+  </data>
+  <data name="AppFeatureTroubleshootingDescription" xml:space="preserve">
+    <value>Проверяйте состояние компонентов, соединения и Магазина, а затем применяйте предложенные исправления для найденных проблем.</value>
+  </data>
+  <data name="AppFeatureTroubleshootingOpenLink" xml:space="preserve">
+    <value>Открыть диагностику</value>
+  </data>
+  <data name="AppFeatureLikeYouWantTitle" xml:space="preserve">
+    <value>Персонализируйте как хотите</value>
+  </data>
+  <data name="AppFeatureLikeYouWantDescription" xml:space="preserve">
+    <value>Изменяйте тему приложения и макет главной страницы как вы хотите. Все макеты имеют возможность настройки отображаемых элементов – виджетов, советов и объявлений.
+Выберите [Современный] макет, чтобы опробовать новый опыт использования приложения
+Выберите [Классический] макет, чтобы использовать близкий к стилю GoodbyeDPI-UI внешний вид</value>
+  </data>
+  <data name="AppFeatureReviewThemeSettings" xml:space="preserve">
+    <value>Перейти к настройкам темы</value>
   </data>
 </root>
