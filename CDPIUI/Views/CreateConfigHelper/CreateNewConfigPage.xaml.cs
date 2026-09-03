@@ -96,6 +96,20 @@ public partial class GraphicDesignerSettingItemModel : INotifyPropertyChanged
         set => SetField(ref isChecked, value);
     }
 
+    private ICommand designerTextValueChangedCommand;
+    public ICommand DesignerTextValueChangedCommand
+    {
+        get => designerTextValueChangedCommand;
+        set => SetField(ref designerTextValueChangedCommand, value);
+    }
+
+    private ICommand designerBoolValueToggledCommand;
+    public ICommand DesignerBoolValueToggledCommand
+    {
+        get => designerBoolValueToggledCommand;
+        set => SetField(ref designerBoolValueToggledCommand, value);
+    }
+
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -135,6 +149,27 @@ public partial class GraphicDesignerExclusiveSettingItemModel : INotifyPropertyC
     {
         get => isChecked;
         set => SetField(ref isChecked, value);
+    }
+
+    private ICommand designerTextValueChangedCommand;
+    public ICommand DesignerTextValueChangedCommand
+    {
+        get => designerTextValueChangedCommand;
+        set => SetField(ref designerTextValueChangedCommand, value);
+    }
+
+    private ICommand designerBoolValueToggledCommand;
+    public ICommand DesignerBoolValueToggledCommand
+    {
+        get => designerBoolValueToggledCommand;
+        set => SetField(ref designerBoolValueToggledCommand, value);
+    }
+
+    private ICommand designerSelectedGuidChangedCommand;
+    public ICommand DesignerSelectedGuidChangedCommand
+    {
+        get => designerSelectedGuidChangedCommand;
+        set => SetField(ref designerSelectedGuidChangedCommand, value);
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
