@@ -177,6 +177,9 @@
         <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Behaviors.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.DataTable.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.HeaderedControls.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
@@ -238,6 +241,12 @@
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\EditHostFile.exe" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ELUA\EN">
+        <File Source="$(var.SourceDir)\ELUA\EN\ELUA.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ELUA\RU">
+        <File Source="$(var.SourceDir)\ELUA\RU\ELUA.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
         <File Source="$(var.SourceDir)\en-us\Microsoft.ui.xaml.dll.mui" KeyPath="yes" />
@@ -858,6 +867,9 @@
         <File Source="$(var.SourceDir)\Strings\en-us\UIHelper.resw" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\WelcomeWizard.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
         <File Source="$(var.SourceDir)\Strings\en-us\Widgets.resw" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
@@ -883,6 +895,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\UIHelper.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\WelcomeWizard.resw" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\Widgets.resw" KeyPath="yes" />
