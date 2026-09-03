@@ -40,7 +40,7 @@ public sealed partial class MainPage : TemplatePage
 
         try
         {
-            PrepareToConnectedForwardAnimate(ActionButtonsGrid);            
+            PrepareToConnectedForwardAnimate(ActionButtonsGrid);
         }
         catch { }
     }
@@ -66,8 +66,8 @@ public sealed partial class MainPage : TemplatePage
 
     private void NotOneConfigDoesWorkCard_Click(object sender, RoutedEventArgs e)
     {
-        Frame.Navigate(typeof(WorkPage), 
-            new NameValueCollection() { {"action", NavigationParameters.BeginBasicCheck.ToString() } }, 
+        Frame.Navigate(typeof(WorkPage),
+            new NameValueCollection() { {"action", NavigationParameters.BeginBasicCheck.ToString() } },
             new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
     }
 

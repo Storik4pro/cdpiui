@@ -316,7 +316,7 @@ public sealed partial class WorkPage : TemplatePage
 
     private string GetUrl(string key)
     {
-        
+
         string url = localizer.GetLocalizedString($"/Flashlight/URL_{key}");
         if (string.IsNullOrEmpty(url))
         {
