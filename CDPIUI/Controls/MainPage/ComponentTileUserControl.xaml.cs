@@ -521,8 +521,7 @@ public sealed partial class ComponentTileUserControl : UserControl
                 gwindow.TargetStoreId = StoreId;
                 break;
             case AvailableComponentFeatures.CreateConfig:
-                CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-                _window.CreateNewConfigForComponentId(StoreId);
+                await ConfigMakerWindow.CreateForComponentAsync(StoreId);
                 break;
             case AvailableComponentFeatures.ExploreNewConfigs:
                 StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
