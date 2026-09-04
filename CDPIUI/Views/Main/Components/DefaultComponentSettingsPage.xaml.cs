@@ -1,3 +1,4 @@
+﻿using CDPIUI.Helper;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Dialogs.Universal;
 using CDPIUI.Controls.Dialogs;
@@ -51,7 +52,8 @@ namespace CDPIUI.Views.Main.Components
 
             ConfigChooseCombobox.ItemsSource = _configItems;
 
-            _configItems.CollectionChanged += ConfigItems_CollectionChanged;
+            Loaded += PresetPage_Loaded;
+            Unloaded += PresetPage_Unloaded;
 
             StaggeredRepeater.ItemsSource = _tiles;
 
@@ -69,28 +71,6 @@ namespace CDPIUI.Views.Main.Components
                 EmptyPlaceholder.StoreId = ComponentId;
             }
 
-            DatabaseStoreItem databaseStoreItem = DatabaseHelper.Instance.GetItemById(ComponentId);
-            string componentName = databaseStoreItem != null ? databaseStoreItem.ShortName : ComponentId;
-            
-            var item = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
-            Task.Run(() => InitPage(item));
-            
-        }
-
-
-        private void InitPage(ConfigSelectorItem item)
-        {
-            LoadConfigItems();
-            ComponentHelper componentHelper =
-                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    ComponentId);
-            if (componentHelper is null) return;
-
-            componentHelper.ConfigListUpdated += LoadConfigItems;
-
-            Debug.WriteLine(">>>>Working");
-
-            InitSettingsTiles(item);
         }
 
         private void InitSettingsTiles(ConfigSelectorItem sel)
@@ -502,16 +482,14 @@ namespace CDPIUI.Views.Main.Components
             switch (contentDefinition.ClickId)
             {
                 case "CFGCREATE":
-                    CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-                    window.CreateNewConfigForComponentId(ComponentId);
+                    await ConfigMakerWindow.CreateForComponentAsync(ComponentId);
                     break;
                 case "CFGEDIT":
                     ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
                     var item = (ConfigSelectorItem)ConfigChooseCombobox.SelectedItem;
 
-                    CreateConfigHelperWindow _window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-                    if (componentHelper != null)
-                        _window.OpenConfigEditPage(skp: false, configItem: componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.PackId && x.file_name == item.FileName));
+                    if (componentHelper != null && item != null)
+                        ConfigMakerWindow.EditConfig(componentHelper.GetConfigHelper().GetConfigItems().FirstOrDefault(x => x.packId == item.PackId && x.file_name == item.FileName));
                     break;
                 case "CFGGOODCHECK":
                     CreateConfigUtilWindow gwindow = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigUtilWindow>();
@@ -530,68 +508,43 @@ namespace CDPIUI.Views.Main.Components
             }
         }
 
-        private void LoadConfigItems()
+        private ComponentPresetListSubscription presetListSubscription;
+        private bool updatingConfigList;
+
+        private void PresetPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ComponentItemsLoaderHelper.Instance.Init();
-
-            ComponentHelper componentHelper =
-                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    ComponentId);
-
-            if (componentHelper is null)
-                return;
-
-            List<ConfigItem> items = componentHelper.GetConfigHelper().GetConfigItems();
-
-            DispatcherQueue.TryEnqueue(() => _configItems.Clear());
-
-            foreach (ConfigItem item in items)
-            {
-                ConfigSelectorItem configItem = new()
-                {
-                    FileName = item.file_name,
-                    PackId = item.packId,
-                    DisplayName = item.name,
-                    PackDisplayName = DatabaseHelper.Instance.GetItemById(item.packId)?.ShortName ?? item.packId,
-                    IsLegacyConfig = item.IsLegacy
-                };
-
-                DispatcherQueue.TryEnqueue(() => _configItems.Add(configItem));
-            }
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                if (_configItems.Count == 0)
-                {
-                    ToggleVisibility(false);
-                }
-                else
-                {
-                    ToggleVisibility(true);
-                }
-            });
+            presetListSubscription?.Dispose();
+            presetListSubscription = new(ComponentId, DispatcherQueue, ApplyPresetItems);
         }
 
+        private void PresetPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            presetListSubscription?.Dispose();
+            presetListSubscription = null;
+        }
 
+        private void ApplyPresetItems(IReadOnlyList<ConfigSelectorItem> items)
+        {
+            updatingConfigList = true;
+            try
+            {
+                _configItems.Clear();
+                foreach (var item in items) _configItems.Add(item);
+                ToggleVisibility(_configItems.Count > 0);
+            }
+            finally { updatingConfigList = false; }
+            ApplySavedSelection();
+        }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            ComponentHelper componentHelper =
-                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    ComponentId);
-
-            if (componentHelper is null) return;
-
-            componentHelper.ConfigListUpdated -= LoadConfigItems;
-        }
-
-        private void ConfigItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            ApplySavedSelection();
+            PresetPage_Unloaded(this, null);
         }
 
         private async void ConfigChooseCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (updatingConfigList || !IsLoaded) return;
             if (ConfigChooseCombobox.SelectedItem is ConfigSelectorItem sel)
             {
                 string oldCfg = SettingsManager.Instance.GetValue<string>(["CONFIGS", ComponentId], "configFile");
@@ -704,8 +657,7 @@ namespace CDPIUI.Views.Main.Components
 
         private async void CreateConfigButton_Click(object sender, RoutedEventArgs e)
         {
-            CreateConfigHelperWindow window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-            window.CreateNewConfigForComponentId(ComponentId);
+            await ConfigMakerWindow.CreateForComponentAsync(ComponentId);
         }
 
         private async void OpenStoreButton_Click(object sender, RoutedEventArgs e)

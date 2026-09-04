@@ -1,3 +1,11 @@
+﻿using CDPIUI.AddOns.ConfigShare;
+using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Helper.AddOns.ConfigShare;
+using CDPIUI.Messages;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using CDPIUI.Controls.Default;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.MainPage;
@@ -72,6 +80,80 @@ namespace CDPIUI.Views.Main.Components
             ElementToAnimateForwardConnectedAnimation = ComponentTileUserControl;
         }
 
+        private bool importingDrop;
+
+        private void RootGrid_DragOver(object sender, DragEventArgs e)
+        {
+            if (importingDrop || !e.DataView.Contains(StandardDataFormats.StorageItems)) return;
+            e.AcceptedOperation = DataPackageOperation.Copy;
+            e.DragUIOverride.Caption = localizer.GetLocalizedString("ComponentDropImportCaption");
+            e.DragUIOverride.IsCaptionVisible = true;
+            e.Handled = true;
+
+            DragGrid.Visibility = Visibility.Visible;
+        }
+
+        private async void RootGrid_Drop(object sender, DragEventArgs e)
+        {
+            DragGrid.Visibility = Visibility.Collapsed;
+
+            if (importingDrop || !e.DataView.Contains(StandardDataFormats.StorageItems)) return;
+            e.Handled = true;
+            var deferral = e.GetDeferral();
+            importingDrop = true;
+            try
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                if (!IsLoaded) return;
+                if (items.Any(item => item is not StorageFile))
+                    throw new InvalidOperationException(localizer.GetLocalizedString("ComponentDropFilesOnly"));
+                var paths = items.Select(item => item.Path).ToArray();
+                if (paths.Length == 0) return;
+                var app = (App)Application.Current;
+                if (paths.Length != 1 || !string.Equals(Path.GetExtension(paths[0]), ".cdpiconfig", StringComparison.OrdinalIgnoreCase))
+                {
+                    var importer = await app.UnsafeCreateNewWindow<ConfigImportUtilWindow>(activate: false, id: Guid.NewGuid().ToString());
+                    importer.ImportFiles(paths, ComponentId);
+                    App.ActivateWindow(importer);
+                    return;
+                }
+                if (SettingsManager.Instance.GetValueOrDefault<bool>("CONFIGSHARE", "AlwaysAskIfDragNDropConfigAdded", defaultValue: true))
+                {
+                    var owner = app.OpenWindows.FirstOrDefault(window => window.Content?.XamlRoot == XamlRoot);
+                    var dialog = await app.UnsafeCreateNewWindow<ConfigShareImportDialog>(activate: false, id: Guid.NewGuid().ToString());
+                    dialog.ConfigureForDragDrop(owner);
+                    App.ActivateWindow(dialog);
+                    await dialog.SetFileAsync(paths[0]);
+                }
+                else
+                {
+                    var service = new ConfigShareService();
+                    using var package = await service.ReadAsync(paths[0]);
+                    await service.InstallAsync(package, package.Manifest.Name);
+                    string targetId = ConfigShareService.GetInstalledComponentId(package.Config);
+                    if (targetId != null)
+                        ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(targetId)?.ReInitConfigs();
+                }
+            }
+            catch (Exception exception)
+            {
+                CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(nameof(ViewComponentSettingsPage), exception.ToString());
+                if (IsLoaded)
+                    await new ErrorContentDialog().ShowErrorDialogAsync(
+                        localizer.GetLocalizedString("ConfigShareError"), ConfigShareUI.ErrorText(exception), XamlRoot);
+            }
+            finally
+            {
+                importingDrop = false;
+                deferral.Complete();
+            }
+        }
+
+        private void RootGrid_DragLeave(object sender, DragEventArgs e)
+        {
+            DragGrid.Visibility = Visibility.Collapsed;
+        }
+
         private void NavigateBackWithParameter()
         {
             if (IsAnimated)
@@ -127,5 +209,7 @@ namespace CDPIUI.Views.Main.Components
             ComponentTileUserControl.CardImageSource = new BitmapImage(UIHelper.GetUriFromString(LScriptLangHelper.ExecuteScript(databaseStoreItem?.IconPath)));
             ComponentTileUserControl.CardBackgroundColor = databaseStoreItem?.BackgroudColor ?? "#000000";
         }
+
+        
     }
 }

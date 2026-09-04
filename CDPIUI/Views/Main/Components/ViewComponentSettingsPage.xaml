@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <tpl:TemplatePage
     x:Name="RootPage"
     x:Class="CDPIUI.Views.Main.Components.ViewComponentSettingsPage"
@@ -16,7 +16,7 @@
 
     
 
-    <Grid x:Name="RootGrid">
+    <Grid x:Name="RootGrid" Background="Transparent" AllowDrop="True" DragOver="RootGrid_DragOver" DragLeave="RootGrid_DragLeave" Drop="RootGrid_Drop">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WindowStates">
                 <VisualState x:Name="SmallState">
@@ -40,14 +40,19 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
+        
+
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+        <!--
         <Grid.ChildrenTransitions>
             <RepositionThemeTransition/>
         </Grid.ChildrenTransitions>
+        -->
+        
 
         <Grid Margin="0">
 
@@ -57,6 +62,14 @@
                 ShowSettingsCommand="{Binding ShowComponentSettingsClickCommand, ElementName=RootPage}"/>
 
         </Grid>
-        <Frame x:Name="PageContentFrame" Grid.Row="1" />
+        <Frame x:Name="PageContentFrame" Grid.Row="2" />
+
+        <Grid Grid.RowSpan="3" x:Name="DragGrid" Visibility="Collapsed">
+            <Border Background="{ThemeResource AccentAcrylicBackgroundFillColorBaseBrush}" Opacity="0.8"/>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+                <FontIcon Glyph="&#xE8B0;" HorizontalAlignment="Center" FontSize="28"/>
+                <TextBlock l:Uids.Uid="DropFilesTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" TextAlignment="Center"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </tpl:TemplatePage>
