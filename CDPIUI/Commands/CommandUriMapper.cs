@@ -135,6 +135,7 @@ namespace CDPIUI.Commands
                     }
                  )   
                 ),
+            CreateWindowRoute("Tools", ["Service"], "ServiceWindow"),
             CreateWindowRoute("Tools", ["ConditionalLaunch"], "ConditionalLaunchWindow"),
             CreateWindowRoute("Tools", ["AutoConfig"], "CreateConfigUtilWindow"),
             new(
