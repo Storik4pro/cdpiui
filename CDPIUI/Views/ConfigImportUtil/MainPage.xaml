@@ -13,7 +13,7 @@
     xmlns:vm="using:CDPIUI.ViewModels"
     xmlns:nv="using:CDPIUI.Controls.Navigation">
 
-    <Grid Unloaded="MainPage_Unloaded">
+    <Grid Loaded="MainPage_Loaded" Unloaded="MainPage_Unloaded">
         <Grid.Resources>
             <conv:BoolToVisibilityConverter x:Name="BoolToVisibilityConverter"/>
             <conv:StringToVisibilityConverter x:Name="StringToVisibilityConverter"/>
@@ -24,6 +24,15 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
+        <StackPanel x:Name="PlaceholderGrid" Margin="20" Spacing="20" Visibility="Collapsed">
+            <TextBlock l:Uids.Uid="NoOneComponentInstalledTextBlock" TextWrapping="Wrap"/>
+            <Button Click="OpenComponentsStore_Click">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="16" ShowAsMonochrome="True"/>
+                    <TextBlock l:Uids.Uid="GetNewComponentsFromStoreTextBlock"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
         <nv:AnimatedHorizontalContentViewer x:Name="MainContent">
             <nv:AnimatedHorizontalContentItem x:Name="SelectionStep">
                 <Grid Padding="20 0">

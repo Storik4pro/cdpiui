@@ -6,6 +6,7 @@ using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.ComponentServices.Configuration;
 using CDPIUI.Core.ComponentServices.Helpers;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store;
 using CDPIUI.Helper.AddOns.ConfigImport;
 using CDPIUI.Helper.AddOns.ConfigShare;
 using CDPIUI.ViewModels;
@@ -51,6 +52,8 @@ public sealed partial class MainPage : TemplatePage
     private string activeTestComponentId = string.Empty;
     private ConfigImportTestPlaceholder activeTestPlaceholder;
     private bool isUnloaded;
+    private string[] pendingDroppedFiles;
+    private bool importingDroppedFiles;
     private readonly HashSet<ConfigSharePackage> packagesBeingSaved = [];
 
     public MainPage()
@@ -78,7 +81,33 @@ public sealed partial class MainPage : TemplatePage
             item.ShortName = string.IsNullOrWhiteSpace(item.ShortName) ? item.Name : item.ShortName;
             components.Add(item);
         }
+        if (results.Count == 0)
+        {
+            bool available = components.Count > 0;
+            PlaceholderGrid.Visibility = available ? Visibility.Collapsed : Visibility.Visible;
+            MainContent.Visibility = available ? Visibility.Visible : Visibility.Collapsed;
+            NextButton.IsEnabled = available;
+        }
     }
+
+    private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        isUnloaded = false;
+        StoreHelper.Instance.ItemActionsStopped -= StoreComponentsChanged;
+        StoreHelper.Instance.ItemRemoved -= StoreComponentsChanged;
+        StoreHelper.Instance.ItemActionsStopped += StoreComponentsChanged;
+        StoreHelper.Instance.ItemRemoved += StoreComponentsChanged;
+        LoadComponents();
+        await ImportPendingFilesAsync();
+    }
+
+    private void StoreComponentsChanged(string id) => DispatcherQueue.TryEnqueue(() =>
+    {
+        if (!isUnloaded && results.Count == 0) LoadComponents();
+    });
+
+    private void OpenComponentsStore_Click(object sender, RoutedEventArgs e) =>
+        CDPIUI.Commands.CommandsHandler.HandleCommand("cdpiui://Store/Category/C001CS");
 
     private static bool IsImportTarget(DatabaseStoreItem item)
     {
@@ -93,11 +122,49 @@ public sealed partial class MainPage : TemplatePage
                File.Exists(Path.Combine(item.Directory, GetExecutableFileName(item.Executable)));
     }
 
-    private async Task<bool> ImportConfigsAsync()
+    public void QueueDroppedFiles(string[] paths)
     {
-        var result = ConfigImportHelper.OpenFileSelectionDialog(true);
-        if (!result.Success) return false;
-        string[] filePaths = result.Result;
+        pendingDroppedFiles = paths.ToArray();
+        if (IsLoaded) _ = ImportPendingFilesAsync();
+    }
+
+    private async Task ImportPendingFilesAsync()
+    {
+        if (pendingDroppedFiles == null || importingDroppedFiles || isUnloaded) return;
+        var paths = pendingDroppedFiles;
+        pendingDroppedFiles = null;
+        importingDroppedFiles = true;
+        NextButton.Visibility = Visibility.Collapsed;
+        try { await ImportConfigsAsync(paths); }
+        catch (Exception exception)
+        {
+            CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(nameof(MainPage), exception.ToString());
+            if (!isUnloaded && IsLoaded)
+                await new CDPIUI.Controls.Dialogs.Universal.ErrorContentDialog().ShowErrorDialogAsync(
+                    localizer.GetLocalizedString("ConfigShareError"), exception.Message, XamlRoot);
+        }
+        finally
+        {
+            importingDroppedFiles = false;
+            if (!isUnloaded)
+            {
+                UtilityButtonContols.IsLoading = false;
+                NextButton.Visibility = Visibility.Visible;
+            }
+        }
+    }
+
+    private async Task<bool> ImportConfigsAsync(string[] suppliedPaths = null)
+    {
+        LoadComponents();
+        if (components.Count == 0) return false;
+        string[] filePaths = suppliedPaths;
+        if (filePaths == null)
+        {
+            var result = ConfigImportHelper.OpenFileSelectionDialog(true);
+            if (!result.Success) return false;
+            filePaths = result.Result;
+        }
 
         if (filePaths.Length == 0)
             return false;
@@ -117,6 +184,7 @@ public sealed partial class MainPage : TemplatePage
         if (isUnloaded) return false;
 
         await PrepareMissingFilesAsync();
+        if (isUnloaded) return false;
 
         if (missingFiles.Count > 0)
             ShowMissingFiles();
@@ -140,7 +208,7 @@ public sealed partial class MainPage : TemplatePage
 
             DispatcherQueue.TryEnqueue(() =>
             {
-                UtilityButtonContols.LoadingStateText = text;
+                if (!isUnloaded) UtilityButtonContols.LoadingStateText = text;
             });
 
             AnalyzedImport analyzed = await Task.Run(() => AnalyzeFile(Path.GetFullPath(filePaths[index]), targets));
@@ -556,6 +624,8 @@ public sealed partial class MainPage : TemplatePage
     private async void MainPage_Unloaded(object sender, RoutedEventArgs e)
     {
         isUnloaded = true;
+        StoreHelper.Instance.ItemActionsStopped -= StoreComponentsChanged;
+        StoreHelper.Instance.ItemRemoved -= StoreComponentsChanged;
         await StopActiveTestAsync();
         foreach (var item in results)
             if (item.Result.SharedPackage != null && !packagesBeingSaved.Contains(item.Result.SharedPackage))
@@ -576,7 +646,8 @@ public sealed partial class MainPage : TemplatePage
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-        ((App)Application.Current).GetCurrentWindowFromType<ConfigImportUtilWindow>().Close();
+        ((App)Application.Current).OpenWindows.OfType<ConfigImportUtilWindow>()
+            .FirstOrDefault(window => window.Content?.XamlRoot == XamlRoot)?.Close();
     }
 
     private async void NextButton_Click(object sender, RoutedEventArgs e)
@@ -584,10 +655,8 @@ public sealed partial class MainPage : TemplatePage
         if (MainContent.SelectedItem == SelectionStep)
         {
             NextButton.Visibility = Visibility.Collapsed;
-            if (await ImportConfigsAsync())
-            {
-                NextButton.Visibility = Visibility.Collapsed;
-            }
+            await ImportConfigsAsync();
+            if (isUnloaded) return;
             NextButton.Visibility = Visibility.Visible;
         }
         else if (MainContent.SelectedItem == MissingFilesStep)
