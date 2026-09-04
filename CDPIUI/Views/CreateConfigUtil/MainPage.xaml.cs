@@ -239,8 +239,8 @@ namespace CDPIUI.Views.CreateConfigUtil
         private async void ViewOtherButton_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.Instance.SetValue<string>("AUTOSELECTION", "lastComponentSelectedId", ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
-            var window = await ((App)Application.Current).SafeCreateNewWindow<CreateConfigHelperWindow>();
-            window.CreateNewConfigForComponentId((string)((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
+            await ConfigMakerWindow.CreateForComponentAsync(
+                ((ViewComponentModel)ComponentChooseComboBox.SelectedItem).StoreId);
             CreateConfigUtilWindow.Instance.Close();
         }
 
