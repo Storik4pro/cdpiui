@@ -5963,4 +5963,49 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
   <data name="ConfigMakerCCFileFilter" xml:space="preserve">
     <value>CDPIUI Configs (*.cdpiconfig)|*.cdpiconfig</value>
   </data>
+  <data name="ComponentFailureTitle" xml:space="preserve">
+    <value>Component stopped with an error</value>
+  </data>
+  <data name="ComponentFailureDescription" xml:space="preserve">
+    <value>Component “{0}” has stopped. Open its output for details or run troubleshooting.</value>
+  </data>
+  <data name="ComponentFailureConsoleLink.Content" xml:space="preserve">
+    <value>Open component console</value>
+  </data>
+  <data name="ComponentFailureTroubleshootingLink.Content" xml:space="preserve">
+    <value>Open troubleshooting</value>
+  </data>
+  <data name="ComponentFailureHelpLink.Content" xml:space="preserve">
+    <value>Component error help</value>
+  </data>
+  <data name="ComponentErrorWindowSetting.Content" xml:space="preserve">
+    <value>Show an error window when a component exits with an error</value>
+  </data>
+  <data name="ServiceWindowTitle" xml:space="preserve">
+    <value>Stop service</value>
+  </data>
+  <data name="ServiceSettingsCard.Header" xml:space="preserve">
+    <value>Stop service</value>
+  </data>
+  <data name="ServiceSettingsCard.Description" xml:space="preserve">
+    <value>Stop the WinDivert service</value>
+  </data>
+  <data name="ComponentDropImportCard.Header" xml:space="preserve">
+    <value>Import by dragging files</value>
+  </data>
+  <data name="ComponentDropImportCard.Description" xml:space="preserve">
+    <value>Drop preset files onto this page.</value>
+  </data>
+  <data name="ComponentDropImportCaption" xml:space="preserve">
+    <value>Import presets</value>
+  </data>
+  <data name="ComponentDropFilesOnly" xml:space="preserve">
+    <value>Drop files, not folders.</value>
+  </data>
+  <data name="ConfigShareAlwaysAskDrop.Content" xml:space="preserve">
+    <value>Always ask</value>
+  </data>
+  <data name="DropFilesTextBlock.Text" xml:space="preserve">
+    <value>Drop your files here for import to application</value>
+  </data>
 </root>

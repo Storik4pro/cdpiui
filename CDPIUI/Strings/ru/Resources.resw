@@ -5965,4 +5965,49 @@ https://discord.com/app</value>
   <data name="ConfigMakerCCFileFilter" xml:space="preserve">
     <value>Пресеты для CDPIUI (*.cdpiconfig)|*.cdpiconfig</value>
   </data>
+  <data name="ComponentFailureTitle" xml:space="preserve">
+    <value>Компонент завершился с ошибкой</value>
+  </data>
+  <data name="ComponentFailureDescription" xml:space="preserve">
+    <value>Компонент «{0}» остановлен. Откройте вывод компонента, чтобы узнать подробности, или запустите диагностику.</value>
+  </data>
+  <data name="ComponentFailureConsoleLink.Content" xml:space="preserve">
+    <value>Открыть консоль компонента</value>
+  </data>
+  <data name="ComponentFailureTroubleshootingLink.Content" xml:space="preserve">
+    <value>Запустить средство устранения неполадок</value>
+  </data>
+  <data name="ComponentFailureHelpLink.Content" xml:space="preserve">
+    <value>Справка по ошибкам компонентов</value>
+  </data>
+  <data name="ComponentErrorWindowSetting.Content" xml:space="preserve">
+    <value>Показывать окно с ошибкой, если компонент завершается с ошибкой</value>
+  </data>
+  <data name="ServiceWindowTitle" xml:space="preserve">
+    <value>Остановка службы</value>
+  </data>
+  <data name="ServiceSettingsCard.Header" xml:space="preserve">
+    <value>Остановка службы</value>
+  </data>
+  <data name="ServiceSettingsCard.Description" xml:space="preserve">
+    <value>Остановить службу WinDivert</value>
+  </data>
+  <data name="ComponentDropImportCard.Header" xml:space="preserve">
+    <value>Импортировать перетаскиванием</value>
+  </data>
+  <data name="ComponentDropImportCard.Description" xml:space="preserve">
+    <value>Перетащите файлы пресетов на эту страницу.</value>
+  </data>
+  <data name="ComponentDropImportCaption" xml:space="preserve">
+    <value>Импортировать пресеты</value>
+  </data>
+  <data name="ComponentDropFilesOnly" xml:space="preserve">
+    <value>Перетащите файлы, а не папки.</value>
+  </data>
+  <data name="ConfigShareAlwaysAskDrop.Content" xml:space="preserve">
+    <value>Всегда спрашивать</value>
+  </data>
+  <data name="DropFilesTextBlock.Text" xml:space="preserve">
+    <value>Отпустите свои файлы здесь, чтобы импортировать их в приложение</value>
+  </data>
 </root>
