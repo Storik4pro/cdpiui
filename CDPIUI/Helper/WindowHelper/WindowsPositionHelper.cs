@@ -45,6 +45,8 @@ namespace CDPIUI.Helper.WindowHelper
         {
             { nameof(AppFeaturesWindow), WindowResizeOptions.OnlyPositionWizard },
             { nameof(PrepareWindow), WindowResizeOptions.AlwaysCenter },
+            { nameof(ComponentErrorWindow), WindowResizeOptions.Message },
+            { nameof(ServiceWindow), WindowResizeOptions.Message },
             { nameof(ViewWindow), WindowResizeOptions.ResizeAndPositionUtility },
             { nameof(StoreWindow), WindowResizeOptions.ResizeAndPositionFollowSystem },
             { nameof(ProxySetupUtilWindow), WindowResizeOptions.OnlyPositionWizard },
