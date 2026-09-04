@@ -56,8 +56,27 @@ namespace CDPIUI
 
         public List<Window> OpenWindows { get; private set; } = new List<Window>();
 
-        private Dictionary<IntPtr, bool> _disabledWindows = new Dictionary<IntPtr, bool>();
-        private object _modalLock = new object();
+        private readonly Dictionary<Window, ModalSession> modalSessions = new();
+        private readonly Dictionary<Window, DisabledOwner> disabledOwners = new();
+        private readonly Microsoft.UI.Dispatching.DispatcherQueue uiDispatcher =
+            Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
+        private sealed class DisabledOwner
+        {
+            public IntPtr Handle;
+            public bool WasEnabled;
+            public int Count;
+        }
+
+        private sealed class ModalSession
+        {
+            public IntPtr Handle;
+            public IntPtr PreviousOwner;
+            public Window Owner;
+            public readonly List<Window> Disabled = new();
+            public readonly TaskCompletionSource<bool> Completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            public Windows.Foundation.TypedEventHandler<object, WindowEventArgs> ClosedHandler;
+        }
         private readonly SemaphoreSlim migrationWindowActivationLock = new(1, 1);
 
         public App()
@@ -102,6 +121,7 @@ namespace CDPIUI
 
         private async Task PipeConnectedActions()
         {
+            _ = TasksManagerHelper.Instance;
             string[] arguments = Environment.GetCommandLineArgs();
 
             await PipeHelper.SendSettingsPacket(Shared.Pipe.Models.SettingsMessageIds.ReloadSettings);
@@ -619,30 +639,20 @@ namespace CDPIUI
             try
             {
                 WindowsPositionHelper.SaveWindowSizeAndPostionsettings(window);
-                window.Closed -= Window_ClosedHandler;
-                window.SizeChanged -= Window_SizeChanged;
-
-                try
-                {
-                    if (window.Content is FrameworkElement fe)
-                    {
-                        fe.DataContext = null;
-
-                        TryDisposeFrameworkElement(fe);
-                    }
-                }
-                catch { }
-
-                window.Content = null;
             }
             catch { }
             finally
             {
+                window.Closed -= Window_ClosedHandler;
+                window.SizeChanged -= Window_SizeChanged;
+
+                // Leave visual-tree teardown to WinUI, including diagnostics notifications.
+                try { ReleaseModal(window, isClosing: true); }
+                catch (Exception exception) { Logger.Instance.CreateWarningLog(nameof(App), exception.ToString()); }
                 try { OpenWindows.Remove(window); } catch { }
                 if (migrationWindowClosed)
                     Program.CompleteMigrationActivation();
-                GC.SuppressFinalize(window);
-                GC.Collect();
+                disabledOwners.Remove(window);
             }
 
             if (migrationWindowClosed)
@@ -688,63 +698,6 @@ namespace CDPIUI
             Exit();
         }
 
-        private void TryDisposeFrameworkElement(FrameworkElement fe)
-        {
-            if (fe == null) return;
-
-            if (fe is IDisposable d)
-            {
-                try { d.Dispose(); } catch { }
-            }
-
-            try
-            {
-                var feType = fe.GetType();
-
-                var webviewProp = feType.GetProperty("CoreWebView2");
-                if (webviewProp != null)
-                {
-                    var core = webviewProp.GetValue(fe);
-                    if (core != null)
-                    {
-                        var closeMethod = core.GetType().GetMethod("Close") ?? core.GetType().GetMethod("Dispose");
-                        if (closeMethod != null)
-                        {
-                            try { closeMethod.Invoke(core, null); } catch { }
-                        }
-                    }
-
-                    if (fe is IDisposable wc)
-                    {
-                        try { wc.Dispose(); } catch { }
-                    }
-                }
-            }
-            catch { }
-
-            try
-            {
-                if (fe is ContentControl cc && cc.Content is IDisposable ccd)
-                {
-                    try { ccd.Dispose(); } catch { }
-                    cc.Content = null;
-                }
-
-                if (fe is Panel panel) 
-                {
-                    foreach (var child in panel.Children)
-                    {
-                        if (child is IDisposable childD)
-                        {
-                            try { childD.Dispose(); } catch { }
-                        }
-                    }
-                    panel.Children.Clear();
-                }
-            }
-            catch { }
-        }
-
         public TWindow GetCurrentWindowFromType<TWindow>() where TWindow:Window
         {
             return OpenWindows.OfType<TWindow>().FirstOrDefault(w => w.DispatcherQueue != null);
@@ -759,194 +712,109 @@ namespace CDPIUI
             return (TEnum)Enum.Parse(typeof(TEnum), text);
         }
 
-        public Task ShowWindowModalAsync(Window modalWindow)
-        {
-            return ShowWindowModalAsync(modalWindow, null);
-        }
+        public Task ShowWindowModalAsync(Window modalWindow) => ShowWindowModalAsync(modalWindow, null);
 
         public Task ShowWindowModalAsync(Window modalWindow, Window ownerWindow)
         {
-            if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
-
-            var tcs = new TaskCompletionSource<bool>();
-
-            var dq = modalWindow.DispatcherQueue;
-            if (dq == null)
+            ArgumentNullException.ThrowIfNull(modalWindow);
+            var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            async void Begin()
             {
-                MakeModalAndAwait(modalWindow, ownerWindow, tcs);
+                try { await BeginModal(modalWindow, ownerWindow); completion.TrySetResult(true); }
+                catch (Exception exception) { completion.TrySetException(exception); }
             }
-            else
-            {
-                dq.TryEnqueue(() => MakeModalAndAwait(modalWindow, ownerWindow, tcs));
-            }
-
-            return tcs.Task;
+            if (uiDispatcher.HasThreadAccess) Begin();
+            else if (!uiDispatcher.TryEnqueue(Begin)) completion.TrySetCanceled();
+            return completion.Task;
         }
 
-        private void MakeModalAndAwait(
-            Window modalWindow,
-            Window ownerWindow,
-            TaskCompletionSource<bool> tcs)
+        private Task BeginModal(Window modalWindow, Window ownerWindow)
         {
-            lock (_modalLock)
+            if (modalSessions.TryGetValue(modalWindow, out var existing)) return existing.Completion.Task;
+            if (!OpenWindows.Contains(modalWindow)) return Task.CompletedTask;
+            var handle = WindowNative.GetWindowHandle(modalWindow);
+            if (!IsWindow(handle)) return Task.CompletedTask;
+            var session = new ModalSession { Handle = handle, Owner = ownerWindow };
+            modalSessions.Add(modalWindow, session);
+            try
             {
-                try
+                if (ownerWindow != null && OpenWindows.Contains(ownerWindow))
                 {
-                    IntPtr modalHwnd = WindowNative.GetWindowHandle(modalWindow);
-                    if (modalHwnd == IntPtr.Zero)
+                    var ownerHandle = WindowNative.GetWindowHandle(ownerWindow);
+                    if (IsWindow(ownerHandle))
                     {
-                        tcs.SetException(new InvalidOperationException("HWND err"));
-                        return;
+                        session.PreviousOwner = GetWindowLongPtr(handle, GWLP_HWNDPARENT);
+                        SetWindowLongPtr(handle, GWLP_HWNDPARENT, ownerHandle);
                     }
-
-                    IntPtr ownerHwnd = IntPtr.Zero;
-                    if (ownerWindow != null)
-                    {
-                        ownerHwnd = WindowNative.GetWindowHandle(ownerWindow);
-                        if (ownerHwnd != IntPtr.Zero)
-                            SetWindowLongPtr(modalHwnd, GWLP_HWNDPARENT, ownerHwnd);
-                    }
-
-                    _disabledWindows.Clear();
-                    var windowsToDisable = ownerWindow == null
-                        ? OpenWindows
-                        : new List<Window> { ownerWindow };
-                    foreach (var win in windowsToDisable)
-                    {
-                        if (win == null) continue;
-                        try
-                        {
-                            IntPtr h = WindowNative.GetWindowHandle(win);
-                            if (h == IntPtr.Zero) continue;
-
-                            if (win == modalWindow)
-                            {
-                                continue;
-                            }
-
-                            _disabledWindows[h] = true;
-
-                            EnableWindow(h, false);
-                        }
-                        catch
-                        {
-                        }
-                    }
-
-                    SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-
-                    void ClosedHandler(object s, WindowEventArgs e)
-                    {
-                        try
-                        {
-                            var dq2 = modalWindow.DispatcherQueue;
-                            if (dq2 != null)
-                            {
-                                dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd, ownerHwnd));
-                            }
-                            else
-                            {
-                                RestoreAfterModal(modalWindow, modalHwnd, ownerHwnd);
-                            }
-                        }
-                        finally
-                        {
-                            modalWindow.Closed -= ClosedHandler;
-                            tcs.TrySetResult(true);
-                        }
-                    }
-
-                    modalWindow.Closed += ClosedHandler;
                 }
-                catch (Exception ex)
+                var owners = ownerWindow == null ? OpenWindows.ToArray() : new[] { ownerWindow };
+                foreach (var owner in owners)
                 {
-                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
-                    tcs.TrySetException(ex);
+                    if (owner == modalWindow || !OpenWindows.Contains(owner)) continue;
+                    var ownerHandle = WindowNative.GetWindowHandle(owner);
+                    if (!IsWindow(ownerHandle)) continue;
+                    if (!disabledOwners.TryGetValue(owner, out var state))
+                    {
+                        state = new DisabledOwner { Handle = ownerHandle, WasEnabled = IsWindowEnabled(ownerHandle) };
+                        disabledOwners.Add(owner, state);
+                    }
+                    state.Count++;
+                    session.Disabled.Add(owner);
+                    EnableWindow(ownerHandle, false);
                 }
+                session.ClosedHandler = (_, args) =>
+                {
+                    if (!args.Handled) ReleaseModal(modalWindow, isClosing: true);
+                };
+                modalWindow.Closed += session.ClosedHandler;
+                return session.Completion.Task;
+            }
+            catch
+            {
+                ReleaseModal(modalWindow, isClosing: false);
+                throw;
             }
         }
 
         public Task MakeWindowNormal(Window modalWindow)
         {
-            if (modalWindow == null) throw new ArgumentNullException(nameof(modalWindow));
-
-            var tcs = new TaskCompletionSource<bool>();
-
-            var dq = modalWindow.DispatcherQueue;
-            if (dq == null)
+            ArgumentNullException.ThrowIfNull(modalWindow);
+            var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void Restore()
             {
-                RestoreModalWindowAndAwait(modalWindow, tcs);
+                try { ReleaseModal(modalWindow, isClosing: false); completion.TrySetResult(true); }
+                catch (Exception exception) { completion.TrySetException(exception); }
             }
-            else
-            {
-                dq.TryEnqueue(() => RestoreModalWindowAndAwait(modalWindow, tcs));
-            }
-
-            return tcs.Task;
+            if (uiDispatcher.HasThreadAccess) Restore();
+            else if (!uiDispatcher.TryEnqueue(Restore)) completion.TrySetCanceled();
+            return completion.Task;
         }
 
-        private void RestoreModalWindowAndAwait(Window modalWindow, TaskCompletionSource<bool> tcs)
+        private void ReleaseModal(Window modalWindow, bool isClosing)
         {
-            lock (_modalLock)
+            if (!modalSessions.Remove(modalWindow, out var session)) return;
+            if (session.ClosedHandler != null) modalWindow.Closed -= session.ClosedHandler;
+            try
             {
-                try
+                // Never show, reposition or query a modal window after Closed.
+                if (!isClosing && session.Owner != null && IsWindow(session.Handle))
+                    SetWindowLongPtr(session.Handle, GWLP_HWNDPARENT,
+                        IsWindow(session.PreviousOwner) ? session.PreviousOwner : IntPtr.Zero);
+                foreach (var owner in session.Disabled)
                 {
-                    IntPtr modalHwnd = WindowNative.GetWindowHandle(modalWindow);
-                    if (modalHwnd == IntPtr.Zero)
-                    {
-                        tcs.SetException(new InvalidOperationException("HWND err"));
-                        return;
-                    }
-
-                    var dq2 = modalWindow.DispatcherQueue;
-                    if (dq2 != null)
-                    {
-                        dq2.TryEnqueue(() => RestoreAfterModal(modalWindow, modalHwnd));
-                    }
-                    else
-                    {
-                        RestoreAfterModal(modalWindow, modalHwnd);
-                    }
+                    if (!disabledOwners.TryGetValue(owner, out var state)) continue;
+                    if (--state.Count > 0) continue;
+                    disabledOwners.Remove(owner);
+                    if (state.WasEnabled && OpenWindows.Contains(owner) && IsWindow(state.Handle))
+                        EnableWindow(state.Handle, true);
                 }
-                catch (Exception ex)
+                if (session.Owner != null && OpenWindows.Contains(session.Owner))
                 {
-                    try { RestoreAfterModal(modalWindow, WindowNative.GetWindowHandle(modalWindow)); } catch { }
-                    tcs.TrySetException(ex);
+                    var ownerHandle = WindowNative.GetWindowHandle(session.Owner);
+                    if (IsWindow(ownerHandle) && IsWindowEnabled(ownerHandle)) SetForegroundWindow(ownerHandle);
                 }
             }
-        }
-
-
-        private void RestoreAfterModal(
-            Window modalWindow,
-            IntPtr modalHwnd,
-            IntPtr ownerHwnd = default)
-        {
-            lock (_modalLock)
-            {
-                try
-                {
-                    if (modalHwnd != IntPtr.Zero)
-                    {
-                        SetWindowPos(modalHwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-                    }
-                }
-                catch { }
-
-                foreach (var kv in _disabledWindows.ToList())
-                {
-                    try
-                    {
-                        EnableWindow(kv.Key, true);
-                    }
-                    catch { }
-                }
-
-                _disabledWindows.Clear();
-
-                if (ownerHwnd != IntPtr.Zero)
-                    SetForegroundWindow(ownerHwnd);
-            }
+            finally { session.Completion.TrySetResult(true); }
         }
 
         public FrameworkElement GetRootFrame()
@@ -1058,6 +926,13 @@ namespace CDPIUI
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowEnabled(IntPtr hWnd);
+        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
         private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
