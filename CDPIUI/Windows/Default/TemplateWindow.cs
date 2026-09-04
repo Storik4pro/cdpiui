@@ -290,6 +290,7 @@ namespace CDPIUI.Default
             if (milliseconds - LastTimestamp < DoubleClickTimeMS && milliseconds != 0)
             {
                 this.Close();
+                return;
             }
             else
             {
