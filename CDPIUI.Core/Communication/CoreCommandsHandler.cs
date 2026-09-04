@@ -141,7 +141,7 @@ namespace CDPIUI.Core.Communication
                         if (title != null && text != null)
                         {
                             Debug.WriteLine(title, text);
-                            pm?.ShowErrorMessage(title, text);
+                            if (pm != null) await pm.ShowErrorMessage(title, text, showWindow: model.MessageData?["stateSnapshot"] != "true");
                         }
                         else
                         {
@@ -198,8 +198,7 @@ namespace CDPIUI.Core.Communication
                             .Result?
                             .ProcessManager;
 
-                        pm?.ClearOutput();
-                        pm?.AddOutput(output);
+                        pm?.SetOutput(output);
 
                         return;
                     }

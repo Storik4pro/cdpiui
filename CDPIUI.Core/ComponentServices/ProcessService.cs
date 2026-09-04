@@ -19,6 +19,7 @@ namespace CDPIUI.Core.ComponentServices
         public string Id { get; set; } = string.Empty;
 
         public event Action<string>? OutputReceived;
+        public event Action? OutputReset;
         public event Action<ErrorModel>? ErrorHappens;
         public event Action<string>? ProcessNameChanged;
         public event Action<Tuple<string, bool>>? ProcessStateChanged;
@@ -33,6 +34,7 @@ namespace CDPIUI.Core.ComponentServices
 
         private readonly StringBuilder _outputBuffer;
         private readonly StringBuilder _outputDefaultBuffer;
+        private readonly object outputLock = new();
 
         public ProcessService()
         {
@@ -69,8 +71,7 @@ namespace CDPIUI.Core.ComponentServices
             LastError = null;
             try
             {
-                _outputBuffer.Clear();
-                _outputDefaultBuffer.Clear();
+                ClearOutput();
 
                 ComponentItemsLoaderHelper.Instance.Init();
                 ComponentHelper componentHelper =
@@ -106,8 +107,7 @@ namespace CDPIUI.Core.ComponentServices
             LastError = null;
             try
             {
-                _outputBuffer.Clear();
-                _outputDefaultBuffer.Clear();
+                ClearOutput();
 
                 ComponentItemsLoaderHelper.Instance.Init();
                 ComponentHelper componentHelper =
@@ -204,10 +204,7 @@ namespace CDPIUI.Core.ComponentServices
 
         private void SendStopMessage(string output = "Process will be stopped by user")
         {
-            _outputDefaultBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
-            _outputBuffer.Append($"\n[PSEUDOCONSOLE]{output}");
-
-            OutputReceived?.Invoke($"\n[PSEUDOCONSOLE]{output}");
+            AddOutput($"\n[PSEUDOCONSOLE]{output}");
 
         }
 
@@ -234,17 +231,16 @@ namespace CDPIUI.Core.ComponentServices
 
         public static async Task StopService()
         {
-            _ = PipeHelper.SendConPTYPacket(Shared.Pipe.Models.CONPTYMessageIds.StopService);
-            await Task.CompletedTask;
+            await PipeHelper.SendConPTYPacket(Shared.Pipe.Models.CONPTYMessageIds.StopService);
         }
 
         public string GetDefaultProcessOutput()
         {
-            return _outputDefaultBuffer.ToString();
+            lock (outputLock) return _outputDefaultBuffer.ToString();
         }
         public string GetProcessOutput()
         {
-            return _outputBuffer.ToString();
+            lock (outputLock) return _outputBuffer.ToString();
         }
 
         public static string ReplacePath(string str)
@@ -255,9 +251,10 @@ namespace CDPIUI.Core.ComponentServices
 
 
 
-        public async Task ShowErrorMessage(string message, string _object = "process")
+        public async Task ShowErrorMessage(string message, string _object = "process", bool showWindow = true)
         {
             Debug.WriteLine(message);
+            bool notify = !IsErrorHappens;
             IsErrorHappens = true;
 
             LastError = null;
@@ -268,18 +265,19 @@ namespace CDPIUI.Core.ComponentServices
                 Object = _object
             };
 
-            ShowErrorMessageWindow?.Invoke(Id);
-
             IsProcessRunning = false;
             ProcessStateChanged?.Invoke(Tuple.Create(Id, false));
 
             ErrorHappens?.Invoke(LastError);
+            if (notify && showWindow) ShowErrorMessageWindow?.Invoke(Id);
 
             await Task.CompletedTask;
         }
 
         public void MarkAsStarted()
         {
+            IsErrorHappens = false;
+            LastError = null;
             IsProcessRunning = true;
             ProcessStateChanged?.Invoke(Tuple.Create(Id, true));
         }
@@ -304,16 +302,28 @@ namespace CDPIUI.Core.ComponentServices
         }
         public void AddOutput(string output)
         {
-            _outputDefaultBuffer.Append(output);
             string prettyOutput = OutputCleanupHelper.ReplaceSymbols(output);
-            _outputBuffer.Append(prettyOutput);
+            lock (outputLock)
+            {
+                _outputDefaultBuffer.Append(output);
+                _outputBuffer.Append(prettyOutput);
+            }
 
             OutputReceived?.Invoke(prettyOutput);
         }
         public void ClearOutput()
         {
-            _outputDefaultBuffer.Clear();
-            _outputBuffer.Clear();
+            SetOutput(string.Empty);
+        }
+
+        public void SetOutput(string output)
+        {
+            lock (outputLock)
+            {
+                _outputDefaultBuffer.Clear().Append(output);
+                _outputBuffer.Clear().Append(OutputCleanupHelper.ReplaceSymbols(output));
+            }
+            OutputReset?.Invoke();
         }
 
         [GeneratedRegex(@"(?:[a-zA-Z]):\\.*?/", RegexOptions.Singleline)]
