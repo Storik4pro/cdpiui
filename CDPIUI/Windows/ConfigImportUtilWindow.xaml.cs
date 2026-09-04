@@ -1,4 +1,4 @@
-using CDPIUI.Default;
+﻿using CDPIUI.Default;
 using CDPIUI.Views.ConfigImportUtil;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.Specialized;
@@ -20,6 +20,12 @@ public sealed partial class ConfigImportUtilWindow : TemplateWindow
                 new NameValueCollection { { "componentId", targetStoreId } },
                 new SuppressNavigationTransitionInfo());
         }
+    }
+
+    public void ImportFiles(string[] paths, string componentId)
+    {
+        TargetStoreId = componentId;
+        ((MainPage)ContentFrame.Content).QueueDroppedFiles(paths);
     }
 
     public ConfigImportUtilWindow()

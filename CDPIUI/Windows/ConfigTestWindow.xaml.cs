@@ -161,6 +161,8 @@ namespace CDPIUI
 
             PresetTestType testType = DpiTestRadio.IsChecked == true ? PresetTestType.DpiChecker : PresetTestType.Standard;
 
+            _lastTestType = testType;
+
             ProcessService processManager = (await ComponentTasksManager.Instance.GetTaskFromId(entry.StoreId))?.ProcessManager;
             if (processManager == null)
             {
