@@ -31,8 +31,8 @@ namespace CDPIUI.TrayIcon.Helper
         
         public bool IsProcessRunning => conPTYHelper?.processState ?? false;
 
-        public bool IsErrorHappens => throw new NotImplementedException();
-        public ErrorModel? LastError => throw new NotImplementedException();
+        public bool IsErrorHappens => LastError != null;
+        public ErrorModel? LastError { get; private set; }
 
 
         private ConPTYHelper conPTYHelper;
@@ -129,6 +129,7 @@ namespace CDPIUI.TrayIcon.Helper
 
         public async Task StartProcess(string executable, string args)
         {
+            LastError = null;
             IsProcessInfoChanged = false;
             Executable = executable;
             Args = args;
@@ -243,7 +244,17 @@ namespace CDPIUI.TrayIcon.Helper
         }
         public void SendState()
         {
-            if (conPTYHelper.processState)
+            if (LastError is { } error)
+            {
+                _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id, new()
+                {
+                    { "errorHappens", "true" },
+                    { "errorMessage", error.ErrorCode },
+                    { "errorObject", error.Object },
+                    { "stateSnapshot", "true" },
+                });
+            }
+            else if (conPTYHelper.processState)
             {
                 _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStarted, Id);
             }
@@ -328,6 +339,7 @@ namespace CDPIUI.TrayIcon.Helper
         {
             PrettyErrorCode message = tuple.Item1;
             string _object = tuple.Item2;
+            LastError = new ErrorModel { ErrorCode = message.ToString(), Object = _object };
             _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id, new()
             {
                 { "errorHappens", "true" },
@@ -361,6 +373,7 @@ namespace CDPIUI.TrayIcon.Helper
         {
             PrettyErrorCode message = tuple.Item1;
             string _object = tuple.Item2;
+            LastError = new ErrorModel { ErrorCode = message.ToString(), Object = _object };
             _ = PipeHelper.SendConPTYPacket(CONPTYMessageIds.MarkProcessIdAsStopped, Id, new()
             {
                 { "errorHappens", "true" },
