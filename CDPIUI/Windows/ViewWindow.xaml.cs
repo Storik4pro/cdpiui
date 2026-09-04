@@ -178,36 +178,6 @@ public sealed partial class ViewWindow : TemplateWindow
         CopyIcon.Glyph = "\uE8C8";
     }
 
-    private async void StopServiceButton_Click(object sender, RoutedEventArgs e)
-    {
-        ContentDialog dialog = new()
-        {
-            XamlRoot = Content.XamlRoot,
-            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
-            Title = localizer.GetLocalizedString("ConfirmationRequired"),
-            PrimaryButtonText = localizer.GetLocalizedString("YesStopService"),
-            CloseButtonText = localizer.GetLocalizedString("Cancel"),
-            DefaultButton = ContentDialogButton.Close,
-            Content = localizer.GetLocalizedString("ServiceAskToStopMessage"),
-        };
-        if (await dialog.ShowAsync() != ContentDialogResult.Primary)
-        {
-            return;
-        }
-
-        try
-        {
-            await ProcessService.StopService();
-        }
-        catch (Exception exception)
-        {
-            ErrorContentDialog errorDialog = new();
-            await errorDialog.ShowErrorDialogAsync(
-                content: string.Format(
-                    localizer.GetLocalizedString("ServiceStopException"),
-                    "WINDIVERT_STOP_ERROR"),
-                errorDetails: exception.Message,
-                xamlRoot: Content.XamlRoot);
-        }
-    }
+    private void StopServiceButton_Click(object sender, RoutedEventArgs e) =>
+        CDPIUI.Commands.CommandsHandler.HandleCommand("cdpiui://Tools/Service");
 }
