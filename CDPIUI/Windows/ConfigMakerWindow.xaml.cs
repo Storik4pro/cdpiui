@@ -20,11 +20,24 @@ public sealed partial class ConfigMakerWindow : TemplateWindow
 {
     public static async void EditConfig(ConfigItem configItem)
     {
-        var window = await ((App)Application.Current).SafeCreateNewWindow<ConfigMakerWindow>();
+        if (configItem?.target == null || configItem.target.Count == 0) return;
+        var window = await ((App)Application.Current).SafeCreateNewWindow<ConfigMakerWindow>(activate: false);
+        window.componentSelectionRequested = true;
+        App.ActivateWindow(window);
         if (await window.IsExitAvailable())
         {
             await window.OpenConfigFile(configItem);
         }
+    }
+
+    public static async Task CreateForComponentAsync(string componentId)
+    {
+        var window = await ((App)Application.Current).SafeCreateNewWindow<ConfigMakerWindow>(activate: false);
+        window.componentSelectionRequested = true;
+        App.ActivateWindow(window);
+        if (!await window.IsExitAvailable()) return;
+        await window.ConfigMaker.SetComponentAsync(componentId);
+        await window.ConfigMaker.NewDocumentAsync();
     }
 
     private bool componentSelectionRequested;
