@@ -81,6 +81,9 @@ namespace CDPIUI.Views
             _ = ((App)Application.Current).SafeCreateNewWindow<ConfigTestWindow>();
         }
 
+        private void ServiceSettingsCard_Click(object sender, RoutedEventArgs e) =>
+            Commands.CommandsHandler.HandleCommand("cdpiui://Tools/Service");
+
         private void EditHostsFileSettingsCard_Click(object sender, RoutedEventArgs e)
         {
             _ = ((App)Application.Current).SafeCreateNewWindow<EditHostFileWindow>();
