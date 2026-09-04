@@ -78,6 +78,7 @@ public sealed partial class ViewConfigOutput : UserControl
         }
 
         processManager.OutputReceived += ProcessManager_OutputReceived;
+        processManager.OutputReset += ProcessManager_OutputReset;
         processManager.ProcessStateChanged += ProcessManager_ProcessStateChanged;
         processManager.ErrorHappens += ProcessManager_ErrorHappens;
         processManager.ProcessNameChanged += ProcessManager_ProcessNameChanged;
@@ -135,6 +136,7 @@ public sealed partial class ViewConfigOutput : UserControl
         }
 
         processManager.OutputReceived -= ProcessManager_OutputReceived;
+        processManager.OutputReset -= ProcessManager_OutputReset;
         processManager.ProcessStateChanged -= ProcessManager_ProcessStateChanged;
         processManager.ErrorHappens -= ProcessManager_ErrorHappens;
         processManager.ProcessNameChanged -= ProcessManager_ProcessNameChanged;
@@ -143,7 +145,34 @@ public sealed partial class ViewConfigOutput : UserControl
 
     private void ProcessManager_OutputReceived(string output)
     {
-        DispatcherQueue.TryEnqueue(() => AppendOutput(output));
+        QueueRefresh(() => SynchronizeOutput());
+    }
+
+    private void ProcessManager_OutputReset() => QueueRefresh(() => SynchronizeOutput());
+
+    private void QueueRefresh(Action action)
+    {
+        int version = attachmentVersion;
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            if (isLoaded && version == attachmentVersion) action();
+        });
+    }
+
+    private void SynchronizeOutput()
+    {
+        // Read the current snapshot: queued output and full-buffer replies may overlap.
+        string text = GetConfiguredOutput();
+        string displayed = OutputText;
+        if (text.StartsWith(displayed, StringComparison.Ordinal))
+        {
+            AppendOutput(text[displayed.Length..]);
+        }
+        else
+        {
+            ClearOutput();
+            AppendOutput(text);
+        }
     }
 
     private void ProcessManager_ProcessStateChanged(Tuple<string, bool> state)
@@ -153,19 +182,16 @@ public sealed partial class ViewConfigOutput : UserControl
             return;
         }
 
-        DispatcherQueue.TryEnqueue(() =>
+        QueueRefresh(() =>
         {
-            if (state.Item2)
-            {
-                RefreshOutput();
-            }
-            UpdateRunningState(state.Item2, showMessage: true);
+            SynchronizeOutput();
+            UpdateRunningState(IsProcessRunning, showMessage: true);
         });
     }
 
     private void ProcessManager_ProcessNameChanged(string processName)
     {
-        DispatcherQueue.TryEnqueue(() =>
+        QueueRefresh(() =>
         {
             UpdateComponentLabel();
             UpdateRunningState(IsProcessRunning, showMessage: true);
@@ -174,14 +200,7 @@ public sealed partial class ViewConfigOutput : UserControl
 
     private void ProcessManager_ErrorHappens(ErrorModel error)
     {
-        DispatcherQueue.TryEnqueue(() =>
-        {
-            UpdateRunningState(false, showMessage: false);
-            StatusInfoBar.Title = localizer.GetLocalizedString("PseudoconsoleInternalError");
-            StatusInfoBar.Message = error?.ErrorCode ?? "UNKNOWN_ERROR";
-            StatusInfoBar.Severity = InfoBarSeverity.Error;
-            StatusInfoBar.IsOpen = true;
-        });
+        QueueRefresh(() => UpdateRunningState(IsProcessRunning, showMessage: true));
     }
 
     private void AppendOutput(string text)
@@ -230,12 +249,21 @@ public sealed partial class ViewConfigOutput : UserControl
 
     private void UpdateRunningState(bool isRunning, bool showMessage)
     {
+        bool hasError = processManager?.IsErrorHappens == true;
+        isRunning = isRunning && !hasError;
         StatusIcon.Glyph = isRunning ? "\uEC61" : "\uEB90";
         StatusIcon.Foreground = new SolidColorBrush((Color)Application.Current.Resources[
             isRunning ? "SystemFillColorSuccess" : "SystemFillColorCritical"]);
-        StatusTextBlock.Text = localizer.GetLocalizedString(isRunning ? "ProcessStarted" : "ProcessStopped");
+        StatusTextBlock.Text = localizer.GetLocalizedString(hasError ? "ErrorHappens" : isRunning ? "ProcessStarted" : "ProcessStopped");
 
-        if (showMessage)
+        if (hasError)
+        {
+            StatusInfoBar.Title = localizer.GetLocalizedString("ComponentFailureTitle");
+            StatusInfoBar.Message = processManager.LastError?.ErrorCode ?? "UNKNOWN_ERROR";
+            StatusInfoBar.Severity = InfoBarSeverity.Error;
+            StatusInfoBar.IsOpen = true;
+        }
+        else if (showMessage)
         {
             string processName = GetProcessName();
             StatusInfoBar.Title = localizer.GetLocalizedString(
@@ -250,6 +278,10 @@ public sealed partial class ViewConfigOutput : UserControl
                 ? InfoBarSeverity.Success
                 : InfoBarSeverity.Informational;
             StatusInfoBar.IsOpen = true;
+        }
+        else
+        {
+            StatusInfoBar.IsOpen = false;
         }
 
         RunningStateChanged?.Invoke(isRunning);
