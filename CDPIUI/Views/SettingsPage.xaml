@@ -114,6 +114,9 @@
                     </controls:SettingsExpander.HeaderIcon>
                     <controls:SettingsExpander.Items>
                         <controls:SettingsCard ContentAlignment="Left">
+                            <CheckBox x:Name="ComponentErrorWindowSetting" l:Uids.Uid="ComponentErrorWindowSetting" Click="ComponentErrorWindowSetting_Click"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard ContentAlignment="Left">
                             <CheckBox l:Uids.Uid="ProcessStateToast" x:Name="ProcessStateToast" Click="ProcessStateToast_Click" />
                         </controls:SettingsCard>
                         <controls:SettingsCard ContentAlignment="Left">

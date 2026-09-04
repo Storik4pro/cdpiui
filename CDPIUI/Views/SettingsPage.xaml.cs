@@ -75,6 +75,7 @@ namespace CDPIUI.Views
 
             this.NavigationCacheMode = NavigationCacheMode.Disabled;            
 
+            ComponentErrorWindowSetting.IsChecked = SettingsManager.Instance.GetValueOrDefault<bool>("NOTIFICATIONS", "componentErrorWindow", defaultValue: true);
             ProcessStateToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "procState");
             AppRunnedInTrayToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide");
             AppUpdatesToast.IsChecked = SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "appUpdates");
@@ -124,6 +125,9 @@ namespace CDPIUI.Views
                     mode == (int)TextFileOpenModes.UserChoose ? Path.GetFileNameWithoutExtension(appPath).FirstCharToUpper() : localizer.GetLocalizedString("FollowSystem"));
         }
         
+
+        private void ComponentErrorWindowSetting_Click(object sender, RoutedEventArgs e) =>
+            SettingsManager.Instance.SetValue("NOTIFICATIONS", "componentErrorWindow", ComponentErrorWindowSetting.IsChecked == true);
 
         private void ProcessStateToast_Click(object sender, RoutedEventArgs e)
         {
