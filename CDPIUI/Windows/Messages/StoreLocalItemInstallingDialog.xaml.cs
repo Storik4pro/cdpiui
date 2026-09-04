@@ -58,6 +58,8 @@ namespace CDPIUI.Messages
         private Action<string> _itemActionsStoppedHandler;
 
         private bool IsErrorHappens = false;
+        private bool isClosed;
+        private readonly System.Threading.CancellationTokenSource installCancellation = new();
 
         public StoreLocalItemInstallingDialog()
         {
@@ -86,7 +88,8 @@ namespace CDPIUI.Messages
 
         private void StoreLocalItemInstallingDialog_Closed(object sender, WindowEventArgs args)
         {
-            LocalItemsInstallerHelper.Instance.ErrorHappens -= LocalItemsInstallerHelper_ErrorHappens;
+            isClosed = true;
+            installCancellation.Cancel();
 
             if (_itemDownloadStageChangedHandler != null)
                 StoreHelper.Instance.ItemDownloadStageChanged -= _itemDownloadStageChangedHandler;
@@ -115,7 +118,8 @@ namespace CDPIUI.Messages
             
             PackFilePath = packFile;
             ConnectHandlers();
-            var model = await LocalItemsInstallerHelper.Instance.ImportStoreItemPackFile(PackFilePath);
+            var model = await LocalItemsInstallerHelper.Instance.ImportStoreItemPackFile(PackFilePath, LocalItemsInstallerHelper_ErrorHappens);
+            if (isClosed) return;
 
             try
             {
@@ -201,13 +205,21 @@ namespace CDPIUI.Messages
             this.Close();
         }
 
-        private void GetButton_Click(object sender, RoutedEventArgs e)
+        private async void GetButton_Click(object sender, RoutedEventArgs e)
         {
-            LocalItemsInstallerHelper.Instance.BeginLocalItemInstalling(PackFilePath);
+            if (!GetButton.IsEnabled) return;
+            GetButton.IsEnabled = false;
+            IsErrorHappens = false;
+            GetReadyUI();
+            CurrentStatusTextBlock.Text = localizer.GetLocalizedString("GettingReady");
+            await LocalItemsInstallerHelper.Instance.BeginLocalItemInstalling(
+                PackFilePath, LocalItemsInstallerHelper_ErrorHappens, installCancellation.Token);
         }
 
         private void ErrorHappens(string message)
         {
+            IsErrorHappens = true;
+            ToggleItemLoadingMode(false);
             ItemSmallDescriptionStackPanel.Visibility = Visibility.Collapsed;
             DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
             GetButton.Visibility = Visibility.Collapsed;
@@ -229,17 +241,27 @@ namespace CDPIUI.Messages
 
         #region ActionHandlers
 
+        private Action<Tuple<string, T>> ForCurrentOperation<T>(Action<Tuple<string, T>> action)
+        {
+            return data =>
+            {
+                if (StoreHelper.Instance.GetItemIdFromOperationId(data.Item1) != StoreId) return;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (!isClosed) action(data);
+                });
+            };
+        }
+
         private void ConnectHandlers()
         {
-            LocalItemsInstallerHelper.Instance.ErrorHappens += LocalItemsInstallerHelper_ErrorHappens;
+
             
-            _itemDownloadStageChangedHandler = (data) =>
+            _itemDownloadStageChangedHandler = ForCurrentOperation<string>((data) =>
             {
                 string operationId = data.Item1;
                 string stage = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
-                    return;
 
                 if (IsErrorHappens) return;
 
@@ -248,55 +270,47 @@ namespace CDPIUI.Messages
                 CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
 
                 PreferItemDownloadingStateActions(stage);
-            };
+            });
             StoreHelper.Instance.ItemDownloadStageChanged += _itemDownloadStageChangedHandler;
 
-            _itemDownloadProgressChangedHandler = (data) =>
+            _itemDownloadProgressChangedHandler = ForCurrentOperation<double>((data) =>
             {
                 string operationId = data.Item1;
                 double progress = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
-                    return;
 
                 if (IsErrorHappens) return;
 
                 StatusProgressbar.IsIndeterminate = false;
                 StatusProgressbar.Value = progress;
-            };
+            });
             StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
 
-            _itemTimeRemainingChangedHandler = (data) =>
+            _itemTimeRemainingChangedHandler = ForCurrentOperation<TimeSpan>((data) =>
             {
                 string operationId = data.Item1;
                 TimeSpan time = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
-                    return;
-            };
+            });
 
             StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
 
-            _itemDownloadSpeedChangedHandler = (data) =>
+            _itemDownloadSpeedChangedHandler = ForCurrentOperation<double>((data) =>
             {
                 string operationId = data.Item1;
                 double speed = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
-                    return;
 
                 CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}";
-            };
+            });
 
             StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
 
-            _itemInstallingErrorHappensHandler = (data) =>
+            _itemInstallingErrorHappensHandler = ForCurrentOperation<ErrorModel>((data) =>
             {
                 string operationId = data.Item1;
                 string errorCode = data.Item2.ErrorCode;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
-                    return;
 
                 IsErrorHappens = true;
 
@@ -307,13 +321,17 @@ namespace CDPIUI.Messages
                 ErrorCodeTextBlock.Text = errorCode;
 
                 CancelButton.Content = "OK";
-            };
+            });
             StoreHelper.Instance.ItemInstallingErrorHappens += _itemInstallingErrorHappensHandler;
 
             _itemActionsStoppedHandler = (id) =>
             {
-                if (!IsErrorHappens)
-                    ShowItemAfterInstallActions();
+                if (id != StoreId) return;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (!isClosed && !IsErrorHappens && DatabaseHelper.Instance.IsItemInstalled(StoreId))
+                        ShowItemAfterInstallActions();
+                });
             };
             StoreHelper.Instance.ItemActionsStopped += _itemActionsStoppedHandler;
             
@@ -321,6 +339,7 @@ namespace CDPIUI.Messages
 
         private void PreferItemDownloadingStateActions(string state)
         {
+            state ??= "QueueWaiting";
             string stageHeaderText = string.Empty;
             switch (state)
             {
@@ -374,7 +393,10 @@ namespace CDPIUI.Messages
 
         private void LocalItemsInstallerHelper_ErrorHappens(string errorCode)
         {
-            ErrorHappens(errorCode);
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (!isClosed) ErrorHappens(errorCode);
+            });
         }
 
         #endregion
