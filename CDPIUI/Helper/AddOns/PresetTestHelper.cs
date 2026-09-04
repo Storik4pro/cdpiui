@@ -470,10 +470,10 @@ namespace CDPIUI.Helper.AddOns
 
         private async Task RunStandardConfigAsync(List<PresetTestTarget> targets, int maxNameLen, PresetTestResult result, IProgress<List<TestLogSegment>> log, CancellationToken ct)
         {
-            foreach (PresetTestTarget target in targets)
+            StandardOutcome[] outcomes = await Task.WhenAll(targets.Select(target => CheckStandardTargetAsync(target, ct)));
+            foreach (StandardOutcome outcome in outcomes)
             {
                 ct.ThrowIfCancellationRequested();
-                StandardOutcome outcome = await CheckStandardTargetAsync(target, ct);
 
                 var segments = new List<TestLogSegment>
                 {
@@ -582,10 +582,10 @@ namespace CDPIUI.Helper.AddOns
             string rangeSpec = $"0-{DpiRangeBytes - 1}";
 
             bool warnDetected = false;
-            foreach (DpiSuiteEntry target in targets)
+            DpiOutcome[] outcomes = await Task.WhenAll(targets.Select(target => CheckDpiTargetAsync(target, payloadFile, rangeSpec, ct)));
+            foreach (DpiOutcome outcome in outcomes)
             {
                 ct.ThrowIfCancellationRequested();
-                DpiOutcome outcome = await CheckDpiTargetAsync(target, payloadFile, rangeSpec, ct);
 
                 Line(log, new TestLogSegment($"  === [{outcome.Country}][{outcome.Provider}] {outcome.Id} ===", TestLogColor.Cyan));
                 foreach (DpiLine dl in outcome.Lines)
