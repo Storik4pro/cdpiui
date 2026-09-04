@@ -65,6 +65,9 @@ namespace CDPIUI.Views.Store
 
         private bool errorHappens = false;
         private bool loaded = false;
+        private bool handlersConnected;
+        private int handlerVersion;
+        private Action<string> itemRemovedHandler;
 
         private Action<Tuple<string, string>> _itemDownloadStageChangedHandler;
         private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
@@ -109,7 +112,6 @@ namespace CDPIUI.Views.Store
                 _storeId = Parameter.Get("itemId");
 
                 ConnectHandlers();
-                CheckCurrentStatus();
 
                 item = StoreHelper.Instance.GetItemInfoFromStoreId(_storeId);
 
@@ -157,6 +159,7 @@ namespace CDPIUI.Views.Store
                 loaded = true;
 
                 LoadAdvancedItemInfo();
+                CheckCurrentStatus();
             }
             else
             {
@@ -229,7 +232,8 @@ namespace CDPIUI.Views.Store
                 GetReadyUI();
 
                 string status = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadStage;
-                PreferItemDownloadingStateActions(status);
+                PreferItemDownloadingStateActions(status ?? "QueueWaiting");
+                StatusProgressbar.Value = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadProgress ?? 0;
             }
         }
 
@@ -296,6 +300,7 @@ namespace CDPIUI.Views.Store
 
         private void PreferItemDownloadingStateActions(string state)
         {
+            state ??= "QueueWaiting";
             string stageHeaderText = string.Empty;
             switch (state)
             {
@@ -340,72 +345,83 @@ namespace CDPIUI.Views.Store
             CurrentStatusTextBlock.Text = stageHeaderText;
         }
 
+        private Action<Tuple<string, T>> ForCurrentOperation<T>(Action<Tuple<string, T>> action)
+        {
+            return data =>
+            {
+                // Resolve the operation before it is removed from the queue.
+                if (StoreHelper.Instance.GetItemIdFromOperationId(data.Item1) != _storeId) return;
+                int version = handlerVersion;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (handlersConnected && version == handlerVersion) action(data);
+                });
+            };
+        }
+
         private void ConnectHandlers()
         {
-            _itemDownloadStageChangedHandler  = (data) =>
+            if (handlersConnected) return;
+            handlersConnected = true;
+            ++handlerVersion;
+            _itemDownloadStageChangedHandler = ForCurrentOperation<string>((data) =>
             {
+                if (errorHappens) return;
                 string operationId = data.Item1;
                 string stage = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId || errorHappens)
-                    return;
                 GetReadyUI();
 
                 CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
 
                 PreferItemDownloadingStateActions(stage);
-            };
+            });
             StoreHelper.Instance.ItemDownloadStageChanged += _itemDownloadStageChangedHandler;
 
-            _itemDownloadProgressChangedHandler = (data) =>
+            _itemDownloadProgressChangedHandler = ForCurrentOperation<double>((data) =>
             {
+                if (errorHappens) return;
                 string operationId = data.Item1;
                 double progress = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
-                    return;
 
                 StatusProgressbar.IsIndeterminate = false;
                 StatusProgressbar.Value = progress;
-            };
+            });
             StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
 
-            _itemTimeRemainingChangedHandler = (data) =>
+            _itemTimeRemainingChangedHandler = ForCurrentOperation<TimeSpan>((data) =>
             {
+                if (errorHappens) return;
                 string operationId = data.Item1;
                 TimeSpan time = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
-                    return;
 
                 if (time.Minutes > 0)
                     CurrentStatusTipTextBlock.Text = string.Format(localizer.GetLocalizedString("/UIHelper/LeftMinutes"), time.Minutes);
                 else
                     CurrentStatusTipTextBlock.Text = localizer.GetLocalizedString("/UIHelper/LeftSmall");
-            };
+            });
 
             StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
 
-            _itemDownloadSpeedChangedHandler = (data) =>
+            _itemDownloadSpeedChangedHandler = ForCurrentOperation<double>((data) =>
             {
+                if (errorHappens) return;
                 string operationId = data.Item1;
                 double speed = data.Item2;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
-                    return;
 
                 CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}, ";
-            };
+            });
 
             StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
 
-            _itemInstallingErrorHappensHandler = (data) =>
+            _itemInstallingErrorHappensHandler = ForCurrentOperation<ErrorModel>((data) =>
             {
                 string operationId = data.Item1;
                 string errorCode = data.Item2.ErrorCode;
 
-                if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != _storeId)
-                    return;
 
                 ErrorStatusGrid.Visibility = Visibility.Visible;
                 ItemActionButton.Visibility = Visibility.Collapsed;
@@ -413,19 +429,42 @@ namespace CDPIUI.Views.Store
 
                 ErrorNameTextBlock.Text = errorCode;
                 errorHappens = true;
-            };
+            });
             StoreHelper.Instance.ItemInstallingErrorHappens += _itemInstallingErrorHappensHandler;
 
             _itemActionsStoppedHandler = (id) =>
             {
-                ShowItemAfterInstallActions(id);
+                if (id != _storeId) return;
+                int version = handlerVersion;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (handlersConnected && version == handlerVersion) ShowItemAfterInstallActions(id);
+                });
             };
             StoreHelper.Instance.ItemActionsStopped += _itemActionsStoppedHandler;
+            itemRemovedHandler = id =>
+            {
+                if (id != _storeId) return;
+                int version = handlerVersion;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    // Reinstall removes the old item before immediately queuing the replacement.
+                    if (handlersConnected && version == handlerVersion &&
+                        StoreHelper.Instance.GetOperationIdFromItemId(_storeId) == null)
+                    {
+                        ShowItemAfterInstallActions(id);
+                    }
+                });
+            };
+            StoreHelper.Instance.ItemRemoved += itemRemovedHandler;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            handlersConnected = false;
+            ++handlerVersion;
+            StoreHelper.Instance.ItemRemoved -= itemRemovedHandler;
 
             if (_itemDownloadStageChangedHandler != null)
                 StoreHelper.Instance.ItemDownloadStageChanged -= _itemDownloadStageChangedHandler;
@@ -451,6 +490,7 @@ namespace CDPIUI.Views.Store
 
         private void ShowItemAfterInstallActions(string id)
         {
+            if (id != _storeId) return;
             StatusProgressbar.Value = 0;
             StatusProgressbar.IsIndeterminate = true;
 
@@ -460,6 +500,7 @@ namespace CDPIUI.Views.Store
 
             if (id == _storeId && !errorHappens)
             {
+                ItemActionButton.IsEnabled = IsItemSupported();
                 ItemActionButtonText.Text = localizer.GetLocalizedString("Install");
                 ItemMoreButton.Visibility = Visibility.Collapsed;
                 ItemActionButton.Visibility = Visibility.Visible;
@@ -470,7 +511,8 @@ namespace CDPIUI.Views.Store
                     ItemActionButtonText.Text = localizer.GetLocalizedString("Setup");
                     ItemMoreButton.Visibility = Visibility.Visible;
 
-                    _ = AskAdditionalItems();
+                    ItemActionButton.IsEnabled = item.type == "component";
+                    if (IsLoaded) _ = AskAdditionalItems();
                 }
             }
         }
@@ -544,12 +586,6 @@ namespace CDPIUI.Views.Store
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            StoreHelper.Instance.ItemRemoved += (id) =>
-            {
-                if (id != _storeId)
-                    return;
-                ShowItemAfterInstallActions(id);
-            };
 
             StopActionButton.IsEnabled = false;
             CurrentStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
