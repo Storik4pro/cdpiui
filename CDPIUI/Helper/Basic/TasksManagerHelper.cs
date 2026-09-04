@@ -1,41 +1,40 @@
-﻿using CDPIUI.Commands;
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Basic;
 using CDPIUI.Core.ComponentServices;
-using CDPIUI.Shared.Pipe.Models;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using System;
 
-namespace CDPIUI.Helper.Basic
+namespace CDPIUI.Helper.Basic;
+
+public sealed class TasksManagerHelper
 {
-    public class TasksManagerHelper // TODO: init
+    private static TasksManagerHelper instance;
+    public static TasksManagerHelper Instance => instance ??= new TasksManagerHelper();
+    private readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread();
+
+    private TasksManagerHelper()
     {
-        private static TasksManagerHelper? _instance;
-        private static readonly object _lock = new();
-        public static TasksManagerHelper Instance
+        ComponentTasksManager.Instance.ShowErrorMessageForTaskId += HandleErrorMessage;
+    }
+
+    private void HandleErrorMessage(string id)
+    {
+        if (!SettingsManager.Instance.GetValueOrDefault<bool>("NOTIFICATIONS", "componentErrorWindow", defaultValue: true)) return;
+        dispatcher.TryEnqueue(async () =>
         {
-            get
+            try
             {
-                lock (_lock)
-                {
-                    _instance ??= new TasksManagerHelper();
-                    return _instance;
-                }
+                var process = (await ComponentTasksManager.Instance.GetTaskFromId(id))?.ProcessManager;
+                if (process?.IsErrorHappens != true) return;
+                var window = await ((App)Application.Current).UnsafeCreateNewWindow<ComponentErrorWindow>(activate: false, id: id);
+                window.SetError(id, process.LastError);
+                App.ActivateWindow(window);
             }
-        }
-
-        private TasksManagerHelper() 
-        {
-            ComponentTasksManager.Instance.ShowErrorMessageForTaskId += HandleErrorMessage;
-        }
-
-        private void HandleErrorMessage(string id)
-        {
-            CommandsHandler.HandleCommand(
-                new PresentationMessageModel()
-                {
-                    MessageType = PresentationMessageIds.ShowWindow,
-                    MessageData = new()
-                    {
-                        { "windowName", "ViewWindow" }
-                    }
-                });
-        } 
+            catch (Exception exception)
+            {
+                Logger.Instance.CreateErrorLog(nameof(TasksManagerHelper), exception.ToString());
+            }
+        });
     }
 }
