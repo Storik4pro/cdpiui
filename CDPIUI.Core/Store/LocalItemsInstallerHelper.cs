@@ -54,7 +54,7 @@ namespace CDPIUI.Core.Store
             TempDirectory = Path.Combine(localAppData, AppTempDirectory, DownloadManagerDirectory);
         }
 
-        public async Task<LocalItemInitModel?> ImportStoreItemPackFile(string itemPackFile)
+        public async Task<LocalItemInitModel?> ImportStoreItemPackFile(string itemPackFile, Action<string>? onError = null)
         {
             string tempFolderName = FileSystemService.GetNewTempFileName("ap");
             string tempDestination = Path.Combine(TempDirectory, tempFolderName);
@@ -70,7 +70,7 @@ namespace CDPIUI.Core.Store
                 if (!File.Exists(initFilePath)) 
                 {
                     string error = "ERR_LOCAL_ITEM_UNSUPPORTED";
-                    ErrorHappens?.Invoke(error);
+                    (onError ?? ErrorHappens)?.Invoke(error);
                     return null;
                 }
                 LocalItemInitModel localItemInitModel = JSONConvertor.LoadJson<LocalItemInitModel>(initFilePath);
@@ -102,12 +102,12 @@ namespace CDPIUI.Core.Store
             catch (Exception ex)
             {
                 string error = HandleError(ex);
-                ErrorHappens?.Invoke(error);
+                (onError ?? ErrorHappens)?.Invoke(error);
                 return null;
             }
         }
 
-        public async void BeginLocalItemInstalling(string itemPackFile)
+        public async Task BeginLocalItemInstalling(string itemPackFile, Action<string>? onError = null, CancellationToken cancellationToken = default)
         {
             string tempFolderName = FileSystemService.GetNewTempFileName("ap");
             string tempDestination = Path.Combine(TempDirectory, tempFolderName);
@@ -123,18 +123,19 @@ namespace CDPIUI.Core.Store
                 if (!File.Exists(initFilePath))
                 {
                     string error = "ERR_LOCAL_ITEM_UNSUPPORTED";
-                    ErrorHappens?.Invoke(error);
+                    (onError ?? ErrorHappens)?.Invoke(error);
                     return;
                 }
                 LocalItemInitModel localItemInitModel = JSONConvertor.LoadJson<LocalItemInitModel>(initFilePath);
 
+                if (cancellationToken.IsCancellationRequested) return;
                 StoreHelper.Instance.AddItemToQueue(localItemInitModel.StoreId!, packFile: tempDestination);
                 return;
             }
             catch (Exception ex)
             {
                 string error = HandleError(ex);
-                ErrorHappens?.Invoke(error);
+                (onError ?? ErrorHappens)?.Invoke(error);
                 return;
             }
         }
