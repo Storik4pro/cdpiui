@@ -44,13 +44,15 @@ namespace CDPIUI.Views.Store.Settings.Memory
             BreadcrumbBar.ItemsSource = BreadcrumbBarModels;
 
             CreateBreadcrumbBarNavigation();
-
-            CalcSize();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if (e.Parameter is string size)
+            {
+                MemoryTextBlock.Text = size;
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -95,13 +97,6 @@ namespace CDPIUI.Views.Store.Settings.Memory
         private void ViewAppDirButton_Click(object sender, RoutedEventArgs e)
         {
             ShellHelper.LookupDirectory(CDPIUI.Core.Data.Directories.CurrentDirectory);
-        }
-
-        private async void CalcSize()
-        {
-            MemoryTextBlock.Text = UnitsParser.FormatSize(
-                await FileSystemService.GetDirectorySize(CDPIUI.Core.Data.Directories.CurrentDirectory,
-                Logger.Instance));
         }
     }
 }
