@@ -1,3 +1,4 @@
+using CDPIUI.Core;
 using CDPIUI.AddOns.ConfigShare;
 using CDPIUI.Core.Basic;
 using CDPIUI.Core.ComponentServices;
@@ -25,6 +26,8 @@ public sealed partial class ConfigShareImportDialog : TemplateWindow
     private bool closed;
     private bool initialized;
     private bool installed;
+    private bool isDragDropImport;
+    private Window modalOwner;
 
     private readonly ILocalizer localizer = Localizer.Get();
 
@@ -52,10 +55,25 @@ public sealed partial class ConfigShareImportDialog : TemplateWindow
         initialized = true;
     }
 
+    public void ConfigureForDragDrop(Window owner)
+    {
+        isDragDropImport = true;
+        modalOwner = owner;
+        AlwaysAskCheckBox.Visibility = Visibility.Visible;
+        AlwaysAskCheckBox.IsChecked = SettingsManager.Instance.GetValueOrDefault<bool>(
+            "CONFIGSHARE", "AlwaysAskIfDragNDropConfigAdded", defaultValue: true);
+    }
+
+    private void AlwaysAskCheckBox_Click(object sender, RoutedEventArgs e)
+    {
+        if (isDragDropImport)
+            SettingsManager.Instance.SetValue("CONFIGSHARE", "AlwaysAskIfDragNDropConfigAdded", AlwaysAskCheckBox.IsChecked == true);
+    }
+
     private void OnFirstActivated(object sender, WindowActivatedEventArgs args)
     {
         Activated -= OnFirstActivated;
-        ((App)Application.Current).ShowWindowModalAsync(this);
+        ((App)Application.Current).ShowWindowModalAsync(this, modalOwner);
     }
 
     public async Task SetFileAsync(string path)
@@ -120,12 +138,10 @@ public sealed partial class ConfigShareImportDialog : TemplateWindow
 
         InstallButton.IsEnabled = false;
 
-        await ConfigShareUI.OfferComponentInstallAsync(Content.XamlRoot, package.Config);
-
-        InstallButton.IsEnabled = true;
-
         try
         {
+            await ConfigShareUI.OfferComponentInstallAsync(Content.XamlRoot, package.Config);
+            if (closed) return;
             bool newKit = (string)ModeSelectionCombobox.SelectedItem == Modes[1];
             await service.InstallAsync(package, package.Manifest.Name,
                 (DestinationCombo.SelectedItem as DatabaseStoreItem)?.Id,
@@ -138,20 +154,24 @@ public sealed partial class ConfigShareImportDialog : TemplateWindow
                     ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(componentId)?.ReInitConfigs();
             }
             catch (Exception exception) { Logger.Instance.CreateWarningLog(nameof(ConfigShareImportDialog), $"Preset list refresh: {exception}"); }
+            if (closed) return;
             SuccessBar.Message = localizer.GetLocalizedString("ConfigShareImported");
             SuccessBar.IsOpen = true;
             InstallButton.Visibility = DestinationPanel.Visibility = Visibility.Collapsed;
             CancelButton.Content = localizer.GetLocalizedString("ConfigShareClose");
             package.Dispose();
         }
-        catch (Exception exception) { ShowError(exception); }
+        catch (Exception exception) { if (!closed) ShowError(exception); }
         finally
         {
             busy = false;
-            CancelButton.IsEnabled = ModeSelectionCombobox.IsEnabled = DestinationCombo.IsEnabled = KitName.IsEnabled = true;
-            ProgressPanel.Visibility = Visibility.Collapsed;
-            UpdateDestination();
             if (closed) package?.Dispose();
+            else
+            {
+                CancelButton.IsEnabled = ModeSelectionCombobox.IsEnabled = DestinationCombo.IsEnabled = KitName.IsEnabled = true;
+                ProgressPanel.Visibility = Visibility.Collapsed;
+                UpdateDestination();
+            }
         }
     }
 

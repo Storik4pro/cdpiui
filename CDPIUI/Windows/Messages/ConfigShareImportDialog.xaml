@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <template:TemplateWindow
     x:Class="CDPIUI.Messages.ConfigShareImportDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -13,7 +13,7 @@
     </template:TemplateWindow.SystemBackdrop>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -40,6 +40,7 @@
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
                 
+                <CheckBox x:Name="AlwaysAskCheckBox" l:Uids.Uid="ConfigShareAlwaysAskDrop" Visibility="Collapsed" Click="AlwaysAskCheckBox_Click" Margin="0,12,0,0"/>
                 <InfoBar x:Name="ErrorBar" IsClosable="False" Severity="Error" IsOpen="False" />
                 <InfoBar x:Name="SuccessBar" IsClosable="False" Severity="Success" IsOpen="False" />
             </StackPanel>
