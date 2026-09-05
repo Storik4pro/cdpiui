@@ -549,11 +549,8 @@ namespace CDPIUI.Views.Store
 
         private async void ErrorHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new()
+            var dialog = new CDPIUI.Controls.Dialogs.Store.DownloadErrorActionsContentDialog
             {
-                Title = _localizer.GetLocalizedString("AvailableActions"),
-                Content = _localizer.GetLocalizedString("AvailableActionsTip"),
-                PrimaryButtonText = "OK",
                 XamlRoot = XamlRoot
             };
             await dialog.ShowAsync();

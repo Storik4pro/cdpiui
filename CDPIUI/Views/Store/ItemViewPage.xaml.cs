@@ -512,7 +512,6 @@ namespace CDPIUI.Views.Store
                     ItemMoreButton.Visibility = Visibility.Visible;
 
                     ItemActionButton.IsEnabled = item.type == "component";
-                    if (IsLoaded) _ = AskAdditionalItems();
                 }
             }
         }
@@ -574,12 +573,9 @@ namespace CDPIUI.Views.Store
 
         private async void ErrorHelpButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog()
+            var dialog = new CDPIUI.Controls.Dialogs.Store.DownloadErrorActionsContentDialog
             {
-                Title = localizer.GetLocalizedString("AvailableActions"),
-                Content = localizer.GetLocalizedString("AvailableActionsTip"),
-                PrimaryButtonText = "OK",
-                XamlRoot = this.XamlRoot,
+                XamlRoot = XamlRoot
             };
             await dialog.ShowAsync();
         }
@@ -617,34 +613,6 @@ namespace CDPIUI.Views.Store
                 StoreHelper.Instance.RemoveItem(_storeId);
                 InstallingItemActions();
             }
-        }
-
-        private async Task AskAdditionalItems()
-        {
-            List<SubItemModel> models = [];
-
-            foreach (var item in StoreHelper.Instance.GetSimilarItemsForStoreId(_storeId)) 
-            {
-                models.Add(new()
-                {
-                    Id = item.store_id,
-                    Name = item.short_name,
-                    Description = LScriptLangHelper.ExecuteScript(item.small_description, StoreLocalizationHelper.GetStoreLikeLocale()),
-                    Category = StoreHelper.Instance.GetLocalizedStoreItemName(
-                        StoreHelper.Instance.GetCategoryFromStoreId(item.category_id).name,
-                        StoreLocalizationHelper.GetStoreLikeLocale()),
-                    ImageSource = LScriptLangHelper.ExecuteScript(item.icon),
-                    Developer = item.developer
-                });
-            }
-            Debug.WriteLine(models.Count);
-            if (models.Count == 0) return;
-
-            SubItemInstallAskContentDialog dialog = new(models)
-            {
-                XamlRoot = this.XamlRoot
-            };
-            await dialog.ShowAsync();
         }
 
         private async Task<bool> AskLicense()
