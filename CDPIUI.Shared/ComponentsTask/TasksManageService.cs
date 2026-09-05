@@ -315,10 +315,7 @@ namespace CDPIUI.Shared.ComponentsTask
                 foreach (var task in Tasks)
                 {
                     await task.ProcessManager.StopProcess();
-                    task.ProcessManager.ProcessStateChanged -= HandleProcessStateUpdate;
-                    task.ProcessManager.ShowErrorMessageWindow -= HandleShowErrorMessageWindow;
                 }
-                Tasks.Clear();
             }
             catch { }
             finally
