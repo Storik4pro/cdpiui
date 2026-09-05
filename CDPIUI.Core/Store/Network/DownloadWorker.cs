@@ -26,21 +26,22 @@ namespace CDPIUI.Core.Store.Network
         private readonly HttpClient? _client;
         private readonly string TempDirectory = Directories.DownloadManagerDirectory;
 
-        private readonly CancellationTokenSource source;
         private readonly CancellationToken cancellationToken;
+        private readonly bool ownsClient;
+        private int disposed;
 
         public readonly string OperationId;
         private string? msiGUID;
 
         public ErrorModel? LastError { get; private set; }
 
-        public DownloadWorker(string operationId, CancellationTokenSource cancellationTokenSource, HttpClient client = null)
+        public DownloadWorker(string operationId, CancellationToken cancellationToken, HttpClient client = null)
         {
-            source = cancellationTokenSource;
-            cancellationToken = source.Token;
+            this.cancellationToken = cancellationToken;
 
             OperationId = operationId;
             _client = client ?? new HttpClient();
+            ownsClient = client == null;
         }
 
         public event Action<Tuple<string, double>>? DownloadSpeedChanged;
@@ -83,7 +84,8 @@ namespace CDPIUI.Core.Store.Network
 
                 Logger.Instance.CreateDebugLog(nameof(DownloadWorker), $"Uri used: {url}");
 
-                var response = await _client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                using var response = await _client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     StageChanged?.Invoke(Tuple.Create(OperationId, "ErrorHappens"));
@@ -100,6 +102,7 @@ namespace CDPIUI.Core.Store.Network
 
 
 
+                cancellationToken.ThrowIfCancellationRequested();
                 if (extractArchive)
                 {
                     StageChanged?.Invoke(Tuple.Create(OperationId, "Extracting"));
@@ -153,14 +156,23 @@ namespace CDPIUI.Core.Store.Network
                 }
 
 
+                cancellationToken.ThrowIfCancellationRequested();
                 StageChanged?.Invoke(Tuple.Create(OperationId, "Completed"));
                 success = true;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // Cancellation is a user action, not a download failure.
             }
             catch (AsyncOperationException)
             {
                 // pass
             }
-            catch (Exception ex)
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex) 
             {
                 HandleError(ex);
             }
@@ -275,9 +287,8 @@ namespace CDPIUI.Core.Store.Network
         }
         public void Dispose()
         {
-            source?.Cancel();
-            source?.Dispose();
-            _client.Dispose();
+            if (Interlocked.Exchange(ref disposed, 1) == 0 && ownsClient)
+                _client.Dispose();
         }
     }
 }

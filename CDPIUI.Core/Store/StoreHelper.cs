@@ -195,8 +195,6 @@ namespace CDPIUI.Core.Store
         {
             ItemDownloadStageChanged?.Invoke(
                 Tuple.Create(QueueManagerService.CurrentDownloadingItem.OperationId, QueueManagerService.CurrentDownloadingItem.Status));
-            OnlineItemsInstallationService.CancelWork();
-
             cancellationTokenSource?.Cancel();
         }
 
@@ -209,8 +207,9 @@ namespace CDPIUI.Core.Store
 
         private async Task ProcessAsync(QueueItemModel qi)
         {
-            cancellationTokenSource = new CancellationTokenSource();
-            cancellationToken = cancellationTokenSource.Token;
+            using var operationSource = new CancellationTokenSource();
+            cancellationTokenSource = operationSource;
+            cancellationToken = operationSource.Token;
 
             try
             {
@@ -218,13 +217,19 @@ namespace CDPIUI.Core.Store
                 qi.DownloadStage =qi.Status;
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
                 await InstallItem(qi);
-                qi.Status = "END";
+                qi.Status = operationSource.IsCancellationRequested ? "CANC" : "END";
                 qi.DownloadStage = qi.Status;
                 ItemDownloadStageChanged?.Invoke(Tuple.Create(qi.OperationId, qi.Status));
             }
             catch
             {
                 // pass
+            }
+            finally
+            {
+                OnlineItemsInstallationService.CompleteWork();
+                cancellationTokenSource = null;
+                cancellationToken = null;
             }
             ItemActionsStopped?.Invoke(qi.ItemId);
 
@@ -337,6 +342,9 @@ namespace CDPIUI.Core.Store
         private async Task InstallItem(QueueItemModel qi)
         {
             var result = await InstallItemWorker(qi);
+
+            if (cancellationToken?.IsCancellationRequested == true)
+                return;
 
             if (!result.Success)
             {
@@ -451,7 +459,6 @@ namespace CDPIUI.Core.Store
 
             if (!result.Success && result.ErrorHappens)
             {
-                OnlineItemsInstallationService.CancelWork();
                 return OperationResultModel<Tuple<string, string, RepoItemModel>>.FailureResult(result.Error!);
             }
 

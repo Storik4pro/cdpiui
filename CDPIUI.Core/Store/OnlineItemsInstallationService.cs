@@ -46,7 +46,7 @@ namespace CDPIUI.Core.Store
             return result;
         }
 
-        public void CancelWork()
+        internal void CompleteWork()
         {
             DeleteDownloadWorker();
         }
@@ -248,7 +248,7 @@ namespace CDPIUI.Core.Store
         {
             DeleteDownloadWorker();
 
-            DownloadWorker = new(operationId, cancellationTokenSource);
+            DownloadWorker = new(operationId, cancellationTokenSource.Token);
             ConnectHandlersToDownloadWorker();
         }
 

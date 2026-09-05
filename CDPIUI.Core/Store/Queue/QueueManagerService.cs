@@ -38,14 +38,17 @@
                 QueueUpdated?.Invoke();
             }
 
-            if (CurrentDownloadingItem != null && CurrentDownloadingItem.ItemId == itemId)
+            var currentItem = CurrentDownloadingItem;
+            if (currentItem != null && currentItem.ItemId == itemId)
             {
-                CurrentItemRemovedFromQueue?.Invoke();
-
-                CurrentDownloadingItem.Status = "CANC";
-                CurrentDownloadingItem.DownloadStage = "CANC";
-
-                QueueUpdated?.Invoke();
+                if (currentItem.Status != "CANC")
+                {
+                    // A cancellation callback can finish this item and advance the queue.
+                    currentItem.Status = "CANC";
+                    currentItem.DownloadStage = "CANC";
+                    CurrentItemRemovedFromQueue?.Invoke();
+                    QueueUpdated?.Invoke();
+                }
                 return true;
             }
             return removed;
