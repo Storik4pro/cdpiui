@@ -40,6 +40,23 @@ public static class AppFeaturesCatalog
     private static readonly AppFeatureDefinition[] Definitions =
     [
         new(
+            "AppFeatureZapret2Support",
+            "AppFeatureZapret2SupportDescription",
+            null,
+            true,
+            new AppFeatureLinkDefinition("AppFeatureReviewZapret2Support", "cdpiui://Store/Catalog/CSZTBN062")),
+        new(
+            "AppFeatureConditionalRun",
+            "AppFeatureConditionalRunDescription",
+            null,
+            true,
+            new AppFeatureLinkDefinition("AppFeatureReviewConditionalRun", "cdpiui://Tools/ConditionalLaunch")),
+        new(
+            "AppFeatureShareConfigs",
+            "AppFeatureShareConfigsDescription",
+            null,
+            true),
+        new(
             "AppFeatureLikeYouWantTitle",
             "AppFeatureLikeYouWantDescription",
             "ms-appx:///Assets/Welcome/ThemeView.png",
@@ -48,26 +65,26 @@ public static class AppFeaturesCatalog
         new(
             "AppFeatureStoreTitle",
             "AppFeatureStoreDescription",
-            "ms-appx:///Assets/Welcome/StoreView.png",
+            null,
             false,
             new AppFeatureLinkDefinition("AppFeatureStoreOpenLink", "cdpiui://Store")),
         new(
             "AppFeatureAutoConfigTitle",
             "AppFeatureAutoConfigDescription",
-            "ms-appx:///Assets/Welcome/AutoConfigView.png",
+            null,
             false,
             new AppFeatureLinkDefinition("AppFeatureAutoConfigOpenLink", "cdpiui://Tools/AutoConfig")),
         new(
             "AppFeatureConfigToolsTitle",
             "AppFeatureConfigToolsDescription",
-            "ms-appx:///Assets/Welcome/ConfigToolsView.png",
+            null,
             false,
             new AppFeatureLinkDefinition("AppFeatureConfigEditorOpenLink", "cdpiui://Tools/ConfigEditor"),
             new AppFeatureLinkDefinition("AppFeatureConfigImportOpenLink", "cdpiui://Tools/ImportConfig")),
         new(
             "AppFeatureTroubleshootingTitle",
             "AppFeatureTroubleshootingDescription",
-            "ms-appx:///Assets/Welcome/TroubleshootingView.png",
+            null,
             false,
             new AppFeatureLinkDefinition("AppFeatureTroubleshootingOpenLink", "cdpiui://Tools/Troubleshooting"))
     ];
