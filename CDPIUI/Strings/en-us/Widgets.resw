@@ -129,6 +129,13 @@
   <data name="AutoselectionDescription" xml:space="preserve">
     <value>Select best config for component automatically. Create new config with best parameters</value>
   </data>
+  <data name="ConditionalLaunch" xml:space="preserve">
+    <value>Setup launch conditions </value>
+  </data>
+  <data name="ConditionalLaunchDescription" xml:space="preserve">
+    <value>Make you own conditions for launch component.
+Hotkeys and process state changing conditions are supported</value>
+  </data>
   <data name="OpenLocalHelp" xml:space="preserve">
     <value>Local help</value>
   </data>

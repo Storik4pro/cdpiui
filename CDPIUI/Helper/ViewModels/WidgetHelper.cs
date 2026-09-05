@@ -126,6 +126,15 @@ namespace CDPIUI.Helper.ViewModels
                      UIHelper.GetUriFromString(""),
                     false));
 
+            widgets.Add(
+                CreateWidget(
+                    WidgetType.NavigateToPage,
+                    "cdpiui://Tools/ConditionalLaunch",
+                    "ConditionalLaunch",
+                    "ConditionalLaunchDescription",
+                     UIHelper.GetUriFromString("ms-appx:///Assets/Icons/ConditionalUtil.ico"),
+                    false));
+
 
 
             return widgets;

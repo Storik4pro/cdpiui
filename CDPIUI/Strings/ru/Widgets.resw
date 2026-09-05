@@ -129,6 +129,13 @@
   <data name="AutoselectionDescription" xml:space="preserve">
     <value>Выбрать лучший пресет автоматически. Создать новый пресет с лучшими параметрами</value>
   </data>
+  <data name="ConditionalLaunch" xml:space="preserve">
+    <value>Настроить условия запуска</value>
+  </data>
+  <data name="ConditionalLaunchDescription" xml:space="preserve">
+    <value>Создавайте свои собственные правила запуска компонентов.
+Горячие клавиши и изменение состояния процесса можно установить в качестве условия</value>
+  </data>
   <data name="OpenLocalHelp" xml:space="preserve">
     <value>Локальная справка</value>
   </data>
