@@ -27,6 +27,7 @@ namespace CDPIUI.TrayIcon.Helper
 
         public static Dictionary<string, string> English = new Dictionary<string, string>()
         {
+            { "SettingsRecoveryWarning", "Settings.xml could not be read or recovered. Settings were reset to defaults. Open the app to review them." },
             { "UpdateFailure", "Application update failed.\nClick or tap here to open log" },
             { "TrayHide", "Application is runned and minimized to tray now.\nClick or tap here to open main window" },
             { "Autorun", "Autorun" },
@@ -62,6 +63,7 @@ namespace CDPIUI.TrayIcon.Helper
 
         public static Dictionary<string, string> Russian = new Dictionary<string, string>()
         {
+            { "SettingsRecoveryWarning", "Не удалось прочитать или восстановить Settings.xml. Настройки сброшены. Откройте приложение, чтобы проверить их." },
             { "UpdateFailure", "Не удалось обновить приложение.\nНажмите или коснитесь здесь, чтобы покзать журнал" },
             { "TrayHide", "Приложение запущено и свернуто в системный лоток.\nНажмите или коснитесь здесь, чтобы показать интерфейс" },
             { "Autorun", "Автозапуск" },

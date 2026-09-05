@@ -119,6 +119,12 @@ class Programm
 
             NotifyHelper.Instance.Init();
 
+            if (SettingsManager.Instance.HasUnrecoverableLoadError ||
+                File.Exists(SettingsManager.Instance.RecoveryNoticePath))
+            {
+                NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("SettingsRecoveryWarning"), "SHOW_MAIN_WINDOW");
+            }
+
             if (runStartupActions)
             {
                 // Start after the message loop is available; retries do not depend on the icon.
