@@ -5803,7 +5803,10 @@ Click [Show Results] to view the results.</value>
     <value>Create and import configs</value>
   </data>
   <data name="AppFeatureConfigToolsDescription" xml:space="preserve">
-    <value>Create, import, edit and test component configs with the tools built into CDPIUI.</value>
+    <value>Create, import, edit and test component configs with the tools built into CDPIUI.
+
+You can import any format you want (.BAT, .TXT, etc.)
+Also, Zapret Legacy configs has automatic conversion to Zapret2 configs</value>
   </data>
   <data name="AppFeatureConfigEditorOpenLink" xml:space="preserve">
     <value>Open config editor</value>
@@ -6073,5 +6076,36 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
   </data>
   <data name="CleanupPreviousVersionsFilesTextBlock.Text" xml:space="preserve">
     <value>Clean all previous versions of application to cleanup disk space</value>
+  </data>
+  <data name="AppFeatureShareConfigs" xml:space="preserve">
+    <value>Share configs with friends</value>
+  </data>
+  <data name="AppFeatureShareConfigsDescription" xml:space="preserve">
+    <value>Now you can share config, who work for you to any person you want (last version of CDPIUI required). Just click to [Share] button at the right of config selector.
+
+To import it, you friend must install CDPIUI and double-click to config file you created. Also config file can be drag'n'dropped to component settings aera.</value>
+  </data>
+  <data name="AppFeatureConditionalRun" xml:space="preserve">
+    <value>Make your own rules</value>
+  </data>
+  <data name="AppFeatureConditionalRunDescription" xml:space="preserve">
+    <value>[Conditional Launch] utility now more powerful than ever!
+Setup any application task you want (component startup, config changing, etc.) as you want – if some process run or stop or hotkey you selected pressed.</value>
+  </data>
+  <data name="AppFeatureReviewConditionalRun" xml:space="preserve">
+    <value>Setup conditions</value>
+  </data>
+  <data name="AppFeatureZapret2Support" xml:space="preserve">
+    <value>Zapret2 support right there!</value>
+  </data>
+  <data name="AppFeatureZapret2SupportDescription" xml:space="preserve">
+    <value>New "Zapret2" component is now supported by CPDIUI. 
+
+Also, every config you use from Zapret1 (Zapret Legacy) supported by Zapret2 without any action from you. That configs marked as "Legacy" in Zapret2 config selector.
+
+New configs for Zapret2 will be come soon!</value>
+  </data>
+  <data name="AppFeatureReviewZapret2Support" xml:space="preserve">
+    <value>Download Zapret2 now</value>
   </data>
 </root>

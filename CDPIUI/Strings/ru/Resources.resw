@@ -5805,13 +5805,16 @@ https://discord.com/app</value>
     <value>Создание и импорт пресетов</value>
   </data>
   <data name="AppFeatureConfigToolsDescription" xml:space="preserve">
-    <value>Создавайте, импортируйте, редактируйте и тестируйте пресеты компонентов во встроенных инструментах CDPIUI.</value>
+    <value>Создавайте, импортируйте, редактируйте и тестируйте пресеты компонентов во встроенных инструментах CDPIUI.
+
+Для импорта поддерживаются все форматы пресетов – от .BAT до .TXT
+Пресеты для Zapret Legacy автоматически конвертируются в пресеты для Zapret2.</value>
   </data>
   <data name="AppFeatureConfigEditorOpenLink" xml:space="preserve">
     <value>Открыть редактор</value>
   </data>
   <data name="AppFeatureConfigImportOpenLink" xml:space="preserve">
-    <value>Импортировать конфигурацию</value>
+    <value>Импортировать пресет</value>
   </data>
   <data name="AppFeatureTroubleshootingTitle" xml:space="preserve">
     <value>Диагностика и исправление проблем</value>
@@ -6076,5 +6079,36 @@ https://discord.com/app</value>
   </data>
   <data name="CleanupPreviousVersionsFilesTextBlock.Text" xml:space="preserve">
     <value>Здесь можно удалить все предыдущие версии приложения, для отчистки места на диске</value>
+  </data>
+  <data name="AppFeatureShareConfigs" xml:space="preserve">
+    <value>Делитесь пресетами с друзьями</value>
+  </data>
+  <data name="AppFeatureShareConfigsDescription" xml:space="preserve">
+    <value>Теперь вы можете поделиться работающей конфигурацией с любым человеком (требуется последняя версия CDPIUI). Просто нажмите кнопку [Поделиться] справа от выбора пресета.
+
+Для импорта вашему другу необходимо установить CDPIUI и дважды щелкнуть по созданному вами файлу пресета. Также файл конфигурации можно перетащить в область настроек компонента (приложение все импортирует автоматически).</value>
+  </data>
+  <data name="AppFeatureConditionalRun" xml:space="preserve">
+    <value>Настройте так, как нужно</value>
+  </data>
+  <data name="AppFeatureConditionalRunDescription" xml:space="preserve">
+    <value>Утилита [Условный запуск] теперь лучше, чем когда-либо!
+Настройте любую задачу приложения (запуск компонента, изменение конфигурации и т. д.) так, как вам нужно – в зависимости от запуска или остановки какого-либо процесса или нажатия выбранной вами горячей клавиши.</value>
+  </data>
+  <data name="AppFeatureReviewConditionalRun" xml:space="preserve">
+    <value>Перейти к настройке условий</value>
+  </data>
+  <data name="AppFeatureZapret2Support" xml:space="preserve">
+    <value>Поддержка Zapret2 уже доступна!</value>
+  </data>
+  <data name="AppFeatureZapret2SupportDescription" xml:space="preserve">
+    <value>Новый компонент "Zapret2" теперь поддерживается CPDIUI.
+
+Кроме того, все конфигурации, используемые в Zapret1 (Zapret Legacy), поддерживаются Zapret2 без каких-либо действий с вашей стороны.  Такие пресеты, помеченных как "Legacy" в селекторе пресетов Zapret2.
+
+Новые пресеты для Zapret2 появятся в ближайшее время!</value>
+  </data>
+  <data name="AppFeatureReviewZapret2Support" xml:space="preserve">
+    <value>Загрузите Zapret2 прямо сейчас</value>
   </data>
 </root>
