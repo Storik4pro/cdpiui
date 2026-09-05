@@ -81,7 +81,7 @@ public partial class GraphicDesignerSettingItemModel : INotifyPropertyChanged
     public string DisplayName { get; set; }
     public string Description { get; set; }
     public string Type { get; set; }
-    public List<EnumModel> AvailableEnumValues { get; set; }
+    public List<EnumModel> AvailableEnumValues { get; set; } = [];
     public bool EnableTextInput { get; set; }
     public string _value = "";
     public string Value {
