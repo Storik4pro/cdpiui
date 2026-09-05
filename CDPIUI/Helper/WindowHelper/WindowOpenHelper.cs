@@ -21,6 +21,14 @@ namespace CDPIUI.Helper.WindowHelper
             if (windowName == "MainWindow") windowName = "ModernMainWindow";
             if (windowName == "LegacyMainWindow") windowName = "MainWindow";
 
+            if (windowName is "ModernMainWindow" or "MainWindow" &&
+                (((App)Application.Current).OpenWindows.OfType<WelcomeWindow>().Any() ||
+                 !Core.SettingsManager.Instance.GetValueOrDefault("WELCOMEWIZARD", "Shown", defaultValue: false)))
+            {
+                await ((App)Application.Current).OpenStartupWindowAsync();
+                return;
+            }
+
             var pageName = parameters["page"];
             var id = parameters["id"];
 
