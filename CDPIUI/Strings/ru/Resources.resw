@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -6024,5 +6024,57 @@ https://discord.com/app</value>
   </data>
   <data name="HelpfulLinkSetupProxy.Text" xml:space="preserve">
     <value>Настроить этот компонент как прокси</value>
+  </data>
+  <data name="MemoryUsageCategoryPreviousVersionsDisplayName" xml:space="preserve">
+    <value>Файлы предыдущих версий</value>
+  </data>
+  <data name="MemoryUsageCategoryPreviousVersionsDescription" xml:space="preserve">
+    <value>Файлы предыдущих версий приложения</value>
+  </data>
+  <data name="PreviousVersionsDescription.Text" xml:space="preserve">
+    <value>Это файлы предыдущих версий приложения. В случае возникновения неполадок, которых на предыдущей версии не было эти файлы могут помочь вернуть все как было</value>
+  </data>
+  <data name="RestorePreviousVersionButton.Content" xml:space="preserve">
+    <value>Восстановить</value>
+  </data>
+  <data name="DeletePreviousVersionsButton.Content" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="DeletePreviousVersionsConfirmation.Text" xml:space="preserve">
+    <value>Удалить файлы предыдущих версий? 
+Вы больше не сможете выполнить откат до предыдущей версии.</value>
+  </data>
+  <data name="DownloadErrorActionsDialog.Title" xml:space="preserve">
+    <value>Предлагаемые действия</value>
+  </data>
+  <data name="DownloadErrorActionsDialog.CloseButtonText" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="DownloadErrorActionsDescription.Text" xml:space="preserve">
+    <value>Проверьте подключение к интернету и повторите скачивание. Если ошибка повторяется, воспользуйтесь диагностикой или обратитесь в поддержку, приложив код ошибки и журнал.</value>
+  </data>
+  <data name="DownloadTroubleshootingButton.Content" xml:space="preserve">
+    <value>Провести проверку</value>
+  </data>
+  <data name="DownloadSupportButton.Content" xml:space="preserve">
+    <value>Обратиться в поддержку</value>
+  </data>
+  <data name="DownloadAntivirusAdvice.Text" xml:space="preserve">
+    <value>Проверьте журнал блокировок и карантин антивируса. Если он мешает скачиванию доверенного компонента, временно отключите защиту для проверки и включите её сразу после проверки.</value>
+  </data>
+  <data name="DownloadDnsAdvice.Text" xml:space="preserve">
+    <value>Если сервер загрузки недоступен из-за DNS, настройте безопасный DNS (DNS over HTTPS) в параметрах сети и повторите попытку.</value>
+  </data>
+  <data name="DownloadNetworkHelpButton.Content" xml:space="preserve">
+    <value>Справка по проблемам подключения к магазину</value>
+  </data>
+  <data name="SettingsRecoveryWarningTitle" xml:space="preserve">
+    <value>Настройки сброшены</value>
+  </data>
+  <data name="SettingsRecoveryWarningMessage" xml:space="preserve">
+    <value>Не удалось прочитать Settings.xml или восстановить его из резервной копии. Настройки сброшены к значениям по умолчанию. Файлы пресетов и установленных компонентов не удалены. Проверьте настройки приложения.</value>
+  </data>
+  <data name="CleanupPreviousVersionsFilesTextBlock.Text" xml:space="preserve">
+    <value>Здесь можно удалить все предыдущие версии приложения, для отчистки места на диске</value>
   </data>
 </root>
