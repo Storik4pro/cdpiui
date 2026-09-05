@@ -1,10 +1,11 @@
-﻿using CDPIUI.Shared.Exceptions.Settings;
+using CDPIUI.Shared.Exceptions.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml;
 
 namespace CDPIUI.Shared.Basic
 {
@@ -19,6 +20,11 @@ namespace CDPIUI.Shared.Basic
         public string SettingsFilePath { get; init; }
 
         private XDocument? _xDocument;
+        private bool _persistenceUnavailable;
+        public bool HasUnrecoverableLoadError { get; private set; }
+        public bool WasRecoveredFromBackup { get; private set; }
+        public string? LoadError { get; private set; }
+        public string RecoveryNoticePath => SettingsFilePath + ".recovery-notice";
 
         public Action<string>? PropertyChanged;
         public Action<IEnumerable<string>>? EnumPropertyChanged;
@@ -26,8 +32,6 @@ namespace CDPIUI.Shared.Basic
         public XMLSettingsService(string filepath)
         {
             SettingsFilePath = filepath;
-            Directory.CreateDirectory(Path.GetDirectoryName(SettingsFilePath));
-
             Reload();
         }
 
@@ -39,15 +43,83 @@ namespace CDPIUI.Shared.Basic
         {
             lock (_reloadLock)
             {
-                if (File.Exists(SettingsFilePath))
+                _persistenceUnavailable = false;
+                try
                 {
-                    _xDocument = XDocument.Load(SettingsFilePath);
+                    _xDocument = LoadDocument(SettingsFilePath);
                 }
-                else
+                catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
                 {
                     _xDocument = new XDocument(new XElement("Settings"));
-                    _xDocument.Save(SettingsFilePath);
+                    SaveSettings();
                 }
+                catch (Exception ex) when (IsReadFailure(ex))
+                {
+                    LoadError = ex.Message;
+                    try
+                    {
+                        if (_xDocument == null)
+                        {
+                            _xDocument = LoadDocument(SettingsFilePath + ".bak");
+                            WasRecoveredFromBackup = true;
+                        }
+                    }
+                    catch (Exception backupError) when (IsReadFailure(backupError))
+                    {
+                        HasUnrecoverableLoadError = _xDocument == null;
+                        _xDocument ??= new XDocument(new XElement("Settings"));
+                    }
+
+                    try
+                    {
+                        File.Copy(SettingsFilePath, SettingsFilePath + ".corrupt-" + Guid.NewGuid().ToString("N"));
+                    }
+                    catch (Exception copyError) when (IsReadFailure(copyError)) { }
+
+                    if (HasUnrecoverableLoadError)
+                    {
+                        try { File.WriteAllText(RecoveryNoticePath, LoadError); }
+                        catch (Exception noticeError) when (IsReadFailure(noticeError)) { }
+                    }
+
+                    SaveSettings(keepBackup: false);
+                }
+            }
+        }
+
+        private static bool IsReadFailure(Exception exception) =>
+            exception is XmlException or IOException or UnauthorizedAccessException;
+
+        private static XDocument LoadDocument(string path)
+        {
+            var document = XDocument.Load(path);
+            if (document.Root?.Name != "Settings")
+                throw new XmlException("The settings document must have a Settings root element.");
+            return document;
+        }
+
+        private void SaveSettings(bool keepBackup = true)
+        {
+            if (_persistenceUnavailable) return;
+            string temporaryPath = SettingsFilePath + ".tmp-" + Guid.NewGuid().ToString("N");
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(SettingsFilePath))!);
+                _xDocument!.Save(temporaryPath);
+                if (File.Exists(SettingsFilePath))
+                    File.Replace(temporaryPath, SettingsFilePath, keepBackup ? SettingsFilePath + ".bak" : null);
+                else
+                    File.Move(temporaryPath, SettingsFilePath);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                _persistenceUnavailable = true;
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                try { File.Delete(temporaryPath); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
             }
         }
 
@@ -298,7 +370,7 @@ namespace CDPIUI.Shared.Basic
                     new XAttribute("Value", valueString)));
             }
 
-            _xDocument.Save(SettingsFilePath);
+            SaveSettings();
             PropertyChanged?.Invoke(group);
         }
 
@@ -375,7 +447,7 @@ namespace CDPIUI.Shared.Basic
                     new XAttribute("Value", valueString)));
             }
 
-            _xDocument.Save(SettingsFilePath);
+            SaveSettings();
             EnumPropertyChanged?.Invoke(groupPath);
         }
 
