@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="RemoveLanguageFolders.targets" />
   
   <PropertyGroup>
@@ -28,6 +28,10 @@
     <BaseOutputPath>bin</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controls\Dialogs\Store\DownloadErrorActionsContentDialog.xaml" />
+    <Page Update="Controls\Dialogs\Store\DownloadErrorActionsContentDialog.xaml"><Generator>MSBuild:Compile</Generator></Page>
+    <None Remove="Views\Store\Settings\Memory\MemoryViewPreviousVersionsPage.xaml" />
+    <Page Update="Views\Store\Settings\Memory\MemoryViewPreviousVersionsPage.xaml"><Generator>MSBuild:Compile</Generator></Page>
     <None Remove="Assets\Icons\DragReorder.png" />
     <None Remove="Controls\ComponentSettings\ComponentHelpfulLinksUserControl.xaml" />
     <None Remove="Controls\ComponentSettings\ConfigNeededUserControl.xaml" />
