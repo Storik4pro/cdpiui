@@ -74,31 +74,34 @@
                     </ucontrols:HorizontalScrollContainer.Source>
                 </ucontrols:HorizontalScrollContainer>
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock l:Uids.Uid="QuickAccessTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 5 0 5" Visibility="Collapsed"/>
-                <Grid x:Name="WidgetPlaceholderGrid" Grid.Row="1" Visibility="Collapsed">
-                    <StackPanel VerticalAlignment="Center" Spacing="10">
-                        <FontIcon Glyph="&#xECA5;"  FontSize="28" HorizontalAlignment="Center"/>
-                        <TextBlock l:Uids.Uid="WidgetPlaceholderTextBlock" HorizontalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}"/>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0 0 -15 0">
+                <Grid Margin="0 0 15 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock l:Uids.Uid="QuickAccessTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0 5 0 5" Visibility="Collapsed"/>
+                    <Grid x:Name="WidgetPlaceholderGrid" Grid.Row="1" Visibility="Collapsed">
+                        <StackPanel VerticalAlignment="Center" Spacing="10">
+                            <FontIcon Glyph="&#xECA5;"  FontSize="28" HorizontalAlignment="Center"/>
+                            <TextBlock l:Uids.Uid="WidgetPlaceholderTextBlock" HorizontalAlignment="Center" Style="{ThemeResource BaseTextBlockStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel x:Name="WidgetGrid" Grid.Row="1" Margin="0 10 0 0" Spacing="10">
+                        <mpcontrols:FlashlightTipsWidgetUserControl/>
+                        <mpcontrols:WidgetUserControl/>
                     </StackPanel>
-                </Grid>
 
-                <Grid x:Name="WidgetGrid" Grid.Row="1" Margin="0 10 0 0">
-                    <mpcontrols:WidgetUserControl/>
+                    <ItemsRepeater x:Name="WidgetsItemsRepeater" Grid.Row="1">
+                        <ItemsRepeater.Layout>
+                            <toolkit:StaggeredLayout ItemsStretch="Fill"
+                                                 ColumnSpacing="10"
+                                                 DesiredColumnWidth="400"/>
+                        </ItemsRepeater.Layout>
+                    </ItemsRepeater>
                 </Grid>
-
-                <ItemsRepeater x:Name="WidgetsItemsRepeater" Grid.Row="1">
-                    <ItemsRepeater.Layout>
-                        <toolkit:StaggeredLayout ItemsStretch="Fill"
-                                             ColumnSpacing="10"
-                                             DesiredColumnWidth="400"/>
-                    </ItemsRepeater.Layout>
-                </ItemsRepeater>
-            </Grid>
+            </ScrollViewer>
             <HyperlinkButton x:Name="QHyperlinkButton" l:Uids.Uid="QHyperlinkButton" Grid.Row="2" Margin="0 0 0 -20" 
                          Content="..." VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="10 0" CornerRadius="0" 
                          Click="QHyperlinkButton_Click"/>
