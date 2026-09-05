@@ -44,6 +44,7 @@ namespace CDPIUI.ViewModels
             { "CSSIXC048", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig, AvailableComponentFeatures.ExploreNewConfigs] },
             { "CSNIG9025", [AvailableComponentFeatures.SetupProxy, AvailableComponentFeatures.CreateConfig] },
             { "CSTYFL050", [AvailableComponentFeatures.VisitForum, AvailableComponentFeatures.ConnectTgWsProxy] },
+            { "CSZTBN062", [AvailableComponentFeatures.AutoSelectConfig, AvailableComponentFeatures.CreateConfig] },
         };
     }
 }
