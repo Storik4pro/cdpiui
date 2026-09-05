@@ -24,7 +24,7 @@
                     </Grid.RowDefinitions>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="16">
+                        <StackPanel>
                             <Border
                                 Height="180"
                                 Background="{ThemeResource SubtleFillColorSecondaryBrush}"
@@ -39,7 +39,7 @@
                             <TextBlock
                                 Text="{x:Bind Title, Mode=OneWay}"
                                 Style="{ThemeResource TitleTextBlockStyle}"
-                                TextWrapping="Wrap" Margin="20 0" />
+                                TextWrapping="Wrap" Margin="20 16 20 16" />
 
                             <TextBlock
                                 Text="{x:Bind Description, Mode=OneWay}"
