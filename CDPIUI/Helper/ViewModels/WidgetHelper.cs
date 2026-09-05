@@ -123,7 +123,7 @@ namespace CDPIUI.Helper.ViewModels
                     "cdpiui://Tools/Service",
                     "StopService",
                     "StopServiceDescription",
-                    new Uri(""),
+                     UIHelper.GetUriFromString(""),
                     false));
 
 
