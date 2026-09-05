@@ -1,9 +1,21 @@
-﻿using CDPIUI.Helper;
+﻿using CDPIUI.Controls.ComponentSettings;
+using CDPIUI.Controls.Default;
+using CDPIUI.Controls.Dialogs;
 using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Controls.Dialogs.Universal;
-using CDPIUI.Controls.Dialogs;
-using CDPIUI.Controls.ComponentSettings;
 using CDPIUI.Core;
+using CDPIUI.Core.ComponentServices;
+using CDPIUI.Core.ComponentServices.Configuration;
+using CDPIUI.Core.ComponentServices.Helpers;
+using CDPIUI.Core.ComponentServices.Helpers.Configuration;
+using CDPIUI.Core.Features;
+using CDPIUI.Core.Proxy;
+using CDPIUI.Core.Store.Data;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.System;
+using CDPIUI.Helper;
+using CDPIUI.Shared.Extentions;
+using CDPIUI.Shared.Models;
 using CDPIUI.Views.CreateConfigUtil;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -13,6 +25,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,17 +33,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using WinUI3Localizer;
 using static CDPIUI.Helper.UIHelper;
-using CDPIUI.Core.Store.Database;
-using CDPIUI.Core.ComponentServices.Helpers.Configuration;
-using CDPIUI.Core.ComponentServices.Helpers;
-using CDPIUI.Core.ComponentServices;
-using CDPIUI.Core.Features;
-using CDPIUI.Core.Store.Data;
-using CDPIUI.Shared.Extentions;
-using CDPIUI.Shared.Models;
-using CDPIUI.Core.System;
-using System.Collections.Specialized;
-using CDPIUI.Controls.Default;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -80,10 +82,13 @@ namespace CDPIUI.Views.Main.Components
             DispatcherQueue.TryEnqueue(() =>
             {
                 _tiles.Clear();
+                HelpfulLinksControl.Visibility = Visibility.Collapsed;
+                SetupAsProxyHelpfulLink.IsVisible = ProxyHelper.ProxyLikeComponents.Contains(ComponentId);
             });
 
             if (sel == null)
                 return;
+
 
             ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
 
@@ -294,9 +299,14 @@ namespace CDPIUI.Views.Main.Components
 
             helpTile.Items.Add(whatConfigChooseHelpTileItem);
 
+            
+
             // TODO: add dynamic help
 
-            DispatcherQueue.TryEnqueue(() => { _tiles.Add(CreateSettingTile(helpTile, HandleSettingTileElementClick)); });
+            DispatcherQueue.TryEnqueue(() => { 
+                _tiles.Add(CreateSettingTile(helpTile, HandleSettingTileElementClick));
+                HelpfulLinksControl.Visibility = Visibility.Visible;
+            });
         }
 
         private void HandleSettingTileElementClick(ActionIds actionId, List<string> arguments, SettingTileContentDefinition contentDefinition)
@@ -655,14 +665,12 @@ namespace CDPIUI.Views.Main.Components
             LoadingGrid.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private async void CreateConfigButton_Click(object sender, RoutedEventArgs e)
+        private void ComponentHelpfulLinksUserControl_ConfigEditRequested(object sender, RoutedEventArgs e)
         {
-            await ConfigMakerWindow.CreateForComponentAsync(ComponentId);
-        }
-
-        private async void OpenStoreButton_Click(object sender, RoutedEventArgs e)
-        {
-            await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            ComponentHelper componentHelper = ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(ComponentId);
+            ConfigurationService service = componentHelper.GetConfigHelper();
+            if (ConfigChooseCombobox.SelectedItem is ConfigSelectorItem item)
+                ConfigMakerWindow.EditConfig(service.GetConfigItem(item.FileName, item.PackId));
         }
     }
 }

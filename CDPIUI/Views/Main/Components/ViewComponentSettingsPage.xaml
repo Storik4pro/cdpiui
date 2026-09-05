@@ -47,11 +47,11 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <!--
+        
         <Grid.ChildrenTransitions>
             <RepositionThemeTransition/>
         </Grid.ChildrenTransitions>
-        -->
+        
         
 
         <Grid Margin="0">
