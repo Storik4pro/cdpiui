@@ -4479,7 +4479,7 @@ If error persist, contact application support.</value>
     <value>The current command will be cleared.</value>
   </data>
   <data name="ConfigMakerTextFileFilter" xml:space="preserve">
-    <value>|Text configs (*.txt)|*.txt</value>
+    <value>Text configs (*.txt)|*.txt</value>
   </data>
   <data name="ConfigMakerTextSavedMessage" xml:space="preserve">
     <value>The TXT config was saved.</value>
