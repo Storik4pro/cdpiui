@@ -135,7 +135,7 @@ namespace CDPIUI.TrayIcon.Forms
 
         private void HandleTasksListUpdate()
         {
-
+            HandleTaskStateUpdate(Tuple.Create(string.Empty, false));
         }
 
         private static string GetNowRunnedComponentsString()
@@ -236,7 +236,8 @@ namespace CDPIUI.TrayIcon.Forms
         public void AddIcon(bool notify=false, string? iconName=null, string? toolTip = null)
         {
             if (IsDisposed || Disposing || _iconAdded) return;
-            if (string.IsNullOrEmpty(iconName)) iconName = "trayLogoNormal";
+            if (string.IsNullOrEmpty(iconName)) iconName = GetCurrentIcon();
+            toolTip ??= GetNowRunnedComponentsString();
 
             NOTIFYICONDATA data = new();
 

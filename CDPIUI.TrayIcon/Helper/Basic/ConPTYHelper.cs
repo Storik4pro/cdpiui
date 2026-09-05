@@ -69,9 +69,9 @@ namespace CDPIUI.TrayIcon.Helper
             {
                 if (CurrentState != isRunned)
                 {
-                    ProcessStateChanged?.Invoke(isRunned);
                     CurrentState = isRunned;
                     processState = CurrentState;
+                    ProcessStateChanged?.Invoke(isRunned);
                     Debug.WriteLine(processState);
                 }
             }
