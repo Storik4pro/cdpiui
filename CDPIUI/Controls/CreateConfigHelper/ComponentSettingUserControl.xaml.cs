@@ -170,7 +170,7 @@ public sealed partial class ComponentSettingUserControl : UserControl
     {
         get { return (List<EnumModel>)GetValue(AvailableEnumValuesProperty); }
         set { 
-            SetValue(AvailableEnumValuesProperty, value);
+            SetValue(AvailableEnumValuesProperty, value ?? new List<EnumModel>());
             SetValueToEnum();
         }
     }
@@ -245,7 +245,7 @@ public sealed partial class ComponentSettingUserControl : UserControl
 
     private void SetValueToEnum()
     {
-        EnumPropertyComboBox.SelectedItem = AvailableEnumValues.FirstOrDefault(x => ((EnumModel)x).ActualValue == TextValue);
+        EnumPropertyComboBox.SelectedItem = AvailableEnumValues?.FirstOrDefault(x => x.ActualValue == TextValue);
     }
 
 

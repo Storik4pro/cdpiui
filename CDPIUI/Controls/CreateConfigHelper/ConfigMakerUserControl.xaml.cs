@@ -2281,6 +2281,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
         updatingDesigner = true;
         try
         {
+            AdditionalDesignerArgumentsTextBox.Text = ComponentCommandLineFormatter.ToSingleLine(CommandEditor.Text);
             DesignerSettingItemModels.Clear();
             DesignerExclusiveSettingItemModels.Clear();
             if (string.Equals(
@@ -2325,6 +2326,13 @@ public sealed partial class ConfigMakerUserControl : UserControl
                     DesignerExclusiveSettingItemModels,
                     ComponentCommandLineFormatter.ToSingleLine(CommandEditor.Text));
             designerNeedsRefresh = false;
+        }
+        catch (Exception exception)
+        {
+            DesignerSettingItemModels.Clear();
+            DesignerExclusiveSettingItemModels.Clear();
+            Core.Basic.Logger.Instance.CreateWarningLog(nameof(ConfigMakerUserControl), exception.ToString());
+            ShowEditorMessage(exception.Message, InfoBarSeverity.Warning);
         }
         finally
         {
@@ -2389,7 +2397,7 @@ public sealed partial class ConfigMakerUserControl : UserControl
 
     private void ApplySimpleDesignerToCommand()
     {
-        if (updatingDesigner || !IsSimpleDesignerSupported)
+        if (updatingDesigner || designerNeedsRefresh || !IsSimpleDesignerSupported)
         {
             return;
         }
