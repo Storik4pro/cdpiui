@@ -60,7 +60,8 @@ namespace CDPIUI.Views.Store
             typeof(MemoryViewLogsDetailsPage),
             typeof(MemoryViewSettingsDetailsPage),
             typeof(MemoryViewStoreCachePage),
-            typeof(MemoryViewConditionalLaunchDetailsPage)];
+            typeof(MemoryViewConditionalLaunchDetailsPage),
+            typeof(MemoryViewPreviousVersionsPage)];
 
         private ILocalizer localizer = Localizer.Get();
 

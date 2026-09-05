@@ -46,6 +46,7 @@ namespace CDPIUI.Controls.Store.Settings
         StoreItems,
         StoreCache,
         ConditionalTasks,
+        PreviousVersions,
     }
 
     public class MemoryViewItemModel : IComparable
@@ -87,6 +88,7 @@ namespace CDPIUI.Controls.Store.Settings
             { MemoryUsageCategories.StoreItems, "\uE71D" },
             { MemoryUsageCategories.StoreCache, "\uE719" },
             { MemoryUsageCategories.ConditionalTasks, "\uE7C1" },
+            { MemoryUsageCategories.PreviousVersions, "\uE777" },
         };
 
         private Dictionary<MemoryUsageCategories, Type> CategoryPageTypePairs = new()
@@ -98,6 +100,7 @@ namespace CDPIUI.Controls.Store.Settings
             { MemoryUsageCategories.StoreItems, typeof(MemoryViewInstalledItemsDetailsPage) },
             { MemoryUsageCategories.StoreCache, typeof(MemoryViewStoreCachePage) },
             { MemoryUsageCategories.ConditionalTasks, typeof(MemoryViewConditionalLaunchDetailsPage) },
+            { MemoryUsageCategories.PreviousVersions, typeof(MemoryViewPreviousVersionsPage) },
         };
 
         public MemoryDiskUsageViewUserControl()
@@ -148,7 +151,9 @@ namespace CDPIUI.Controls.Store.Settings
                 appDirSize = await FileSystemService.GetDirectorySize(appDir, Logger.Instance) + await FileSystemService.GetDirectorySize(dataDir, Logger.Instance);
                 usedDriveInfo = appDirDriveInfo;
                 usedDir = dataDir;
-                CreateTileForMemoryUsageCategory(await FileSystemService.GetDirectorySize(appDir, Logger.Instance), appDirSize, MemoryUsageCategories.Application);
+                long oldSize = await FileSystemService.GetDirectorySize(MemoryViewPreviousVersionsPage.PreviousVersionsDirectory, Logger.Instance);
+                CreateTileForMemoryUsageCategory(oldSize, appDirSize, MemoryUsageCategories.PreviousVersions);
+                CreateTileForMemoryUsageCategory(await FileSystemService.GetDirectorySize(appDir, Logger.Instance) - oldSize, appDirSize, MemoryUsageCategories.Application);
             }
             else if (appDirDriveInfo.VolumeLabel == DiskLetter)
             {
@@ -206,7 +211,11 @@ namespace CDPIUI.Controls.Store.Settings
 
                 otherSize -= size;
 
-                if (relpath.StartsWith("Settings"))
+                if (string.Equals(dir.FullName, MemoryViewPreviousVersionsPage.PreviousVersionsDirectory, StringComparison.OrdinalIgnoreCase))
+                {
+                    CreateTileForMemoryUsageCategory(size, totalSize, MemoryUsageCategories.PreviousVersions);
+                }
+                else if (relpath.StartsWith("Settings"))
                 {
                     CreateTileForMemoryUsageCategory(size, totalSize, MemoryUsageCategories.Settings);
                     
