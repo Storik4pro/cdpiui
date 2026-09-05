@@ -132,12 +132,8 @@ namespace CDPIUI.Core.ComponentServices.Helpers
                 return;
             }
 
-            string startupString = ConfigurationService.GetStartupParametersByConfigItem(config);
-            _ = Zapret2LegacyConfigService.GetStartupString(
-                config,
-                startupString,
-                validateHashes: true,
-                forceRebuild: true);
+            string startupString = ConfigurationService
+                .GetStartupParametersByConfigItem(config, forceRebuild:true);
         }
 
         private string? TryGetNewPath()

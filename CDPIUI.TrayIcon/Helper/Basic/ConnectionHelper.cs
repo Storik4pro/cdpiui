@@ -1,6 +1,7 @@
 ﻿using CDPIUI.Shared;
 using CDPIUI.Shared.Pipe;
 using CDPIUI.Shared.Pipe.Models;
+using CDPIUI.Shared.Secrets;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Security.AccessControl;
