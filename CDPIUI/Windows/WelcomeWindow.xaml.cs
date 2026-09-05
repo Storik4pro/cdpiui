@@ -128,6 +128,12 @@ namespace CDPIUI
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
+            if (AnimatedHorizontalContentViewer.SelectedItem == LicenseItem)
+            {
+                if (LicenseAgreeCheckBox.IsChecked != true) return;
+                SettingsManager.Instance.SetValue("WELCOMEWIZARD", "Shown", true);
+            }
+
             if (sender is Button btn &&
                 btn == NextButton &&
                 AnimatedHorizontalContentViewer.SelectedItem == StoreItem && 
@@ -817,6 +823,8 @@ namespace CDPIUI
         private void LicenseAgreeCheckBox_Click(object sender, RoutedEventArgs e)
         {
             NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
+            if (LicenseAgreeCheckBox.IsChecked == true)
+                SettingsManager.Instance.SetValue("WELCOMEWIZARD", "Shown", true);
         }
 
         private void UtilityButtonControls_Loaded(object sender, RoutedEventArgs e)
@@ -824,14 +832,20 @@ namespace CDPIUI
             CheckNavigation();
         }
 
-        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        private async void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
-            CommandsHandler.HandleCommand("cdpiui://");
-            if (ShowAppFeaturesCheckBox.IsChecked == true) 
-            {
-                CommandsHandler.HandleCommand("cdpiui://AppFeatures");
-            }
+            bool showFeatures = ShowAppFeaturesCheckBox.IsChecked == true;
+            var app = (App)Application.Current;
+            // Release ownership and the migration gate before activating the main window.
+            await app.MakeWindowNormal(this);
+            Program.CompleteMigrationActivation();
+            var mainWindow = await app.SafeCreateNewWindow<ModernMainWindow>();
             this.Close();
+            App.ActivateWindow(mainWindow);
+            if (showFeatures)
+            {
+                await CommandsHandler.HandleCommandAsync("cdpiui://AppFeatures");
+            }
         }
 
         

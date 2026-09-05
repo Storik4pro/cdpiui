@@ -189,9 +189,10 @@ namespace CDPIUI
 
             if (!isFileProcessed && !isActionPreffered && !isMigrationProcessed &&
                 !Program.IsMigrationActivationPending)
-                await SafeCreateNewWindow<ModernMainWindow>();
+                await OpenStartupWindowAsync();
 
             GetCurrentWindowFromType<PrepareWindow>()?.Close();
+            await ShowSettingsRecoveryWarningAsync();
             ExitIfIdle();
             Logger.Instance.CreateDebugLog(nameof(App), $"Arguments {arguments}");
             
@@ -335,8 +336,23 @@ namespace CDPIUI
             }
 
             if (!result && !Program.IsMigrationActivationPending)
-                await SafeCreateNewWindow<ModernMainWindow>();
+                await OpenStartupWindowAsync();
             else ExitIfIdle();
+        }
+
+        internal async Task<Window> OpenStartupWindowAsync(bool activate = true)
+        {
+            var welcome = OpenWindows.OfType<WelcomeWindow>().FirstOrDefault();
+            if (welcome != null)
+            {
+                if (activate) ActivateWindow(welcome);
+                return welcome;
+            }
+
+            if (!SettingsManager.Instance.GetValueOrDefault("WELCOMEWIZARD", "Shown", defaultValue: false))
+                return await SafeCreateNewWindow<WelcomeWindow>(activate);
+
+            return await SafeCreateNewWindow<ModernMainWindow>(activate);
         }
 
         private Task<bool> TryHandleMigrationActivationAsync(string? arguments)
@@ -387,7 +403,35 @@ namespace CDPIUI
             }
             finally
             {
+                if (!OpenWindows.OfType<WelcomeWindow>().Any(window => window.Id == WelcomeWindow.MigrationWindowId))
+                    Program.CompleteMigrationActivation();
                 migrationWindowActivationLock.Release();
+            }
+        }
+
+        private bool settingsRecoveryWarningShown;
+        private async Task ShowSettingsRecoveryWarningAsync()
+        {
+            var settings = SettingsManager.Instance;
+            if (settingsRecoveryWarningShown ||
+                (!settings.HasUnrecoverableLoadError && !File.Exists(settings.RecoveryNoticePath))) return;
+            var owner = OpenWindows.LastOrDefault();
+            if (owner == null) return;
+            settingsRecoveryWarningShown = true;
+            try
+            {
+                var dialog = new Windows.UI.Popups.MessageDialog(
+                    Localizer.Get().GetLocalizedString("SettingsRecoveryWarningMessage"),
+                    Localizer.Get().GetLocalizedString("SettingsRecoveryWarningTitle"));
+                InitializeWithWindow.Initialize(dialog, WindowNative.GetWindowHandle(owner));
+                await dialog.ShowAsync();
+                try { File.Delete(settings.RecoveryNoticePath); }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+            }
+            catch (Exception ex)
+            {
+                settingsRecoveryWarningShown = false;
+                Logger.Instance.CreateWarningLog(nameof(App), ex.ToString());
             }
         }
 
