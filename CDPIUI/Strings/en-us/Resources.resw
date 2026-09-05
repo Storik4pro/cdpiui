@@ -4644,7 +4644,7 @@ If error persist, contact application support.</value>
     <value>Used files</value>
   </data>
   <data name="ConfigMakerShowPresetGroupsMenuItem.Text" xml:space="preserve">
-    <value>Show preset structure</value>
+    <value>Show config structure</value>
   </data>
   <data name="ConfigMakerPresetGroupsTab.Header" xml:space="preserve">
     <value>Preset structure</value>
@@ -4677,13 +4677,13 @@ If error persist, contact application support.</value>
     <value>Allow editing</value>
   </data>
   <data name="BlockCheck2AllowExpertEditingToolTip.Content" xml:space="preserve">
-    <value>Enables expert mode. Returning to the builder discards direct text changes and regenerates the preset from its groups.</value>
+    <value>Enables expert mode. Returning to the builder discards direct text changes and regenerates the config from its groups.</value>
   </data>
   <data name="BlockCheck2ExpertEditingInfoBar.Title" xml:space="preserve">
     <value>Expert mode</value>
   </data>
   <data name="BlockCheck2ExpertEditingInfoBar.Message" xml:space="preserve">
-    <value>The command text is editable. These direct changes are not written back to the structured preset groups.</value>
+    <value>The command text is editable. These direct changes are not written back to the structured config groups.</value>
   </data>
   <data name="BlockCheck2PresetOriginAutomatic" xml:space="preserve">
     <value>Automatically suggested</value>
@@ -4707,7 +4707,7 @@ If error persist, contact application support.</value>
     <value>Discard expert changes?</value>
   </data>
   <data name="BlockCheck2DiscardExpertChangesMessage" xml:space="preserve">
-    <value>The preset will be regenerated from the selections shown in the builder.</value>
+    <value>The config will be regenerated from the selections shown in the builder.</value>
   </data>
   <data name="BlockCheck2DiscardExpertChangesButton" xml:space="preserve">
     <value>Discard and go back</value>
@@ -4725,13 +4725,13 @@ If error persist, contact application support.</value>
     <value>Open in Configs...</value>
   </data>
   <data name="BlockCheck2CopyPresetMenuItem" xml:space="preserve">
-    <value>Copy preset</value>
+    <value>Copy config</value>
   </data>
   <data name="BlockCheck2ResultModeDialogTitle" xml:space="preserve">
     <value>How do you want to continue?</value>
   </data>
   <data name="BlockCheck2ResultModeDialogMessage" xml:space="preserve">
-    <value>Open the automatically suggested preset immediately, or review the per-site strategies and assemble it manually.</value>
+    <value>Open the automatically suggested config immediately, or review the per-site strategies and assemble it manually.</value>
   </data>
   <data name="BlockCheck2ResultModeAutomaticButton" xml:space="preserve">
     <value>Automatically suggested</value>
@@ -4782,7 +4782,7 @@ If error persist, contact application support.</value>
     <value>Scope order accepted</value>
   </data>
   <data name="BlockCheck2ManualScopeOverlapAcceptedMessage" xml:space="preserve">
-    <value>The more specific scope is already placed before the general one. The warning will return if the preset structure changes.</value>
+    <value>The more specific scope is already placed before the general one. The warning will return if the config structure changes.</value>
   </data>
   <data name="BlockCheck2PresetReadinessFormat" xml:space="preserve">
     <value>Strategies: {0} · warnings: {1}</value>
@@ -4794,7 +4794,7 @@ If error persist, contact application support.</value>
     <value>Save as new config...</value>
   </data>
   <data name="BlockCheck2SaveToApplicationDialogTitle" xml:space="preserve">
-    <value>Save preset to the application</value>
+    <value>Save config to the application</value>
   </data>
   <data name="BlockCheck2SaveToApplicationDialogMessage" xml:space="preserve">
     <value>Related user site lists and external files will be copied to application storage. Built-in Zapret2 files will remain linked to the component.</value>
@@ -4830,7 +4830,7 @@ If error persist, contact application support.</value>
     <value>Application storage returned an error: {0}</value>
   </data>
   <data name="BlockCheck2PresetSaveEmptyMessage" xml:space="preserve">
-    <value>The preset has no arguments to save.</value>
+    <value>The config has no arguments to save.</value>
   </data>
   <data name="BlockCheck2PresetSaveUnknownMessage" xml:space="preserve">
     <value>An unknown save error occurred.</value>
@@ -4869,7 +4869,7 @@ If error persist, contact application support.</value>
     <value>Created an empty file: {0}</value>
   </data>
   <data name="ConfigMakerPresetFileReferenceNotFoundMessage" xml:space="preserve">
-    <value>The file reference was not found in the current preset command.</value>
+    <value>The file reference was not found in the current config command.</value>
   </data>
   <data name="ConfigMakerPresetFileReplacedMessage" xml:space="preserve">
     <value>Replaced the file reference: {0}</value>
@@ -4908,10 +4908,10 @@ If error persist, contact application support.</value>
     <value>Config preview</value>
   </data>
   <data name="ConfigMakerZapret2CommonFiltersDescription" xml:space="preserve">
-    <value>The WinDivert interception filter for the whole preset. It decides which packets enter Zapret2 at all; a narrower filter reduces processing overhead.</value>
+    <value>The WinDivert interception filter for the whole config. It decides which packets enter Zapret2 at all; a narrower filter reduces processing overhead.</value>
   </data>
   <data name="ConfigMakerZapret2CommonOptionsDescription" xml:space="preserve">
-    <value>Common startup and Lua initialization options. They appear before the first profile and apply to the entire preset.</value>
+    <value>Common startup and Lua initialization options. They appear before the first profile and apply to the entire config.</value>
   </data>
   <data name="ConfigMakerZapret2ProfileDescription" xml:space="preserve">
     <value>A separate traffic profile with its own filters and ordered Lua actions. Profile order matters when filter scopes overlap.</value>
@@ -5313,10 +5313,10 @@ If error persist, contact application support.</value>
     <value>Save as new config...</value>
   </data>
   <data name="BlockCheck2CopyPresetWindowMenuItem.Text" xml:space="preserve">
-    <value>Copy preset</value>
+    <value>Copy config</value>
   </data>
   <data name="BlockCheck2ProceedToPresetReviewMenuItem.Text" xml:space="preserve">
-    <value>Proceed to preset testing and saving</value>
+    <value>Proceed to config testing and saving</value>
   </data>
   <data name="BlockCheck2TestStrategyMenuItem.Text" xml:space="preserve">
     <value>Test with CURL</value>
@@ -5832,7 +5832,7 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Review theme settings</value>
   </data>
   <data name="ConfigShareTitleContentDialog.Title" xml:space="preserve">
-    <value>Share this preset</value>
+    <value>Share this config</value>
   </data>
   <data name="ConfigSharePresetName" xml:space="preserve">
     <value>Preset name</value>
@@ -5853,16 +5853,16 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Close</value>
   </data>
   <data name="ConfigShareCollecting" xml:space="preserve">
-    <value>Collecting preset files…</value>
+    <value>Collecting config files…</value>
   </data>
   <data name="ConfigShareSharing" xml:space="preserve">
     <value>Complete sharing in the Share menu.</value>
   </data>
   <data name="ConfigShareFileType" xml:space="preserve">
-    <value>CDPIUI preset</value>
+    <value>CDPIUI config</value>
   </data>
   <data name="ConfigShareImportTitle" xml:space="preserve">
-    <value>Add a preset</value>
+    <value>Add a config</value>
   </data>
   <data name="ConfigShareAddTo" xml:space="preserve">
     <value>Add to…</value>
@@ -5877,46 +5877,46 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Kit by {0}</value>
   </data>
   <data name="ConfigShareLocal" xml:space="preserve">
-    <value>Local presets (LocalUserData)</value>
+    <value>Local configs (LocalUserData)</value>
   </data>
   <data name="ConfigShareImportButton" xml:space="preserve">
-    <value>Add preset</value>
+    <value>Add config</value>
   </data>
   <data name="ConfigShareReading" xml:space="preserve">
-    <value>Reading preset…</value>
+    <value>Reading config…</value>
   </data>
   <data name="ConfigShareInstalling" xml:space="preserve">
-    <value>Adding preset and files…</value>
+    <value>Adding config and files…</value>
   </data>
   <data name="ConfigShareImported" xml:space="preserve">
-    <value>The preset was added. Select it in the component settings.</value>
+    <value>The config was added. Select it in the component settings.</value>
   </data>
   <data name="ConfigShareError" xml:space="preserve">
-    <value>The preset could not be processed.</value>
+    <value>The config could not be processed.</value>
   </data>
   <data name="ConfigShareError_SHARE_FILE_MISSING" xml:space="preserve">
     <value>A referenced file is missing. Check its path and retry the export.</value>
   </data>
   <data name="ConfigShareError_SHARE_ARCHIVE_INVALID" xml:space="preserve">
-    <value>The file is damaged or is not a supported preset archive.</value>
+    <value>The file is damaged or is not a supported config archive.</value>
   </data>
   <data name="ConfigShareError_SHARE_VERSION_UNSUPPORTED" xml:space="preserve">
-    <value>This preset format requires a newer CDPIUI version.</value>
+    <value>This config format requires a newer CDPIUI version.</value>
   </data>
   <data name="ConfigShareError_SHARE_CHECKSUM_FAILED" xml:space="preserve">
     <value>The archive contents are damaged. Obtain another copy of the file.</value>
   </data>
   <data name="ConfigShareError_SHARE_TOO_LARGE" xml:space="preserve">
-    <value>The preset exceeds the size or file count limit.</value>
+    <value>The config exceeds the size or file count limit.</value>
   </data>
   <data name="ConfigShareError_SHARE_NAME_REQUIRED" xml:space="preserve">
     <value>Enter a name and a developer name.</value>
   </data>
   <data name="ConfigShareError_SHARE_DESTINATION_INVALID" xml:space="preserve">
-    <value>The selected kit cannot receive presets.</value>
+    <value>The selected kit cannot receive configs.</value>
   </data>
   <data name="ConfigShareError_SHARE_CONFIG_INVALID" xml:space="preserve">
-    <value>The preset has no valid startup command or component.</value>
+    <value>The config has no valid startup command or component.</value>
   </data>
   <data name="ConfigShareError_SHARE_DATABASE_FAILED" xml:space="preserve">
     <value>The kit could not be registered. Changes were rolled back.</value>
@@ -5925,7 +5925,7 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Component required</value>
   </data>
   <data name="ConfigShareMissingComponentMessage" xml:space="preserve">
-    <value>The preset “{0}” requires {1}, which is not installed. Open its installation?</value>
+    <value>The config “{0}” requires {1}, which is not installed. Open its installation?</value>
   </data>
   <data name="ConfigShareInstallComponent" xml:space="preserve">
     <value>Install component</value>
@@ -5994,10 +5994,10 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Import by dragging files</value>
   </data>
   <data name="ComponentDropImportCard.Description" xml:space="preserve">
-    <value>Drop preset files onto this page.</value>
+    <value>Drop config files onto this page.</value>
   </data>
   <data name="ComponentDropImportCaption" xml:space="preserve">
-    <value>Import presets</value>
+    <value>Import configs</value>
   </data>
   <data name="ComponentDropFilesOnly" xml:space="preserve">
     <value>Drop files, not folders.</value>

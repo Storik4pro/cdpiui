@@ -12,11 +12,11 @@ This utility helps bring presets from other applications or saved files into CDP
 
 You can select several files at once. The wizard creates a separate result card for each file.
 
-An ordinary JSON document, a report from another utility, or an unknown application's settings file is not a CDPIUI preset and may not be imported.
+An ordinary JSON document, a report from another utility, or an unknown application's settings file is not a CDPIUI config and may not be imported.
 
 ### What should I prepare?
 
-- Install the component for which the preset was created. Components that are not installed cannot be selected or tested.
+- Install the component for which the config was created. Components that are not installed cannot be selected or tested.
 - Keep the BAT, CMD, or TXT file together with its list, BIN, and LUA folders. The wizard will try to find and copy these dependencies.
 - Keep a backup of the original package when possible.
 
