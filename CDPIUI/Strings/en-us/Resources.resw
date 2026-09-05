@@ -6008,4 +6008,19 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
   <data name="DropFilesTextBlock.Text" xml:space="preserve">
     <value>Drop your files here for import to application</value>
   </data>
+  <data name="ComponentHelpfulLinksSettingsExpander.Header" xml:space="preserve">
+    <value>Features, you may like to use</value>
+  </data>
+  <data name="HelpfulLinkEditConfig.Text" xml:space="preserve">
+    <value>Edit that config in embedded editor</value>
+  </data>
+  <data name="HelpfulLinkCreateNewConfig.Text" xml:space="preserve">
+    <value>Create new config for that component manually</value>
+  </data>
+  <data name="HelpfulLinkOpenAutoSelectionUtil.Text" xml:space="preserve">
+    <value>Autoselect best config for that component</value>
+  </data>
+  <data name="HelpfulLinkSetupProxy.Text" xml:space="preserve">
+    <value>Setup this component as proxy</value>
+  </data>
 </root>

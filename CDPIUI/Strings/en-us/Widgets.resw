@@ -159,4 +159,10 @@
   <data name="ReportAProblemDescription" xml:space="preserve">
     <value>Something work not as planned? Tell about it developers!</value>
   </data>
+  <data name="StopService" xml:space="preserve">
+    <value>Stop service</value>
+  </data>
+  <data name="StopServiceDescription" xml:space="preserve">
+    <value>Stopping service may help if Internet connection are broken. Also if you changed component config service stopping is recommended for best effect</value>
+  </data>
 </root>

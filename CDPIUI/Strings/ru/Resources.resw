@@ -6010,4 +6010,19 @@ https://discord.com/app</value>
   <data name="DropFilesTextBlock.Text" xml:space="preserve">
     <value>Отпустите свои файлы здесь, чтобы импортировать их в приложение</value>
   </data>
+  <data name="ComponentHelpfulLinksSettingsExpander.Header" xml:space="preserve">
+    <value>Возможности, которые могут вам пригодиться</value>
+  </data>
+  <data name="HelpfulLinkEditConfig.Text" xml:space="preserve">
+    <value>Изменить этот пресет во встроенном редакторе</value>
+  </data>
+  <data name="HelpfulLinkCreateNewConfig.Text" xml:space="preserve">
+    <value>Создать новый пресет для этого компонента вручную</value>
+  </data>
+  <data name="HelpfulLinkOpenAutoSelectionUtil.Text" xml:space="preserve">
+    <value>Подобрать лучший пресет для этого компонента</value>
+  </data>
+  <data name="HelpfulLinkSetupProxy.Text" xml:space="preserve">
+    <value>Настроить этот компонент как прокси</value>
+  </data>
 </root>
