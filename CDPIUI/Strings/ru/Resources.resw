@@ -6063,7 +6063,7 @@ https://discord.com/app</value>
     <value>Проверьте журнал блокировок и карантин антивируса. Если он мешает скачиванию доверенного компонента, временно отключите защиту для проверки и включите её сразу после проверки.</value>
   </data>
   <data name="DownloadDnsAdvice.Text" xml:space="preserve">
-    <value>Если сервер загрузки недоступен из-за DNS, настройте безопасный DNS (DNS over HTTPS) в параметрах сети и повторите попытку.</value>
+    <value>Так же при недоступности сервера может помочь установка безопасной DNS в настройках вашей системы (Windows 11) или другими средствами </value>
   </data>
   <data name="DownloadNetworkHelpButton.Content" xml:space="preserve">
     <value>Справка по проблемам подключения к магазину</value>

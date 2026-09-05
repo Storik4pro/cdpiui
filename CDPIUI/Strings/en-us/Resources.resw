@@ -6060,7 +6060,7 @@ Select [Classic] to use GoodbyeDPI-UI style markup</value>
     <value>Check your antivirus block history and quarantine. If it blocks a trusted component download, temporarily disable protection to test, then turn it back on immediately.</value>
   </data>
   <data name="DownloadDnsAdvice.Text" xml:space="preserve">
-    <value>If DNS prevents access to the download server, configure secure DNS (DNS over HTTPS) in network settings and try again.</value>
+    <value>Also changing secure DNS may help to fix that problem. You can do it in system settings (Windows 11) or some other ways (contact support to get more help)</value>
   </data>
   <data name="DownloadNetworkHelpButton.Content" xml:space="preserve">
     <value>Help with store connection problems</value>
