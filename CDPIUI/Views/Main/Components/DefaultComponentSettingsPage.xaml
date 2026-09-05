@@ -11,10 +11,12 @@
     xmlns:l="using:WinUI3Localizer"
     xmlns:lcontrols="using:CDPIUI"
     xmlns:componentControls="using:CDPIUI.Controls.ComponentSettings"
-    xmlns:tpl="using:CDPIUI.Controls.Default">
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:conv="using:CDPIUI.Converters">
 
     <tpl:TemplatePage.Resources>
         <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+        <conv:ObjectToBoolConverter x:Key="ObjToBool"/>
     </tpl:TemplatePage.Resources>
 
     <Grid>
@@ -92,6 +94,27 @@
                                 ItemsStretch="Fill"/>
                         </ItemsRepeater.Layout>
                     </ItemsRepeater>
+                    <componentControls:ComponentHelpfulLinksUserControl
+                        x:Name="HelpfulLinksControl"
+                        TargetComponentId="{x:Bind ComponentId, Mode=OneWay}"
+                        ConfigEditRequested="ComponentHelpfulLinksUserControl_ConfigEditRequested"
+                        Visibility="Collapsed">
+                        <componentControls:ComponentHelpfulLinksUserControl.Items>
+                            <componentControls:HelpfulLink
+                                l:Uids.Uid="HelpfulLinkEditConfig"
+                                HelpfulLinkType="EditConfig"/>
+                            <componentControls:HelpfulLink 
+                                l:Uids.Uid="HelpfulLinkCreateNewConfig"
+                                HelpfulLinkType="CreateNewConfig"/>
+                            <componentControls:HelpfulLink 
+                                l:Uids.Uid="HelpfulLinkOpenAutoSelectionUtil"
+                                HelpfulLinkType="OpenAutoselectionUtil"/>
+                            <componentControls:HelpfulLink 
+                                x:Name="SetupAsProxyHelpfulLink"
+                                l:Uids.Uid="HelpfulLinkSetupProxy"
+                                HelpfulLinkType="SetupProxy"/>
+                        </componentControls:ComponentHelpfulLinksUserControl.Items>
+                    </componentControls:ComponentHelpfulLinksUserControl>
                 </StackPanel>
                 <Grid x:Name="LoadingGrid" Margin="0 200 0 0">
                     <Grid.RowDefinitions>

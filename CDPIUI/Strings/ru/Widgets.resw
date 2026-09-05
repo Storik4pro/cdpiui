@@ -159,4 +159,10 @@
   <data name="ReportAProblemDescription" xml:space="preserve">
     <value>Что-то работает не так, как надо? Расскажите об этом!</value>
   </data>
+  <data name="StopService" xml:space="preserve">
+    <value>Остановить службу</value>
+  </data>
+  <data name="StopServiceDescription" xml:space="preserve">
+    <value>Остановка службы может помочь при проблемах с подключением к Интернету. Так же останавливать службу рекомендуется при изменении активного пресета для получения наилучшего результата</value>
+  </data>
 </root>

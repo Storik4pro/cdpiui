@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\Icons\DragReorder.png" />
+    <None Remove="Controls\ComponentSettings\ComponentHelpfulLinksUserControl.xaml" />
     <None Remove="Controls\ComponentSettings\ConfigNeededUserControl.xaml" />
     <None Remove="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml" />
     <None Remove="Controls\ConditionUserControl.xaml" />
@@ -672,6 +673,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Universal\LargeToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ComponentSettings\ComponentHelpfulLinksUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Template\Hosts\hosts">

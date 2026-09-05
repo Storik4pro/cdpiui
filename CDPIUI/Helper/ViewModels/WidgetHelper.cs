@@ -117,6 +117,17 @@ namespace CDPIUI.Helper.ViewModels
                     UIHelper.GetUriFromString("ms-appx:///Assets/Icons/EditHostsFile.ico"),
                     false));
 
+            widgets.Add(
+                CreateWidget(
+                    WidgetType.NavigateToPage,
+                    "cdpiui://Tools/Service",
+                    "StopService",
+                    "StopServiceDescription",
+                    new Uri(""),
+                    false));
+
+
+
             return widgets;
         }
 

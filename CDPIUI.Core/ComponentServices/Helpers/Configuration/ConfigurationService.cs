@@ -394,7 +394,20 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             return pattern.Replace(input, new MatchEvaluator(evaluator));
         }
 
-        public static string GetStartupParametersByConfigItem(ConfigItem item)
+        /// <summary>
+        /// Gets startup sting of <see cref="ConfigItem"/> after 
+        /// variables and paths check.
+        /// </summary>
+        /// <param name="item">Target item</param>
+        /// <param name="forceRebuild">
+        /// Force rebuild config if component required hidden convertion.<br></br>
+        /// If <see cref="false"/>, rebuild called only if user sets 
+        /// "ZAPRET2/validateLegacyCacheHashes" as <see cref="true"/><br></br>
+        /// If <paramref name="item"/> target not required convertion this property
+        /// ignores.
+        /// </param>
+        /// <returns>Component startup string for item</returns>
+        public static string GetStartupParametersByConfigItem(ConfigItem item, bool forceRebuild = false)
         {
             Dictionary<string, bool> jparams = item.jparams;
             List<string> variables = item.variables;
@@ -425,7 +438,8 @@ namespace CDPIUI.Core.ComponentServices.Configuration
             return Zapret2LegacyConfigService.GetStartupString(
                 item,
                 startupString,
-                validateHashes);
+                validateHashes,
+                forceRebuild);
         }
         public static string ReplaceCommaVariables(string startupString, Dictionary<string, string> commaVars)
         {
