@@ -19,6 +19,14 @@ class Programm
     [STAThread]
     static void Main(string[] args)
     {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            Logger.Instance.CreateDebugLog("Startup",
+                $"Unhandled exception; terminating={e.IsTerminating}: {e.ExceptionObject}");
+        using (var process = Process.GetCurrentProcess())
+            Logger.Instance.CreateDebugLog("Startup",
+                $"Starting PID={process.Id}, session={process.SessionId}, path='{Environment.ProcessPath}', " +
+                $"autorun={args.Contains("--autorun")}.");
+
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
@@ -31,7 +39,8 @@ class Programm
 
         if (ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
         {
-            Application.Run(new TrayApplicationContext());
+            using var toastContext = new TrayApplicationContext();
+            Application.Run(toastContext);
             return;
         }
 
@@ -72,7 +81,6 @@ class Programm
 
         if (args.Contains("--autorun"))
         {
-            AskStartupActions();
             if (SettingsManager.Instance.GetValue<bool>("NOTIFICATIONS", "trayHide"))
                 NotifyHelper.ShowMessage("CDPI UI", LocaleHelper.GetLocaleString("TrayHide"), "SHOW_MAIN_WINDOW");
         }
@@ -82,19 +90,22 @@ class Programm
 
         
 
-        Application.Run(new TrayApplicationContext());
+        using var context = new TrayApplicationContext(args.Contains("--autorun"));
+        Application.Run(context);
         ToastNotificationManagerCompat.History.Clear();
     }
 
     public class TrayApplicationContext : ApplicationContext
     {
         private readonly EmptyForm _trayForm;
+        private readonly CancellationTokenSource _startupCancellation = new();
+        private bool _disposed;
 
-        public TrayApplicationContext()
+        public TrayApplicationContext(bool runStartupActions = false)
         {
             _trayForm = new EmptyForm();
 
-            _trayForm.AddIcon(notify: true); // TODO: change to false
+            _trayForm.AddIcon(notify: true);
             try
             {
                 ConditionalLaunchEngine.Instance.Start(_trayForm);
@@ -107,12 +118,39 @@ class Programm
             }
 
             NotifyHelper.Instance.Init();
+
+            if (runStartupActions)
+            {
+                // Start after the message loop is available; retries do not depend on the icon.
+                _trayForm.BeginInvoke(new Action(() => _ = AskStartupActions(_startupCancellation.Token)));
+            }
+        }
+
+        protected override void ExitThreadCore()
+        {
+            if (!_disposed) _startupCancellation.Cancel();
+            base.ExitThreadCore();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                _startupCancellation.Cancel();
+                _startupCancellation.Dispose();
+                _trayForm.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 
-    private static async void AskStartupActions()
+    private static Task AskStartupActions(CancellationToken cancellationToken)
     {
-        await PipeHelper.SendConPTYPacket(CONPTYMessageIds.GetAllStartupStrings, string.Empty, openIfNotConnected: true);
+        return StartupActionDispatcher.DispatchAsync(
+            () => PipeHelper.SendConPTYPacket(CONPTYMessageIds.GetAllStartupStrings, string.Empty, openIfNotConnected: true),
+            message => Logger.Instance.CreateDebugLog("Startup", message),
+            cancellationToken);
     }
 
     private static void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat toastArgs)

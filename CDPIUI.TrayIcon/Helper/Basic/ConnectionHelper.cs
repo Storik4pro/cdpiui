@@ -79,7 +79,9 @@ namespace CDPIUI.TrayIcon.Helper.Basic
                 }
                 catch (Exception ex)
                 {
-                    Logger?.CreateErrorLog(nameof(PipeServer), $"Pipe create error: {ex.Message}");
+                    Logger?.CreateDebugLog(nameof(PipeServer),
+                        $"Terminating PID={Environment.ProcessId}: pipe creation failed. " +
+                        $"Another tray instance may already own the pipe. Exception: {ex}");
                     Process.GetCurrentProcess().Kill();
                     return;
                 }

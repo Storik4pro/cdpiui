@@ -46,6 +46,11 @@ namespace CDPIUI.TrayIcon.Helper
                     taskDefinition.Principal.UserId = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                     taskDefinition.Principal.LogonType = TaskLogonType.InteractiveToken;
 
+                    taskDefinition.Settings.DisallowStartIfOnBatteries = false;
+                    taskDefinition.Settings.StopIfGoingOnBatteries = false;
+
+                    taskDefinition.Settings.ExecutionTimeLimit = TimeSpan.Zero;
+
                     taskService.RootFolder.RegisterTaskDefinition(TaskName, taskDefinition);
                 }
                 return true;

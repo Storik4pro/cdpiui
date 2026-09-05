@@ -218,13 +218,13 @@ namespace CDPIUI.TrayIcon.Helper
                     var backgroundArgument = message.Target == PipeMessageTargetIds.ConditionalLaunch
                         ? "--create-no-window "
                         : string.Empty;
-                    RunHelper.RunAsDesktopUser(
+                    return RunHelper.RunAsDesktopUser(
                         Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"),
                         $"{backgroundArgument}--direct:{message}");
                 }
                 else 
                 {
-                    RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"----ms-protocol:{message.ToString()}");
+                    return RunHelper.RunAsDesktopUser(Path.Combine(Utils.GetDataDirectory(), "CDPIUI.exe"), $"----ms-protocol:{message.ToString()}");
                 }
             }
 

@@ -44,18 +44,22 @@ namespace CDPIUI.TrayIcon.Helper
             return Process.Start(startInfo);
         }
 
-        public static void RunAsDesktopUser(string fileName, string commandLine)
+        public static bool RunAsDesktopUser(string fileName, string commandLine)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(fileName));
 
+
+            var hwnd = GetShellWindow();
+            if (hwnd == IntPtr.Zero)
+                return false;
 
             var hProcessToken = IntPtr.Zero;
             try
             {
                 var process = GetCurrentProcess();
                 if (!OpenProcessToken(process, 0x0020, ref hProcessToken))
-                    return;
+                    return LogLaunchFailure(nameof(OpenProcessToken));
 
                 var tkp = new TOKEN_PRIVILEGES
                 {
@@ -64,21 +68,19 @@ namespace CDPIUI.TrayIcon.Helper
                 };
 
                 if (!LookupPrivilegeValue(null, "SeIncreaseQuotaPrivilege", ref tkp.Privileges[0].Luid))
-                    return;
+                    return LogLaunchFailure(nameof(LookupPrivilegeValue));
 
                 tkp.Privileges[0].Attributes = 0x00000002;
 
                 if (!AdjustTokenPrivileges(hProcessToken, false, ref tkp, 0, IntPtr.Zero, IntPtr.Zero))
-                    return;
+                    return LogLaunchFailure(nameof(AdjustTokenPrivileges));
+                if (Marshal.GetLastWin32Error() != 0)
+                    return LogLaunchFailure(nameof(AdjustTokenPrivileges));
             }
             finally
             {
                 CloseHandle(hProcessToken);
             }
-
-            var hwnd = GetShellWindow();
-            if (hwnd == IntPtr.Zero)
-                return;
 
             var hShellProcess = IntPtr.Zero;
             var hShellProcessToken = IntPtr.Zero;
@@ -87,24 +89,28 @@ namespace CDPIUI.TrayIcon.Helper
             {
                 uint dwPID;
                 if (GetWindowThreadProcessId(hwnd, out dwPID) == 0)
-                    return;
+                    return LogLaunchFailure(nameof(GetWindowThreadProcessId));
 
                 hShellProcess = OpenProcess(ProcessAccessFlags.QueryInformation, false, dwPID);
                 if (hShellProcess == IntPtr.Zero)
-                    return;
+                    return LogLaunchFailure(nameof(OpenProcess));
 
                 if (!OpenProcessToken(hShellProcess, 0x0002, ref hShellProcessToken))
-                    return;
+                    return LogLaunchFailure("OpenProcessToken(shell)");
 
                 var dwTokenRights = 395U;
 
                 if (!DuplicateTokenEx(hShellProcessToken, dwTokenRights, IntPtr.Zero, SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation, TOKEN_TYPE.TokenPrimary, out hPrimaryToken))
-                    return;
+                    return LogLaunchFailure(nameof(DuplicateTokenEx));
 
-                var si = new STARTUPINFO();
+                var si = new STARTUPINFO { cb = Marshal.SizeOf<STARTUPINFO>() };
                 var pi = new PROCESS_INFORMATION();
                 if (!CreateProcessWithTokenW(hPrimaryToken, 0, null, $"\"{fileName}\" {commandLine}", 0, IntPtr.Zero, Path.GetDirectoryName(fileName), ref si, out pi))
-                    return;
+                    return LogLaunchFailure(nameof(CreateProcessWithTokenW));
+
+                CloseHandle(pi.hThread);
+                CloseHandle(pi.hProcess);
+                return true;
             }
             finally
             {
@@ -113,6 +119,14 @@ namespace CDPIUI.TrayIcon.Helper
                 CloseHandle(hShellProcess);
             }
 
+        }
+
+        private static bool LogLaunchFailure(string operation)
+        {
+            int error = Marshal.GetLastWin32Error();
+            Basic.Logger.Instance.CreateDebugLog(nameof(RunHelper),
+                $"Desktop-user launch failed at {operation}: Win32={error} (0x{error:X8}).");
+            return false;
         }
 
         #region Interop

@@ -21,15 +21,9 @@ namespace CDPIUI.TrayIcon.Forms
     public partial class EmptyForm : Form
     {
         private static readonly Guid IconDisplayGuid = GetGuid();
-        private static StringBuilder ErrorMessage = new(
-            "Application can't create icon in system notification aera during unexpected exception. " +
-            "You can find solution of this problem on https://storik4pro.github.io/en-US/cdpiui/wiki/Other/TrayIconNotShown/ or application internal help. \n" +
-            "\tHere some additional information about this problem: \n" +
-            "\t\tApplication version: {0}\n" +
-            "\t\tOperation: {1}\n" +
-            "\t\tOperation result: {2}\n" +
-            "\t\tException code: {3}\n" +
-            "\tContact official support if this error persist.");
+        private readonly System.Windows.Forms.Timer _iconRetryTimer = new() { Interval = 5000 };
+        private bool _iconAdded;
+        private int _iconAttempts;
 
         private TrayMenuForm? TrayMenuForm;
 
@@ -38,6 +32,7 @@ namespace CDPIUI.TrayIcon.Forms
             InitializeComponent();
 
             HideWindow();
+            _iconRetryTimer.Tick += (_, _) => AddIcon(iconName: GetCurrentIcon(), toolTip: GetNowRunnedComponentsString());
 
             Application.ApplicationExit += Application_ApplicationExit;
             this.Disposed += EmptyForm_Disposed;
@@ -128,6 +123,13 @@ namespace CDPIUI.TrayIcon.Forms
 
         private void HandleTaskStateUpdate(Tuple<string, bool> taskStateUpdate)
         {
+            if (IsDisposed || Disposing || !IsHandleCreated) return;
+            if (InvokeRequired)
+            {
+                try { BeginInvoke(new Action(() => HandleTaskStateUpdate(taskStateUpdate))); }
+                catch (InvalidOperationException) { }
+                return;
+            }
             UpdateIcon(GetCurrentIcon(), GetNowRunnedComponentsString());
         }
 
@@ -201,13 +203,14 @@ namespace CDPIUI.TrayIcon.Forms
             return "CDPI UI" + (string.IsNullOrEmpty(toolTip) ? string.Empty : $"\n{toolTip}");
         }
 
-        private static void UpdateIcon(string iconName, string toolTip)
+        private void UpdateIcon(string iconName, string toolTip)
         {
-            if (string.IsNullOrEmpty(iconName)) return;
+            if (string.IsNullOrEmpty(iconName) || !_iconAdded) return;
 
             NOTIFYICONDATA data = new();
 
             data.cbSize = Marshal.SizeOf(data);
+            data.hWnd = Handle;
             data.guidItem = IconDisplayGuid;
             data.uCallbackMessage = WM_MYMESSAGE;
             data.hIcon = LoadIcon(iconName);
@@ -215,12 +218,24 @@ namespace CDPIUI.TrayIcon.Forms
                           NotifyFlags.NIF_SHOWTIP;
             data.szTip = GetNormalToolTip(toolTip);
 
-            var result = Shell_NotifyIcon(NotifyCommand.NIM_MODIFY, ref data);
+            try
+            {
+                if (Shell_NotifyIcon(NotifyCommand.NIM_MODIFY, ref data) == 0)
+                {
+                    _iconAdded = false;
+                    _iconRetryTimer.Start();
+                }
+            }
+            finally
+            {
+                if (data.hIcon != IntPtr.Zero) DestroyIcon(data.hIcon);
+            }
 
         }
 
         public void AddIcon(bool notify=false, string? iconName=null, string? toolTip = null)
         {
+            if (IsDisposed || Disposing || _iconAdded) return;
             if (string.IsNullOrEmpty(iconName)) iconName = "trayLogoNormal";
 
             NOTIFYICONDATA data = new();
@@ -235,20 +250,44 @@ namespace CDPIUI.TrayIcon.Forms
             data.uFlags = NotifyFlags.NIF_ICON | NotifyFlags.NIF_GUID | NotifyFlags.NIF_MESSAGE | NotifyFlags.NIF_TIP |
                           NotifyFlags.NIF_SHOWTIP;
 
-            var result = Shell_NotifyIcon(NotifyCommand.NIM_ADD, ref data);
-
-            if (result == 0 && notify)
+            try
             {
-                string error = $"0x{(uint)Marshal.GetLastWin32Error():X8}";
-                Logger.Instance.CreateErrorLog(
-                    nameof(EmptyForm), string.Format(ErrorMessage.ToString(), "NaN", nameof(AddIcon), result, error)
-                    );
-                NotifyHelper.Instance.ShowTrayErrorMessage(error);
-                error = null;
-            }
+                _iconAttempts++;
+                var result = Shell_NotifyIcon(NotifyCommand.NIM_ADD, ref data);
+                int lastError = Marshal.GetLastWin32Error();
+                // TaskbarCreated also occurs on DPI changes, when the icon may still exist.
+                _iconAdded = result != 0 || Shell_NotifyIcon(NotifyCommand.NIM_MODIFY, ref data) != 0;
+                if (!_iconAdded)
+                {
+                    _iconRetryTimer.Start();
+                    if (_iconAttempts == 1 || _iconAttempts % 12 == 0)
+                        Logger.Instance.CreateDebugLog(nameof(EmptyForm),
+                            $"Tray registration pending: attempt={_iconAttempts}, NIM_ADD={result}, " +
+                            $"last-error snapshot=0x{lastError:X8} (Shell_NotifyIcon does not document GetLastError), " +
+                            $"taskbarPresent={FindWindow("Shell_TrayWnd", null) != IntPtr.Zero}, hwnd=0x{Handle:X}. Will retry.");
 
-            data.uVersion = NOTIFYICON_VERSION_4;
-            Shell_NotifyIcon(NotifyCommand.NIM_SETVERSION, ref data);
+                    if (notify && _iconAttempts == 1 && FindWindow("Shell_TrayWnd", null) != IntPtr.Zero)
+                    {
+                        try { NotifyHelper.Instance.ShowTrayErrorMessage($"0x{lastError:X8}"); }
+                        catch (Exception ex)
+                        {
+                            Logger.Instance.CreateDebugLog(nameof(EmptyForm), $"Tray error notification failed: {ex}");
+                        }
+                    }
+                    return;
+                }
+
+                _iconRetryTimer.Stop();
+                Logger.Instance.CreateDebugLog(nameof(EmptyForm), $"Tray icon registered after {_iconAttempts} attempt(s).");
+                _iconAttempts = 0;
+                data.uVersion = NOTIFYICON_VERSION_4;
+                if (Shell_NotifyIcon(NotifyCommand.NIM_SETVERSION, ref data) == 0)
+                    Logger.Instance.CreateDebugLog(nameof(EmptyForm), "NIM_SETVERSION returned FALSE.");
+            }
+            finally
+            {
+                if (data.hIcon != IntPtr.Zero) DestroyIcon(data.hIcon);
+            }
 
             data = default;
         }
@@ -282,6 +321,7 @@ namespace CDPIUI.TrayIcon.Forms
 
         private void EmptyForm_Disposed(object? sender, EventArgs e)
         {
+            _iconRetryTimer.Dispose();
             ConditionalLaunchEngine.Instance.Dispose();
             DeleteIcon();
             DisconnectHandlers();
@@ -299,6 +339,11 @@ namespace CDPIUI.TrayIcon.Forms
             if (m.Msg == WM_CREATE)
             {
                 s_uTaskbarRestart = RegisterWindowMessage("TaskbarCreated");
+                // Explorer runs at medium integrity; this process requires administrator rights.
+                if (s_uTaskbarRestart == 0 ||
+                    !ChangeWindowMessageFilterEx(m.HWnd, s_uTaskbarRestart, 1, IntPtr.Zero))
+                    Logger.Instance.CreateDebugLog(nameof(EmptyForm),
+                        $"Cannot allow TaskbarCreated through UIPI: Win32={Marshal.GetLastWin32Error()}. Timer retry remains available.");
             }
             else if (m.Msg == WM_MYMESSAGE)
             {
@@ -339,8 +384,12 @@ namespace CDPIUI.TrayIcon.Forms
             }
             else
             {
-                if (m.Msg == s_uTaskbarRestart)
-                    AddIcon(notify: true, iconName: GetCurrentIcon(), toolTip: GetNowRunnedComponentsString());
+                if (s_uTaskbarRestart != 0 && m.Msg == s_uTaskbarRestart)
+                {
+                    Logger.Instance.CreateDebugLog(nameof(EmptyForm), "TaskbarCreated received; restoring tray icon.");
+                    _iconAdded = false;
+                    AddIcon(iconName: GetCurrentIcon(), toolTip: GetNowRunnedComponentsString());
+                }
             }
 
             base.WndProc(ref m);
@@ -388,7 +437,7 @@ namespace CDPIUI.TrayIcon.Forms
         }
 
         public enum NotifyCommand { NIM_ADD = 0x0, NIM_DELETE = 0x2, NIM_MODIFY = 0x1, NIM_SETVERSION = 0x4 }
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct NOTIFYICONDATA
         {
             public Int32 cbSize;
@@ -411,11 +460,22 @@ namespace CDPIUI.TrayIcon.Forms
             public IntPtr hBalloonIcon;
         }
 
-        [DllImport("shell32.dll", SetLastError = true)]
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern System.Int32 Shell_NotifyIcon(NotifyCommand cmd, ref NOTIFYICONDATA data);
 
         [DllImport("User32.dll", SetLastError = true)]
         public static extern uint RegisterWindowMessage(String lpString);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ChangeWindowMessageFilterEx(IntPtr hwnd, uint message, uint action, IntPtr changeInfo);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr FindWindow(string className, string? windowName);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool DestroyIcon(IntPtr icon);
 
 
         [StructLayout(LayoutKind.Sequential)]
