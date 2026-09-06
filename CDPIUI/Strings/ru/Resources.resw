@@ -6111,4 +6111,15 @@ https://discord.com/app</value>
   <data name="AppFeatureReviewZapret2Support" xml:space="preserve">
     <value>Загрузите Zapret2 прямо сейчас</value>
   </data>
+  <data name="SaveAsNewAnimatedSelectorBarItem.Header" xml:space="preserve">
+    <value>Сохранить как новый</value>
+  </data>
+  <data name="SaveOverwriteSelectorBarItem.Header" xml:space="preserve">
+    <value>Перезаписать оригинал</value>
+  </data>
+  <data name="ConfigMakerSaveOverwriteConfigDescription.Text" xml:space="preserve">
+    <value>Перезаписать оригинальный пресет.
+
+Это действие не рекомендуется для наборов, загруженных из Магазина. Обновление такого элемента сотрет ваши изменения без возможности восстановления. Сохраните как новый пресет, чтобы защитить изменения от удаления.</value>
+  </data>
 </root>

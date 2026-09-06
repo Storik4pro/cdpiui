@@ -6108,4 +6108,15 @@ New configs for Zapret2 will be come soon!</value>
   <data name="AppFeatureReviewZapret2Support" xml:space="preserve">
     <value>Download Zapret2 now</value>
   </data>
+  <data name="SaveAsNewAnimatedSelectorBarItem.Header" xml:space="preserve">
+    <value>Save as new item</value>
+  </data>
+  <data name="SaveOverwriteSelectorBarItem.Header" xml:space="preserve">
+    <value>Overwrite current item</value>
+  </data>
+  <data name="ConfigMakerSaveOverwriteConfigDescription.Text" xml:space="preserve">
+    <value>Overwrite original config. 
+
+It action not recommended to items from Store. Any pack update from Store will remove changes you do. Save as new config to protect your changes.</value>
+  </data>
 </root>
