@@ -1,7 +1,6 @@
 #nullable enable
 
 using Microsoft.UI.Xaml.Controls;
-using MS.WindowsAPICodePack.Internal;
 using WinUI3Localizer;
 
 namespace CDPIUI.Controls.Dialogs.CreateConfigHelper;
@@ -15,9 +14,24 @@ public enum ConfigMakerSavePresetContentDialogResult
 
 public sealed partial class ConfigMakerSavePresetContentDialog : ContentDialog
 {
+    private bool overwriteEnable = true;
+
     public ConfigMakerSavePresetContentDialogResult Result = ConfigMakerSavePresetContentDialogResult.Cancel;
 
-    public bool OverwriteEnable { get; set; } = true;
+    public bool OverwriteEnable
+    {
+        get => overwriteEnable;
+        set
+        {
+            overwriteEnable = value;
+            SaveOverwriteItem.IsEnabled = value;
+            if (!value && SelectorBar.SelectedItem == SaveOverwriteItem)
+            {
+                SelectorBar.SelectIndex(0);
+            }
+            UpdatePrimaryButton();
+        }
+    }
 
     public ConfigMakerSavePresetContentDialog(string suggestedName = "")
     {
@@ -28,6 +42,7 @@ public sealed partial class ConfigMakerSavePresetContentDialog : ContentDialog
         CloseButtonText = localizer.GetLocalizedString("Cancel");
         DefaultButton = ContentDialogButton.Primary;
         PresetNameTextBox.Text = suggestedName ?? string.Empty;
+        SelectorBar.SelectIndex(0);
         UpdatePrimaryButton();
     }
 
@@ -48,10 +63,11 @@ public sealed partial class ConfigMakerSavePresetContentDialog : ContentDialog
         ContentDialog sender,
         ContentDialogButtonClickEventArgs args)
     {
-        Result = SelectorBar.SelectedItem == SaveAsNewItem ? ConfigMakerSavePresetContentDialogResult.SaveAsNew : ConfigMakerSavePresetContentDialogResult.Overwrite;
+        Result = SelectorBar.SelectedItem == SaveAsNewItem
+            ? ConfigMakerSavePresetContentDialogResult.SaveAsNew
+            : ConfigMakerSavePresetContentDialogResult.Overwrite;
         PresetName = PresetNameTextBox.Text.Trim();
-        args.Cancel = PresetName.Length == 0;
+        args.Cancel = Result == ConfigMakerSavePresetContentDialogResult.SaveAsNew &&
+                      PresetName.Length == 0;
     }
-
-    
 }

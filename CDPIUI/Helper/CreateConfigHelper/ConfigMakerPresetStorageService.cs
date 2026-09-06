@@ -23,8 +23,10 @@ public sealed class ConfigMakerPresetSaveResult
     public bool Success { get; init; }
     public string ErrorCode { get; init; } = string.Empty;
     public string ErrorDetails { get; init; } = string.Empty;
+    public string PackId { get; init; } = string.Empty;
     public string ConfigFileName { get; init; } = string.Empty;
     public int CopiedFileCount { get; init; }
+    public IReadOnlyList<ConfigMakerResourceMetadata> StoredResources { get; init; } = [];
 
     public static ConfigMakerPresetSaveResult Failed(string code, string details = "") => new()
     {
@@ -43,14 +45,23 @@ public sealed class ConfigMakerPresetStorageService
     {
         ArgumentNullException.ThrowIfNull(document);
         ConfigMakerPresetDocument snapshot = CloneDocument(document);
-        return Task.Run(() => SaveCoreAsync(presetName, snapshot));
+        return Task.Run(() => SaveCoreAsync(presetName, snapshot, overwrite: false));
+    }
+
+    public Task<ConfigMakerPresetSaveResult> OverwriteAsync(
+        ConfigMakerPresetDocument document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ConfigMakerPresetDocument snapshot = CloneDocument(document);
+        return Task.Run(() => SaveCoreAsync(snapshot.Name, snapshot, overwrite: true));
     }
 
     private static async Task<ConfigMakerPresetSaveResult> SaveCoreAsync(
         string presetName,
-        ConfigMakerPresetDocument document)
+        ConfigMakerPresetDocument document,
+        bool overwrite)
     {
-        string normalizedName = (presetName ?? string.Empty).Trim();
+        string normalizedName = NormalizeDisplayName(presetName);
         if (normalizedName.Length == 0)
         {
             return ConfigMakerPresetSaveResult.Failed("NAME_EMPTY");
@@ -64,6 +75,25 @@ public sealed class ConfigMakerPresetStorageService
             return ConfigMakerPresetSaveResult.Failed("COMMAND_EMPTY");
         }
 
+        string destinationPackId;
+        string configFileName;
+        if (overwrite)
+        {
+            destinationPackId = document.PackId?.Trim() ?? string.Empty;
+            configFileName = document.FileName?.Trim() ?? string.Empty;
+            if (destinationPackId.Length == 0 ||
+                configFileName.Length == 0 ||
+                !string.Equals(configFileName, Path.GetFileName(configFileName), StringComparison.Ordinal))
+            {
+                return ConfigMakerPresetSaveResult.Failed("OVERWRITE_TARGET_MISSING");
+            }
+        }
+        else
+        {
+            destinationPackId = SharedConstants.LocalUserItemsId;
+            configFileName = string.Empty;
+        }
+
         string componentDirectory = DatabaseHelper.Instance.GetItemById(document.ComponentId)?.Directory ?? string.Empty;
         if (string.IsNullOrWhiteSpace(componentDirectory) || !Directory.Exists(componentDirectory))
         {
@@ -72,18 +102,33 @@ public sealed class ConfigMakerPresetStorageService
 
         string userStorage = Directories.StoreLocalUserItemDirectory;
         Directory.CreateDirectory(userStorage);
-        string storageId = CreateStorageId(normalizedName, userStorage);
+        string destinationPresetDirectory = ConfigurationService.GetItemFolderFromPackId(destinationPackId);
+        if (overwrite && !Directory.Exists(destinationPresetDirectory))
+        {
+            return ConfigMakerPresetSaveResult.Failed("PACK_UNAVAILABLE", destinationPackId);
+        }
+        Directory.CreateDirectory(destinationPresetDirectory);
+
+        string sourcePresetDirectory = GetSourcePresetDirectory(document, userStorage);
+        string storageId = overwrite
+            ? CreateOverwriteStorageId(configFileName)
+            : CreateStorageId(normalizedName, destinationPresetDirectory);
+        if (!overwrite)
+        {
+            configFileName = $"{storageId}.json";
+        }
         string listRoot = Path.Combine(
-            userStorage,
+            destinationPresetDirectory,
             SharedConstants.LocalUserItemSiteListsFolder,
             StorageFolderName,
             storageId);
         string binRoot = Path.Combine(
-            userStorage,
+            destinationPresetDirectory,
             SharedConstants.LocalUserItemBinsFolder,
             StorageFolderName,
             storageId);
         List<string> createdRoots = [];
+        List<string> createdFiles = [];
 
         try
         {
@@ -91,16 +136,20 @@ public sealed class ConfigMakerPresetStorageService
             Dictionary<string, string> copiedFiles = new(StringComparer.OrdinalIgnoreCase);
             List<ConfigMakerResourceMetadata> storedResources = [];
             int copiedFileCount = 0;
+            ConfigItem sourceConfig = document.ToConfigItem(
+                document.PackId ?? destinationPackId,
+                normalizedName);
 
             foreach (ConfigMakerPresetResource resource in document.Resources)
             {
                 string? sourcePath = ResolveResourcePath(
                     resource.Path,
                     componentDirectory,
-                    userStorage);
+                    sourcePresetDirectory,
+                    sourceConfig);
                 if (sourcePath == null)
                 {
-                    Cleanup(createdRoots);
+                    Cleanup(createdFiles, createdRoots);
                     return ConfigMakerPresetSaveResult.Failed("FILE_MISSING", resource.Path);
                 }
 
@@ -109,6 +158,13 @@ public sealed class ConfigMakerPresetStorageService
                 if (keepComponentReference)
                 {
                     storedReference = "/" + Path.GetRelativePath(componentDirectory, sourcePath).Replace('\\', '/');
+                }
+                else if (IsPathInside(sourcePath, destinationPresetDirectory))
+                {
+                    storedReference = string.Join(
+                        '/',
+                        "$GETCURRENTDIR()",
+                        Path.GetRelativePath(destinationPresetDirectory, sourcePath).Replace('\\', '/'));
                 }
                 else
                 {
@@ -128,6 +184,7 @@ public sealed class ConfigMakerPresetStorageService
                             Path.GetFileName(sourcePath));
                         File.Copy(sourcePath, destinationPath, overwrite: false);
                         copiedFiles[copyKey] = destinationPath;
+                        createdFiles.Add(destinationPath);
                         copiedFileCount++;
                     }
                     string category = resource.Kind == ConfigMakerResourceKind.SiteList
@@ -153,42 +210,79 @@ public sealed class ConfigMakerPresetStorageService
             }
 
             ConfigItem config = document.ToConfigItem(
-                SharedConstants.LocalUserItemsId,
+                destinationPackId,
                 normalizedName);
+            string targetVersion = !string.IsNullOrWhiteSpace(document.TargetVersion)
+                ? document.TargetVersion
+                : DatabaseHelper.Instance.GetItemById(document.ComponentId)?.CurrentVersion;
             config.target =
             [
                 document.ComponentId,
-                DatabaseHelper.Instance.GetItemById(document.ComponentId)?.CurrentVersion ?? "%CURRENT%",
+                string.IsNullOrWhiteSpace(targetVersion) ? "%CURRENT%" : targetVersion,
             ];
             config.RewritePresetReferences(replacements);
-            config.configMaker ??= new ConfigMakerPresetMetadata();
-            config.configMaker.resources = storedResources;
+            if (config.configMaker != null || storedResources.Count > 0)
+            {
+                config.configMaker ??= new ConfigMakerPresetMetadata();
+                config.configMaker.resources = storedResources.Count == 0 ? null : storedResources;
+            }
+            config.NormalizeForStorage();
 
-            string configFileName = $"{storageId}.json";
+            ConfigUsedFile? missingFile = config.UsedFiles.FirstOrDefault(file =>
+            {
+                try
+                {
+                    return !File.Exists(config.ResolveFilePath(
+                        file.Path,
+                        componentDirectory,
+                        destinationPresetDirectory));
+                }
+                catch
+                {
+                    return true;
+                }
+            });
+            if (missingFile != null)
+            {
+                Cleanup(createdFiles, createdRoots);
+                return ConfigMakerPresetSaveResult.Failed("FILE_MISSING", missingFile.ExpandedPath);
+            }
+
             string errorCode = await ConfigurationService.SaveConfigItem(
                 configFileName,
-                SharedConstants.LocalUserItemsId,
+                destinationPackId,
                 config);
             if (!string.IsNullOrWhiteSpace(errorCode))
             {
-                Cleanup(createdRoots);
+                Cleanup(createdFiles, createdRoots);
                 return ConfigMakerPresetSaveResult.Failed("SAVE_FAILED", errorCode);
             }
 
-            TrySaveVariableDescriptions(document);
+            TrySaveVariableDescriptions(document, destinationPackId);
 
-            ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(document.ComponentId)?.ReInitConfigs();
+            try
+            {
+                ComponentItemsLoaderHelper.Instance
+                    .GetComponentHelperFromId(document.ComponentId)?
+                    .ReInitConfigs();
+            }
+            catch
+            {
+                // The config and its resources are already safely stored. A later reload will pick them up.
+            }
 
             return new ConfigMakerPresetSaveResult
             {
                 Success = true,
+                PackId = destinationPackId,
                 ConfigFileName = configFileName,
                 CopiedFileCount = copiedFileCount,
+                StoredResources = storedResources,
             };
         }
         catch (Exception exception)
         {
-            Cleanup(createdRoots);
+            Cleanup(createdFiles, createdRoots);
             return ConfigMakerPresetSaveResult.Failed("UNEXPECTED", exception.Message);
         }
     }
@@ -226,10 +320,18 @@ public sealed class ConfigMakerPresetStorageService
     {
         string componentDirectory = DatabaseHelper.Instance.GetItemById(document.ComponentId)?.Directory ?? string.Empty;
         string userStorage = Directories.StoreLocalUserItemDirectory;
+        string presetDirectory = GetSourcePresetDirectory(document, userStorage);
+        ConfigItem sourceConfig = document.ToConfigItem(
+            document.PackId ?? SharedConstants.LocalUserItemsId,
+            document.Name);
         Dictionary<string, string> replacements = new(StringComparer.OrdinalIgnoreCase);
         foreach (ConfigMakerPresetResource resource in document.Resources)
         {
-            string? fullPath = ResolveResourcePath(resource.Path, componentDirectory, userStorage);
+            string? fullPath = ResolveResourcePath(
+                resource.Path,
+                componentDirectory,
+                presetDirectory,
+                sourceConfig);
             if (fullPath == null)
             {
                 throw new FileNotFoundException(null, resource.Path);
@@ -252,30 +354,33 @@ public sealed class ConfigMakerPresetStorageService
     private static string? ResolveResourcePath(
         string sourcePath,
         string componentDirectory,
-        string userStorage)
+        string presetDirectory,
+        ConfigItem sourceConfig)
     {
-        string normalized = (sourcePath ?? string.Empty).Trim().Trim('"', '\'');
-        if (normalized.StartsWith("$GETCURRENTDIR()", StringComparison.OrdinalIgnoreCase))
+        try
         {
-            string suffix = normalized["$GETCURRENTDIR()".Length..].TrimStart('/', '\\');
-            string candidate = Path.GetFullPath(Path.Combine(
-                userStorage,
-                suffix.Replace('/', Path.DirectorySeparatorChar)));
+            string candidate = sourceConfig.ResolveFilePath(
+                sourcePath,
+                componentDirectory,
+                presetDirectory);
             return File.Exists(candidate) ? candidate : null;
         }
-        if (Path.IsPathFullyQualified(normalized))
+        catch
         {
-            string candidate = Path.GetFullPath(normalized);
-            return File.Exists(candidate) ? candidate : null;
+            return null;
         }
-        string relative = normalized.TrimStart('/', '\\').Replace('/', Path.DirectorySeparatorChar);
-        string[] candidates =
-        [
-            Path.Combine(componentDirectory, relative),
-            Path.Combine(userStorage, relative),
-            Path.Combine(Directories.CurrentDirectory, relative),
-        ];
-        return candidates.Select(Path.GetFullPath).FirstOrDefault(File.Exists);
+    }
+
+    private static string GetSourcePresetDirectory(
+        ConfigMakerPresetDocument document,
+        string fallbackDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(document.PackId))
+        {
+            return fallbackDirectory;
+        }
+        string directory = ConfigurationService.GetItemFolderFromPackId(document.PackId);
+        return Directory.Exists(directory) ? directory : fallbackDirectory;
     }
 
     private static bool IsPathInside(string path, string root)
@@ -322,6 +427,15 @@ public sealed class ConfigMakerPresetStorageService
         return candidate;
     }
 
+    private static string CreateOverwriteStorageId(string configFileName)
+    {
+        string storageId = Path.GetFileNameWithoutExtension(configFileName).Unidecode();
+        storageId = Regex.Replace(storageId, @"\s+", "_");
+        storageId = Regex.Replace(storageId, @"[^A-Za-z0-9_.-]", string.Empty);
+        storageId = Regex.Replace(storageId, "_+", "_").Trim('_', '.', '-');
+        return storageId.Length == 0 ? "preset" : storageId;
+    }
+
     private static string GetUniqueDestinationPath(string directory, string sourceFileName)
     {
         string asciiName = sourceFileName.Unidecode();
@@ -342,11 +456,16 @@ public sealed class ConfigMakerPresetStorageService
         return candidate;
     }
 
-    private static void TrySaveVariableDescriptions(ConfigMakerPresetDocument document)
+    private static string NormalizeDisplayName(string? value) =>
+        Regex.Replace(value ?? string.Empty, @"\s+", " ").Trim();
+
+    private static void TrySaveVariableDescriptions(
+        ConfigMakerPresetDocument document,
+        string packId)
     {
         try
         {
-            string localePath = ConfigurationService.GetDefaultLocalePath(SharedConstants.LocalUserItemsId);
+            string localePath = ConfigurationService.GetDefaultLocalePath(packId);
             if (string.IsNullOrWhiteSpace(localePath))
             {
                 return;
@@ -380,6 +499,10 @@ public sealed class ConfigMakerPresetStorageService
     {
         ConfigMakerPresetDocument result = new()
         {
+            PackId = source.PackId,
+            FileName = source.FileName,
+            Meta = source.Meta,
+            TargetVersion = source.TargetVersion,
             ComponentId = source.ComponentId,
             Name = source.Name,
             CommandText = source.CommandText,
@@ -418,8 +541,23 @@ public sealed class ConfigMakerPresetStorageService
         return result;
     }
 
-    private static void Cleanup(IEnumerable<string> roots)
+    private static void Cleanup(
+        IEnumerable<string> files,
+        IEnumerable<string> roots)
     {
+        foreach (string file in files)
+        {
+            try
+            {
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+            }
+            catch
+            {
+            }
+        }
         foreach (string root in roots.OrderByDescending(path => path.Length))
         {
             try

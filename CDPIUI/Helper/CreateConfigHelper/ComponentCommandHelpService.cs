@@ -599,7 +599,7 @@ public static partial class ComponentCommandLineFormatter
     }
 
     public static string ToSingleLine(string commandLine) =>
-        string.Join(' ', Tokenize(commandLine));
+        ConfigCommandLine.ToSingleLine(commandLine);
 
     public static IReadOnlyList<string> ExtractFlags(string commandLine) => Tokenize(commandLine)
         .Where(IsFlag)

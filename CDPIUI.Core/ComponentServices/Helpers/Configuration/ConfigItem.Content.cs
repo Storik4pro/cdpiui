@@ -214,6 +214,92 @@ public partial class ConfigItem
         }
     }
 
+    /// <summary>
+    /// Removes editor-only command formatting and empty optional collections before persistence.
+    /// Runtime identity fields are excluded from JSON by the model's serialization attributes.
+    /// </summary>
+    public void NormalizeForStorage()
+    {
+        name = NormalizeDisplayName(name);
+        not_converted_name = name;
+        meta = NormalizeOptionalText(meta);
+        startup_string = ConfigCommandLine.ToSingleLine(startup_string);
+        variables = (variables ?? [])
+            .Select(ConfigCommandLine.ToSingleLine)
+            .Where(value => value.Length > 0)
+            .ToList();
+
+        if (commaVars != null)
+        {
+            foreach (string key in commaVars.Keys.ToArray())
+            {
+                commaVars[key] = ConfigCommandLine.ToSingleLine(commaVars[key]);
+            }
+            if (commaVars.Count == 0)
+            {
+                commaVars = null;
+            }
+        }
+
+        foreach (AvailableVarValues values in availableCommaVarsValues ?? [])
+        {
+            values.Comment = NormalizeOptionalText(values.Comment) ?? string.Empty;
+            if (values.Values != null)
+            {
+                values.Values = values.Values.Select(ConfigCommandLine.ToSingleLine).ToList();
+            }
+        }
+        if (availableCommaVarsValues?.Count == 0)
+        {
+            availableCommaVarsValues = null;
+        }
+
+        foreach (ConfigMakerVariableMetadata variable in configMaker?.variables ?? [])
+        {
+            variable.value = NormalizeOptionalCommandText(variable.value);
+            variable.description = NormalizeOptionalText(variable.description);
+            variable.onValue = NormalizeOptionalCommandText(variable.onValue);
+            variable.offValue = NormalizeOptionalCommandText(variable.offValue);
+            variable.internalParameterName = NormalizeOptionalText(variable.internalParameterName);
+            if (variable.values != null)
+            {
+                variable.values = variable.values.Select(ConfigCommandLine.ToSingleLine).ToList();
+                if (variable.values.Count == 0)
+                {
+                    variable.values = null;
+                }
+            }
+        }
+        foreach (ConfigMakerResourceMetadata resource in configMaker?.resources ?? [])
+        {
+            resource.alias = NormalizeOptionalText(resource.alias);
+            resource.path = NormalizeOptionalCommandText(resource.path);
+            resource.kind = NormalizeOptionalText(resource.kind);
+        }
+    }
+
+    private static string NormalizeDisplayName(string? value) =>
+        Regex.Replace(value ?? string.Empty, @"\s+", " ").Trim();
+
+    private static string? NormalizeOptionalCommandText(string? value)
+    {
+        string normalized = ConfigCommandLine.ToSingleLine(value);
+        return normalized.Length == 0 ? null : normalized;
+    }
+
+    private static string? NormalizeOptionalText(string? value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+        string normalized = value
+            .Replace("\r\n", "\n", StringComparison.Ordinal)
+            .Replace('\r', '\n')
+            .Trim();
+        return normalized.Length == 0 ? null : normalized;
+    }
+
     private static bool TryParseVariableAssignment(string expression, out string name, out string value)
     {
         Match match = Regex.Match(expression ?? string.Empty, @"^\s*%(?<name>[A-Za-z0-9_]+)%\s*=(?<value>.*)$", RegexOptions.Singleline);

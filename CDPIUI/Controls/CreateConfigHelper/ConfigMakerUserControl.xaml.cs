@@ -1842,6 +1842,10 @@ public sealed partial class ConfigMakerUserControl : UserControl
         presetBaseDirectory = string.Empty;
         presetDocument.Name = document.Name;
         presetDocument.ComponentId = document.ComponentId;
+        presetDocument.PackId = document.PackId;
+        presetDocument.FileName = document.FileName;
+        presetDocument.Meta = document.Meta;
+        presetDocument.TargetVersion = document.TargetVersion;
         presetDocument.Variables.Clear();
         foreach (ConfigMakerVariableDefinition variable in document.Variables)
         {
@@ -2070,25 +2074,47 @@ public sealed partial class ConfigMakerUserControl : UserControl
     public async Task<ConfigMakerPresetSaveResult> SaveToApplicationAsync()
     {
         SyncDocumentFromEditor();
+        AttachExistingPresetFiles();
+        SyncDocumentFromEditor();
         ConfigMakerSavePresetContentDialog dialog = new(presetDocument.Name)
         {
             XamlRoot = XamlRoot,
+            OverwriteEnable = !string.IsNullOrWhiteSpace(presetDocument.PackId) &&
+                              !string.IsNullOrWhiteSpace(presetDocument.FileName),
         };
         if (await dialog.ShowAsync() != ContentDialogResult.Primary)
         {
             return ConfigMakerPresetSaveResult.Failed("CANCELED");
         }
+
         ConfigMakerPresetStorageService storageService = new();
-        ConfigMakerPresetSaveResult result = await storageService.SaveAsync(
-            dialog.PresetName,
-            presetDocument);
+        bool overwrite = dialog.Result == ConfigMakerSavePresetContentDialogResult.Overwrite;
+        ConfigMakerPresetSaveResult result = overwrite
+            ? await storageService.OverwriteAsync(presetDocument)
+            : await storageService.SaveAsync(dialog.PresetName, presetDocument);
         if (result.Success)
         {
-            presetDocument.Name = dialog.PresetName;
+            if (!overwrite)
+            {
+                presetDocument.Name = dialog.PresetName;
+            }
+            presetDocument.PackId = result.PackId;
+            presetDocument.FileName = result.ConfigFileName;
+            foreach (ConfigMakerPresetResource resource in presetDocument.Resources)
+            {
+                ConfigMakerResourceMetadata? storedResource = result.StoredResources.FirstOrDefault(candidate =>
+                    string.Equals(candidate.alias, resource.Alias, StringComparison.OrdinalIgnoreCase));
+                if (storedResource == null || string.IsNullOrWhiteSpace(storedResource.path))
+                {
+                    continue;
+                }
+                resource.Path = storedResource.path;
+                resource.IsBuiltIn = storedResource.isBuiltIn;
+            }
             ShowEditorMessage(
                 string.Format(
                     localizer.GetLocalizedString("ConfigMakerPresetSavedMessage"),
-                    dialog.PresetName),
+                    presetDocument.Name),
                 InfoBarSeverity.Success);
         }
         else if (!string.Equals(result.ErrorCode, "CANCELED", StringComparison.Ordinal))

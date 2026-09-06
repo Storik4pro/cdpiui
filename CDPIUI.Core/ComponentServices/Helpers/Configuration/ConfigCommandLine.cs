@@ -106,6 +106,12 @@ public static class ConfigCommandLine
 
     public static bool IsOption(string token) => token.Length > 1 && token[0] == '-';
 
+    public static string ToSingleLine(string? commandLine) =>
+        string.Join(
+                ' ',
+                Tokenize(commandLine).Select(token => NormalizeLineEndings(token).Replace('\n', ' ')))
+            .Trim();
+
     public static string Unquote(string? value)
     {
         string result = (value ?? string.Empty).Trim();
@@ -121,4 +127,13 @@ public static class ConfigCommandLine
         force || value.Any(char.IsWhiteSpace) || value.Contains('"')
             ? $"\"{value.Replace("\"", "\\\"")}\""
             : value;
+
+    private static string NormalizeLineEndings(string value) => value
+        .Replace("\r\n", "\n", StringComparison.Ordinal)
+        .Replace('\r', '\n')
+        .Replace('\v', '\n')
+        .Replace('\f', '\n')
+        .Replace('\u0085', '\n')
+        .Replace('\u2028', '\n')
+        .Replace('\u2029', '\n');
 }

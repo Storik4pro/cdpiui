@@ -134,6 +134,10 @@ public sealed class ConfigMakerPresetDocument : INotifyPropertyChanged
         Resources.CollectionChanged += Resources_CollectionChanged;
     }
 
+    public string? PackId { get; set; }
+    public string? FileName { get; set; }
+    public string? Meta { get; set; }
+    public string? TargetVersion { get; set; }
     public string ComponentId { get => componentId; set => SetField(ref componentId, value ?? string.Empty); }
     public string Name { get => name; set => SetField(ref name, value ?? string.Empty); }
     public string CommandText { get => commandText; set => SetField(ref commandText, value ?? string.Empty); }
@@ -196,18 +200,25 @@ public sealed class ConfigMakerPresetDocument : INotifyPropertyChanged
             }
         }
 
+        ConfigMakerPresetMetadata? metadata = Variables.Count > 0 || Resources.Count > 0
+            ? CreateMetadata()
+            : null;
+
         return new ConfigItem
         {
             packId = packId,
+            meta = string.IsNullOrWhiteSpace(Meta) ? null : Meta,
             not_converted_name = presetName,
             name = presetName,
-            target = [ComponentId],
+            target = string.IsNullOrWhiteSpace(TargetVersion)
+                ? [ComponentId]
+                : [ComponentId, TargetVersion],
             jparams = jparams,
             variables = variables,
-            commaVars = commaVariables,
-            availableCommaVarsValues = availableValues,
+            commaVars = commaVariables.Count == 0 ? null : commaVariables,
+            availableCommaVarsValues = availableValues.Count == 0 ? null : availableValues,
             startup_string = CommandText,
-            configMaker = CreateMetadata(),
+            configMaker = metadata,
         };
     }
 
@@ -219,6 +230,10 @@ public sealed class ConfigMakerPresetDocument : INotifyPropertyChanged
             ComponentId = item.target?.FirstOrDefault() ?? string.Empty,
             Name = item.not_converted_name ?? item.name ?? string.Empty,
             CommandText = item.startup_string ?? string.Empty,
+            PackId = item.packId,
+            FileName = item.file_name,
+            Meta = item.meta,
+            TargetVersion = item.target?.ElementAtOrDefault(1),
         };
 
         if (item.configMaker?.variables is { Count: > 0 })
@@ -274,21 +289,23 @@ public sealed class ConfigMakerPresetDocument : INotifyPropertyChanged
     private ConfigMakerPresetMetadata CreateMetadata() => new()
     {
         schemaVersion = 1,
-        variables = Variables.Select(variable => new ConfigMakerVariableMetadata
+        variables = Variables.Count == 0 ? null : Variables.Select(variable => new ConfigMakerVariableMetadata
         {
             id = variable.Id,
             name = variable.Name,
             kind = variable.Kind.ToString(),
             storageKind = variable.StorageKind.ToString(),
-            value = variable.Value,
-            description = variable.Description,
-            values = variable.Values.ToList(),
-            onValue = variable.OnValue,
-            offValue = variable.OffValue,
-            internalParameterName = variable.InternalParameterName,
+            value = string.IsNullOrEmpty(variable.Value) ? null : variable.Value,
+            description = string.IsNullOrEmpty(variable.Description) ? null : variable.Description,
+            values = variable.Values.Count == 0 ? null : variable.Values.ToList(),
+            onValue = string.IsNullOrEmpty(variable.OnValue) ? null : variable.OnValue,
+            offValue = string.IsNullOrEmpty(variable.OffValue) ? null : variable.OffValue,
+            internalParameterName = string.IsNullOrEmpty(variable.InternalParameterName)
+                ? null
+                : variable.InternalParameterName,
             isSwitchEnabled = variable.IsSwitchEnabled,
         }).ToList(),
-        resources = Resources.Select(resource => new ConfigMakerResourceMetadata
+        resources = Resources.Count == 0 ? null : Resources.Select(resource => new ConfigMakerResourceMetadata
         {
             alias = resource.Alias,
             path = resource.Path,
