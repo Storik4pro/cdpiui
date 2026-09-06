@@ -122,11 +122,17 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\zapret2.ico" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\StoreLogo.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Wallpaper\Kislovodsk">
         <File Source="$(var.SourceDir)\Assets\Wallpaper\Kislovodsk\1.jpeg" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Welcome">
+        <File Source="$(var.SourceDir)\Assets\Welcome\ThemeView.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\Wide310x150Logo.scale-200.png" KeyPath="yes" />
