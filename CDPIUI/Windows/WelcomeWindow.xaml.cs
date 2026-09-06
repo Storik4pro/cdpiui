@@ -171,10 +171,12 @@ namespace CDPIUI
                 TryLoadLicense();
                 NextButton.IsEnabled = LicenseAgreeCheckBox.IsChecked ?? false;
             }
+            /*
             else if (sel == AdItem)
             {
                 UtilityButtonControls.HelpUrl = "/Other/Ad";
             }
+            */
             else if (sel == StoreItem)
             {
                 if (migrationSession == null)

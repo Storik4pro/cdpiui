@@ -179,8 +179,8 @@
                         </controls:SettingsCard>
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
-
-                <scontrols:AdUserControl/>
+                
+                <scontrols:AdUserControl Visibility="Collapsed"/>
                 
             </StackPanel>
         </ScrollViewer>

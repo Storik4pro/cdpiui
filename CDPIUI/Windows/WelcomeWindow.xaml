@@ -129,6 +129,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </ncontrols:AnimatedHorizontalContentItem>
+                <!--
                 <ncontrols:AnimatedHorizontalContentItem
                     x:Name="AdItem"
                     l:Uids.Uid="/WelcomeWizard/AdAnimatedHorizontalContentItem">
@@ -136,6 +137,7 @@
                         <scontrols:AdUserControl/>
                     </StackPanel>
                 </ncontrols:AnimatedHorizontalContentItem>
+                -->
                 <ncontrols:AnimatedHorizontalContentItem
                     x:Name="StoreItem"
                     l:Uids.Uid="/WelcomeWizard/StoreAnimatedHorizontalContentItem">
