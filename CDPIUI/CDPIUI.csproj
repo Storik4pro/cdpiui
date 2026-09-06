@@ -492,8 +492,8 @@
   <PropertyGroup Label="Globals">
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <FileVersion>0.6.9.0</FileVersion>
-    <AssemblyVersion>0.6.9.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>

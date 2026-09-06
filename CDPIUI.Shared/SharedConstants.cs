@@ -43,6 +43,6 @@ namespace CDPIUI.Shared
 
         public static string Schema = "cdpiui";
 
-        public static bool IsPreview = true;
+        public static bool IsPreview = false;
     }
 }
