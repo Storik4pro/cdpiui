@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unidecode.NET;
+using CDPIUI.Core.ComponentServices.Helpers;
 
 namespace CDPIUI.Helper.CreateConfigHelper;
 
@@ -175,6 +176,9 @@ public sealed class ConfigMakerPresetStorageService
             }
 
             TrySaveVariableDescriptions(document);
+
+            ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(document.ComponentId)?.ReInitConfigs();
+
             return new ConfigMakerPresetSaveResult
             {
                 Success = true,
