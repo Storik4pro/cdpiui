@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.Store.ItemViewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:models="using:CDPIUI.Views.Store"
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
+
+    <tpl:TemplatePage.Resources>
+        <ItemsPanelTemplate x:Key="DefaultItemsPanel">
+            <ItemsStackPanel Orientation="Vertical" />
+        </ItemsPanelTemplate>
+    </tpl:TemplatePage.Resources>
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="SupeSState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="400"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SmallDescriptionText.Width" Value="300" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="SmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1000"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.Padding" Value="50, 100, 50, 100" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1500"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.Padding" Value="100, 100, 100, 100" />
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="wSmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Stretch" />
+                        <Setter Target="MainStackPanel.Width" Value="auto" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="wWideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1935"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainStackPanel.HorizontalAlignment" Value="Center" />
+                        <Setter Target="MainStackPanel.Width" Value="1860" />
+                        <Setter Target="MainStackPanel.Padding" Value="100, 100, 100, 100" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <ScrollViewer>
+            <StackPanel x:Name="MainStackPanel" Padding="20, 50, 20, 50" Spacing="20" MaxWidth="1860">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MaxWidth="300"/>
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="ItemImage" 
+                           Source="/Assets/Store/empty.png" 
+                           Width="90" Height="90"/>
+                    <Grid Grid.Column="1" Margin="25, 0, 0, 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ItemName" 
+                                   MaxLines="2" TextWrapping="Wrap" 
+                                   Text="Item Name" 
+                                   Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock x:Name="ItemDeveloper"
+                                   Margin="0, 5, 0, 5"
+                                   Grid.Row="1"
+                                   MaxLines="1" TextWrapping="NoWrap"
+                                   Text="Item Developer"
+                                   Style="{ThemeResource BodyTextBlockStyle}"
+                                   Foreground="{ThemeResource AccentTextFillColorTertiaryBrush}"
+                                   IsTextSelectionEnabled="True"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <TextBlock x:Name="StarCount"
+                                       Text="NaN" VerticalAlignment="Center" />
+                                <FontIcon Glyph="&#xE735;" VerticalAlignment="Center" FontSize="12" Foreground="{ThemeResource ControlStrongStrokeColorDefaultBrush}"/>
+                            </StackPanel>
+                            <Rectangle VerticalAlignment="Stretch" Width="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+                            <HyperlinkButton x:Name="ItemCategoryButton" Content="Item Category" Padding="4, 0" Click="ItemCategoryButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <TextBlock x:Name="SmallDescriptionText" Text="Item Small Description Text" MaxLines="3" 
+                           Width="400" TextWrapping="Wrap" HorizontalAlignment="Left" 
+                           TextTrimming="CharacterEllipsis"
+                           ToolTipService.ToolTip="{Binding Text, ElementName=SmallDescriptionText}"/>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button x:Name="ItemActionButton" Style="{StaticResource AccentButtonStyle}" MinWidth="180" Height="55" Visibility="Visible"
+                            Click="ItemActionButton_Click" IsEnabled="True" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0">
+                        <Button.Content>
+                            <Grid>
+                                <TextBlock x:Name="ItemActionButtonText" Text="Item Action Button Text" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="NoWrap" Visibility="Visible"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Grid x:Name="DownloadStatusGrid" CornerRadius="4" MinWidth="180" Height="55"
+                          Visibility="Collapsed">
+                        <Rectangle Fill="{ThemeResource ControlFillColorDefaultBrush}"/>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Padding="10, 5, 10, 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Spacing="0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="CurrentStatusTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="CurrentStatusSpeedTextBlock" Text="" Margin="0, 0, 5, 0"
+                                                   Visibility="Collapsed"/>
+                                        <TextBlock l:Uids.Uid="WorkingOnItTextBlock" x:Name="CurrentStatusTipTextBlock"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10, 0, 0, 0">
+                                    <Button l:Uids.Uid="StopActionButton" x:Name="StopActionButton" Background="Transparent" BorderBrush="Transparent" 
+                                            Padding="6" VerticalAlignment="Center" Click="StopActionButton_Click">
+                                        <Button.Content>
+                                            <FontIcon Glyph="&#xE978;" FontSize="16" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <ProgressBar x:Name="StatusProgressbar" Grid.Row="1" HorizontalAlignment="Stretch" 
+                                         IsIndeterminate="True" CornerRadius="0" Background="Transparent"/>
+                        </Grid>
+                    </Grid>
+                    <Grid x:Name="ErrorStatusGrid" CornerRadius="4" MinWidth="180" Height="55"
+                          Visibility="Collapsed">
+                        <Rectangle Fill="{ThemeResource ControlFillColorDefaultBrush}"/>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Padding="10, 5, 10, 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEB90;" FontSize="15" VerticalAlignment="Top"
+                                          Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                          Margin="0, 7, 5, 0"/>
+                                <StackPanel Grid.Column="1" Spacing="0" VerticalAlignment="Center"
+                                            Margin="0, 0, 0, 5">
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <TextBlock l:Uids.Uid="ExceptionHappensTextBlock" x:Name="ErrorTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                        <TextBlock x:Name="ErrorNameTextBlock" Text="ERR_FLASHLIGHT_BISY" Margin="0, 0, 5, 0"
+                                                   IsTextSelectionEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="3">
+                                        <HyperlinkButton l:Uids.Uid="RetryButton" x:Name="RetryButton" Padding="0, 0" Click="ItemActionButton_Click"/>
+                                        <HyperlinkButton l:Uids.Uid="AvailableActionsButton" x:Name="ErrorHelpButton" Padding="0, 0" Click="ErrorHelpButton_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Button l:Uids.Uid="ViewMoreActionsButton"
+                            x:Name="ItemMoreButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
+                            Visibility="Collapsed">
+                        <Button.Content>
+                            <FontIcon Glyph="&#xE712;" FontSize="16" />
+                        </Button.Content>
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem l:Uids.Uid="DeleteButton" x:Name="DeleteButton"  Click="DeleteButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE74D;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="ReinstallButton"
+                                                x:Name="ReinstallButton" 
+                                                Click="ReinstallButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE895;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="StoreShowItemFolder"
+                                                x:Name="ShowFolderButton" 
+                                                Click="ShowFolderButton_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE838;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button l:Uids.Uid="ItemViewAdvancedInfoButton" x:Name="ItemViewAdvancedInfoButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE946;" FontSize="16" />
+                        <Button.Flyout>
+                            <Flyout Placement="Right">
+                                <StackPanel>
+                                    <TextBlock l:Uids.Uid="ItemAdvancedInfoFlyoutTitleTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+
+                                    <ListView x:Name="AdvancedInfoListView">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:AdditionalItemInfoModel">
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" Width="150"/>
+                                                    <TextBlock Text="{x:Bind DisplayValue, Mode=OneWay}" IsTextSelectionEnabled="True" HorizontalAlignment="Stretch" MinWidth="150"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                </StackPanel>
+                                
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button x:Name="ItemShareButton" Background="Transparent" 
+                            BorderBrush="Transparent" Padding="6" VerticalAlignment="Center"
+                            Visibility="Collapsed">
+                        <Button.Content>
+                            <FontIcon Glyph="&#xE72D;" FontSize="16" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+
+                <Grid x:Name="ItemUnsupportedWarningGrid" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE814;" />
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Grid.Column="2" l:Uids.Uid="ItemUnsupportedWarningTextBlock" TextWrapping="Wrap"/>
+                        <HyperlinkButton Padding="0" x:Name="LaunchItemUnsupportedHelp" Click="LaunchItemUnsupportedHelp_Click">
+                            <TextBlock l:Uids.Uid="GetHelpTextBlock"/>
+                        </HyperlinkButton>
+                    </StackPanel>
+                </Grid>
+                
+                <Grid x:Name="ItemWarningAera">
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10"/>
+                    <Grid CornerRadius="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle Fill="{ThemeResource SystemFillColorCautionBrush}"/>
+                        <TextBlock l:Uids.Uid="WarningTextBlock" x:Name="WarningTextTitle" 
+                                   Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" 
+                                   Style="{ThemeResource BodyStrongTextBlockStyle}"  
+                                   VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+                        <Rectangle Fill="{ThemeResource SystemFillColorCautionBackgroundBrush}" Grid.Row="2"/>
+                        <StackPanel Margin="20" Grid.Row="2" Spacing="5">
+                            <controls:MarkdownTextBlock x:Name="ItemWarningText" Text="" 
+                                                        Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                                                        UseAutoLinks="True"
+                                                        UseEmphasisExtras="True"
+                                                        UseListExtras="True"
+                                                        UsePipeTables="True"
+                                                        UseTaskLists="True"/>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <FontIcon Glyph="&#xE8BD;" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock l:Uids.Uid="MessageFromDeveloperTextBlock" VerticalAlignment="Center"/>
+                                <HyperlinkButton l:Uids.Uid="WhatDoesItMeanTextBlock" x:Name="ItemWarningButton" Padding="0, 0" Click="ItemWarningButton_Click" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid>
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="DescriptionTextTitle" l:Uids.Uid="DescriptionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <Rectangle Grid.Row="1" Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+                        <controls:MarkdownTextBlock 
+                            Grid.Row="2" Margin="20" x:Name="ItemFullDescriptionText" 
+                            Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                            Text="Item Full Description Text"
+                            UseAutoLinks="True"
+                            UseEmphasisExtras="True"
+                            UseListExtras="True"
+                            UsePipeTables="True"
+                            UseTaskLists="True"/>
+                    </Grid>
+                </Grid>
+                <Grid CornerRadius="10" x:Name="LinksGrid">
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="LinksTitle" l:Uids.Uid="ExternalLinksTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <StackPanel Grid.Row="2" x:Name="LinksStackPanel" HorizontalAlignment="Stretch">
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid CornerRadius="10" Visibility="Collapsed">
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}" CornerRadius="10"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="RequirementsTitle" Text="Requirements Title" Style="{ThemeResource BodyStrongTextBlockStyle}" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch">
+                            
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+        
+    </Grid>
+</tpl:TemplatePage>

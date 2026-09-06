@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.ViewWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ak="using:AK.Toolkit.WinUI3"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:winex="using:WinUIEx"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal">
+
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="AppBar" Height="auto"/>
+            <RowDefinition x:Name="FuncBar" Height="36"/>
+            <RowDefinition x:Name="View" Height="*"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="36"/>
+
+        <Grid Grid.Row="1" Height="36" Margin="0 -4 0 0">
+            <Rectangle Fill="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Height="32" Width="Auto" 
+               VerticalAlignment="Bottom">
+            </Rectangle>
+            
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="Menu" Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="Quick" Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <MenuBar Grid.Column="0" Margin="0 ,0 ,0, 0" Height="28">
+                    <MenuBarItem l:Uids.Uid="FileMenuItem" Height="28" Margin="4 0">
+                        <MenuFlyoutItem l:Uids.Uid="SaveMenuItem" x:Name="SaveButton" Click="SaveButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE74E;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="S"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem l:Uids.Uid="ExitMenuItem" Click="CloseButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE711;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Menu" Key="F4"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem l:Uids.Uid="ProcessMenuItem" Height="28" Margin="4 0">
+                        <MenuFlyoutItem x:Name="ProcessControl" Click="ProcessControl_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon x:Name="ProcessControlIcon" Glyph="&#xE71A;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F5"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem l:Uids.Uid="RestartMenuItem" x:Name="ProcessRestart" Click="ProcessRestart_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE777;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="F5"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+
+                        </MenuFlyoutItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem l:Uids.Uid="ViewMenuItem" Height="28" Margin="4 0">
+                        <MenuFlyoutItem l:Uids.Uid="FontMenuItem" Click="MenuFlyoutItem_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8D2;" />
+                            </MenuFlyoutItem.Icon>
+
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutSubItem l:Uids.Uid="CleanupModeMenuItem">
+                            <RadioMenuFlyoutItem x:Name="CleanOutputButton" l:Uids.Uid="CleanModeMenuItem" GroupName="OrientationGroup"
+                                                 Click="CleanOutputButton_Click"/>
+                            <RadioMenuFlyoutItem x:Name="DefaultOutputButton" l:Uids.Uid="OriginalModeMenuItem" GroupName="OrientationGroup" 
+                                                 Click="DefaultOutputButton_Click"/>
+                            <MenuFlyoutSubItem.Icon>
+                                <FontIcon Glyph="&#xEA99;" />
+                            </MenuFlyoutSubItem.Icon>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem l:Uids.Uid="PathViewModeMenuItem">
+                            <RadioMenuFlyoutItem x:Name="ShowPathsButton" l:Uids.Uid="ShowPathsMenuItem" GroupName="PathViewGroup"
+                                                 Click="ShowPathsButton_Click"/>
+                            <RadioMenuFlyoutItem x:Name="HidePathsButton" l:Uids.Uid="HidePathsMenuItem" GroupName="PathViewGroup" 
+                                                 Click="HidePathsButton_Click"/>
+                        </MenuFlyoutSubItem>
+
+                    </MenuBarItem>
+
+                    <MenuBarItem l:Uids.Uid="HelpMenuItem" Height="28" Margin="4 0">
+                        <MenuFlyoutItem l:Uids.Uid="VisitGitHubPageMenuItem" x:Name="SupportButton" Click="SupportButton_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8A7;" />
+                            </MenuFlyoutItem.Icon>
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="F1"/>
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+                        
+                    </MenuBarItem>
+                </MenuBar>
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+                    <Button l:Uids.Uid="PseidoconsoleCopyOutputButton"
+                            x:Name="CopyButton" Margin="0 ,3 ,5, 0" Padding="5, 0"
+                            Height="28" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent"
+                            Click="CopyButton_Click">
+                        <FontIcon x:Name="CopyIcon" Glyph="&#xE8C8;" FontSize="16" />
+                    </Button>
+                    <Button x:Name="StopServiceButton" Margin="0 ,3 ,5, 0" Padding="5, 0"
+                            Height="28" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent"
+                            Click="StopServiceButton_Click">
+                        <StackPanel Orientation="Horizontal" >
+                            <FontIcon Glyph="&#xE74D;" FontSize="16" Margin="0, 0, 5, 0"/>
+                            <TextBlock l:Uids.Uid="RemoveServiceTextBlock"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <ucontrols:ViewConfigOutput x:Name="ConfigOutput" Grid.Row="2" />
+    </Grid>
+</template:TemplateWindow>

@@ -1,0 +1,522 @@
+using CDPIUI.Controls.Dialogs.Universal;
+using CDPIUI.Core.Store;
+using CDPIUI.Helper.Parsers;
+
+using CDPIUI.Shared.PrettyErrorConvertionService;
+using CDPIUI.Views.Store;
+using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI;
+using WinUI3Localizer;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
+
+namespace CDPIUI.Controls.Store
+{
+    public sealed partial class StoreDownloadItemButton : UserControl
+    {
+        public static readonly DependencyProperty ClickCommandProperty =
+            DependencyProperty.Register(
+                nameof(ClickCommand),
+                typeof(ICommand),
+                typeof(StoreDownloadItemButton),
+                new PropertyMetadata(null)
+            );
+
+        public ICommand ClickCommand
+        {
+            get => (ICommand)GetValue(ClickCommandProperty);
+            set => SetValue(ClickCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty ClickCommandParameterProperty =
+            DependencyProperty.Register(
+                nameof(ClickCommandParameter),
+                typeof(object),
+                typeof(StoreDownloadItemButton),
+                new PropertyMetadata(null)
+            );
+
+        public object ClickCommandParameter
+        {
+            get => GetValue(ClickCommandParameterProperty);
+            set => SetValue(ClickCommandParameterProperty, value);
+        }
+
+        private MarkdownConfig _config;
+
+        public MarkdownConfig MarkdownConfig
+        {
+            get => _config;
+            set => _config = value;
+        }
+
+        private ILocalizer localizer = Localizer.Get();
+
+        public StoreDownloadItemButton()
+        {
+            InitializeComponent();
+            _config = new MarkdownConfig();
+
+            this.Loaded += StoreDownloadItemButton_Loaded;
+
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
+        }
+
+        private void CheckCurrentStatus()
+        {
+            string operationId = StoreHelper.Instance.GetOperationIdFromItemId(StoreId);
+            if (!string.IsNullOrEmpty(operationId))
+            {
+                string status = StoreHelper.Instance.GetQueueItemFromOperationId(operationId)?.DownloadStage;
+                PreferItemDownloadingStateActions(status);
+            }
+        }
+
+        private void StoreDownloadItemButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DescriptionText.ActualHeight > 150)
+            {
+                ViewMoreButton.Visibility = Visibility.Visible;
+            }
+            DescriptionText.MaxHeight = 150;
+        }
+
+        public string StoreId
+        {
+            get { return (string)GetValue(StoreIdProperty); }
+            set { 
+                SetValue(StoreIdProperty, value);
+                if (IsErrorHappens)
+                {
+                    ErrorActions(StoreHelper.Instance.GetFailedToInstallItems().FirstOrDefault(x => x.ItemId == StoreId)?.ErrorCode ?? string.Empty);
+                }
+                RemoveHandlers();
+                ConnectHandlers();
+                CheckCurrentStatus();
+            }
+        }
+
+        public static readonly DependencyProperty StoreIdProperty =
+            DependencyProperty.Register(
+                nameof(StoreId), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string OperationId
+        {
+            get { return (string)GetValue(OperationIdProperty); }
+            set { SetValue(OperationIdProperty, value); }
+        }
+
+        public static readonly DependencyProperty OperationIdProperty =
+            DependencyProperty.Register(
+                nameof(OperationId), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string Title
+        {
+            get { return (string)GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
+        }
+
+        public static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register(
+                nameof(Title), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string Developer
+        {
+            get { return (string)GetValue(DeveloperProperty); }
+            set { SetValue(DeveloperProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeveloperProperty =
+            DependencyProperty.Register(
+                nameof(Developer), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string Tooltip
+        {
+            get { return (string)GetValue(TooltipProperty); }
+            set { SetValue(TooltipProperty, value); }
+        }
+
+        public static readonly DependencyProperty TooltipProperty =
+            DependencyProperty.Register(
+                nameof(Tooltip), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(Localizer.Get().GetLocalizedString("Cancel"))
+            );
+
+        public string Category
+        {
+            get { return (string)GetValue(CategoryProperty); }
+            set { SetValue(CategoryProperty, value); }
+        }
+
+        public static readonly DependencyProperty CategoryProperty =
+            DependencyProperty.Register(
+                nameof(Category), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string CurrentVersion
+        {
+            get { return (string)GetValue(CurrentVersionProperty); }
+            set { SetValue(CurrentVersionProperty, value); }
+        }
+
+        public static readonly DependencyProperty CurrentVersionProperty =
+            DependencyProperty.Register(
+                nameof(CurrentVersion), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string ServerVersion
+        {
+            get { return (string)GetValue(ServerVersionProperty); }
+            set { SetValue(ServerVersionProperty, value); }
+        }
+
+        public static readonly DependencyProperty ServerVersionProperty =
+            DependencyProperty.Register(
+                nameof(ServerVersion), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+
+        public string Description
+        {
+            get { return (string)GetValue(DescriptionProperty); }
+            set { 
+                if (string.IsNullOrEmpty(value))
+                    SetValue(DescriptionProperty, localizer.GetLocalizedString("DeveloperNotCommentedRelease"));
+                else 
+                    SetValue(DescriptionProperty, value); 
+            }
+        }
+
+        public static readonly DependencyProperty DescriptionProperty =
+            DependencyProperty.Register(
+                nameof(Description), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata(string.Empty)
+            );
+        public bool IsUpdateLikeButton
+        {
+            get { return (bool)GetValue(IsUpdateLikeButtonProperty); }
+            set { 
+                SetValue(IsUpdateLikeButtonProperty, value);
+                if (value)
+                {
+                    StatusStackPanel.Visibility = Visibility.Collapsed;
+                    ProgressBar.Visibility = Visibility.Collapsed;
+                    CancelButton.Visibility = Visibility.Collapsed;
+                    DescriptionStackPanel.Visibility = Visibility.Visible;
+                    UpdateGrid.Visibility = Visibility.Visible;
+                    BigUpdateGrid.Visibility = Visibility.Visible;
+                    VersionStackPanel.Visibility= Visibility.Visible;
+                }
+                else
+                {
+                    StatusStackPanel.Visibility = Visibility.Visible;
+                    CancelButton.Visibility = Visibility.Visible;
+
+                    if (StoreHelper.Instance.GetCurrentQueueOperationId() == OperationId)
+                        ProgressBar.Visibility = Visibility.Visible;
+
+                    DescriptionStackPanel.Visibility = Visibility.Collapsed;
+                    UpdateGrid.Visibility = Visibility.Collapsed;
+                    BigUpdateGrid.Visibility = Visibility.Collapsed;
+                    VersionStackPanel.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsUpdateLikeButtonProperty =
+            DependencyProperty.Register(
+                nameof(IsUpdateLikeButton), typeof(bool), typeof(StoreDownloadItemButton), new PropertyMetadata(false)
+            );
+
+        public string ActionGlyph
+        {
+            get { return (string)GetValue(ActionGlyphProperty); }
+            set { SetValue(ActionGlyphProperty, value); }
+        }
+
+        public static readonly DependencyProperty ActionGlyphProperty =
+            DependencyProperty.Register(
+                nameof(ActionGlyph), typeof(string), typeof(StoreDownloadItemButton), new PropertyMetadata("\uE894")
+            );
+        public bool IsErrorHappens
+        {
+            get { return (bool)GetValue(IsErrorHappensProperty); }
+            set { 
+                SetValue(IsErrorHappensProperty, value);
+                if (value)
+                {
+                    ErrorActions(StoreHelper.Instance.GetFailedToInstallItems().FirstOrDefault(x => x.ItemId == StoreId)?.ErrorCode?? string.Empty);
+                }
+                else
+                {
+                    ClearErrorActions();
+                }
+            }
+        }
+
+        public static readonly DependencyProperty IsErrorHappensProperty =
+            DependencyProperty.Register(
+                nameof(IsErrorHappens), typeof(bool), typeof(StoreDownloadItemButton), new PropertyMetadata(false)
+            );
+
+        public ImageSource CardImageSource
+        {
+            get { return (ImageSource)GetValue(CardImageSourceProperty); }
+            set { SetValue(CardImageSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty CardImageSourceProperty =
+            DependencyProperty.Register(
+                nameof(CardImageSource), typeof(ImageSource), typeof(StoreDownloadItemButton), new PropertyMetadata(null)
+            );
+
+        public Brush CardBackgroundBrush
+        {
+            get { return (Brush)GetValue(CardBackgroundProperty); }
+            set
+            {
+                SetValue(CardBackgroundProperty, value);
+                Rectangle.Fill = value;
+            }
+        }
+
+        public static readonly DependencyProperty CardBackgroundProperty =
+            DependencyProperty.Register(
+                nameof(CardBackgroundBrush),
+                typeof(Brush),
+                typeof(StoreDownloadItemButton),
+                new PropertyMetadata(new SolidColorBrush(Colors.Transparent))
+            );
+
+        private void ConnectHandlers()
+        {
+            
+
+            StoreHelper.Instance.ItemDownloadStageChanged += StoreHelper_ItemDownloadStageChanged;
+            StoreHelper.Instance.ItemDownloadProgressChanged += StoreHelper_ItemDownloadProgressChanged;
+            StoreHelper.Instance.ItemTimeRemainingChanged += StoreHelper_ItemTimeRemainingChanged;
+            StoreHelper.Instance.ItemDownloadSpeedChanged += StoreHelper_ItemDownloadSpeedChanged;
+            StoreHelper.Instance.ItemActionsStopped += StoreHelper_ItemActionsStopped;
+            StoreHelper.Instance.ItemInstallingErrorHappens += StoreHelper_ItemInstallingErrorHappens;
+        }
+
+
+        private void RemoveHandlers()
+        {
+            StoreHelper.Instance.ItemDownloadStageChanged -= StoreHelper_ItemDownloadStageChanged;
+            StoreHelper.Instance.ItemDownloadProgressChanged -= StoreHelper_ItemDownloadProgressChanged;
+            StoreHelper.Instance.ItemTimeRemainingChanged -= StoreHelper_ItemTimeRemainingChanged;
+            StoreHelper.Instance.ItemDownloadSpeedChanged -= StoreHelper_ItemDownloadSpeedChanged;
+            StoreHelper.Instance.ItemActionsStopped -= StoreHelper_ItemActionsStopped;
+        }
+
+        private void StoreHelper_ItemInstallingErrorHappens(Tuple<string, ErrorModel> obj)
+        {
+            string operationId = obj.Item1;
+            string errorCode = obj.Item2.ErrorCode;
+
+            if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
+                return;
+
+            ErrorActions(errorCode);
+        }
+
+        private void ClearErrorActions()
+        {
+            ErrorTextBlock.Text = "";
+            ActionGlyph = "\uE894";
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("QueueWaiting");
+
+            ProgressBar.IsIndeterminate = true;
+            ProgressBar.Value = 0;
+
+            Tooltip = localizer.GetLocalizedString("Cancel");
+
+            ProgressBar.Foreground = (SolidColorBrush)Application.Current.Resources["AccentFillColorDefaultBrush"];
+            CheckCurrentStatus();
+        }
+
+        private void ErrorActions(string errorCode)
+        {
+            ActionGlyph = "\uE777";
+            ErrorTextBlock.Text = errorCode;
+            SpeedTextBlock.Text = "";
+            TimeTextBlock.Text = "";
+            BigStatusTextBlock.Text = localizer.GetLocalizedString("ErrorHappens");
+
+            ProgressBar.IsIndeterminate = false;
+            ProgressBar.Value = 100;
+
+            Tooltip = localizer.GetLocalizedString("Retry");
+
+            ProgressBar.Foreground = new SolidColorBrush((Color)Application.Current.Resources["SystemFillColorCritical"]);
+            RemoveHandlers();
+        }
+
+        private void StoreHelper_ItemActionsStopped(string obj)
+        {
+            if (obj == StoreId)
+                RemoveHandlers();
+        }
+
+        private void StoreHelper_ItemDownloadSpeedChanged(Tuple<string, double> obj)
+        {
+            string operationId = obj.Item1;
+            double speed = obj.Item2;
+
+            if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
+                return;
+
+            SpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}, ";
+        }
+
+        private void StoreHelper_ItemDownloadProgressChanged(Tuple<string, double> obj)
+        {
+            string operationId = obj.Item1;
+            double progress = obj.Item2;
+
+            if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
+                return;
+
+            ProgressBar.IsIndeterminate = false;
+            ProgressBar.Value = progress;
+        }
+
+        private void StoreHelper_ItemTimeRemainingChanged(Tuple<string, TimeSpan> obj)
+        {
+            string operationId = obj.Item1;
+            TimeSpan time = obj.Item2;
+
+            if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
+                return;
+
+            TimeTextBlock.Text = UnitsParser.ConvertMinutesToPrettyText(time.Minutes);
+        }
+
+        private void PreferItemDownloadingStateActions(string state)
+        {
+            ProgressBar.Visibility = Visibility.Visible;
+            string stageHeaderText;
+            switch (state)
+            {
+                case "GETR":
+                    stageHeaderText = localizer.GetLocalizedString("GettingReady");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "END":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "Downloading":
+                    stageHeaderText = localizer.GetLocalizedString("Downloading");
+                    ProgressBar.IsIndeterminate = false;
+                    break;
+                case "Extracting":
+                    stageHeaderText = localizer.GetLocalizedString("Installing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "ErrorHappens":
+                    stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
+                    break;
+                case "Completed":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "CANC":
+                    stageHeaderText = localizer.GetLocalizedString("Cancel");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "ConnectingToService":
+                    stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+                case "":
+                    stageHeaderText = localizer.GetLocalizedString("QueueWaiting");
+                    ProgressBar.IsIndeterminate = false;
+                    ProgressBar.Value = 0;
+                    break;
+                default:
+                    stageHeaderText = localizer.GetLocalizedString(state);
+                    ProgressBar.IsIndeterminate = true;
+                    break;
+            }
+
+            BigStatusTextBlock.Text = stageHeaderText;
+        }
+
+        private void StoreHelper_ItemDownloadStageChanged(Tuple<string, string> obj)
+        {
+            string operationId = obj.Item1;
+            string stage = obj.Item2;
+
+            if (StoreHelper.Instance.GetItemIdFromOperationId(operationId) != StoreId)
+                return;
+
+            PreferItemDownloadingStateActions(stage);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectedAnimationService.GetForCurrentView()
+                .PrepareToAnimate("ForwardConnectedAnimation", PART_Image);
+
+            StoreWindow.Instance.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!StoreHelper.Instance.RemoveItemFromQueue(StoreId))
+            {
+                StoreHelper.Instance.AddItemToQueue(StoreId, string.Empty);
+                if (ClickCommand != null && ClickCommand.CanExecute(ClickCommandParameter))
+                {
+                    ClickCommand.Execute(ClickCommandParameter);
+                    return;
+                }
+            }
+            
+        }
+
+        private async void ViewMoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            MarkdownTextViewContentDialog dialog = new MarkdownTextViewContentDialog()
+            {
+                XamlRoot = this.XamlRoot,
+                Title = localizer.GetLocalizedString("ViewMore"),
+                Text = Description
+            };
+
+            await dialog.ShowAsync();
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClickCommand != null && ClickCommand.CanExecute(ClickCommandParameter))
+            {
+                ClickCommand.Execute(ClickCommandParameter);
+                return;
+            }
+        }
+    }
+}

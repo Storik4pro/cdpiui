@@ -2,7 +2,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <?define ComponentRules="OneToOne"?>
   <!-- SourceDir instructs IsWiX the location of the directory that contains files for this wix library -->
-  <?define SourceDir="..\GoodbyeDPI_UI\bin\ARM64\Release\net8.0-windows10.0.22621.0\publish"?>
+  <?define SourceDir="..\CDPIUI\bin\ARM64\Release\net8.0-windows10.0.22621.0\publish"?>
   <Fragment>
     <ComponentGroup Id="NewSetupFiles">
       <Component Directory="INSTALLLOCATION">
@@ -13,6 +13,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\favicon.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\ConditionalUtil.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\DragReorder.png" KeyPath="yes" />
@@ -33,6 +36,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\find_error.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\github.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -46,6 +52,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Help.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Import.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\OpenInNewWindow.png" KeyPath="yes" />
@@ -63,6 +72,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\Store.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\telegram.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Troubleshooting.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -70,6 +82,12 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\LockScreenLogo.scale-200.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Preview\MainPageMarkup">
+        <File Source="$(var.SourceDir)\Assets\Preview\MainPageMarkup\ClassicMarkup.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Preview\MainPageMarkup">
+        <File Source="$(var.SourceDir)\Assets\Preview\MainPageMarkup\ModernMarkup.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\SplashScreen.scale-200.png" KeyPath="yes" />
@@ -104,17 +122,29 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\zapret.png" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\zapret2.ico" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\StoreLogo.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Wallpaper\Kislovodsk">
         <File Source="$(var.SourceDir)\Assets\Wallpaper\Kislovodsk\1.jpeg" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Welcome">
+        <File Source="$(var.SourceDir)\Assets\Welcome\ThemeView.png" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets">
         <File Source="$(var.SourceDir)\Assets\Wide310x150Logo.scale-200.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CDPIUI_TrayIcon.exe" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.AddOns.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.Core.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CDPIUI.deps.json" KeyPath="yes" />
@@ -130,6 +160,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CDPIUI.runtimeconfig.json" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CDPIUI.Shared.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\Collections.Pooled.dll" KeyPath="yes" />
@@ -148,6 +181,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Behaviors.dll" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION">
+        <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.DataTable.dll" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\CommunityToolkit.WinUI.Controls.HeaderedControls.dll" KeyPath="yes" />
@@ -212,6 +248,12 @@
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\EditHostFile.exe" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ELUA\EN">
+        <File Source="$(var.SourceDir)\ELUA\EN\ELUA.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="ELUA\RU">
+        <File Source="$(var.SourceDir)\ELUA\RU\ELUA.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="en-us">
         <File Source="$(var.SourceDir)\en-us\Microsoft.ui.xaml.dll.mui" KeyPath="yes" />
       </Component>
@@ -223,6 +265,30 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Autoselection">
         <File Source="$(var.SourceDir)\Help\EN\Autoselection\BestConfigSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\CreatingTasks.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\Overview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\EN\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\1AboutConfigImport.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\2ChooseImportFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\3ResolveMissingFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\4ReviewTestAndSave.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\EN\ConfigImport\5ConfigImportTroubleshooting.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\GettingStarted">
         <File Source="$(var.SourceDir)\Help\EN\GettingStarted\AddingCustomSiteListsToConfig.md" KeyPath="yes" />
@@ -257,11 +323,65 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN">
         <File Source="$(var.SourceDir)\Help\EN\WelcomeToHelp.md" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\1ManualPresetOverview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\2ChooseManualStrategies.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\3OrganizeManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2ManualPresetBuilding\4FinishManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\1AboutPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\2ChooseSitesAndMode.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\3DuringPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\4ResultsAndPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\5SavePreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\EN\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\EN\Zapret2PresetSelection\6TroubleshootingPresetSelection.md" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
         <File Source="$(var.SourceDir)\Help\RU\Autoselection\1WhatAutoSelectionIs.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Autoselection">
         <File Source="$(var.SourceDir)\Help\RU\Autoselection\BestConfigSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\CreatingTasks.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\Overview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConditionalLaunch">
+        <File Source="$(var.SourceDir)\Help\RU\ConditionalLaunch\TriggersAndActions.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\1AboutConfigImport.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\2ChooseImportFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\3ResolveMissingFiles.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\4ReviewTestAndSave.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\ConfigImport">
+        <File Source="$(var.SourceDir)\Help\RU\ConfigImport\5ConfigImportTroubleshooting.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\CreateConfigHelper">
         <File Source="$(var.SourceDir)\Help\RU\CreateConfigHelper\SaveConfigKitAs.md" KeyPath="yes" />
@@ -298,6 +418,36 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU">
         <File Source="$(var.SourceDir)\Help\RU\WelcomeToHelp.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\1ManualPresetOverview.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\2ChooseManualStrategies.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\3OrganizeManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2ManualPresetBuilding">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2ManualPresetBuilding\4FinishManualPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\1AboutPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\2ChooseSitesAndMode.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\3DuringPresetSelection.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\4ResultsAndPreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\5SavePreset.md" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Help\RU\Zapret2PresetSelection">
+        <File Source="$(var.SourceDir)\Help\RU\Zapret2PresetSelection\6TroubleshootingPresetSelection.md" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\HtmlAgilityPack.dll" KeyPath="yes" />
@@ -722,6 +872,12 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
         <File Source="$(var.SourceDir)\Strings\en-us\UIHelper.resw" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\WelcomeWizard.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\en-us">
+        <File Source="$(var.SourceDir)\Strings\en-us\Widgets.resw" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\Flashlight.resw" KeyPath="yes" />
       </Component>
@@ -745,6 +901,12 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
         <File Source="$(var.SourceDir)\Strings\ru\UIHelper.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\WelcomeWizard.resw" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Strings\ru">
+        <File Source="$(var.SourceDir)\Strings\ru\Widgets.resw" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION">
         <File Source="$(var.SourceDir)\System.CodeDom.dll" KeyPath="yes" />

@@ -1,0 +1,406 @@
+using CDPIUI.Core.Store;
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Repository.Localization;
+using CDPIUI.Default;
+using CDPIUI.Helper;
+using CDPIUI.Helper.LScript;
+using CDPIUI.Helper.Parsers;
+
+using CDPIUI.Shared.PrettyErrorConvertionService;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.WindowManagement;
+using WinRT.Interop;
+using WinUI3Localizer;
+using WinUIEx;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
+
+namespace CDPIUI.Messages
+{
+    /// <summary>
+    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// </summary>
+    public sealed partial class StoreLocalItemInstallingDialog : TemplateWindow
+    {
+        private string StoreId = string.Empty;
+        private string Name = string.Empty;
+        private string PackFilePath = string.Empty;
+
+        private ILocalizer localizer = Localizer.Get();
+
+        private Action<Tuple<string, string>> _itemDownloadStageChangedHandler;
+        private Action<Tuple<string, double>> _itemDownloadProgressChangedHandler;
+        private Action<Tuple<string, double>> _itemDownloadSpeedChangedHandler;
+        private Action<Tuple<string, TimeSpan>> _itemTimeRemainingChangedHandler;
+        private Action<Tuple<string, ErrorModel>> _itemInstallingErrorHappensHandler;
+        private Action<string> _itemActionsStoppedHandler;
+
+        private bool IsErrorHappens = false;
+        private bool isClosed;
+        private readonly System.Threading.CancellationTokenSource installCancellation = new();
+
+        public StoreLocalItemInstallingDialog()
+        {
+            InitializeComponent();
+
+            WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
+            IconUri = @"Assets/favicon.ico";
+            this.CustomTitleBarUserControl = TitleBarUserControl;
+
+            DisableResizeFeature();
+
+            ((App)Application.Current).OpenWindows.Add(this);
+
+            ToggleItemLoadingMode(true);
+            SetLoadingState(true, localizer.GetLocalizedString("SatusGettingPackInfo"));
+
+            this.Closed += StoreLocalItemInstallingDialog_Closed;
+            this.Activated += StoreLocalItemInstallingDialog_Activated;
+        }
+
+        private void StoreLocalItemInstallingDialog_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            ((App)Application.Current).ShowWindowModalAsync(this);
+            this.Activated -= StoreLocalItemInstallingDialog_Activated;
+        }
+
+        private void StoreLocalItemInstallingDialog_Closed(object sender, WindowEventArgs args)
+        {
+            isClosed = true;
+            installCancellation.Cancel();
+
+            if (_itemDownloadStageChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadStageChanged -= _itemDownloadStageChangedHandler;
+
+            if (_itemDownloadProgressChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadProgressChanged -= _itemDownloadProgressChangedHandler;
+
+            if (_itemTimeRemainingChangedHandler != null)
+                StoreHelper.Instance.ItemTimeRemainingChanged -= _itemTimeRemainingChangedHandler;
+
+            if (_itemInstallingErrorHappensHandler != null)
+                StoreHelper.Instance.ItemInstallingErrorHappens -= _itemInstallingErrorHappensHandler;
+
+            if (_itemDownloadSpeedChangedHandler != null)
+                StoreHelper.Instance.ItemDownloadSpeedChanged -= _itemDownloadSpeedChangedHandler;
+
+            if (_itemActionsStoppedHandler != null)
+                StoreHelper.Instance.ItemActionsStopped -= _itemActionsStoppedHandler;
+        }
+
+        
+
+        public async void SetPackFilePath(string packFile)
+        {
+            if (!string.IsNullOrEmpty(PackFilePath)) return; // TODO: Show notification : "Only one operation..."
+            
+            PackFilePath = packFile;
+            ConnectHandlers();
+            var model = await LocalItemsInstallerHelper.Instance.ImportStoreItemPackFile(PackFilePath, LocalItemsInstallerHelper_ErrorHappens);
+            if (isClosed) return;
+
+            try
+            {
+
+                if (model != null)
+                {
+                    StoreId = model.StoreId;
+                    bool isInstalled = DatabaseHelper.Instance.IsItemInstalled(StoreId);
+
+                    Name = model.ShortName ?? StoreHelper.Instance.GetLocalizedStoreItemName(model.Name, StoreLocalizationHelper.GetStoreLikeLocale());
+
+                    ItemNameTextBlock.Text = string.Format(isInstalled ? localizer.GetLocalizedString("StoreSmallUpdateItemName") : localizer.GetLocalizedString("StoreSmallInstallItemName"), Name);
+                    ItemImage.Source = new BitmapImage(UIHelper.GetUriFromString(model.ReadyToUseIcon ?? LScriptLangHelper.ExecuteScript(model.Icon)));
+                    DeveloperTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallDeveloperText"), model.Developer);
+                    CategoryTextBlock.Text = string.Format(localizer.GetLocalizedString("Source"), packFile);
+                    VersionTextBlock.Text = string.Format(localizer.GetLocalizedString("Version"), model.Version);
+
+                    if (!string.IsNullOrEmpty(model.Color))
+                        ItemColorRectangle.Fill = UIHelper.HexToSolidColorBrushConverter(model.Color);
+
+                    ToggleItemLoadingMode(false);
+                    DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
+
+                    if (DatabaseHelper.Instance.IsItemInstalled(StoreId))
+                    {
+                        string curV = DatabaseHelper.Instance.GetItemById(StoreId)?.CurrentVersion ?? "0.0.0.0";
+                        string iV = model.Version;
+
+                        if (!string.IsNullOrEmpty(curV) && !string.IsNullOrEmpty(iV))
+                        {
+                            if (VersionHelper.CompareVersionStrings(curV, iV) >= 0)
+                            {
+                                ErrorHappens(localizer.GetLocalizedString("ItemAlreadyInstalledWarn"));
+                            }
+                        }
+                        else
+                        {
+                            ErrorHappens(localizer.GetLocalizedString("ItemAlreadyInstalledWarn"));
+                        }
+
+                        
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHappens($"{ex.Message}");
+            }
+        }
+
+        private void ToggleItemLoadingMode(bool isLoading)
+        {
+            Visibility visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+
+            GetButton.IsEnabled = !isLoading;
+            ViewInStoreButton.IsEnabled = !isLoading;
+
+            TitleShimmer.Visibility = visibility;
+            DeveloperShimmer.Visibility = visibility;
+            CategoryShimmer.Visibility = visibility;
+            ImageShimmer.Visibility = visibility;
+            DescriptionShimmer.Visibility = visibility;
+            VersionShimmer.Visibility = visibility;
+        }
+
+        private void SetLoadingState(bool isLoading, string nowLoading = "")
+        {
+            DownloadProgressStackPanel.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+            CurrentStatusTextBlock.Text = nowLoading;
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            StoreHelper.Instance.RemoveItemFromQueue(StoreId);
+            this.Close();
+        }
+
+        private async void ViewInStoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            StoreWindow window = await ((App)Application.Current).SafeCreateNewWindow<StoreWindow>();
+            window.NavigateSubPage(typeof(Views.Store.ItemViewPage), new NameValueCollection() { { "itemId", StoreId } }, new SuppressNavigationTransitionInfo());
+            this.Close();
+        }
+
+        private async void GetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!GetButton.IsEnabled) return;
+            GetButton.IsEnabled = false;
+            IsErrorHappens = false;
+            GetReadyUI();
+            CurrentStatusTextBlock.Text = localizer.GetLocalizedString("GettingReady");
+            await LocalItemsInstallerHelper.Instance.BeginLocalItemInstalling(
+                PackFilePath, LocalItemsInstallerHelper_ErrorHappens, installCancellation.Token);
+        }
+
+        private void ErrorHappens(string message)
+        {
+            IsErrorHappens = true;
+            ToggleItemLoadingMode(false);
+            ItemSmallDescriptionStackPanel.Visibility = Visibility.Collapsed;
+            DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
+            GetButton.Visibility = Visibility.Collapsed;
+            ErrorGrid.Visibility = Visibility.Visible;
+
+            ErrorCodeTextBlock.Text = message;
+
+            CancelButton.Content = "OK";
+        }
+
+        private void GetReadyUI()
+        {
+            GetButton.Visibility = Visibility.Collapsed;
+            StatusProgressbar.IsIndeterminate = true;
+
+            ErrorGrid.Visibility = Visibility.Collapsed;
+            DownloadProgressStackPanel.Visibility = Visibility.Visible;
+        }
+
+        #region ActionHandlers
+
+        private Action<Tuple<string, T>> ForCurrentOperation<T>(Action<Tuple<string, T>> action)
+        {
+            return data =>
+            {
+                if (StoreHelper.Instance.GetItemIdFromOperationId(data.Item1) != StoreId) return;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (!isClosed) action(data);
+                });
+            };
+        }
+
+        private void ConnectHandlers()
+        {
+
+            
+            _itemDownloadStageChangedHandler = ForCurrentOperation<string>((data) =>
+            {
+                string operationId = data.Item1;
+                string stage = data.Item2;
+
+
+                if (IsErrorHappens) return;
+
+                GetReadyUI();
+
+                CurrentStatusSpeedTextBlock.Visibility = Visibility.Collapsed;
+
+                PreferItemDownloadingStateActions(stage);
+            });
+            StoreHelper.Instance.ItemDownloadStageChanged += _itemDownloadStageChangedHandler;
+
+            _itemDownloadProgressChangedHandler = ForCurrentOperation<double>((data) =>
+            {
+                string operationId = data.Item1;
+                double progress = data.Item2;
+
+
+                if (IsErrorHappens) return;
+
+                StatusProgressbar.IsIndeterminate = false;
+                StatusProgressbar.Value = progress;
+            });
+            StoreHelper.Instance.ItemDownloadProgressChanged += _itemDownloadProgressChangedHandler;
+
+            _itemTimeRemainingChangedHandler = ForCurrentOperation<TimeSpan>((data) =>
+            {
+                string operationId = data.Item1;
+                TimeSpan time = data.Item2;
+
+            });
+
+            StoreHelper.Instance.ItemTimeRemainingChanged += _itemTimeRemainingChangedHandler;
+
+            _itemDownloadSpeedChangedHandler = ForCurrentOperation<double>((data) =>
+            {
+                string operationId = data.Item1;
+                double speed = data.Item2;
+
+
+                CurrentStatusSpeedTextBlock.Text = $"{UnitsParser.FormatSpeed(speed)}";
+            });
+
+            StoreHelper.Instance.ItemDownloadSpeedChanged += _itemDownloadSpeedChangedHandler;
+
+            _itemInstallingErrorHappensHandler = ForCurrentOperation<ErrorModel>((data) =>
+            {
+                string operationId = data.Item1;
+                string errorCode = data.Item2.ErrorCode;
+
+
+                IsErrorHappens = true;
+
+                ItemSmallDescriptionStackPanel.Visibility = Visibility.Collapsed;
+                DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
+                ErrorGrid.Visibility = Visibility.Visible;
+
+                ErrorCodeTextBlock.Text = errorCode;
+
+                CancelButton.Content = "OK";
+            });
+            StoreHelper.Instance.ItemInstallingErrorHappens += _itemInstallingErrorHappensHandler;
+
+            _itemActionsStoppedHandler = (id) =>
+            {
+                if (id != StoreId) return;
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    if (!isClosed && !IsErrorHappens && DatabaseHelper.Instance.IsItemInstalled(StoreId))
+                        ShowItemAfterInstallActions();
+                });
+            };
+            StoreHelper.Instance.ItemActionsStopped += _itemActionsStoppedHandler;
+            
+        }
+
+        private void PreferItemDownloadingStateActions(string state)
+        {
+            state ??= "QueueWaiting";
+            string stageHeaderText = string.Empty;
+            switch (state)
+            {
+                case "GETR":
+                    stageHeaderText = localizer.GetLocalizedString("GettingReady");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "END":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "Downloading":
+                    stageHeaderText = localizer.GetLocalizedString("Downloading");
+                    StatusProgressbar.IsIndeterminate = false;
+                    CurrentStatusSpeedTextBlock.Visibility = Visibility.Visible;
+                    break;
+                case "Extracting":
+                    stageHeaderText = localizer.GetLocalizedString("Installing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "ErrorHappens":
+                    stageHeaderText = localizer.GetLocalizedString("ErrorHappens");
+                    break;
+                case "Completed":
+                    stageHeaderText = localizer.GetLocalizedString("Finishing");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "CANC":
+                    stageHeaderText = localizer.GetLocalizedString("Cancel");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                case "ConnectingToService":
+                    stageHeaderText = localizer.GetLocalizedString("ConnectingToService");
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+                default:
+                    stageHeaderText = localizer.GetLocalizedString(state);
+                    StatusProgressbar.IsIndeterminate = true;
+                    break;
+            }
+            CurrentStatusTextBlock.Text = stageHeaderText;
+        }
+
+        private void ShowItemAfterInstallActions()
+        {
+            DownloadProgressStackPanel.Visibility = Visibility.Collapsed;
+            CancelButton.Content = "OK";
+
+            ItemNameTextBlock.Text = string.Format(localizer.GetLocalizedString("StoreSmallItemNameComplete"), Name);
+        }
+
+        private void LocalItemsInstallerHelper_ErrorHappens(string errorCode)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (!isClosed) ErrorHappens(errorCode);
+            });
+        }
+
+        #endregion
+
+        
+    }
+}

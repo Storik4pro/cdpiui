@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.Settings.ViewThemeUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Controls.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls" 
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
+    xmlns:l="using:WinUI3Localizer" 
+    xmlns:conv="using:CDPIUI.Converters"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <controls:SettingsExpander l:Uids.Uid="ThemeSelector" IsExpanded="True">
+        <controls:SettingsExpander.Items>
+            <controls:SettingsCard
+                l:Uids.Uid="AvailableThemesSettingsCard"
+                HorizontalContentAlignment="Left"
+                ContentAlignment="Vertical">
+                <GridView x:Name="ThemeGridView"
+                          ItemsSource="{x:Bind viewmodels:ApplicationThemeManager.Instance.Themes}"
+                          SelectionChanged="{x:Bind viewmodels:ApplicationThemeManager.Instance.HandleCollectionThemeChanged}"
+                          SelectedItem="{x:Bind viewmodels:ApplicationThemeManager.Instance.CurrentTheme, Mode=OneWay}">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:ThemeViewModel" >
+                            <Border x:Name="MainBorder" 
+                                BorderBrush="{ThemeResource SystemChromeMediumColor}" 
+                                CornerRadius="4" 
+                                BorderThickness="2">
+
+                                <Grid CornerRadius="4" Width="64" Height="64">
+                                    <Rectangle Fill="{x:Bind FirstBackgrounBrush, Mode=OneWay}" RadiusX="10" RadiusY="10"/>
+                                    <Polygon Points="0,0 0,64 64,64" Fill="{x:Bind FirstBackgrounBrush, Mode=OneWay}"/>
+                                    <Polygon Points="0,0 64,64 64,0" Fill="{x:Bind SecondBackgrounBrush, Mode=OneWay}"/>
+                                </Grid>
+                                <ToolTipService.ToolTip>
+
+                                    <ToolTip PlacementTarget="{Binding ElementName= MainBorder}"
+                                         Placement="Bottom">
+                                        <StackPanel>
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                                            <TextBlock Text="{x:Bind Description, Mode=OneWay}" Visibility="{x:Bind ShowDescription, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </ToolTipService.ToolTip>
+                            </Border>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </controls:SettingsCard>
+
+        </controls:SettingsExpander.Items>
+    </controls:SettingsExpander>
+</UserControl>

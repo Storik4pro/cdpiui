@@ -1,0 +1,95 @@
+﻿namespace CDPIUI.Shared.PrettyErrorConvertionService
+{
+    public enum PrettyErrorCode
+    {
+        SUCCESS,
+
+        INVALID_URI,
+        HOST_NAME_NOT_RESOLVED,
+        CANNOT_CONNECT,
+        SERVER_UNREACHABLE,
+        TIMEOUT,
+        CONNECTION_ABORTED,
+        CONNECTION_RESET,
+        DISCONNECTED,
+        OPERATION_CANCELED,
+        ERROR_HTTP_INVALID_SERVER_RESPONSE,
+        REDIRECT_FAILED,
+        UNEXPECTED_STATUS_CODE,
+        CERTIFICATE_COMMON_NAME_INCORRECT,
+        CERTIFICATE_EXPIRED,
+        CERTIFICATE_CONTAINS_ERRORS,
+        CERTIFICATE_REVOKED,
+        CERTIFICATE_INVALID,
+        HTTP_TO_HTTPS_ON_REDIRECTION,
+        HTTPS_TO_HTTP_ON_REDIRECTION,
+        ACCESS_DENIED,
+        ERROR_HTTP_HEADER_NOT_FOUND,
+        HTTP_REQUEST_EXCEPTION,
+        TOO_MANY_VARIANTS,
+
+        NULL_REFERENCE,
+
+        // IO errors
+        IO_FILE_NOT_FOUND,
+        IO_DIRECTORY_NOT_FOUND,
+        IO_PATH_TOO_LONG,
+        IO_ACCESS_DENIED,
+        IO_DISK_FULL,
+        IO_GENERIC,
+        IO_FILE_USED_FOR_ANOTHER_PROCESS,
+        IO_FILE_INVALID,
+        IO_FILE_CORRUPT,
+        IO_SYSTEM_CANT_ACCESS_FILE,
+
+        // WIN32
+        OPERATION_CANCELLED_BY_USER,
+
+        // Extraction errors
+        EXTRACT_INVALID_ARCHIVE,
+        EXTRACT_ENTRY_CORRUPTED,
+        EXTRACT_UNKNOWN,
+
+        // MSI
+        MSI_INSTALL_FAILURE,
+
+        // Store
+        ADDON_NOT_INSTALLED,
+        NEWEST_VERSION_INSTALLED,
+        PACK_NOT_SUPPORTED,
+        PACK_NOT_SUPPORTED_TYPE,
+        ITEM_NOT_FOUND,
+        CANNOT_MAKE_REQUESTED_ACTIONS,
+
+        // CatalogCheck
+        CATALOG_SIGNATURE_CHECK_FAILURE,
+        CATALOG_INVALID,
+
+        // Application
+        APPLICATION_DAMAGED_NEED_REPAIR,
+
+        // Components
+        FILTER_OPEN_ERROR,
+        PARAMETER_ERROR,
+        HOSTLIST_LOAD_ERROR,
+        PORT_FILTER_ERROR,
+        PORT_FILTER_WRONG_VALUE_ERROR,
+        COMPONENT_INSTALL_ERROR,
+        INVALID_VALUE_ERROR,
+        ALREADY_RUNNING_WARN,
+        FILE_READ_ERROR,
+
+        // System proxy
+
+        IP_INCORRECT,
+
+        // Database 
+        USER_ITEM_REGISTER,
+        APPLICATION_ITEM_REGISTER,
+
+        SETTING_TYPE_NOT_SUPPORTED,
+        SETTING_NOT_FOUND,
+
+        UNKNOWN,
+    }
+}

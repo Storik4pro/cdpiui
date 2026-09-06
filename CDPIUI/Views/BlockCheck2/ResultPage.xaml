@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.BlockCheck2.ResultPage"
+    x:Name="RootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:config="using:CDPIUI.Controls.CreateConfigHelper"
+    xmlns:converters="using:CDPIUI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigation="using:CDPIUI.Controls.Navigation"
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:vm="using:CDPIUI.ViewModels"
+    mc:Ignorable="d"
+    xmlns:def="using:CDPIUI.Controls.Default"
+    xmlns:ucontrol="using:CDPIUI.Controls.Universal" 
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
+    xmlns:menu="using:CDPIUI.Controls.MenuManagement">
+
+    <tpl:TemplatePage.Resources>
+        <CollectionViewSource
+            x:Name="GroupedStrategiesSource"
+            IsSourceGrouped="True" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:ReversedBoolToVisibilityConverter x:Key="ReversedBoolToVisibilityConverter" />
+    </tpl:TemplatePage.Resources>
+
+    <tpl:TemplatePage.MenuBarTemplate>
+        <DataTemplate>
+            <MenuBar>
+                <MenuBarItem
+                    l:Uids.Uid="ActionsMenuItem"
+                    menu:MenuBarNode.Id="actions"
+                    menu:MenuBarNode.Order="400">
+                    <MenuFlyoutItem
+                        l:Uids.Uid="BlockCheck2ProceedToPresetReviewMenuItem"
+                        Click="ReviewPresetButton_Click"
+                        IsEnabled="{Binding CanOpenPresetReview, Mode=OneWay}"
+                        menu:MenuBarNode.Id="result.open-preset-review"
+                        menu:MenuBarNode.Order="800">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8A7;" />
+                        </MenuFlyoutItem.Icon>
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Enter" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+            </MenuBar>
+        </DataTemplate>
+    </tpl:TemplatePage.MenuBarTemplate>
+
+    <Grid MinWidth="900" Padding="16,0,16,5">
+        <navigation:AnimatedSelectorBar
+            x:Name="ResultSelector"
+            Grid.Row="1"
+            AreTransitionsEnabled="True"
+            menu:AnimatedSelectorBarMenu.ScopeId="result-selector">
+            <navigation:AnimatedSelectorBarItem
+                x:Name="StrategiesSelectorItem"
+                l:Uids.Uid="BlockCheck2ManualStrategiesTab">
+                <menu:MenuBarState.Template>
+                    <DataTemplate>
+                        <MenuBar>
+                            <MenuBarItem
+                                l:Uids.Uid="EditMenuItem"
+                                menu:MenuBarNode.Id="edit"
+                                menu:MenuBarNode.Order="200">
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2CopyDisplayedStrategyMenuItem"
+                                    Click="CopyViewAppBarButton_Click"
+                                    Icon="Copy"
+                                    IsEnabled="{Binding CanCopySelectedStrategy, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.copy-displayed"
+                                    menu:MenuBarNode.Order="100">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control,Menu" Key="C" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2CopyFullStrategyMenuItem"
+                                    Click="CopyFullAppBarButton_Click"
+                                    IsEnabled="{Binding CanCopySelectedStrategy, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.copy-full"
+                                    menu:MenuBarNode.Order="200">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control,Shift" Key="C" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                            </MenuBarItem>
+                            <MenuBarItem
+                                l:Uids.Uid="ViewMenuItem"
+                                menu:MenuBarNode.Id="view"
+                                menu:MenuBarNode.Order="300">
+                                <RadioMenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2ShowStrategyOverviewMenuItem"
+                                    Click="ShowStrategyOverviewMenuItem_Click"
+                                    GroupName="strategy-view"
+                                    IsChecked="{Binding IsStrategyOverviewViewActive, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.show-overview"
+                                    menu:MenuBarNode.Order="100">
+                                    <RadioMenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="Number1" />
+                                    </RadioMenuFlyoutItem.KeyboardAccelerators>
+                                </RadioMenuFlyoutItem>
+                                <RadioMenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2ShowStrategyDetailsMenuItem"
+                                    Click="ShowStrategyDetailsMenuItem_Click"
+                                    GroupName="strategy-view"
+                                    IsChecked="{Binding IsStrategyDetailsViewActive, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.show-details"
+                                    menu:MenuBarNode.Order="200">
+                                    <RadioMenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="Number2" />
+                                    </RadioMenuFlyoutItem.KeyboardAccelerators>
+                                </RadioMenuFlyoutItem>
+                            </MenuBarItem>
+                            <MenuBarItem
+                                l:Uids.Uid="ActionsMenuItem"
+                                menu:MenuBarNode.Id="actions"
+                                menu:MenuBarNode.Order="400">
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2TestStrategyMenuItem"
+                                    Click="TestStrategyButton_Click"
+                                    IsEnabled="{Binding CanTestSelectedStrategy, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.test-curl"
+                                    menu:MenuBarNode.Order="100">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE9A1;" />
+                                    </MenuFlyoutItem.Icon>
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="F5" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2ToggleManualTestMenuItem"
+                                    Click="ComponentManualTestMenuItem_Click"
+                                    IsEnabled="{Binding CanToggleComponentManualTest, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.manual-test"
+                                    menu:MenuBarNode.Order="200">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Key="F5" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutSeparator
+                                    menu:MenuBarNode.Id="result.strategy.assignment-separator"
+                                    menu:MenuBarNode.Order="250" />
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2AddForSiteMenuItem"
+                                    Click="AddForSiteButton_Click"
+                                    IsEnabled="{Binding CanAddSelectedStrategyForSite, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.add-site"
+                                    menu:MenuBarNode.Order="300">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="A" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="BlockCheck2AddForListMenuItem"
+                                    Click="AddForListButton_Click"
+                                    IsEnabled="{Binding CanAddSelectedStrategyForList, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.strategy.add-list"
+                                    menu:MenuBarNode.Order="400">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                            </MenuBarItem>
+                        </MenuBar>
+                    </DataTemplate>
+                </menu:MenuBarState.Template>
+                <Grid
+                    x:Name="StrategiesPanel"
+                    RowSpacing="0"
+                    SizeChanged="StrategiesPanel_SizeChanged">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="*" MinHeight="150" />
+                    </Grid.RowDefinitions>
+
+                    <Grid x:Name="StrategyToolbar" Margin="0,0,0,8" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="280" />
+                            <ColumnDefinition Width="*" MaxWidth="20" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="210" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <AutoSuggestBox
+                            x:Name="StrategySearchBox"
+                            l:Uids.Uid="BlockCheck2StrategySearchBox"
+                            QueryIcon="Find"
+                            TextChanged="StrategySearchBox_TextChanged" />
+                        <ucontrol:ContentSeparator Grid.Column="1" Height="20"/>
+                        <FontIcon Glyph="&#xE71C;" Grid.Column="2" FontSize="16" />
+                        <ComboBox
+                            x:Name="StrategySortComboBox"
+                            Grid.Column="3"
+                            HorizontalAlignment="Stretch"
+                            SelectedIndex="0"
+                            SelectionChanged="StrategyViewOption_SelectionChanged">
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortBestFirst" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortWorstFirst" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortSiteAZ" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortSiteZA" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortFastFirst" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortSlowFirst" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortStrategyAZ" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2SortStrategyZA" />
+                        </ComboBox>
+                        <ComboBox
+                            x:Name="StrategyFilterComboBox"
+                            Grid.Column="4"
+                            HorizontalAlignment="Stretch"
+                            SelectedIndex="0"
+                            SelectionChanged="StrategyViewOption_SelectionChanged">
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2FilterAll" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2FilterSuccessful" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2FilterPartial" />
+                            <ComboBoxItem l:Uids.Uid="BlockCheck2FilterFailed" />
+                        </ComboBox>
+                        <TextBlock
+                            x:Name="StrategyCountTextBlock"
+                            Grid.Column="5"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </Grid>
+
+                    <Border
+                        x:Name="StrategyTableBorder"
+                        Grid.Row="1"
+                        Height="260"
+                        MinHeight="180"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <def:PanelTitleUserControl l:Uids.Uid="SiteViewPanel" 
+                                                       Visibility="{x:Bind StrategySemanticZoom.IsZoomedInViewActive, Converter={StaticResource ReversedBoolToVisibilityConverter}, Mode=OneWay}"
+                                                       CloseEnabled="False"/>
+                            <Grid
+                                Padding="11,0"
+                                Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                ColumnSpacing="12"
+                                Visibility="{x:Bind StrategySemanticZoom.IsZoomedInViewActive, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="145" />
+                                    <ColumnDefinition Width="2.5*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="90" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" l:Uids.Uid="BlockCheck2SelectionColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ConnectionColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="2" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2StrategyColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="3" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ResultColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="4" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ResponseColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                            </Grid>
+                            <SemanticZoom
+                                x:Name="StrategySemanticZoom"
+                                Grid.Row="1"
+                                IsZoomedInViewActive="True">
+                                <SemanticZoom.ZoomedInView>
+                                    <ListView
+                                        x:Name="StrategyListView"
+                                        ItemsSource="{x:Bind GroupedStrategiesSource.View, Mode=OneWay}"
+                                        SelectionChanged="StrategyListView_SelectionChanged"
+                                        SelectionMode="Single"
+                                        ItemContainerStyle="{StaticResource ListBoxListViewStyle}">
+                                        <ListView.GroupStyle>
+                                            <GroupStyle>
+                                                <GroupStyle.HeaderTemplate>
+                                                    <DataTemplate x:DataType="vm:BlockCheck2SiteStrategyGroup">
+                                                        <Button
+                                                            Padding="0"
+                                                            HorizontalAlignment="Stretch"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            CornerRadius="0">
+                                                            <Grid Padding="12,8,8,5" Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="{Binding SiteUrl}" />
+                                                            </Grid>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </GroupStyle.HeaderTemplate>
+                                            </GroupStyle>
+                                        </ListView.GroupStyle>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:BlockCheck2StrategyEvidenceItem">
+                                                <Grid Padding="0,7" ColumnSpacing="12">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="70" />
+                                                        <ColumnDefinition Width="145" />
+                                                        <ColumnDefinition Width="2.5*" />
+                                                        <ColumnDefinition Width="100" />
+                                                        <ColumnDefinition Width="90" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding SelectionText}" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding ConnectionDetails}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding StrategyArguments}" FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="5">
+                                                        <TextBlock Text="{Binding ResultText}" />
+                                                        <FontIcon
+                                                            FontSize="12"
+                                                            Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                                            Glyph="&#xE7BA;"
+                                                            Visibility="{Binding HasPartialScopeWarning, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                            <ToolTipService.ToolTip>
+                                                                <ToolTip l:Uids.Uid="BlockCheck2PartialScopeWarningToolTip" />
+                                                            </ToolTipService.ToolTip>
+                                                        </FontIcon>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="4" Text="{Binding ResponseTimeText}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </SemanticZoom.ZoomedInView>
+                                <SemanticZoom.ZoomedOutView>
+                                    <ListView
+                                        x:Name="SitesOverviewListView"
+                                        ItemsSource="{x:Bind GroupedStrategiesSource.View.CollectionGroups, Mode=OneWay}"
+                                        IsItemClickEnabled="True"
+                                        SelectionMode="None">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="Padding" Value="8,0" />
+                                                <Setter Property="MinHeight" Value="38" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                    <TextBlock
+                                                        Text="{Binding Group.SiteUrl}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        TextWrapping="Wrap" />
+                                                </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </SemanticZoom.ZoomedOutView>
+                            </SemanticZoom>
+                            <StackPanel
+                                x:Name="NoStrategiesPanel"
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="5">
+                                <FontIcon FontSize="28" Glyph="&#xE9D9;" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock l:Uids.Uid="BlockCheck2NoStrategiesTitle" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                <TextBlock l:Uids.Uid="BlockCheck2NoStrategiesDescription" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <controls:ContentSizer
+                        Grid.Row="2"
+                        Height="16"
+                        Orientation="Horizontal"
+                        TargetControl="{x:Bind StrategyTableBorder}" />
+
+                    <Border
+                        x:Name="StrategyDetailsBorder"
+                        Grid.Row="3"
+                        MinHeight="150"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <def:PanelTitleUserControl l:Uids.Uid="ConfigActionsPanelTitle" CloseEnabled="False"/>
+                            <Grid x:Name="StrategyDetailsGrid" Grid.Row="1" Padding="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0"  Background="{ThemeResource LayerOnMicaBaseAltFillColorDefault}" Padding="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <ScrollView>
+                                        <StackPanel Spacing="7" Margin="12 12 12 0">
+                                            <TextBlock x:Name="SelectedSiteTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" />
+                                            <TextBlock x:Name="SelectedConnectionTextBlock" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            <TextBlock x:Name="SelectedEvidenceTextBlock" TextWrapping="Wrap" />
+                                            <TextBlock x:Name="SelectedBaselineTextBlock" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                        </StackPanel>
+                                    </ScrollView>
+                                    <CommandBar Grid.Row="1"  DefaultLabelPosition="Bottom" Background="{ThemeResource CardBackgroundFillColorSecondary}">
+                                        <AppBarButton x:Name="TestStrategyButton" l:Uids.Uid="BlockCheck2TestStrategyButton" Click="TestStrategyButton_Click">
+                                            <FontIcon Glyph="&#xE9A1;" />
+                                            <AppBarButton.KeyboardAccelerators>
+                                                <KeyboardAccelerator Modifiers="Control" Key="F5" />
+                                            </AppBarButton.KeyboardAccelerators>
+                                        </AppBarButton>
+                                        <AppBarToggleButton x:Name="ComponentManualTestButton" Click="ComponentManualTestButton_Click">
+                                            <FontIcon x:Name="TestGlyph" Glyph="&#xE768;" />
+                                            <AppBarToggleButton.KeyboardAccelerators>
+                                                <KeyboardAccelerator Key="F5" />
+                                            </AppBarToggleButton.KeyboardAccelerators>
+                                        </AppBarToggleButton>
+                                        <AppBarSeparator/>
+                                        <AppBarButton x:Name="AddForSiteButton" l:Uids.Uid="BlockCheck2AddForSiteButton" Click="AddForSiteButton_Click">
+                                            <AppBarButton.Icon>
+                                                <FontIcon Glyph="&#xECC8;" />
+                                            </AppBarButton.Icon>
+                                            <AppBarButton.KeyboardAccelerators>
+                                                <KeyboardAccelerator Modifiers="Control" Key="A" />
+                                            </AppBarButton.KeyboardAccelerators>
+                                        </AppBarButton>
+                                        <AppBarButton x:Name="AddForListButton" l:Uids.Uid="BlockCheck2AddForListButton"  Click="AddForListButton_Click">
+                                            <AppBarButton.Icon>
+                                                <FontIcon Glyph="&#xED0E;" />
+                                            </AppBarButton.Icon>
+                                            <AppBarButton.KeyboardAccelerators>
+                                                <KeyboardAccelerator Modifiers="Control,Shift" Key="A" />
+                                            </AppBarButton.KeyboardAccelerators>
+                                        </AppBarButton>
+                                        <CommandBar.SecondaryCommands>
+                                            <AppBarButton x:Name="CopyViewAppBarButton" Icon="Copy" l:Uids.Uid="CopyViewAppBarButton" Click="CopyViewAppBarButton_Click">
+                                                <AppBarButton.KeyboardAccelerators>
+                                                    <KeyboardAccelerator Modifiers="Control,Menu" Key="C" />
+                                                </AppBarButton.KeyboardAccelerators>
+                                            </AppBarButton>
+                                            <AppBarButton x:Name="CopyFullAppBarButton" l:Uids.Uid="CopyFullAppBarButton" Click="CopyFullAppBarButton_Click">
+                                                <AppBarButton.KeyboardAccelerators>
+                                                    <KeyboardAccelerator Modifiers="Control,Shift" Key="C" />
+                                                </AppBarButton.KeyboardAccelerators>
+                                            </AppBarButton>
+                                        </CommandBar.SecondaryCommands>
+                                    </CommandBar>
+                                    <ProgressBar x:Name="StrategyTestProgressRing" IsIndeterminate="True" Grid.Row="1" VerticalAlignment="Bottom" CornerRadius="0" Visibility="Collapsed"/>
+                                </Grid>
+                                <Grid Grid.Column="1" RowSpacing="8" Padding="12 12 12 12">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Name="SelectedStrategyNameTextBlock" 
+                                                   Style="{ThemeResource BodyStrongTextBlockStyle}" 
+                                                   TextTrimming="CharacterEllipsis" 
+                                                   TextWrapping="NoWrap"/>
+                                        <TextBlock 
+                                            x:Name="SelectedStrategyIdTextBlock" 
+                                            Grid.Column="1" 
+                                            FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                                            FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" 
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    </Grid>
+                                    <ScrollView Grid.Row="1">
+                                        <Grid>
+                                            <Border Background="Black"/>
+                                            <RichTextBlock
+                                                Padding="16"
+                                                Foreground="#DCDCDC"
+                                                IsTextSelectionEnabled="True"
+                                                SelectionHighlightColor="Gray"
+                                                FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                                                FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}">
+                                                <Paragraph>
+                                                    <Run x:Name="SelectedStrategyArgumentsTextBox"/>
+                                                </Paragraph>
+                                            </RichTextBlock>
+                                        </Grid>
+                                    </ScrollView>
+                                </Grid>
+                                
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </navigation:AnimatedSelectorBarItem>
+
+            <navigation:AnimatedSelectorBarItem
+                x:Name="PresetSelectorItem"
+                l:Uids.Uid="BlockCheck2ManualPresetTab">
+                <menu:MenuBarState.Template>
+                    <DataTemplate>
+                        <MenuBar>
+                            <MenuBarItem l:Uids.Uid="EditMenuItem" x:Name="EditMenuItem"  menu:MenuBarNode.Id="edit" menu:MenuBarNode.Order="200">
+                                <MenuFlyoutItem x:Name="Search" l:Uids.Uid="SearchMenuItem" Icon="Find" Command="{Binding PresetPreviewMenuTarget.Search, Mode=OneTime}">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="F"/>
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem x:Name="SearchAndReplace" l:Uids.Uid="SearchAndReplaceMenuItem" Command="{Binding PresetPreviewMenuTarget.Replace, Mode=OneTime}" IsEnabled="False">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="H"/>
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                            </MenuBarItem>
+                            <MenuBarItem
+                                l:Uids.Uid="ViewMenuItem"
+                                menu:MenuBarNode.Id="view"
+                                menu:MenuBarNode.Order="300">
+
+                                <MenuFlyoutItem l:Uids.Uid="ZoomInMenuItem" x:Name="ZoomInMenuItem" Command="{Binding PresetPreviewMenuTarget.ZoomIn, Mode=OneTime}">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="Add"/>
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8A3;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="ZoomOutMenuItem" x:Name="ZoomOutMenuItem" Command="{Binding PresetPreviewMenuTarget.ZoomOut, Mode=OneTime}">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="Subtract"/>
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE71F;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutItem l:Uids.Uid="ZoomReturnMenuItem" x:Name="ZoomReturnMenuItem" Command="{Binding PresetPreviewMenuTarget.ZoomReset, Mode=OneTime}">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                            </MenuBarItem>
+                            <MenuBarItem
+                                l:Uids.Uid="ActionsMenuItem"
+                                menu:MenuBarNode.Id="actions"
+                                menu:MenuBarNode.Order="400">
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="ConfigMakerStartTestMenuItem"
+                                    Click="PresetPreviewStartTestMenuItem_Click"
+                                    Icon="Play"
+                                    IsEnabled="{Binding CanStartPresetPreviewTest, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.preset.start-test"
+                                    menu:MenuBarNode.Order="100" />
+                                <MenuFlyoutItem
+                                    l:Uids.Uid="ConfigMakerStopTestMenuItem"
+                                    Click="PresetPreviewStopTestMenuItem_Click"
+                                    Icon="Stop"
+                                    IsEnabled="{Binding CanStopPresetPreviewTest, Mode=OneWay}"
+                                    menu:MenuBarNode.Id="result.preset.stop-test"
+                                    menu:MenuBarNode.Order="200" />
+                            </MenuBarItem>
+                        </MenuBar>
+                    </DataTemplate>
+                </menu:MenuBarState.Template>
+                <Grid x:Name="PresetPanel" RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="210" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid ColumnSpacing="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="MoveAssignmentUpButton" l:Uids.Uid="MoveUpButton" Padding="7 8 7 7" Click="MoveAssignmentUpButton_Click">
+                            <FontIcon FontSize="14" Glyph="&#xE74A;" />
+                        </Button>
+                        <Button x:Name="MoveAssignmentDownButton" l:Uids.Uid="MoveDownButton" Grid.Column="1" Padding="7 8 7 7" Click="MoveAssignmentDownButton_Click">
+                            <FontIcon FontSize="14" Glyph="&#xE74B;" />
+                        </Button>
+                        <Button x:Name="RemoveAssignmentButton" Grid.Column="2" Padding="7,5" Click="RemoveAssignmentButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon FontSize="14" Glyph="&#xE74D;" />
+                                <TextBlock l:Uids.Uid="BlockCheck2RemoveAssignmentButtonText" />
+                            </StackPanel>
+                        </Button>
+                        <ucontrol:ContentSeparator Grid.Column="3" Height="20"/>
+                        <Button Grid.Column="4" Padding="7,5" Click="ClearAssignmentsButton_Click">
+                            <TextBlock l:Uids.Uid="BlockCheck2ClearAssignmentsButtonText" />
+                        </Button>
+                        <Button
+                            x:Name="ReviewPresetButton"
+                            Grid.Column="6"
+                            Padding="12,6"
+                            Style="{StaticResource AccentButtonStyle}"
+                            l:Uids.Uid="BlockCheck2ReviewPresetButton"
+                            Click="ReviewPresetButton_Click" />
+                    </Grid>
+
+                    <Border
+                        Grid.Row="1"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Padding="12,0" Background="{ThemeResource SubtleFillColorSecondaryBrush}" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="42" />
+                                    <ColumnDefinition Width="1.3*" />
+                                    <ColumnDefinition Width="145" />
+                                    <ColumnDefinition Width="2.5*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" Text="#" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ScopeColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="2" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ConnectionColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="3" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2StrategyColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                            </Grid>
+                            <ListView
+                                x:Name="ManualAssignmentsListView"
+                                Grid.Row="1"
+                                SelectionChanged="ManualAssignmentsListView_SelectionChanged"
+                                SelectionMode="Single"
+                                ItemContainerStyle="{StaticResource ListBoxListViewStyle}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:BlockCheck2ManualAssignmentItem">
+                                        <Grid Padding="4,7" ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="42" />
+                                                <ColumnDefinition Width="1.3*" />
+                                                <ColumnDefinition Width="145" />
+                                                <ColumnDefinition Width="2.5*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Order}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Scope}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="2" Text="{Binding ConnectionDetails}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="3" Text="{Binding StrategyArguments}" FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <StackPanel
+                                x:Name="EmptyAssignmentsPanel"
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="4">
+                                <TextBlock l:Uids.Uid="BlockCheck2EmptyAssignmentsTitle" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                <TextBlock l:Uids.Uid="BlockCheck2EmptyAssignmentsDescription" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="2" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Border 
+                                CornerRadius="6"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="36" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+                                    <def:PanelTitleUserControl l:Uids.Uid="ConfigPreviewPanelTitle" CloseEnabled="False"  />
+                                    <config:ConfigMakerUserControl
+                                x:Name="PresetPreviewEditor"
+                                IsEditorReadOnly="True"
+                                IsErrorCheckEnabled="False"
+                                Grid.Row="1"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <Border
+                            Grid.Column="1"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="36" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <def:PanelTitleUserControl l:Uids.Uid="BlockCheck2RecommendationsHeader" CloseEnabled="False" />
+                                <ListView
+                                    x:Name="ManualIssuesListView"
+                                    Grid.Row="1"
+                                    SelectionMode="None">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:BlockCheck2ManualIssueItem">
+                                            <Grid Padding="4,6" ColumnSpacing="8">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Spacing="2">
+                                                    <TextBlock Text="{Binding DisplayCode}" FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                                                    <StackPanel
+                                                        Orientation="Horizontal"
+                                                        Spacing="4"
+                                                        Visibility="{Binding HasSubjects, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                        <TextBlock l:Uids.Uid="BlockCheck2ManualIssueSourcesLabel" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                        <TextBlock Text="{Binding SubjectText}" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                                <HyperlinkButton
+                                                    Grid.Row="1"
+                                                    Padding="0"
+                                                    VerticalAlignment="Bottom"
+                                                    l:Uids.Uid="BlockCheck2ManualIssueQuickFixButton"
+                                                    Click="ManualIssueQuickFixButton_Click"
+                                                    Visibility="{Binding CanQuickFix, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <TextBlock
+                                    x:Name="NoManualIssuesTextBlock"
+                                    Grid.Row="1"
+                                    Margin="12"
+                                    l:Uids.Uid="BlockCheck2NoRecommendationsText"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </navigation:AnimatedSelectorBarItem>
+
+            <navigation:AnimatedSelectorBarItem
+                x:Name="DiagnosticsSelectorItem"
+                l:Uids.Uid="BlockCheck2DiagnosticsTab">
+                <Grid x:Name="DiagnosticsPanel" ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefault}" BorderThickness="1" CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <def:PanelTitleUserControl l:Uids.Uid="BlockCheck2IssuesHeader" CloseEnabled="False"/>
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl
+                                    x:Name="IssuesListView">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:BlockCheck2ManualIssueItem">
+                                            <StackPanel Padding="6" Spacing="3">
+                                                <TextBlock Text="{Binding Code}" Style="{ThemeResource BodyStrongTextBlockStyle}" />
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <TextBlock
+                                x:Name="NoIssuesTextBlock"
+                                Grid.Row="1"
+                                Margin="12"
+                                l:Uids.Uid="BlockCheck2NoIssuesText" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Background="{ThemeResource CardBackgroundFillColorDefault}" BorderThickness="1" CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Padding="12,0" Background="{ThemeResource SubtleFillColorSecondaryBrush}" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.3*" />
+                                    <ColumnDefinition Width="145" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" l:Uids.Uid="BlockCheck2SiteColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ConnectionColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="2" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2StrategyColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                                <TextBlock Grid.Column="3" VerticalAlignment="Center" l:Uids.Uid="BlockCheck2ResultColumn" Style="{ThemeResource CaptionTextBlockStyle}" />
+                            </Grid>
+                            <ListView
+                                x:Name="ProbesListView"
+                                Grid.Row="1"
+                                SelectionMode="None">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:BlockCheck2ResultProbeItem">
+                                        <Grid Padding="4,7" ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.3*" />
+                                                <ColumnDefinition Width="145" />
+                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="100" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding TargetUrl}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="1" Text="{Binding ConnectionDetails}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="2" Text="{Binding StrategyId}" FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="3" Text="{Binding Summary}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </navigation:AnimatedSelectorBarItem>
+        </navigation:AnimatedSelectorBar>
+    </Grid>
+</tpl:TemplatePage>

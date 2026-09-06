@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    l:Uids.Uid="EditConfigWelcomeContentDialog"
+    x:Class="CDPIUI.Controls.Dialogs.EditConfig.EditConfigWindowWelcomeContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Controls.Dialogs.EditConfig"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal" 
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer" 
+    xmlns:models="using:CDPIUI.ViewModels" 
+    xmlns:lcontrol="using:CDPIUI" 
+    xmlns:ccontrol="using:CDPIUI.Controls.ComponentSettings"
+    xmlns:conv="using:CDPIUI.Converters"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">860</x:Double>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:ObjectToBoolConverter x:Key="ObjToBool"/>
+    </ContentDialog.Resources>
+
+    <Grid Width="770">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock l:Uids.Uid="SelectComponentTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}" TextWrapping="Wrap" Margin="0 0 0 2" HorizontalAlignment="Stretch"/>
+            <ComboBox x:Name="ComponentChooseComboBox" 
+                      HorizontalAlignment="Left" 
+                      Width="300"
+                      SelectionChanged="ComponentChooseComboBox_SelectionChanged"
+                      Margin="0 0 0 5"
+                      Grid.Row="1">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:ViewComponentModel">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="20"/>
+                            <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid RowSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock l:Uids.Uid="SelectActionToTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <controls:UniformGrid Grid.Row="1" Orientation="Horizontal" ColumnSpacing="10" RowSpacing="10" Columns="3" VerticalAlignment="Top">
+                    <ucontrols:LargeButton  l:Uids.Uid="CreateNewConfigMenuItem" x:Name="CreateNewConfig" Click="CreateNewConfig_Click" IsEnabled="{x:Bind ComponentChooseComboBox.SelectedItem, Converter={StaticResource ObjToBool}, Mode=OneWay}">
+                        <ucontrols:LargeButton.Icon>
+                            <FontIconSource Glyph="&#xE710;"/>
+                        </ucontrols:LargeButton.Icon>
+                    </ucontrols:LargeButton>
+                    <ucontrols:LargeButton l:Uids.Uid="OpenFileMenuItem" x:Name="OpenFileButton" Click="OpenFileButton_Click">
+                        <ucontrols:LargeButton.Icon>
+                            <FontIconSource Glyph="&#xE8E5;"/>
+                        </ucontrols:LargeButton.Icon>
+                    </ucontrols:LargeButton>
+                    <ucontrols:LargeToggleButton x:Name="EditConfigButton" l:Uids.Uid="EditConfigMenuItem" ActionIcon="&#xE76C;" Click="ToggleButton_Click" IsEnabled="{x:Bind ComponentChooseComboBox.SelectedItem, Converter={StaticResource ObjToBool}, Mode=OneWay}">
+                        <ucontrols:LargeToggleButton.Icon>
+                            <FontIconSource Glyph="&#xE70F;"/>
+                        </ucontrols:LargeToggleButton.Icon>
+                    </ucontrols:LargeToggleButton>
+                    <ucontrols:LargeToggleButton x:Name="EditConfigKitButton" l:Uids.Uid="EditConfigKitMenuItem" ActionIcon="&#xE76C;" Click="ToggleButton_Click">
+                        
+                    </ucontrols:LargeToggleButton>
+                    <ucontrols:LargeButton l:Uids.Uid="ExitMenuItem" x:Name="ExitButton" Click="ExitButton_Click">
+                        <ucontrols:LargeButton.Icon>
+                            <FontIconSource Glyph="&#xE711;"/>
+                        </ucontrols:LargeButton.Icon>
+                    </ucontrols:LargeButton>
+                </controls:UniformGrid>
+                <TextBlock x:Name="SomethingWentWrongStackPanel" l:Uids.Uid="SomethingWentWrongTextBlock" Grid.Row="2" Visibility="Collapsed"/>
+                <StackPanel x:Name="LoadingStackPanel" Grid.Row="2" Orientation="Horizontal" Spacing="10" Visibility="Collapsed">
+                    <ProgressRing Height="20" Width="20"/>
+                    <TextBlock l:Uids.Uid="WorkingOnItTextBlock"/>
+                </StackPanel>
+            </Grid>
+            <Grid x:Name="EmptyGrid" Grid.Column="2" RowSpacing="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock l:Uids.Uid="ConfigEditorWelcomeTip" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <Rectangle Fill="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" Grid.Row="1" Height="300" VerticalAlignment="Top"/>
+                <StackPanel Padding="10" Grid.Row="1" Spacing="5">
+                    <ucontrols:URIButton l:Uids.Uid="ViewGoodCheckRecentSelections"  URI="cdpiui://Tools/AutoConfig/GoodCheckRecent"/>
+                    <ucontrols:URIButton l:Uids.Uid="ViewLegacyEditor"  URI="cdpiui://Tools/ConfigEditorLegacy"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2" RowSpacing="10" Visibility="{x:Bind EditConfigButton.IsChecked, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock l:Uids.Uid="SelectConfigToEditTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <Grid Grid.Row="1">
+                    <ListBox 
+                        x:Name="ConfigsListView"  
+                        HorizontalAlignment="Stretch"
+                        Height="300">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="ccontrol:ConfigSelectorItem">
+                                <StackPanel ToolTipService.ToolTip="{x:Bind DisplayName, Mode=OneWay}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border
+                                            Padding="5,1"
+                                            VerticalAlignment="Center"
+                                            Background="{ThemeResource SystemFillColorCautionBrush}"
+                                            CornerRadius="4"
+                                            Visibility="{x:Bind LegacyVisibility, Mode=OneWay}">
+                                            <TextBlock
+                                                FontSize="10"
+                                                FontWeight="SemiBold"
+                                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                Text="LEGACY" />
+                                        </Border>
+                                        <TextBlock
+                                            Foreground="{ThemeResource TextFillColorTertiary}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind PackDisplayName, Mode=OneWay}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <StackPanel x:Name="ConfigsNotFoundStackPanel" Visibility="Collapsed" Grid.Row="2" Margin="10">
+                        <TextBlock l:Uids.Uid="ConfigsForComponentNotFound"/>
+                    </StackPanel>
+                </Grid>
+                <Button Grid.Row="2" l:Uids.Uid="EditButton" x:Name="EditButton" Click="EditButton_Click" CornerRadius="0" HorizontalAlignment="Right" MinWidth="150" IsEnabled="{x:Bind ConfigsListView.SelectedItem, Converter={StaticResource ObjToBool}, Mode=OneWay}"/>
+            </Grid>
+            <Grid Grid.Column="2" RowSpacing="10" Visibility="{x:Bind EditConfigKitButton.IsChecked, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock l:Uids.Uid="SelectConfigKitToEditTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                <Grid Grid.Row="1">
+                    <ListBox 
+                        x:Name="ConfigKitsListView"  
+                        HorizontalAlignment="Stretch"
+                        Height="300">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:ViewStoreItemModel">
+                                <Grid ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" Height="50" Width="50" CornerRadius="0">
+                                        <Rectangle Fill="{ThemeResource SystemAccentColor}"/>
+                                        <Rectangle>
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{x:Bind ColorHEX, Mode=OneWay}"/>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="40"/>
+                                    </Grid>
+                                    <Grid Grid.Column="2" VerticalAlignment="Center">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                                        <TextBlock Grid.Row="1" Text="{x:Bind Developer, Mode=OneWay}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondary}"/>
+                                    </Grid>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+                <Button Grid.Row="2" l:Uids.Uid="EditButton" x:Name="EditKitButton" Click="EditKitButton_Click" CornerRadius="0" HorizontalAlignment="Right" MinWidth="150" IsEnabled="{x:Bind ConfigKitsListView.SelectedItem, Converter={StaticResource ObjToBool}, Mode=OneWay}"/>
+            </Grid>
+            
+        </Grid>
+    </Grid>
+</ContentDialog>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.WelcomeWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:ncontrols="using:CDPIUI.Controls.Navigation"
+    xmlns:ucontrols="using:CDPIUI.Controls.Universal"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience"
+    xmlns:vm="using:CDPIUI.ViewModels"
+    xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock" 
+    xmlns:media="using:Microsoft.UI.Xaml.Media" 
+    xmlns:scontrols="using:CDPIUI.Controls.Settings" 
+    xmlns:storecontrol="using:CDPIUI.Controls.Store">
+
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop />
+    </template:TemplateWindow.SystemBackdrop>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl
+            x:Name="TitleBarUserControl"
+            Height="48"/>
+        <Grid Grid.Row="1">
+            <ncontrols:AnimatedHorizontalContentViewer x:Name="AnimatedHorizontalContentViewer">
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="WelcomeItem"
+                    l:Uids.Uid="/WelcomeWizard/WelcomeAnimatedHorizontalContentItem">
+
+                    <ListBox 
+                        Margin="20 0 20 20"
+                        x:Name="LanguageListView"
+                        SelectedItem="{x:Bind uexp:LocalizationHelper.Instance.CurrentLanguage, Mode=OneWay}"
+                        ItemsSource="{x:Bind uexp:LocalizationHelper.Instance.Languages}"
+                        SelectionChanged="{x:Bind uexp:LocalizationHelper.Instance.HandleCollectionLanguageChanged}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LanguageSelectModel">
+                                <Grid Height="40" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock 
+                                        Text="{x:Bind DisplayId, Mode=OneWay}" 
+                                        VerticalAlignment="Center" 
+                                        Style="{ThemeResource SubheaderTextBlockStyle}"
+                                        TextWrapping="NoWrap"
+                                        FontSize="24"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind DisplayName, Mode=OneWay}" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ncontrols:AnimatedHorizontalContentItem>
+
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="LicenseItem"
+                    l:Uids.Uid="/WelcomeWizard/LicenceAnimatedHorizontalContentItem">
+                    <Grid RowSpacing="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Padding="20 0">
+                            <controls:MarkdownTextBlock 
+                                x:Name="LicenseTextBlock"
+                                Config="{x:Bind MarkdownConfig, Mode=OneTime}"
+                                UseAutoLinks="False"
+                                UseEmphasisExtras="True"
+                                UseListExtras="True"
+                                UsePipeTables="True"
+                                UseTaskLists="True"
+                                Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"/>
+                        </ScrollViewer>
+                        <CheckBox x:Name="LicenseAgreeCheckBox" l:Uids.Uid="/WelcomeWizard/LicenseAgreeCheckBox" Click="LicenseAgreeCheckBox_Click" Grid.Row="1" Margin="20 0 20 10"/>
+                    </Grid>
+                </ncontrols:AnimatedHorizontalContentItem>
+
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="PersonalizationItem"
+                    l:Uids.Uid="/WelcomeWizard/PersonalizationAnimatedHorizontalContentItem">
+                    <ScrollViewer>
+                        <StackPanel Margin="20 0 20 20">
+                            <GridView
+                                SelectedItem="{x:Bind vm:MainPageMarkupManager.Instance.CurrentMarkup, Mode=OneWay}"
+                                ItemsSource="{x:Bind vm:MainPageMarkupManager.Instance.Markups}"
+                                SelectionChanged="{x:Bind vm:MainPageMarkupManager.Instance.HandleCollectionChanged}"
+                                Padding="0">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MainPageMarkupViewModel">
+                                        <Grid Padding="10" ColumnSpacing="15" HorizontalAlignment="Stretch" Width="418.49">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Width="200" Height="120" CornerRadius="5" ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}" ToolTipService.Placement="Bottom">
+                                                <Image Source="/Assets/Wallpaper/Kislovodsk/1.jpeg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
+                                                <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Rectangle.Fill>
+                                                        <media:AcrylicBrush TintOpacity="0.0" TintColor="#FF000000" FallbackColor="#FFFFFFFF" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="180"/>
+                                            </Grid>
+                                            <Grid Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{x:Bind Name}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                                <TextBlock Text="{x:Bind Description}" Grid.Row="1" TextWrapping="Wrap" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                            <scontrols:ViewThemeUserControl/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </ncontrols:AnimatedHorizontalContentItem>
+                <!--
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="AdItem"
+                    l:Uids.Uid="/WelcomeWizard/AdAnimatedHorizontalContentItem">
+                    <StackPanel Margin="20 0">
+                        <scontrols:AdUserControl/>
+                    </StackPanel>
+                </ncontrols:AnimatedHorizontalContentItem>
+                -->
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="StoreItem"
+                    l:Uids.Uid="/WelcomeWizard/StoreAnimatedHorizontalContentItem">
+                    <Grid x:Name="Content">
+                        <Grid x:Name="ReadyBundlesContent">
+                            <StackPanel x:Name="ErrorStackPanel" Spacing="10" Margin="20 0">
+                                <ucontrols:NoContentToDisplayUserControl l:Uids.Uid="NoBundlesAvailableNoContentToDisplayUserControl" Margin="20"/>
+                                <ucontrols:URIButton URI="cdpiui://Store" l:Uids.Uid="OpenStoreURIButton"/>
+                            </StackPanel>
+                            <ListView 
+                                x:Name="StoreViewBundles"
+                                SelectionMode="Multiple"
+                                SelectionChanged="StoreViewBundles_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="storecontrol:StoreViewBundleItem">
+                                        <Grid Padding="0 10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="10*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid CornerRadius="5">
+                                                <Rectangle Fill="{x:Bind CardBackgroundBrush}"/>
+                                                <Image Source="{x:Bind CardImageSource}" Width="45" Margin="10"/>
+                                            </Grid>
+                                            <Grid Grid.Column="2" VerticalAlignment="Center">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{x:Bind CardTitle}" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                                <TextBlock Grid.Row="1" Text="{x:Bind CardSubtitle}" Style="{ThemeResource CaptionTextBlockStyle}" MaxLines="2"/>
+                                            </Grid>
+                                            <ListView 
+                                                ItemsSource="{x:Bind Items}" 
+                                                Grid.Column="4" 
+                                                ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}" 
+                                                HorizontalAlignment="Right">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:ViewStoreItemModel">
+                                                        <Grid x:Name="ViewIconGrid" Height="30" Width="30" ToolTipService.ToolTip="{x:Bind Name}" Margin="1">
+                                                            <Border 
+                                                                Background="{x:Bind ColorBrush}" 
+                                                                CornerRadius="5" 
+                                                                BorderThickness="1" 
+                                                                BorderBrush="{ThemeResource SystemChromeBlackMediumColor}"/>
+                                                            <Image x:Name="ViewIconImage" Source="{x:Bind ImageSource, Mode=OneWay}" Height="20"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                                <ListView.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <ItemsWrapGrid MaximumRowsOrColumns="2" Margin="0 0 10 0"/>
+                                                    </ItemsPanelTemplate>
+                                                </ListView.ItemsPanel>
+                                            </ListView>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+
+                        <ScrollViewer x:Name="MigrationContent" Visibility="Collapsed">
+                            <StackPanel Margin="20 0 20 20" Spacing="14">
+                                <InfoBar
+                                    x:Name="MigrationStatusInfoBar"
+                                    IsOpen="True"
+                                    IsClosable="False"
+                                    Severity="Informational"/>
+                                <ProgressBar
+                                    x:Name="MigrationProgressBar"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    Value="0"/>
+                                <ListView
+                                    x:Name="MigrationComponentsListView"
+                                    SelectionMode="None"
+                                    IsItemClickEnabled="False">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="4 8" ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding DisplayName}" TextWrapping="Wrap"/>
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    Text="{Binding Status}"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <TextBlock
+                                    x:Name="MigrationSummaryTextBlock"
+                                    TextWrapping="Wrap"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                <Button
+                                    x:Name="RetryMigrationButton"
+                                    l:Uids.Uid="/WelcomeWizard/RetryMigrationButton"
+                                    Click="RetryMigrationButton_Click"
+                                    HorizontalAlignment="Left"
+                                    Visibility="Collapsed"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </ncontrols:AnimatedHorizontalContentItem>
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="CompleteItem"
+                    l:Uids.Uid="/WelcomeWizard/CompleteAnimatedHorizontalContentItem">
+                    <CheckBox x:Name="ShowAppFeaturesCheckBox" l:Uids.Uid="ShowAppFeaturesCheckBox" VerticalAlignment="Bottom" Margin="20" IsChecked="True"/>
+                </ncontrols:AnimatedHorizontalContentItem>
+            </ncontrols:AnimatedHorizontalContentViewer>
+        </Grid>
+        <ucontrols:UtilityButtonControls x:Name="UtilityButtonControls" Grid.Row="2" Loaded="UtilityButtonControls_Loaded">
+            <Button x:Name="BackButton" l:Uids.Uid="GoBackButton" Click="BackButton_Click"/>
+            <Button x:Name="SkipButton" l:Uids.Uid="SkipButton" Click="NextButton_Click"/>
+            <Button x:Name="NextButton" l:Uids.Uid="GoForwardButton" Click="NextButton_Click"/>
+            <Button x:Name="CompleteButton" l:Uids.Uid="CompleteButton" Click="CompleteButton_Click" Visibility="Collapsed"/>
+        </ucontrols:UtilityButtonControls>
+    </Grid>
+</template:TemplateWindow>

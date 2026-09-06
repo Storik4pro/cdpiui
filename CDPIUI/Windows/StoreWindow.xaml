@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.StoreWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:winex="using:WinUIEx"
+    mc:Ignorable="d"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls">
+
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop />
+    </template:TemplateWindow.SystemBackdrop>
+
+    <Grid>
+        <Grid.Resources>
+            <Thickness x:Key="NavigationViewContentMargin">0,5,0,0</Thickness>
+            <Thickness x:Key="NavigationViewHeaderMargin">0,0,0,0</Thickness>
+            <Style TargetType="NavigationView">
+                <Setter Property="IsPaneToggleButtonVisible" Value="False" />
+                <Setter Property="OpenPaneLength" Value="72" />
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl 
+            x:Name="TitleBarUserControl"
+            Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
+            ShowControlsContent="False">
+            <wc:TitleBarUserControl.ControlsContent>
+                <Button x:Name="BackButton" 
+                        Grid.Column="1"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="30"
+                        Height="30"
+                        Padding="6"
+                        Margin="8 0 0 0"
+                        PointerEntered="BackButton_PointerEntered" 
+                        PointerExited="BackButton_PointerExited"
+                        Click="BackButton_Click">
+                    <AnimatedIcon x:Name="SearchAnimatedIcon">
+                        <AnimatedIcon.Source>
+                            <animatedvisuals:AnimatedBackVisualSource/>
+                        </AnimatedIcon.Source>
+                        <AnimatedIcon.FallbackIconSource>
+                            <SymbolIconSource Symbol="Back"/>
+                        </AnimatedIcon.FallbackIconSource>
+                    </AnimatedIcon>
+                </Button>
+            </wc:TitleBarUserControl.ControlsContent>
+
+        </wc:TitleBarUserControl>
+        <NavigationView x:Name="NavView" 
+                        Canvas.ZIndex="0"
+                        PaneDisplayMode="Left"
+                        IsSettingsVisible="False"
+                        IsTitleBarAutoPaddingEnabled="False"
+                        IsBackEnabled="True"
+                        IsBackButtonVisible="Collapsed"
+                        IsPaneToggleButtonVisible="False"
+                        Loaded="NavView_Loaded"
+                        ItemInvoked="NavView_ItemInvoked"
+                        BackRequested="NavView_BackRequested"
+                        DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
+                        AlwaysShowHeader="False"
+                        Grid.Row="1">
+            <NavigationView.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" MaxWidth="1000">
+                        <TextBlock Text="{Binding}" MaxWidth="1000" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
+            <NavigationView.MenuItems>
+                <NavigationViewItem l:Uids.Uid="HomeButton" Tag="CDPIUI.HomePage" Icon="Home" Style="{StaticResource StoreNavigationViewItemStyle}"/>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem l:Uids.Uid="DownloadsButton" Tag="CDPIUI.Views.Store.DownloadsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon x:Name="DownloadsFontIcon" Glyph="&#xEBD3;" />
+                    </NavigationViewItem.Icon>
+                    <NavigationViewItem.InfoBadge>
+                        <InfoBadge x:Name="NowDownloadingInfoBadge" VerticalAlignment="Top" Width="6" Height="6" Margin="1 0 0 28" Opacity="0"/>
+                    </NavigationViewItem.InfoBadge>
+
+                </NavigationViewItem>
+                <NavigationViewItem l:Uids.Uid="LibraryButton" Tag="CDPIUI.Views.Store.LibraryPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8F1;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem l:Uids.Uid="HelpButton" Tag="SamplePage5" Style="{StaticResource StoreNavigationViewItemStyle}" Visibility="Collapsed">
+
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9CE;" />
+                    </NavigationViewItem.Icon>
+
+                </NavigationViewItem>
+                <NavigationViewItem l:Uids.Uid="SettingsButton" Tag="CDPIUI.Views.Store.SettingsPage" Style="{StaticResource StoreNavigationViewItemStyle}">
+
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+
+                </NavigationViewItem>
+
+            </NavigationView.FooterMenuItems>
+
+
+            <Frame x:Name="ContentFrame" Margin="0,0,0,0">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition  />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                    <VisualState>
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="{x:Bind NavViewCompactModeThresholdWidth}"/>
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter Target="PagesHeader.Visibility" Value="False"/>
+                            <Setter Target="ContentFrame.Padding" Value="24,0,24,24"/>
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </NavigationView>
+    </Grid>
+</template:TemplateWindow>

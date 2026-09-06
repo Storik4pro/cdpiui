@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.CreateConfigHelper.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Views.CreateConfigHelper"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:tpl="using:CDPIUI.Controls.Default">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="SSmall">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="400"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SecondStackPanel.(Grid.Row)" Value="1"/>
+                        <Setter Target="SecondStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="SecondStackPanel.Margin" Value="0 10 0 0"/>
+                        
+                        <Setter Target="ThirdStackPanel.(Grid.Row)" Value="2"/>
+                        <Setter Target="ThirdStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="ThirdStackPanel.Margin" Value="0 10 0 0"/>
+
+                        <Setter Target="SecondDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="840"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ThirdStackPanel.(Grid.Row)" Value="1"/>
+                        <Setter Target="ThirdStackPanel.(Grid.Column)" Value="0"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Collapsed"/>
+                        <Setter Target="ThirdStackPanel.Margin" Value="0 10 0 0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Big">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1240"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SecondStackPanel.(Grid.Row)" Value="0"/>
+                        <Setter Target="SecondStackPanel.(Grid.Column)" Value="1"/>
+                        <Setter Target="ThirdDescriptionTextBlock.Visibility" Value="Visible"/>
+                        <Setter Target="SecondDescriptionTextBlock.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <ScrollViewer>
+            <StackPanel Padding="20" VerticalAlignment="Center" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Image Source="/Assets/Icons/Edit-68x68.png" Width="60"/>
+                    <StackPanel>
+                        <TextBlock l:Uids.Uid="WelcomeTextBlock" Style="{ThemeResource TitleTextBlockStyle}"/>
+                        <TextBlock l:Uids.Uid="WelcomeTipTextBlock"/>
+                    </StackPanel>
+                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                        <ColumnDefinition Width="auto" MinWidth="400"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Spacing="10">
+                        <TextBlock l:Uids.Uid="FeaturesTextBlock" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button x:Name="CreateNewConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="CreateNewConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE710;" />
+                                            <TextBlock l:Uids.Uid="CreateNewConfigMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="ImportConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="ImportConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE8E5;" />
+                                            <TextBlock l:Uids.Uid="ImportConfigFromFileTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="EditConfigButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="EditConfigButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE70F;" />
+                                            <TextBlock l:Uids.Uid="EditConfigMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock l:Uids.Uid="GoodCheckConfigSelectionTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button x:Name="GoodCheckBeginSelectionButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="GoodCheckBeginSelectionButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/GoodCheck.png"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                                            <TextBlock l:Uids.Uid="BeginNewSelectionTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="GoodCheckRecentReportButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="GoodCheckRecentReportButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE823;" />
+                                            <TextBlock l:Uids.Uid="RecentGoodCheckSelectionsTextBlock" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="SecondStackPanel" Grid.Column="1" Spacing="10">
+                        <TextBlock l:Uids.Uid="StoreWindowTitleTextBlock" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock x:Name="SecondDescriptionTextBlock" l:Uids.Uid="StoreExploreNewAddOnsAndComponentsTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button x:Name="StoreButton" Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Click="StoreButton_Click">
+                                    <Button.Content>
+                                        <Grid>
+                                            <Image Source="/Assets/Icons/Store.png" Width="28"/>
+                                            <TextBlock l:Uids.Uid="StoreOpenMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel x:Name="ThirdStackPanel" Grid.Column="2" Spacing="10">
+                        <TextBlock l:Uids.Uid="HelpSupportTitle" FontWeight="Light" FontSize="16"/>
+                        <StackPanel Grid.Column="0" Spacing="5" >
+                            <TextBlock x:Name="ThirdDescriptionTextBlock" Text="" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <BitmapIcon UriSource="ms-appx:///Assets/Icons/Help.ico"  ShowAsMonochrome="False" Width="20" Height="20"/>
+                                            <TextBlock l:Uids.Uid="HelpOfflineMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                                <Button Width="120" Height="120" Padding="6" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE774;" />
+                                            <TextBlock l:Uids.Uid="VisitGitHubPageMenuItem" TextWrapping="Wrap" TextAlignment="Left" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</tpl:TemplatePage>

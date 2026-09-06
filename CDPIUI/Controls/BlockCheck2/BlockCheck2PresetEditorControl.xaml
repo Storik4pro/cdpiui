@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.BlockCheck2.BlockCheck2PresetEditorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:config="using:CDPIUI.Controls.CreateConfigHelper">
+
+    <config:ConfigMakerUserControl x:Name="ConfigMaker" />
+</UserControl>

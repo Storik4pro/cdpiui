@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="CDPIUI.Controls.Dialogs.ConditionalLaunch.ConditionalTriggerContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="using:WinUI3Localizer"
+    Style="{ThemeResource DefaultContentDialogStyle}"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick">
+
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMaxWidth">720</x:Double>
+    </ContentDialog.Resources>
+
+    <ScrollViewer MaxHeight="520" VerticalScrollBarVisibility="Auto">
+        <StackPanel MinWidth="520" Spacing="12">
+            <InfoBar x:Name="StatusInfoBar" IsOpen="False" IsClosable="False" Severity="Warning" />
+
+            <ComboBox
+                x:Name="TriggerTypeComboBox"
+                l:Uids.Uid="CL_TriggerComboBox"
+                DisplayMemberPath="Name"
+                HorizontalAlignment="Stretch"
+                SelectionChanged="TriggerTypeComboBox_SelectionChanged" />
+
+            <StackPanel x:Name="HotKeyEditor" Spacing="10">
+                <TextBlock l:Uids.Uid="CL_GlobalHotKeyTitle"/>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <CheckBox x:Name="ControlModifierCheckBox" Content="Ctrl" />
+                    <CheckBox x:Name="AltModifierCheckBox" Content="Alt" />
+                    <CheckBox x:Name="ShiftModifierCheckBox" Content="Shift" />
+                    <CheckBox x:Name="WindowsModifierCheckBox" Content="Win" />
+                </StackPanel>
+                <ComboBox
+                    x:Name="HotKeyComboBox"
+                    l:Uids.Uid="CL_HotKeyComboBox"
+                    DisplayMemberPath="Name"
+                    HorizontalAlignment="Stretch" />
+            </StackPanel>
+
+            <StackPanel x:Name="ProcessEditor" Spacing="10" Visibility="Collapsed">
+                <TextBox x:Name="ProcessNameTextBox" l:Uids.Uid="CL_ProcessNameTextBox" />
+                <NumberBox
+                    x:Name="ProcessDelayNumberBox"
+                    l:Uids.Uid="CL_ProcessDelayNumberBox"
+                    Minimum="0"
+                    Maximum="86400"
+                    SpinButtonPlacementMode="Compact"
+                    Value="30" />
+                <TextBlock
+                    l:Uids.Uid="CL_ProcessDelayHint"
+                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

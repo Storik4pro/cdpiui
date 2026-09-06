@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.Universal.StatusNotificationControl"
+    x:Name="Root"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="using:WinUI3Localizer" 
+    xmlns:def="using:CDPIUI.Controls.Default"
+    xmlns:conv="using:CDPIUI.Converters">
+
+    <UserControl.Resources>
+        <conv:StringToVisibilityConverter x:Key="StringToVis"/>
+    </UserControl.Resources>
+    <Grid>
+        <Border
+            x:Name="ToastCard"
+            Width="420"
+            MaxWidth="420"
+            Margin="0,0,10,34"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="6"
+            Opacity="0"
+            Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="ToastTranslateTransform" X="32" />
+            </Border.RenderTransform>
+            <Grid Padding="10,8" ColumnSpacing="9">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <FontIcon
+                    x:Name="ToastIcon"
+                    Width="20"
+                    VerticalAlignment="Top"
+                    FontSize="15" Margin="0 7 0 0" />
+                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center" >
+                    <TextBlock
+                        x:Name="ToastTitleTextBlock"
+                        Style="{ThemeResource BodyStrongTextBlockStyle}"
+                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                    <TextBlock
+                        x:Name="ToastMessageTextBlock"
+                        MaxLines="3"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap"
+                        Visibility="{x:Bind ToastMessageTextBlock.Text, Mode=OneWay, Converter={StaticResource StringToVis}}"/>
+                </StackPanel>
+                <Button
+                    Grid.Column="2"
+                    Width="26"
+                    Height="26"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="DismissToastButton_Click">
+                    <FontIcon FontSize="11" Glyph="&#xE711;" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <Button
+            x:Name="NotificationButton"
+            Width="36"
+            Height="{x:Bind ButtonHeight, Mode=OneWay}"
+            Padding="0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            BorderThickness="0"
+            l:Uids.Uid="StatusNotificationsButton"
+            CornerRadius="0">
+            <Grid Width="24" Height="22">
+                <FontIcon
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Glyph="&#xEA8F;" />
+                <Border
+                    x:Name="UnreadBadge"
+                    MinWidth="14"
+                    Height="14"
+                    Margin="12,-2,-7,0"
+                    Padding="3,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Background="{ThemeResource AccentFillColorDefaultBrush}"
+                    CornerRadius="7"
+                    Visibility="Collapsed">
+                    <TextBlock
+                        x:Name="UnreadCountTextBlock"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="9"
+                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                </Border>
+            </Grid>
+            <Button.Flyout>
+                <Flyout
+                    x:Name="NotificationFlyout"
+                    Placement="TopEdgeAlignedRight"
+                    Opened="NotificationFlyout_Opened">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="CornerRadius" Value="0" />
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                    <Grid Width="420" MaxHeight="420" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <def:PanelTitleUserControl l:Uids.Uid="StatusNotificationsHeader" Click="CloseButton_Click">
+                            <def:PanelTitleUserControl.AdditionalContent>
+                                <Button
+                                    Padding="8,4"
+                                    l:Uids.Uid="StatusNotificationsClearButton"
+                                    Click="ClearNotificationsButton_Click" 
+                                    CornerRadius="0"/>
+                            </def:PanelTitleUserControl.AdditionalContent>
+                        </def:PanelTitleUserControl>
+                        <ListView
+                            Margin="15 0 0 0"
+                            x:Name="NotificationsListView"
+                            Grid.Row="1"
+                            MaxHeight="350"
+                            ItemsSource="{x:Bind Notifications, Mode=OneWay}"
+                            SelectionMode="None"
+                            ItemContainerStyle="{StaticResource ListViewSmallItemStretchStyle}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="0 6" ColumnSpacing="9">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon
+                                            Width="20"
+                                            VerticalAlignment="Top"
+                                            FontSize="14"
+                                            Foreground="{Binding SeverityBrush}"
+                                            Glyph="{Binding IconGlyph}" 
+                                            Margin="0 2 0 0"/>
+                                        <StackPanel Grid.Column="1" Spacing="2"  VerticalAlignment="Center">
+                                            <Grid ColumnSpacing="8" VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock
+                                                    Text="{Binding Title}"
+                                                    Style="{ThemeResource BodyStrongTextBlockStyle}"
+                                                    TextTrimming="CharacterEllipsis" 
+                                                    Visibility="{Binding Title, Converter={StaticResource StringToVis}}"/>
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    Text="{Binding TimeText}"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                                    />
+                                            </Grid>
+                                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource StringToVis}}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="4" Margin="0 0 15 5"/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+                        <TextBlock
+                            x:Name="EmptyNotificationsTextBlock"
+                            Grid.Row="1"
+                            Margin="12,24"
+                            HorizontalAlignment="Center"
+                            l:Uids.Uid="StatusNotificationsEmpty"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </Grid>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+    </Grid>
+</UserControl>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.Universal.UtilityButtonControls"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Controls.Universal"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:conv="using:CDPIUI.Converters">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="LoadingStateGrid" Grid.Row="0" Visibility="{x:Bind IsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel>
+                <TextBlock l:Uids.Uid="WorkingOnItTextBlock" Text="{x:Bind LoadingStateText, Mode=OneWay}" Margin="20 0 0 5"/>
+                <ProgressBar x:Name="LoadingProgressBar" IsIndeterminate="True" VerticalAlignment="Top" CornerRadius="0" x:FieldModifier="public"/>
+            </StackPanel>
+        </Grid>
+        
+        <Grid x:Name="ActionButtonsGrid" Grid.Row="1">
+            <Rectangle Fill="{ThemeResource ControlFillColorSecondaryBrush}"/>
+
+            <Grid Padding="20">
+                <Button x:Name="GetHelpButton" l:Uids.Uid="GetHelpButton" Padding="6" Click="GetHelpButton_Click" 
+                        Visibility="{x:Bind HelpUrl, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xE897;" FontSize="16"/>
+                    </Button.Content>
+                </Button>
+
+                <ItemsRepeater ItemsSource="{x:Bind Items, Mode=OneWay}" HorizontalAlignment="Stretch" MinHeight="32">
+                    <ItemsRepeater.Layout>
+                        <local:RightAlignedStackLayout Spacing="10"/>
+                    </ItemsRepeater.Layout>
+                </ItemsRepeater>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

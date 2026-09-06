@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.Settings.PersonalizePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Views.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:viewmodels="using:CDPIUI.ViewModels"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:conv="using:CDPIUI.Converters"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:scontrols="using:CDPIUI.Controls.Settings">
+    
+    <tpl:TemplatePage.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+    </tpl:TemplatePage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+       
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="SmallState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="contentSV.Padding" Value="16,0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideSState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="contentSV.Padding" Value="20,0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1100"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainPanel.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="MainPanel.Width" Value="1060px"/>
+                        <Setter Target="NavGrid.HorizontalAlignment" Value="Center"/>
+                        <Setter Target="NavGrid.Width" Value="1060px"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid x:Name="NavGrid" Margin="20 5 20 0">
+            <Rectangle Fill="Transparent"/>
+            <BreadcrumbBar x:Name="BreadcrumbBar" ItemClicked="BreadcrumbBar_ItemClicked">
+                <BreadcrumbBar.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:BreadcrumbBarModel">
+                        <BreadcrumbBarItem Content="{Binding}" AutomationProperties.Name="{Binding DisplayName}" Tag="{Binding Tag}">
+                            <BreadcrumbBarItem.ContentTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DisplayName}" Style="{ThemeResource TitleTextBlockStyle}"/>
+                                </DataTemplate>
+                            </BreadcrumbBarItem.ContentTemplate>
+                        </BreadcrumbBarItem>
+                    </DataTemplate>
+                </BreadcrumbBar.ItemTemplate>
+            </BreadcrumbBar>
+        </Grid>
+
+        <ScrollViewer x:Name="contentSV" Padding="20 0" Grid.Row="1">
+            <StackPanel x:Name="MainPanel" Spacing="5" Margin="0 0 0 20">
+                <StackPanel.ChildrenTransitions>
+                    <RepositionThemeTransition/>
+                </StackPanel.ChildrenTransitions>
+                
+                <TextBlock l:Uids.Uid="BasicTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+
+                <scontrols:ViewThemeUserControl/>
+
+                <controls:SettingsExpander l:Uids.Uid="ColorSelector" x:Name="ColorSelectorButton" Visibility="Collapsed">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard
+                            l:Uids.Uid="SystemAccentColorsSettingsCard"
+                            HorizontalContentAlignment="Left"
+                            ContentAlignment="Vertical">
+
+                            <GridView x:Name="SystemColorGridView" SelectionChanged="SystemColorGridView_SelectionChanged">
+                                <GridView.Items>
+                                    <Border x:Name="SystemColorBorder" 
+                                            CornerRadius="4"
+                                            Height="50" Width="50"/>
+                                </GridView.Items>
+                            </GridView>
+
+                        </controls:SettingsCard>
+                        <controls:SettingsCard
+                            l:Uids.Uid="AvailableAccentColorsSettingsCard"
+                            HorizontalContentAlignment="Left"
+                            ContentAlignment="Vertical">
+                            <GridView x:Name="ColorsGridView" SelectionChanged="ColorsGridView_SelectionChanged">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:ColorViewModel" >
+                                        <Border Background="{x:Bind Brush, Mode=OneWay}" Height="50" Width="50"/>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <controls:SettingsCard l:Uids.Uid="PreferSystemWindowTitleBarSettingsCard" >
+                    <controls:SettingsCard.Description>
+                        <Grid x:Name="InfoStackPanel" Grid.Row="1" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE946;" FontSize="14"/>
+                            <TextBlock Grid.Column="2" l:Uids.Uid="AppRestartNeededTextBlock" Style="{ThemeResource CaptionTextBlockStyle}" TextWrapping="Wrap" />
+                        </Grid>
+                    </controls:SettingsCard.Description>
+                    <ToggleSwitch x:Name="PreferSystemWindowTitleBarToggleSwitch" Toggled="PreferSystemWindowTitleBarToggleSwitch_Toggled"/>
+                </controls:SettingsCard>
+
+                <controls:SettingsCard x:Name="SelectFontSettingsCard" l:Uids.Uid="SelectFontSettingsCard" Click="SelectFontButton_Click" IsClickEnabled="True" IsActionIconVisible="False">
+                    <Button l:Uids.Uid="SelectFontButton" x:Name="SelectFontButton" Click="SelectFontButton_Click"/>
+                </controls:SettingsCard>
+
+                <TextBlock l:Uids.Uid="MainPageTextBlock" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+
+                <controls:SettingsExpander l:Uids.Uid="MarkupSelector" IsExpanded="True">
+
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard
+                            l:Uids.Uid="AvailableMarkupSettingsCard"
+                            HorizontalContentAlignment="Left"
+                            ContentAlignment="Vertical">
+                            <GridView x:Name="MarkupGridView" HorizontalAlignment="Center" Grid.Row="1" 
+                                      SelectedItem="{x:Bind viewmodels:MainPageMarkupManager.Instance.CurrentMarkup, Mode=OneWay}"
+                                      ItemsSource="{x:Bind viewmodels:MainPageMarkupManager.Instance.Markups}"
+                                      SelectionChanged="{x:Bind viewmodels:MainPageMarkupManager.Instance.HandleCollectionChanged}">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:MainPageMarkupViewModel">
+                                        <Grid Width="200" Height="120" CornerRadius="5" ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}" ToolTipService.Placement="Bottom">
+                                            <Image Source="/Assets/Wallpaper/Kislovodsk/1.jpeg" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="UniformToFill"/>
+                                            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Rectangle.Fill>
+                                                    <media:AcrylicBrush TintOpacity="0.0" TintColor="#FF000000" FallbackColor="#FFFFFFFF" />
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                            <Image Source="{x:Bind ImageSource, Mode=OneWay}" Width="180"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <controls:SettingsExpander l:Uids.Uid="MarkupPropertiesSettingsExpander">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard l:Uids.Uid="MainGridColumnSelector" x:Name="MainGridColumnSelectorSettingsCard" 
+                                               Visibility="{x:Bind viewmodels:MainPageMarkupManager.Instance.IsModernMarkupSelected, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                            <ComboBox x:Name="MainGridColumnSelector" Width="Auto" DisplayMemberPath="DisplayName"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="FlashlightWidgetSettingsCard">
+                            <ToggleSwitch x:Name="ShowFlashlightToggleSwitch" Toggled="ShowFlashlightToggleSwitch_Toggled"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="WidgetsSettingsCard">
+                            <ToggleSwitch x:Name="ShowWidgetsToggleSwitch" Toggled="ShowWidgetsToggleSwitch_Toggled"/>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                
+                <scontrols:AdUserControl Visibility="Collapsed"/>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</tpl:TemplatePage>

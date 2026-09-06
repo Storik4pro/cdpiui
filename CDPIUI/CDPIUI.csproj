@@ -1,0 +1,850 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="RemoveLanguageFolders.targets" />
+  
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>CDPIUI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64</Platforms>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 8">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <ExcludedLanguages>en-US;ru-RU</ExcludedLanguages>
+	<DebugType>embedded</DebugType>
+	<AssemblyName>CDPIUI</AssemblyName>
+	<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+    <UserSecretsId>393d1168-0d99-4c7a-99eb-7a1fb31f2f24</UserSecretsId>
+    <Configurations>Debug;Release;SingleFileRelease;MsiRelease;RemoteDebug</Configurations>
+    <PublishTrimmed>False</PublishTrimmed>
+    <BaseOutputPath>bin</BaseOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Controls\Dialogs\Store\DownloadErrorActionsContentDialog.xaml" />
+    <Page Update="Controls\Dialogs\Store\DownloadErrorActionsContentDialog.xaml"><Generator>MSBuild:Compile</Generator></Page>
+    <None Remove="Views\Store\Settings\Memory\MemoryViewPreviousVersionsPage.xaml" />
+    <Page Update="Views\Store\Settings\Memory\MemoryViewPreviousVersionsPage.xaml"><Generator>MSBuild:Compile</Generator></Page>
+    <None Remove="Assets\Icons\DragReorder.png" />
+    <None Remove="Controls\ComponentSettings\ComponentHelpfulLinksUserControl.xaml" />
+    <None Remove="Controls\ComponentSettings\ConfigNeededUserControl.xaml" />
+    <None Remove="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml" />
+    <None Remove="Controls\ConditionUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\ConfigUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml" />
+    <None Remove="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml" />
+    <None Remove="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml" />
+    <None Remove="Controls\Default\PanelTitleUserControl.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\ChangeSiteListContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\SiteListItemUserControl.xaml" />
+    <None Remove="Controls\Dialogs\ComponentSettings\TgWsDataCenterEditContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\RecentGoodCheckSelectionsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SaveConfigKitAsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\EditConfigVarValueDialog.xaml" />
+    <None Remove="Controls\Dialogs\EditConfig\EditConfigWindowWelcomeContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\FontSettingsContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\MainPage\CommunityContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Q\QContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml" />
+    <None Remove="Controls\MainPage\FlashlightTipsWidgetUserControl.xaml" />
+    <None Remove="Controls\MainPage\SmallComponentTileUserControl.xaml" />
+    <None Remove="Controls\MainPage\WelcomePlaceholderUserControl.xaml" />
+    <None Remove="Controls\MainPage\WidgetUserControl.xaml" />
+    <None Remove="Controls\Navigation\AnimatedHorizontalContentViewer.xaml" />
+    <None Remove="Controls\Settings\AdUserControl.xaml" />
+    <None Remove="Controls\Settings\ViewThemeUserControl.xaml" />
+    <None Remove="Controls\Store\Settings\MemoryDiskUsageViewUserControl.xaml" />
+    <None Remove="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ViewApplyArgsContentDialog.xaml" />
+    <None Remove="Controls\FileConfigInspectUserControl.xaml" />
+    <None Remove="Controls\MainPage\ComponentTileUserControl.xaml" />
+    <None Remove="Controls\MainPage\QuickSettingWidget.xaml" />
+    <None Remove="Controls\ProxySetup\ApplicationUserControl.xaml" />
+    <None Remove="Controls\SettingTile.xaml" />
+    <None Remove="Controls\SettingTileControlElement.xaml" />
+    <None Remove="Controls\StoreCategoryButton.xaml" />
+    <None Remove="Controls\StoreItemLargeButton.xaml" />
+    <None Remove="Controls\StoreItemLinkButton.xaml" />
+    <None Remove="Controls\StoreItemSmallButton.xaml" />
+    <None Remove="Controls\Store\Settings\MemoryStoreItemUserControl.xaml" />
+    <None Remove="Controls\Store\StoreAskForSubItemInstallUserControl.xaml" />
+    <None Remove="Controls\Store\StoreDownloadItemButton.xaml" />
+    <None Remove="Controls\Store\StoreItemMicroButton.xaml" />
+    <None Remove="Controls\Store\StoreLibraryItemButton.xaml" />
+    <None Remove="Controls\Store\StoreViewBundles.xaml" />
+    <None Remove="Controls\Troubleshooting\DiagnosticResultUserControl.xaml" />
+    <None Remove="Controls\Universal\ContentSeparator.xaml" />
+    <None Remove="Controls\Universal\CopyButton.xaml" />
+    <None Remove="Controls\Universal\HorizontalScrollContainer.xaml" />
+    <None Remove="Controls\Universal\HorizontalSeparatedListView.xaml" />
+    <None Remove="Controls\Universal\IconButton.xaml" />
+    <None Remove="Controls\Universal\LargeButton.xaml" />
+    <None Remove="Controls\Universal\LargeToggleButton.xaml" />
+    <None Remove="Controls\Universal\LinkedSettingsUserControl.xaml" />
+    <None Remove="Controls\Universal\NoContentToDisplayUserControl.xaml" />
+    <None Remove="Controls\Universal\SearchUserControl.xaml" />
+    <None Remove="Controls\Universal\SingleStringTextContentViewerUserControl.xaml" />
+    <None Remove="Controls\Universal\URIButton.xaml" />
+    <None Remove="Controls\Universal\UtilityButtonControls.xaml" />
+    <None Remove="Controls\VariableUserControl.xaml" />
+    <None Remove="Controls\WindowControls\TitleBarUserControl.xaml" />
+    <None Remove="ELUA\EN\ELUA.md" />
+    <None Remove="ELUA\RU\ELUA.md" />
+    <None Remove="MainPage.xaml" />
+    <None Remove="PersonalizePage.xaml" />
+    <None Remove="SystemPage.xaml" />
+    <None Remove="UpdatePage.xaml" />
+    <None Remove="UtilsPage.xaml" />
+    <None Remove="Views\AboutPage.xaml" />
+    <None Remove="Views\Main\Components\DefaultComponentSettingsPage.xaml" />
+    <None Remove="Views\Main\Components\TgWsProxyComponentPage.xaml" />
+    <None Remove="Views\Main\Components\ViewComponentSettingsPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\CreateNewConfigPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\EditConfigKitPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\MainPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml" />
+    <None Remove="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml" />
+    <None Remove="Views\CreateConfigUtil\MainPage.xaml" />
+    <None Remove="Views\ConfigImportUtil\MainPage.xaml" />
+    <None Remove="Views\EditHostsFile\MainPage.xaml" />
+    <None Remove="Views\ModernMainPage.xaml" />
+    <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\Settings\AutorunPage.xaml" />
+    <None Remove="Views\Settings\PersonalizePage.xaml" />
+    <None Remove="Views\SetupProxy\MainPage.xaml" />
+    <None Remove="Views\SetupProxy\ManualSetupPage.xaml" />
+    <None Remove="Views\SetupProxy\ProxiFyreSetupPage.xaml" />
+    <None Remove="Views\SetupProxy\ProxySetupCompletePage.xaml" />
+    <None Remove="Views\SetupProxy\SetupProxyForSystem.xaml" />
+    <None Remove="Views\Store\CategoryViewPage.xaml" />
+    <None Remove="Views\Store\DownloadsPage.xaml" />
+    <None Remove="Views\Store\HomePage.xaml" />
+    <None Remove="Views\Store\ItemViewPage.xaml" />
+    <None Remove="Views\Store\LibraryPage.xaml" />
+    <None Remove="Views\Store\SettingsPage.xaml" />
+    <None Remove="Views\Store\Settings\MemoryViewPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewApplicationFilesDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewInstalledItemsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewSettingsDetailsPage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml" />
+    <None Remove="Views\Store\Settings\Memory\MemoryViewConditionalLaunchDetailsPage.xaml" />
+    <None Remove="Views\Troubleshooting\MainPage.xaml" />
+    <None Remove="Views\Troubleshooting\WorkPage.xaml" />
+    <None Remove="Windows\AppFeaturesWindow.xaml" />
+    <None Remove="Windows\ConditionalLaunchWindow.xaml" />
+    <None Remove="Windows\ConditionalTaskEditorWindow.xaml" />
+    <None Remove="Controls\Navigation\AnimatedSelectorBar.xaml" />
+    <None Remove="Controls\Dialogs\ConditionalLaunch\ConditionalTriggerContentDialog.xaml" />
+    <None Remove="Controls\Dialogs\ConditionalLaunch\ConditionalActionContentDialog.xaml" />
+    <None Remove="Windows\CreateConfigHelperWindow.xaml" />
+    <None Remove="Windows\EditHostFileWindow.xaml" />
+    <None Remove="Windows\Messages\StoreLocalItemInstallingDialog.xaml" />
+    <None Remove="Windows\Messages\ApplicationUpdateFileDialogWindow.xaml" />
+    <None Remove="Windows\Messages\StoreSmallDownloadDialog.xaml" />
+    <None Remove="Windows\ModernMainWindow.xaml" />
+    <None Remove="Windows\OfflineHelpWindow.xaml" />
+    <None Remove="Windows\PrepareWindow.xaml" />
+    <None Remove="Windows\ProxySetupUtilWindow.xaml" />
+    <None Remove="Windows\ConfigImportUtilWindow.xaml" />
+    <None Remove="Windows\TroubleshootingWindow.xaml" />
+    <None Remove="Windows\WelcomeWindow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="ELUA\EN\ELUA.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ELUA\RU\ELUA.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Flashlight.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\GoodCheckAdditionalSettings.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\GraphicDesignerDescriptions.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Help.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Resources.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\SettingTiles.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Troubleshooting.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\WelcomeWizard.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\en-us\Widgets.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Flashlight.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\GoodCheckAdditionalSettings.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\GraphicDesignerDescriptions.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Help.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Resources.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\SettingTiles.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Troubleshooting.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\UIHelper.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\WelcomeWizard.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Strings\ru\Widgets.resw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AK.Toolkit.WinUI3.RichTextBlockExtensions" Version="1.0.0" />
+    <PackageReference Include="CommunityToolkit.Labs.Uwp.Controls.MarkdownTextBlock" Version="0.1.250703-build.2173" />
+    <PackageReference Include="CommunityToolkit.Labs.Uwp.Shimmer" Version="0.0.1" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.DataTable" Version="0.1.251217-build.2433" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.250703-build.2173" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.TokenView" Version="0.1.251020-build.2361" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.230830" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250828-build.2223" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.12.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4948" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250606001" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Management" Version="9.0.9" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
+    <PackageReference Include="TextControlBox.WinUI.JuliusKirsch" Version="1.3.0" />
+    <PackageReference Include="Unidecode.NET" Version="2.1.0" />
+    <PackageReference Include="WinUI3Localizer" Version="2.3.0" />
+    <PackageReference Include="WinUIEx" Version="2.6.0" />
+    <PackageReference Include="XBindLeakFix" Version="1.0.0" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!--
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UpdatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UtilsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="SystemPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="PersonalizePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\GoodCheck\" />
+    <Folder Include="Help\EN\Store\" />
+    <Folder Include="Views\Main\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Assets\Ad\EasyConvertFromBatAd.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\Welcome\ThemeView.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Windows\ConditionalLaunchWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ConditionalTaskEditorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Navigation\AnimatedSelectorBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ConditionalLaunch\ConditionalTriggerContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ConditionalLaunch\ConditionalActionContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\Dialogs\FontSettingsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ConditionUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\CreateCompleteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\ImportConfigFromFileDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\VariableUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\EditConfigVarValueDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SelectUsedFilesForConfigContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\FileConfigInspectUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SelectConfigToEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\GoodCheckReportHeaderButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\GoodCheckReportStrategyUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\IconButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\CreateConfigDesignerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\RecentGoodCheckSelectionsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreItemMicroButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreLibraryItemButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreDownloadItemButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Universal\MarkdownTextViewContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\DownloadsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\LibraryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigUtil\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\ConfigImportUtil\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\PrepareWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\GoodCheckConfigVisualEditorPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\ViewGoodCheckSiteListReportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\ViewGoodCheckReportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\CreateNewConfigPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\CreateConfigHelperWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\Dialogs\ViewApplyArgsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\SettingTileControlElement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\SettingTile.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ZapretSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\StoreItemLinkButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Store\ItemViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\StoreCategoryButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Store\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\StoreItemSmallButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\StoreItemLargeButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <WebView2LoaderPreference>Static</WebView2LoaderPreference>
+    <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <WebView2EnableCsWinRTProjection>True</WebView2EnableCsWinRTProjection>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <WebView2DispatchAdapterNamespace>CDPIUI</WebView2DispatchAdapterNamespace>
+  </PropertyGroup>
+
+  <!--
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x86'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SingleFileRelease|x64'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;SINGLEFILE</DefineConstants>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x86'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MsiRelease|x64'">
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;MSIFILE</DefineConstants>
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Help\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\MainPage\QuickSettingWidget.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ProxySetup\ApplicationUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Store\AcceptLicenseContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\ChooseGroupModeContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\ComponentSettingUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Store\SubItemInstallAskContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreAskForSubItemInstallUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\ComponentTileUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\HorizontalScrollContainer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\SearchUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\EditSitelistAskApplicationContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Troubleshooting\DiagnosticResultUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\ComponentSettingsExclusiveGroupUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Store\LocalItemInstallingWarningContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\Settings\MemoryStoreItemUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\ConfigUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\CreateConfigHelper\SaveConfigKitAsContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\CreateConfigHelper\SelectConfigKitToEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ComponentSettings\TgWsDataCenterUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\TgWsDataCenterEditContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\LinkedSettingsUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\CreateNewConfigForComponentContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\ConnectTelegramProxyContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\SingleStringTextContentViewerUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\CopyButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\SiteListItemUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\Q\QContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\ComponentSettings\ChangeSiteListContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\NoContentToDisplayUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\WindowControls\TitleBarUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\SmallComponentTileUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\MainPage\CommunityContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\WidgetUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\FlashlightTipsWidgetUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\MainPage\WelcomePlaceholderUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\UtilityButtonControls.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\ContentSeparator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ComponentSettings\ConfigNeededUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Navigation\AnimatedHorizontalContentViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Store\StoreViewBundles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Settings\ViewThemeUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Settings\AdUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\URIButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Default\PanelTitleUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\HorizontalSeparatedListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\LargeButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Dialogs\EditConfig\EditConfigWindowWelcomeContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Universal\LargeToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ComponentSettings\ComponentHelpfulLinksUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <None Update="Template\Hosts\hosts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Template\Settings\Settings.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Page Update="Views\Settings\AutorunPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Settings\PersonalizePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\AppFeaturesWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\WelcomeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\EditHostsFile\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\EditHostFileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\CreateConfigHelper\EditConfigKitPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewSettingsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewInstalledItemsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewStoreCachePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewConditionalLaunchDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewLogsDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\Memory\MemoryViewApplicationFilesDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\Settings\MemoryViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\StoreLocalItemInstallingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\ApplicationUpdateFileDialogWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Troubleshooting\WorkPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Troubleshooting\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\TroubleshootingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\ModernMainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ModernMainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\Messages\StoreSmallDownloadDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\ProxiFyreSetupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\ManualSetupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\ProxySetupCompletePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\SetupProxyForSystem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\SetupProxy\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ProxySetupUtilWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\ConfigImportUtilWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Windows\OfflineHelpWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Store\CategoryViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Flashlight.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\SettingTiles.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Flashlight.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\SettingTiles.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\GoodCheckAdditionalSettings.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\GoodCheckAdditionalSettings.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\UIHelper.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\UIHelper.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\GraphicDesignerDescriptions.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\GraphicDesignerDescriptions.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Help.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Help.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Troubleshooting.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Troubleshooting.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\Widgets.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\Widgets.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CDPIUI.AddOns\CDPIUI.AddOns.csproj" />
+    <ProjectReference Include="..\CDPIUI.Core\CDPIUI.Core.csproj" />
+    <ProjectReference Include="..\CDPIUI.Shared\CDPIUI.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\en-us\WelcomeWizard.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Strings\ru\WelcomeWizard.resw" />
+  </ItemGroup>
+</Project>
