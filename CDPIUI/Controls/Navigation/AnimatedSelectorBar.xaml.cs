@@ -36,6 +36,28 @@ namespace CDPIUI.Controls.Navigation
             _inactivePresenter = SecondaryPresenter;
             Items.CollectionChanged += Items_CollectionChanged;
             Loaded += AnimatedSelectorBar_Loaded;
+            Unloaded += AnimatedSelectorBar_Unloaded;
+
+            AnimatedSelectorBarItem.EnabledChanged += AnimatedSelectorBarItem_EnabledChanged;
+        }
+
+        private void AnimatedSelectorBar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AnimatedSelectorBarItem.EnabledChanged -= AnimatedSelectorBarItem_EnabledChanged;
+            Loaded -= AnimatedSelectorBar_Loaded;
+            Unloaded -= AnimatedSelectorBar_Unloaded;
+        }
+
+        private void AnimatedSelectorBarItem_EnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            foreach (var item in Items)
+            {
+                if (d == item)
+                {
+                    RebuildSelector();
+                    return;
+                }
+            }
         }
 
         private void AnimatedSelectorBar_Loaded(object sender, RoutedEventArgs e)
@@ -62,7 +84,8 @@ namespace CDPIUI.Controls.Navigation
                 {
                     Text = item.Header,
                     Icon = item.Icon,
-                    Tag = item
+                    Tag = item,
+                    IsEnabled = item.IsEnabled
                 });
             }
 
@@ -264,6 +287,18 @@ namespace CDPIUI.Controls.Navigation
     [ContentProperty(Name = nameof(Content))]
     public sealed class AnimatedSelectorBarItem : DependencyObject
     {
+        public static event PropertyChangedCallback EnabledChanged;
+        public bool IsEnabled
+        {
+            get => (bool)GetValue(IsEnabledProperty);
+            set => SetValue(IsEnabledProperty, value);
+        }
+        public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.Register(
+            nameof(IsEnabled),
+            typeof(bool),
+            typeof(AnimatedSelectorBarItem),
+            new PropertyMetadata(true, EnabledChanged));
+
         public string Header
         {
             get => (string)GetValue(HeaderProperty);
