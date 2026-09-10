@@ -135,6 +135,15 @@ namespace CDPIUI.Helper.ViewModels
                      UIHelper.GetUriFromString("ms-appx:///Assets/Icons/ConditionalUtil.ico"),
                     false));
 
+            widgets.Add(
+                CreateWidget(
+                    WidgetType.LaunchUrl,
+                    UrlOpenHelper.DonateUrl,
+                    "Donate",
+                    "DonateDescription",
+                     UIHelper.GetUriFromString("ms-appx:///Assets/Icons/donate.png"),
+                    false));
+
 
 
             return widgets;
