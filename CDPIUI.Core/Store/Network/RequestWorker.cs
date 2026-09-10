@@ -114,8 +114,6 @@ namespace CDPIUI.Core.Store.Network
                 if (token != null)
                     request.Headers.Authorization = new AuthenticationHeaderValue(authenticationScheme, token);
 
-                Debug.WriteLine(request.ToString());
-
                 return request;
             }
             catch
@@ -141,7 +139,6 @@ namespace CDPIUI.Core.Store.Network
                 builder.Path = "/v1/fetch";
             string query = builder.Query.TrimStart('?');
             builder.Query = string.IsNullOrEmpty(query) ? $"u={encodedUrl}" : $"{query}&u={encodedUrl}";
-            Debug.WriteLine(builder.Uri);
             return builder.Uri;
         }
 
