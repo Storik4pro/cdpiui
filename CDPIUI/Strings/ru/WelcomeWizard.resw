@@ -257,16 +257,35 @@ Cannot `GET:/{0}`</value>
   <data name="MigrationImportSummary" xml:space="preserve">
     <value>Импортировано пресетов: {0}; TXT/BIN-ресурсов: {1}; совместимых настроек: {2}. Требуют проверки: {3}.</value>
   </data>
-  <data name="MigrationComponentInstalled" xml:space="preserve"><value>Установлен</value></data>
-  <data name="MigrationComponentDownloading" xml:space="preserve"><value>Скачивание</value></data>
-  <data name="MigrationComponentInstalling" xml:space="preserve"><value>Установка</value></data>
-  <data name="MigrationComponentFinishing" xml:space="preserve"><value>Завершение</value></data>
-  <data name="MigrationComponentError" xml:space="preserve"><value>Ошибка</value></data>
-  <data name="MigrationComponentWaiting" xml:space="preserve"><value>Ожидание</value></data>
+  <data name="MigrationComponentInstalled" xml:space="preserve">
+    <value>Установлен</value>
+  </data>
+  <data name="MigrationComponentDownloading" xml:space="preserve">
+    <value>Скачивание</value>
+  </data>
+  <data name="MigrationComponentInstalling" xml:space="preserve">
+    <value>Установка</value>
+  </data>
+  <data name="MigrationComponentFinishing" xml:space="preserve">
+    <value>Завершение</value>
+  </data>
+  <data name="MigrationComponentError" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="MigrationComponentWaiting" xml:space="preserve">
+    <value>Ожидание</value>
+  </data>
   <data name="MigrationNoComponentsRequired" xml:space="preserve">
     <value>Для выбранных данных дополнительные компоненты не требуются.</value>
   </data>
   <data name="MigrationComponentsCount" xml:space="preserve">
     <value>Необходимо компонентов: {0}</value>
+  </data>
+  <data name="ProxyAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Параметры Магазина</value>
+  </data>
+  <data name="ProxyAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Магазин помогает устанавливать и скачивать обновления для элементов (Zapret, TG WS Proxy и др.) с серверов GitHub. Встроенный прокси может помочь, если сервера GitHub не доступны для вас.
+Если вы не испытываете проблем с подключением, пропустите этот шаг.</value>
   </data>
 </root>

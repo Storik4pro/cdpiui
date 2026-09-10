@@ -4445,16 +4445,17 @@ https://example.org/path</value>
     <value>Вставить</value>
   </data>
   <data name="ConfigMakerSelectComponentMessage" xml:space="preserve">
-    <value>Выберите установленный компонент, чтобы загрузить его справку --help и подсветку синтаксиса.</value>
+    <value>Выберите установленный компонент, чтобы загрузить его справку и подсветку синтаксиса.</value>
   </data>
   <data name="ConfigMakerLoadingHelpMessage" xml:space="preserve">
-    <value>Загрузка --help…</value>
+    <value>Загрузка справки...</value>
   </data>
   <data name="ConfigMakerHelpOptionsLoadedMessage" xml:space="preserve">
     <value>Загружено флагов: {0}</value>
   </data>
   <data name="ConfigMakerHelpLoadFailedMessage" xml:space="preserve">
-    <value>Не удалось загрузить --help: {0}</value>
+    <value>Подсветка синтаксиса недоступна.
+Не удалось загрузить справку для компонента: {0}</value>
   </data>
   <data name="ConfigMakerHelpParseEmptyMessage" xml:space="preserve">
     <value>Компонент вернул справку, но распознать флаги не удалось. Редактор остаётся доступным.</value>
@@ -6121,5 +6122,30 @@ https://discord.com/app</value>
     <value>Перезаписать оригинальный пресет.
 
 Это действие не рекомендуется для наборов, загруженных из Магазина. Обновление такого элемента сотрет ваши изменения без возможности восстановления. Сохраните как новый пресет, чтобы защитить изменения от удаления.</value>
+  </data>
+  <data name="EnableInternalProxySettingsCard.Header" xml:space="preserve">
+    <value>Использовать прокси</value>
+  </data>
+  <data name="EnableInternalProxySettingsCardDescription.Text" xml:space="preserve">
+    <value>Использовать встроенный прокси для подключения к серверам Магазина. Это может помочь, с загрузкой элементов из Магазина, если сервера GitHub не доступны по какой-либо причине</value>
+  </data>
+  <data name="TargetComponentNotInstalled" xml:space="preserve">
+    <value>Невозможно запустить тестирование. Целевой компонент не установлен.</value>
+  </data>
+  <data name="StoreServiceStatusTextBlock.Text" xml:space="preserve">
+    <value>Статус доступности Магазина: </value>
+  </data>
+  <data name="CheckStoreStatusButton.Content" xml:space="preserve">
+    <value>Проверить доступность Магазина</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Доступен</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Недоступен</value>
+  </data>
+  <data name="SomeItemsCurrentlyInstallingTextBlock.Text" xml:space="preserve">
+    <value>Некоторые элементы, установку которых вы запросили все ещё загружаются.
+Компоненты появятся на этой странице как только завершится их установка. Если этот процесс занимает больше времени, чем планировалось, посетите страницу загрузок в Магазине.</value>
   </data>
 </root>

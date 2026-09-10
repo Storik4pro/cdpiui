@@ -257,16 +257,35 @@ It this right?</value>
   <data name="MigrationImportSummary" xml:space="preserve">
     <value>Imported presets: {0}; TXT/BIN resources: {1}; compatible settings: {2}. Presets marked for review: {3}.</value>
   </data>
-  <data name="MigrationComponentInstalled" xml:space="preserve"><value>Installed</value></data>
-  <data name="MigrationComponentDownloading" xml:space="preserve"><value>Downloading</value></data>
-  <data name="MigrationComponentInstalling" xml:space="preserve"><value>Installing</value></data>
-  <data name="MigrationComponentFinishing" xml:space="preserve"><value>Finishing</value></data>
-  <data name="MigrationComponentError" xml:space="preserve"><value>Error</value></data>
-  <data name="MigrationComponentWaiting" xml:space="preserve"><value>Waiting</value></data>
+  <data name="MigrationComponentInstalled" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="MigrationComponentDownloading" xml:space="preserve">
+    <value>Downloading</value>
+  </data>
+  <data name="MigrationComponentInstalling" xml:space="preserve">
+    <value>Installing</value>
+  </data>
+  <data name="MigrationComponentFinishing" xml:space="preserve">
+    <value>Finishing</value>
+  </data>
+  <data name="MigrationComponentError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="MigrationComponentWaiting" xml:space="preserve">
+    <value>Waiting</value>
+  </data>
   <data name="MigrationNoComponentsRequired" xml:space="preserve">
     <value>No additional components are required for the selected data.</value>
   </data>
   <data name="MigrationComponentsCount" xml:space="preserve">
     <value>Required components: {0}</value>
+  </data>
+  <data name="ProxyAnimatedHorizontalContentItem.Header" xml:space="preserve">
+    <value>Store settings</value>
+  </data>
+  <data name="ProxyAnimatedHorizontalContentItem.Description" xml:space="preserve">
+    <value>Store helps you install items from GitHub (Zapret, TG WS Proxy, for example). If GitHub isn't available for you internal proxy may help.
+If you don't have any problems with GitHub – skip this step.</value>
   </data>
 </root>

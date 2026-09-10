@@ -136,6 +136,12 @@
     <value>Make you own conditions for launch component.
 Hotkeys and process state changing conditions are supported</value>
   </data>
+  <data name="Donate" xml:space="preserve">
+    <value>Leave a tip</value>
+  </data>
+  <data name="DonateDescription" xml:space="preserve">
+    <value>Support development ❤️</value>
+  </data>
   <data name="OpenLocalHelp" xml:space="preserve">
     <value>Local help</value>
   </data>

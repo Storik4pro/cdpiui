@@ -4443,16 +4443,17 @@ If error persist, contact application support.</value>
     <value>Insert</value>
   </data>
   <data name="ConfigMakerSelectComponentMessage" xml:space="preserve">
-    <value>Select an installed component to load its --help reference and syntax highlighting.</value>
+    <value>Select an installed component to load its help reference and syntax highlighting.</value>
   </data>
   <data name="ConfigMakerLoadingHelpMessage" xml:space="preserve">
-    <value>Loading --help…</value>
+    <value>Loading help...</value>
   </data>
   <data name="ConfigMakerHelpOptionsLoadedMessage" xml:space="preserve">
     <value>Loaded flags: {0}</value>
   </data>
   <data name="ConfigMakerHelpLoadFailedMessage" xml:space="preserve">
-    <value>Could not load --help: {0}</value>
+    <value>Syntax highlighting unavailable.
+Could not load help for component: {0}</value>
   </data>
   <data name="ConfigMakerHelpParseEmptyMessage" xml:space="preserve">
     <value>The component returned help text, but no flags could be recognized. The editor remains available.</value>
@@ -6118,5 +6119,30 @@ New configs for Zapret2 will be come soon!</value>
     <value>Overwrite original config. 
 
 It action not recommended to items from Store. Any pack update from Store will remove changes you do. Save as new config to protect your changes.</value>
+  </data>
+  <data name="EnableInternalProxySettingsCard.Header" xml:space="preserve">
+    <value>Use proxy</value>
+  </data>
+  <data name="EnableInternalProxySettingsCardDescription.Text" xml:space="preserve">
+    <value>Use internal proxy for Store connections. Using proxy may help if GitHub servers are not available for some reason</value>
+  </data>
+  <data name="TargetComponentNotInstalled" xml:space="preserve">
+    <value>Unable to test config. Target component not installed.</value>
+  </data>
+  <data name="StoreServiceStatusTextBlock.Text" xml:space="preserve">
+    <value>Store service status: </value>
+  </data>
+  <data name="CheckStoreStatusButton.Content" xml:space="preserve">
+    <value>Refresh Store status</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="NotAvailable" xml:space="preserve">
+    <value>Not available</value>
+  </data>
+  <data name="SomeItemsCurrentlyInstallingTextBlock.Text" xml:space="preserve">
+    <value>Some items you requested is currently installing. 
+You see your component's as soon as installing finished. If it take longer, than must view downloading status on Store.</value>
   </data>
 </root>
