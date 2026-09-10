@@ -3043,6 +3043,16 @@ public sealed partial class ConfigMakerUserControl : UserControl
         isStartingTest = true;
         ComponentTasksManager.Instance.TaskStateUpdated += ComponentTasksManager_TaskStateUpdated;
         UpdateTestButtons();
+
+        if (!DatabaseHelper.Instance.IsItemInstalled(testComponentId))
+        {
+            ShowEditorMessage(
+                localizer.GetLocalizedString("TargetComponentNotInstalled"),
+                InfoBarSeverity.Error);
+            await StopTestAsync();
+            return;
+        }
+
         ShowEditorMessage(
             localizer.GetLocalizedString("ConfigMakerTestStartedMessage"),
             InfoBarSeverity.Informational);
