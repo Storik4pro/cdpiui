@@ -12,6 +12,8 @@ namespace CDPIUI.Helper
         public const string TelegramMemeUrl = "https://t.me/storik4m";
         public const string TelegramLUrl = "https://t.me/storik4l";
 
+        public const string DonateUrl = "https://pay.cloudtips.ru/p/5bb7ff74";
+
 
         public const string NTCParty = "https://ntc.party";
         public const string BBD = "https://t.me/byebyedpi_group";
@@ -40,7 +42,7 @@ namespace CDPIUI.Helper
         public static async void LaunchDonateUrl()
         {
             _ = await Windows.System.Launcher.LaunchUriAsync(
-                new Uri("https://pay.cloudtips.ru/p/5bb7ff74"));
+                new Uri(DonateUrl));
         }
         public static async void LaunchTelegramUrl()
         {
