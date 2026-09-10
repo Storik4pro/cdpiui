@@ -148,6 +148,15 @@
                             <toolkit:SettingsCard.Description>
                                 <StackPanel>
                                     <TextBlock l:Uids.Uid="EnableInternalProxySettingsCardDescription"/>
+                                    <Button l:Uids.Uid="AboutProxyButton" Padding="5 0" CornerRadius="0" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}">
+                                        <Button.Flyout>
+                                            <Flyout>
+                                                <ScrollViewer>
+                                                    <TextBlock l:Uids.Uid="AboutProxyTextBlock" TextWrapping="Wrap" Width="420"/>
+                                                </ScrollViewer>
+                                            </Flyout>
+                                        </Button.Flyout>
+                                    </Button>
                                 </StackPanel>
                             </toolkit:SettingsCard.Description>
                             <ToggleSwitch IsOn="{x:Bind storenet:StoreProxyHelper.UseProxyForStoreConnections, Mode=TwoWay}" Toggled="ToggleSwitch_Toggled"/>
