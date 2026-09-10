@@ -1,4 +1,6 @@
+using CDPIUI.Commands;
 using CDPIUI.Controls.Default;
+using CDPIUI.Helper;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -45,13 +47,6 @@ public sealed partial class MainPage : TemplatePage
         catch { }
     }
 
-    private async void ShowDialog(string message, string title)
-    {
-        var dlg = new MessageDialog(message, title);
-        InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<TroubleshootingWindow>()));
-        await dlg.ShowAsync();
-    }
-
     private void GetHelpButton_Click(object sender, RoutedEventArgs e)
     {
         Commands.CommandsHandler.HandleCommand(
@@ -73,7 +68,7 @@ public sealed partial class MainPage : TemplatePage
 
     private void MyProblemNotInListCard_Click(object sender, RoutedEventArgs e)
     {
-        ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
+        UrlOpenHelper.LaunchReportUrl();
     }
 
     private async void ComponentDoesNotRunCard_Click(object sender, RoutedEventArgs e)

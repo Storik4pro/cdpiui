@@ -24,7 +24,11 @@
                 <controls:SettingsCard l:Uids.Uid="ComponentDoesNotRunCard" x:Name="ComponentDoesNotRunCard" IsClickEnabled="True" Click="ComponentDoesNotRunCard_Click"/>
                 <controls:SettingsCard l:Uids.Uid="StoreCannotLoadCard" x:Name="StoreCannotLoadCard" IsClickEnabled="True" Click="StoreCannotLoadCard_Click"/>
                 <controls:SettingsCard l:Uids.Uid="ApplicationCannotDownloadUpdateCard" x:Name="ApplicationCannotDownloadUpdateCard" IsClickEnabled="True" Click="ApplicationCannotDownloadUpdateCard_Click" Visibility="Collapsed"/>
-                <controls:SettingsCard l:Uids.Uid="MyProblemNotInListCard" x:Name="MyProblemNotInListCard" IsClickEnabled="True" Click="MyProblemNotInListCard_Click"/>
+                <controls:SettingsCard l:Uids.Uid="MyProblemNotInListCard" x:Name="MyProblemNotInListCard" IsClickEnabled="True" Click="MyProblemNotInListCard_Click">
+                    <controls:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </controls:SettingsCard.ActionIcon>
+                </controls:SettingsCard>
             </StackPanel>
         </ScrollViewer>
         <Grid x:Name="ActionButtonsGrid" Grid.Row="2">
