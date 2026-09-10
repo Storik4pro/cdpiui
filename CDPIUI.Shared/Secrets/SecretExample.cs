@@ -16,6 +16,15 @@ namespace CDPIUI.Shared.Secrets
         static string? GitLabToken { get; }
 
         /// <summary>
+        /// Store reverse proxy HTTPS server URL or full /v1/fetch endpoint.
+        /// </summary>
+        static string? ProxyURL { get; }
+        /// <summary>
+        /// Access key sent to the Store reverse proxy in the X-Key header.
+        /// </summary>
+        static string? ProxyKey { get; }
+
+        /// <summary>
         /// Authentication GUID for pipe. 
         /// If value is empty, pipe may be insecure.
         /// </summary>
@@ -39,6 +48,9 @@ namespace CDPIUI.Shared.Secrets
     {
         public static string GitHubToken = "";
         public static string GitLabToken = "";
+
+        public const string ProxyURL = "";
+        public const string ProxyKey = "";
 
         public static string AuthGuid = "";
 

@@ -123,6 +123,7 @@ namespace CDPIUI.Views.Store
             });
 
             VersionControlTypeComboBox.SelectedItem = VersionControlModels.FirstOrDefault(x => x.Id.ToString() == SettingsManager.Instance.GetValueOrDefault("STORE", "versionControlType", defaultValue: "GitHub"));
+            StoryProxySettingCard.Visibility = ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id == SupportedVersionControls.GitHub ? Visibility.Visible : Visibility.Collapsed;
 
             VersionControlTypeComboBox.SelectionChanged += VersionControlTypeComboBox_SelectionChanged;
         }
@@ -131,6 +132,8 @@ namespace CDPIUI.Views.Store
         {
             InfoStackPanel.Visibility = Visibility.Visible;
             SettingsManager.Instance.SetValue("STORE", "versionControlType", ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id.ToString());
+            StoryProxySettingCard.Visibility = ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id == SupportedVersionControls.GitHub ? Visibility.Visible : Visibility.Collapsed;
+
             StoreHelper.ClearRepoCache();
             await StoreHelper.Instance.LoadAllStoreDatabase(forseSync: true, versionControl: ((VersionControlModel)VersionControlTypeComboBox.SelectedItem).Id);
         }

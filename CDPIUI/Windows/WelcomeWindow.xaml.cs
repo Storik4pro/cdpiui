@@ -177,6 +177,10 @@ namespace CDPIUI
                 UtilityButtonControls.HelpUrl = "/Other/Ad";
             }
             */
+            else if (sel == ProxyItem)
+            {
+                CheckStoreStatus();
+            }
             else if (sel == StoreItem)
             {
                 if (migrationSession == null)
@@ -850,6 +854,28 @@ namespace CDPIUI
             }
         }
 
-        
+        private void CheckStoreStatusButton_Click(object sender, RoutedEventArgs e)
+        {
+            CheckStoreStatus();
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            CheckStoreStatus();
+        }
+
+        private async void CheckStoreStatus()
+        {
+            CheckStoreStatusButton.IsEnabled = false;
+            UtilityButtonControls.IsLoading = true;
+            await Task.Delay(500);
+            bool result = await StoreHelper.Instance.IsServerAvailable();
+            UtilityButtonControls.IsLoading = false;
+            CheckStoreStatusButton.IsEnabled = true;
+            StoreStatusTextBlock.Text = result ? localizer.GetLocalizedString("Available") : localizer.GetLocalizedString("NotAvailable");
+            StoreStatusTextBlock.Foreground = result 
+                ? (SolidColorBrush)Application.Current.Resources["SystemFillColorSuccessBrush"] 
+                : (SolidColorBrush)Application.Current.Resources["SystemFillColorCautionBrush"];
+        }
     }
 }

@@ -2,6 +2,7 @@
 using CDPIUI.Core.Data;
 using CDPIUI.Core.JSON;
 using CDPIUI.Core.Store.Database;
+using CDPIUI.Core.Store.Network;
 using CDPIUI.Core.Store.ViewModels;
 using CDPIUI.Shared;
 using CDPIUI.Shared.Extentions;
@@ -9,7 +10,6 @@ using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Shared.Secrets;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Net.Http.Headers;
 
 namespace CDPIUI.Core.Store.Repository
 {
@@ -58,20 +58,12 @@ namespace CDPIUI.Core.Store.Repository
             {
                 string zipUrl = GetStoreUrl(versionControl);
 
-                using HttpClient client = new();
-
-                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIUI_Components_Store", ApplicationInfo.Version));
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", versionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
-
-                using HttpResponseMessage response = await client.GetAsync(zipUrl);
-                response.EnsureSuccessStatusCode();
-
                 string tempZipPath = Path.Combine(Path.GetTempPath(), "store_repo.tmp");
-                await using (var fs = new FileStream(tempZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await response.Content.CopyToAsync(fs);
-                }
+                using var requestWorker = new RequestWorker();
+                await requestWorker.DownloadFileAsync(zipUrl, tempZipPath,
+                    token: versionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken,
+                    useStoreUserAgent: true,
+                    completionOption: HttpCompletionOption.ResponseContentRead);
 
                 File.Delete(tempZipPath);
 
@@ -103,20 +95,13 @@ namespace CDPIUI.Core.Store.Repository
 
                     string zipUrl = GetStoreUrl(usedVersionControl);
 
-                    using HttpClient client = new HttpClient();
-
-                    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CDPIUI_Components_Store", ApplicationInfo.Version));
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", usedVersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken);
                     Debug.WriteLine(zipUrl);
-                    using HttpResponseMessage response = await client.GetAsync(zipUrl);
-                    response.EnsureSuccessStatusCode();
-
                     string tempZipPath = Path.Combine(Path.GetTempPath(), "store_repo.tmp");
-                    await using (var fs = new FileStream(tempZipPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await response.Content.CopyToAsync(fs);
-                    }
+                    using var requestWorker = new RequestWorker();
+                    await requestWorker.DownloadFileAsync(zipUrl, tempZipPath,
+                        token: usedVersionControl == SupportedVersionControls.GitHub ? GitHubApiToken : GitLabApiToken,
+                        useStoreUserAgent: true,
+                        completionOption: HttpCompletionOption.ResponseContentRead);
 
                     if (Directory.Exists(targetFolder))
                         Directory.Delete(targetFolder, recursive: true);

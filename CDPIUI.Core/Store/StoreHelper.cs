@@ -118,6 +118,21 @@ namespace CDPIUI.Core.Store
         public List<RepoItemModel> GetSimilarItemsForStoreId(string storeId) => 
             UserExperienceService.GetSimilarItemsForStoreId(storeId);
 
+        /// <summary>
+        /// Is current version control available. 
+        /// Proxy settings applied for this check.
+        /// </summary>
+        /// <returns><see cref="true"/> if server is available, otherwise <see cref="false"/></returns>
+        public async Task<bool> IsServerAvailable()
+        {
+            var resilt = await GetLastVersionAndVersionNotes(
+                VersionControl == SupportedVersionControls.GitHub 
+                ? SharedConstants.ApplicationCheckUpdatesUrl
+                : SharedConstants.ApplicationGitLabCheckUpdatesUrl);
+
+            return resilt.Success;
+        }
+
         #endregion
 
         #region Database

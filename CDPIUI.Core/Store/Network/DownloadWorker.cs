@@ -7,7 +7,6 @@ using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Shared.Extentions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -23,25 +22,22 @@ namespace CDPIUI.Core.Store.Network
 {
     internal class DownloadWorker : IDisposable
     {
-        private readonly HttpClient? _client;
+        private readonly RequestWorker requestWorker;
         private readonly string TempDirectory = Directories.DownloadManagerDirectory;
 
         private readonly CancellationToken cancellationToken;
-        private readonly bool ownsClient;
-        private int disposed;
 
         public readonly string OperationId;
         private string? msiGUID;
 
         public ErrorModel? LastError { get; private set; }
 
-        public DownloadWorker(string operationId, CancellationToken cancellationToken, HttpClient client = null)
+        public DownloadWorker(string operationId, CancellationToken cancellationToken, HttpClient? client = null)
         {
             this.cancellationToken = cancellationToken;
 
             OperationId = operationId;
-            _client = client ?? new HttpClient();
-            ownsClient = client == null;
+            requestWorker = new RequestWorker(client);
         }
 
         public event Action<Tuple<string, double>>? DownloadSpeedChanged;
@@ -85,19 +81,16 @@ namespace CDPIUI.Core.Store.Network
                 Logger.Instance.CreateDebugLog(nameof(DownloadWorker), $"Uri used: {url}");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                using var response = await _client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                if (!response.IsSuccessStatusCode)
+                try
+                {
+                    await requestWorker.DownloadFileAsync(url, tempDestination, ReportDownloadProgress,
+                        cancellationToken: cancellationToken);
+                }
+                catch (HttpRequestException ex) when (ex.StatusCode.HasValue)
                 {
                     StageChanged?.Invoke(Tuple.Create(OperationId, "ErrorHappens"));
-                    ErrorHappens?.Invoke(Tuple.Create(OperationId, $"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{(int)response.StatusCode}", "Server Error"));
+                    ErrorHappens?.Invoke(Tuple.Create(OperationId, $"ERR_DOWNLOAD_{PrettyErrorCode.UNEXPECTED_STATUS_CODE}_{(int)ex.StatusCode.Value}", "Server Error"));
                     return false;
-                }
-                response.EnsureSuccessStatusCode();
-                bool _result = await DownloadFile(tempDestination, response, cancellationToken);
-
-                if (!_result)
-                {
-                    throw new AsyncOperationException();
                 }
 
 
@@ -164,14 +157,6 @@ namespace CDPIUI.Core.Store.Network
             {
                 // Cancellation is a user action, not a download failure.
             }
-            catch (AsyncOperationException)
-            {
-                // pass
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                throw;
-            }
             catch (Exception ex) 
             {
                 HandleError(ex);
@@ -208,54 +193,19 @@ namespace CDPIUI.Core.Store.Network
             return await DownloadAndExtractAsync(url, destinationPath, extractArchive, extractSkipFiletypes, extractRootFolder, executableFileName, filetype.ToString(), removeAfterAction, filename);
         }
 
-        private async Task<bool> DownloadFile(string tempDestination, HttpResponseMessage response, CancellationToken cancellationToken)
+        private void ReportDownloadProgress(long totalRead, long totalBytes, TimeSpan elapsed)
         {
-            var totalBytes = response.Content.Headers.ContentLength ?? -1L;
-            var canReportProgress = totalBytes != -1;
+            var speed = totalRead / elapsed.TotalSeconds;
+            DownloadSpeedChanged?.Invoke(Tuple.Create(OperationId, speed));
 
-            using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            using var fileStream = new FileStream(tempDestination, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
-
-            var buffer = new byte[81920];
-            long totalRead = 0;
-            int read;
-            var stopwatch = Stopwatch.StartNew();
-            var lastUpdate = stopwatch.Elapsed;
-
-            try
+            if (totalBytes != -1)
             {
-                while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
-                {
-                    await fileStream.WriteAsync(buffer, 0, read, cancellationToken);
-                    totalRead += read;
+                var progress = (double)totalRead / totalBytes * 100;
+                ProgressChanged?.Invoke(Tuple.Create(OperationId, progress));
 
-                    var now = stopwatch.Elapsed;
-                    var interval = now - lastUpdate;
-                    if (interval.TotalSeconds >= 1 || totalRead == totalBytes)
-                    {
-                        var speed = totalRead / now.TotalSeconds;
-                        DownloadSpeedChanged?.Invoke(Tuple.Create(OperationId, speed));
-
-                        if (canReportProgress)
-                        {
-                            var progress = (double)totalRead / totalBytes * 100;
-                            ProgressChanged?.Invoke(Tuple.Create(OperationId, progress));
-
-                            var timeRemaining = TimeSpan.FromSeconds((totalBytes - totalRead) / speed);
-                            TimeRemainingChanged?.Invoke(Tuple.Create(OperationId, timeRemaining));
-                        }
-
-                        lastUpdate = now;
-                    }
-                }
-                return true;
+                var timeRemaining = TimeSpan.FromSeconds((totalBytes - totalRead) / speed);
+                TimeRemainingChanged?.Invoke(Tuple.Create(OperationId, timeRemaining));
             }
-            catch (Exception ex) 
-            {
-                HandleError(ex);
-            }
-            return false;
-
         }
 
 
@@ -287,8 +237,7 @@ namespace CDPIUI.Core.Store.Network
         }
         public void Dispose()
         {
-            if (Interlocked.Exchange(ref disposed, 1) == 0 && ownsClient)
-                _client.Dispose();
+            requestWorker.Dispose();
         }
     }
 }

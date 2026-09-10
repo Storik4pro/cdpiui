@@ -43,6 +43,9 @@
     <Setting Key="port" Type="string" Value="1080"/>
     <Setting Key="proxyType" Type="string" Value="None"/>
   </Group>
+  <Group Name="STORE">
+    <Setting Key="ProxyEnable" Type="bool" Value="false"/>
+  </Group>
 	<Group Name="COMPONENTS">
 		<Setting Key="nowUsed" Type="string" Value=""/>
 	</Group>

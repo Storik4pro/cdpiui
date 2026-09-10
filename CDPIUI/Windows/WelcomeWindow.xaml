@@ -17,7 +17,9 @@
     xmlns:controls="using:CommunityToolkit.Labs.WinUI.MarkdownTextBlock" 
     xmlns:media="using:Microsoft.UI.Xaml.Media" 
     xmlns:scontrols="using:CDPIUI.Controls.Settings" 
-    xmlns:storecontrol="using:CDPIUI.Controls.Store">
+    xmlns:storecontrol="using:CDPIUI.Controls.Store"
+    xmlns:storenet="using:CDPIUI.Core.Store.Network" 
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls">
 
     <template:TemplateWindow.SystemBackdrop>
         <MicaBackdrop />
@@ -138,6 +140,31 @@
                     </StackPanel>
                 </ncontrols:AnimatedHorizontalContentItem>
                 -->
+                <ncontrols:AnimatedHorizontalContentItem
+                    x:Name="ProxyItem"
+                    l:Uids.Uid="/WelcomeWizard/ProxyAnimatedHorizontalContentItem">
+                    <StackPanel Padding="20" Spacing="10">
+                        <toolkit:SettingsCard l:Uids.Uid="EnableInternalProxySettingsCard" x:Name="StoryProxySettingCard">
+                            <toolkit:SettingsCard.Description>
+                                <StackPanel>
+                                    <TextBlock l:Uids.Uid="EnableInternalProxySettingsCardDescription"/>
+                                </StackPanel>
+                            </toolkit:SettingsCard.Description>
+                            <ToggleSwitch IsOn="{x:Bind storenet:StoreProxyHelper.UseProxyForStoreConnections, Mode=TwoWay}" Toggled="ToggleSwitch_Toggled"/>
+                        </toolkit:SettingsCard>
+
+                        <Button x:Name="CheckStoreStatusButton" l:Uids.Uid="CheckStoreStatusButton" Click="CheckStoreStatusButton_Click"/>
+
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock l:Uids.Uid="StoreServiceStatusTextBlock"/>
+                            <TextBlock x:Name="StoreStatusTextBlock" Grid.Column="1"/>
+                        </Grid>
+                    </StackPanel>
+                </ncontrols:AnimatedHorizontalContentItem>
                 <ncontrols:AnimatedHorizontalContentItem
                     x:Name="StoreItem"
                     l:Uids.Uid="/WelcomeWizard/StoreAnimatedHorizontalContentItem">

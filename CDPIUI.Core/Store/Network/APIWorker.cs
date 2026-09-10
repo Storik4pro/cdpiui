@@ -8,7 +8,6 @@ using CDPIUI.Shared.Models;
 using CDPIUI.Shared.PrettyErrorConvertionService;
 using CDPIUI.Shared.Secrets;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Text.Json;
 namespace CDPIUI.Core.Store.Network
 {
@@ -44,10 +43,8 @@ namespace CDPIUI.Core.Store.Network
                 if (string.IsNullOrEmpty(targetFileOrFileType)) throw new ArgumentNullException(nameof(targetFileOrFileType));
 
 
-                HttpResponseMessage response = await GetGithubResponse(repoUrl, version);
-
-                using var stream = await response.Content.ReadAsStreamAsync();
-                using var doc = await JsonDocument.ParseAsync(stream);
+                string response = await GetGithubResponse(repoUrl, version);
+                using var doc = JsonDocument.Parse(response);
                 var root = doc.RootElement;
 
                 linkModel.version = root.GetProperty("tag_name").GetString();
@@ -99,6 +96,7 @@ namespace CDPIUI.Core.Store.Network
             }
             catch (Exception ex)
             {
+                Logger.Instance.CreateWarningLog(nameof(APIWorker), ex.Message);
                 return OperationResultModel<APILinkModel>
                         .FailureResult(ErrorsHelper.Convertor.GetErrorModel(nameof(APIWorker), ex));
             }
@@ -167,10 +165,8 @@ namespace CDPIUI.Core.Store.Network
             string tag;
             try
             {
-                HttpResponseMessage response = await GetGithubResponse(repoUrl, null);
-
-                using var stream = await response.Content.ReadAsStreamAsync();
-                using var doc = await JsonDocument.ParseAsync(stream);
+                string response = await GetGithubResponse(repoUrl, null);
+                using var doc = JsonDocument.Parse(response);
                 var root = doc.RootElement;
 
                 tag = root.GetProperty("tag_name").GetString();
@@ -187,7 +183,7 @@ namespace CDPIUI.Core.Store.Network
         }
 
 
-        private async Task<HttpResponseMessage> GetGithubResponse(
+        private async Task<string> GetGithubResponse(
             string repoUrl, 
             string? version)
         {
@@ -200,20 +196,14 @@ namespace CDPIUI.Core.Store.Network
             var repo = parts[1];
 
 
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.UserAgent.Add(
-                new ProductInfoHeaderValue("CDPIUI_Components_Store", ApplicationInfo.Version));
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("token", Token);
-
             string apiUrl = GetApiUrlForVersion(owner, repo, version, VersionControl);
 
 
-            var response = await client.GetAsync(apiUrl);
+            using var requestWorker = new RequestWorker();
+            var response = await requestWorker.GetStringAsync(apiUrl, Token, "token", useStoreUserAgent: true);
             Logger.Instance.CreateDebugLog(nameof(APIWorker), version ?? "Version not provided");
             Logger.Instance.CreateDebugLog(nameof(APIWorker), apiUrl);
 
-            response.EnsureSuccessStatusCode();
             return response;
         }
 
