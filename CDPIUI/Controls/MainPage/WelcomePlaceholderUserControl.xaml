@@ -13,12 +13,6 @@
         <StackPanel Spacing="10">
             <TextBlock l:Uids.Uid="WelcomeToProgramTextBlock" Style="{ThemeResource SubtitleTextBlockStyle}"/>
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <Button x:Name="ApplicationSetupHelperButton" Height="35" Click="ApplicationSetupHelperButton_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <FontIcon x:Name="StarsFontIcon" Glyph="&#xF4A5;" />
-                        <TextBlock l:Uids.Uid="ApplicationSetupHelperTextBlock" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
                 <Button x:Name="GetNewComponentsFromStoreButton" Height="35" Click="GetNewComponentsFromStoreButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="16" ShowAsMonochrome="True"/>
@@ -26,6 +20,14 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
+            <Grid ColumnSpacing="10" x:Name="LoadingPlaceholder" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ProgressRing/>
+                <TextBlock Grid.Column="1" l:Uids.Uid="SomeItemsCurrentlyInstallingTextBlock" TextWrapping="Wrap"/>
+            </Grid>
             <Grid x:Name="FlashlightTip">
                 <Border Background="{ThemeResource LayerFillColorDefaultBrush}" CornerRadius="10" BorderThickness="1" BorderBrush="{ThemeResource ControlStrokeColorOnAccentTertiaryBrush}"/>
                 <Grid Padding="10">

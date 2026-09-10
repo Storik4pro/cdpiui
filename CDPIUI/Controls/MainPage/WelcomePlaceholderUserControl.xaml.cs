@@ -1,4 +1,5 @@
 
+using CDPIUI.Core.Store;
 using CDPIUI.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -34,7 +35,31 @@ public sealed partial class WelcomePlaceholderUserControl : UserControl
         FirstStepsHyperlink.Content = localizer.GetLocalizedString("/Help/FirstSteps");
         AddingCustomSiteListsToConfigHyperlink.Content = localizer.GetLocalizedString("/Help/AddingCustomSiteListsToConfig");
 
-        StarsFontIcon.Glyph = SharedUtils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
+        StoreHelper.Instance.QueueUpdated += Store_QueueUpdated;
+        Unloaded += WelcomePlaceholderUserControl_Unloaded;
+    }
+
+    private void WelcomePlaceholderUserControl_Unloaded(object sender, RoutedEventArgs e)
+    {
+        StoreHelper.Instance.QueueUpdated -= Store_QueueUpdated;
+        Unloaded -= WelcomePlaceholderUserControl_Unloaded;
+    }
+
+    private void Store_QueueUpdated()
+    {
+        CheckStoreQueue();
+    }
+
+    private void CheckStoreQueue()
+    {
+        if (StoreHelper.Instance.GetQueue().Count > 0)
+        {
+            LoadingPlaceholder.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            LoadingPlaceholder.Visibility = Visibility.Collapsed;
+        }
     }
 
     private async void ShowDialog(string message, string title)
@@ -42,11 +67,6 @@ public sealed partial class WelcomePlaceholderUserControl : UserControl
         var dlg = new MessageDialog(message, title);
         InitializeWithWindow.Initialize(dlg, WindowNative.GetWindowHandle(await ((App)Application.Current).SafeCreateNewWindow<ModernMainWindow>()));
         await dlg.ShowAsync();
-    }
-
-    private void ApplicationSetupHelperButton_Click(object sender, RoutedEventArgs e)
-    {
-        ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
     }
 
     private async void GetNewComponentsFromStoreButton_Click(object sender, RoutedEventArgs e)
