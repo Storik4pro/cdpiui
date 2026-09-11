@@ -78,7 +78,7 @@ namespace CDPIUI.TrayIcon.Helper
             };
 
             if (!openIfNotConnected) return await PipeServer.Instance.SendMessageAsync(model.ToString());
-            else return await TrySendMessage(model);
+            else return await TrySendMessage(model, createNoWindow: true);
         }
 
         public static async Task<bool> SendHelpOutputChunk(
@@ -159,7 +159,7 @@ namespace CDPIUI.TrayIcon.Helper
                 MessageType = UpdateMessageIds.CheckForUpdates,
             };
 
-            return await TrySendMessage(model);
+            return await TrySendMessage(model, createNoWindow: true);
         }
 
         public static async Task<bool> SendCompatibilityCheckPacket()
@@ -169,7 +169,7 @@ namespace CDPIUI.TrayIcon.Helper
                 MessageType = CompatibilityCheckMessageIds.Begin,
             };
 
-            return await TrySendMessage(model);
+            return await TrySendMessage(model, createNoWindow: true);
         }
 
         public static async Task<bool> SendSettingsPacket(SettingsMessageIds messageId)
@@ -201,11 +201,11 @@ namespace CDPIUI.TrayIcon.Helper
                 MessageData = data
             };
 
-            return await TrySendMessage(model);
+            return await TrySendMessage(model, createNoWindow: true);
         }
 
 
-        private static async Task<bool> TrySendMessage<T>(MessageBaseModel<T> message) where T : Enum 
+        private static async Task<bool> TrySendMessage<T>(MessageBaseModel<T> message, bool createNoWindow = false) where T : Enum 
         {
             if (!await PipeServer.Instance.SendMessageAsync(message.ToString()))
             {
@@ -215,7 +215,7 @@ namespace CDPIUI.TrayIcon.Helper
                     message.Target == PipeMessageTargetIds.Application ||
                     message.Target == PipeMessageTargetIds.ConditionalLaunch)
                 {
-                    var backgroundArgument = message.Target == PipeMessageTargetIds.ConditionalLaunch
+                    var backgroundArgument = createNoWindow
                         ? "--create-no-window "
                         : string.Empty;
                     return RunHelper.RunAsDesktopUser(
