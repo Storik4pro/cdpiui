@@ -51,16 +51,9 @@
 - [Телеграм-канал разработчика](https://t.me/storik4dev) <- Будте в курсе обновлений!
 - [Телеграм-канал со смешными картинками](https://t.me/storik4m)
 
-## Сборка
+## Вклад
 
-Рекомендуемая версия Visual Studio – 2022.
-
-Помимо открытия решения и восстановления пакетов NuGet в Visual Studio следует сделать несколько простых шагов:
-- Создайте файл `Secret.cs` в `/CDPIUI.Shared/Secrets/`. Создайте статичный класс `Secret`. [См. пример](https://github.com/Storik4pro/cdpiui/blob/a667067ca991ff132ad7bd3af2d0b995c51cc0b7/CDPIUI.Shared/Secrets/SecretExample.cs)
-
-> Проект использует CommunityToolkit.Labs. Подключите VS 2022 через [Azure](https://dev.azure.com/dotnet/CommunityToolkit/_artifacts/feed/CommunityToolkit-Labs/connect), чтобы получить возможность восстановить все экспериментальные пакеты 
-
-> Проект использует сторонний плагин для сборки установщика. Если вы планируете поставлять приложение как MSI установите его [по ссылке](https://marketplace.visualstudio.com/items?itemName=ISWIX-LLC.IsWiX)
+Сведения для разработчкиков можно найти в [CONTRIBUTING.md](https://github.com/Storik4pro/cdpiui/blob/main/.github/CONTRIBUTING.md)
 
 ## Благодарности
 
