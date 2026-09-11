@@ -1,6 +1,27 @@
-## Welcome to CDPI UI repo!
+# Welcome to CDPI UI repo!
 
 Here some rules and tips for you to make contributing easier
+
+## How application is works? 
+
+Application has GUI part and background worker.
+Background worker – CDPIUI.TrayIcon & CDPIUI.Shared
+GUI – CDPIUI, CDPIUI.AddOns, CDPIUI.Core & CDPIUI.Shared
+
+## Build
+
+To build you own CDPIUI you must build and run CDPIUI.TrayIcon as admin, than run as default user GUI (it's important! Some features are broken in elevated mode in GUI).
+
+Also: 
+Recommended Visual Studio version – 2022.
+
+Here is few steps after NuGet restore you must to do:
+- Create `Secret.cs` in `/CDPIUI.Shared/Secrets/`. Create static class Secret. [Ref](https://github.com/Storik4pro/cdpiui/blob/dev/CDPIUI.Shared/Secrets/SecretExample.cs)
+- Project using CommunityToolkit.Labs. Connect it from Azure, to restore experimental packages. [Ref](https://marketplace.visualstudio.com/items?itemName=ISWIX-LLC.IsWiX)
+
+> Project uses IsWix for MSI-installer building. [Ref](https://marketplace.visualstudio.com/items?itemName=ISWIX-LLC.IsWiX)
+
+## Add/edit something
 
 ### Localization
 - On EN localization ready settings file for components called "Config", on RU localization "Пресет".
@@ -178,4 +199,3 @@ For add new component manually, create item in Store repo, add component Id to C
 You can request config kit/subscription addition to CDPIUI Store in official developer's social. All links can be found in application telegram channel. 
 
 For add new component manually, create item in Store repo. No code needed.
-
