@@ -68,6 +68,7 @@ namespace CDPIUI.TrayIcon.ConditionalLaunch
             {
                 case ConditionalActionType.ApplyPreset:
                 case ConditionalActionType.StartComponent:
+                case ConditionalActionType.ToggleComponent:
                 case ConditionalActionType.StartAutorunComponents:
                 case ConditionalActionType.CheckStoreUpdates:
                 case ConditionalActionType.CheckApplicationUpdates:

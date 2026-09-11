@@ -49,7 +49,8 @@ namespace CDPIUI.Shared.ConditionalLaunch
         OpenTool,
         OpenHelp,
         Wait,
-        ShowNotification
+        ShowNotification,
+        ToggleComponent
     }
 
     public sealed class ConditionalParameter

@@ -6166,4 +6166,7 @@ https://discord.com/app</value>
 
 Включая этот параметр, вы подтверждаете, что ознакомились с этой информацией.</value>
   </data>
+  <data name="CL_ActionToggleComponent" xml:space="preserve">
+    <value>Переключить состояние компонента (запущен/остановлен)</value>
+  </data>
 </root>

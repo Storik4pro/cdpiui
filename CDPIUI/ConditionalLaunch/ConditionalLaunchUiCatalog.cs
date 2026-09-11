@@ -73,6 +73,7 @@ namespace CDPIUI.ConditionalLaunch
                 ]),
                 new(ConditionalActionType.StartComponent, components, Text(localizer, "CL_ActionStartComponent"), [componentId]),
                 new(ConditionalActionType.StopComponent, components, Text(localizer, "CL_ActionStopComponent"), [componentId]),
+                new(ConditionalActionType.ToggleComponent, components, Text(localizer, "CL_ActionToggleComponent"), [componentId]),
                 new(ConditionalActionType.RestartComponent, components, Text(localizer, "CL_ActionRestartComponent"), [componentId]),
                 new(ConditionalActionType.StartAutorunComponents, components, Text(localizer, "CL_ActionStartAutorunComponents"), []),
                 new(ConditionalActionType.StopAllComponents, components, Text(localizer, "CL_ActionStopAllComponents"), []),

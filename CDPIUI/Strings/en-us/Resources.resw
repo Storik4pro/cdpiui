@@ -6163,4 +6163,7 @@ If [Use Proxy] is disabled, the app does not connect to the proxy provider's ser
 
 By enabling this setting, you acknowledge that you have read this information.</value>
   </data>
+  <data name="CL_ActionToggleComponent" xml:space="preserve">
+    <value>Toggle component state (runed/stopped)</value>
+  </data>
 </root>

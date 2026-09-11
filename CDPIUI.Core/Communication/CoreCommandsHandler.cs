@@ -296,6 +296,27 @@ namespace CDPIUI.Core.Communication
                             break;
                         }
 
+                    case ConditionalActionType.ToggleComponent:
+                        {
+                            var componentId = RequireParameter(model, "componentId");
+                            if (!await ComponentTasksManager.Instance.IsTaskRunned(componentId))
+                            {
+                                await ComponentTasksManager.Instance.CreateAndRunNewTask(componentId);
+                                var task = await ComponentTasksManager.Instance.GetTaskFromId(componentId);
+                                if (task?.ProcessManager.IsErrorHappens == true)
+                                {
+                                    throw new InvalidOperationException(
+                                        task.ProcessManager.LastError?.ErrorCode ??
+                                        $"Component '{componentId}' could not be started.");
+                                }
+                            }
+                            else
+                            {
+                                await ComponentTasksManager.Instance.StopTask(componentId);
+                            }
+                        }
+                        break;
+
                     case ConditionalActionType.StartAutorunComponents:
                         await ComponentTasksManager.Instance.RunAllPreferredActions();
                         break;
