@@ -21,8 +21,8 @@ To localize TrayIcon:
 ### Add a feature 
 
 #### Before we start
-If feature you added changing existing feature or application core follow [Edit an application code](#Edit an application code)
-Otherwise, follow [Create new AddOn](#Create new AddOn)
+If feature you added changing existing feature or application core follow "Edit an application code"
+Otherwise, follow "Create new AddOn"
 
 
 #### Project structure 
