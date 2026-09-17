@@ -28,7 +28,7 @@
             <TextBlock l:Uids.Uid="NoOneComponentInstalledTextBlock" TextWrapping="Wrap"/>
             <Button Click="OpenComponentsStore_Click">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="16"/>
+                    <ImageIcon Source="ms-appx:///Assets/Icons/Store.png" Width="16"/>
                     <TextBlock l:Uids.Uid="GetNewComponentsFromStoreTextBlock"/>
                 </StackPanel>
             </Button>

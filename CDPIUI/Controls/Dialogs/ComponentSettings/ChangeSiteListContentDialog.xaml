@@ -21,7 +21,7 @@
             <SelectorBar x:Name="MainSelectorBar" SelectionChanged="MainSelectorBar_SelectionChanged">
                 <SelectorBarItem l:Uids.Uid="FromTheStoreTextBlock" x:Name="FromTheStoreSelectorBarItem">
                     <SelectorBarItem.Icon>
-                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Height="20"/>
+                        <ImageIcon Source="ms-appx:///Assets/Icons/Store.png" Height="20"/>
                     </SelectorBarItem.Icon>
                 </SelectorBarItem>
                 <SelectorBarItem l:Uids.Uid="ManuallyTextBlock">

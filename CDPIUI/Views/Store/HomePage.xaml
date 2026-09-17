@@ -54,7 +54,7 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Grid HorizontalAlignment="Center">
-                    <BitmapIcon UriSource="ms-appx:///Assets/icons/store.png" ShowAsMonochrome="True" Width="100"/>
+                    <ImageIcon Source="ms-appx:///Assets/icons/store.png" Width="100"/>
                     <FontIcon Glyph="&#xF736;" Foreground="{ThemeResource SystemFillColorCautionBackgroundBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left" FontSize="52" Margin="-10 0 0 0"/>
                     <FontIcon Glyph="&#xE7BA;" Foreground="{ThemeResource SystemFillColorCautionBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left"  FontSize="52" Margin="-10 0 0 0"/>
                 </Grid>
