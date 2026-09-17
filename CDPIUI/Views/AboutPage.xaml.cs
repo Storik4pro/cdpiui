@@ -58,6 +58,8 @@ public sealed partial class AboutPage : TemplatePage
 
         private ObservableCollection<AcknowledgmentsModel> AcknowledgmentsList = new ObservableCollection<AcknowledgmentsModel>()
         {
+            new () { Name = "MMaxX_ON" },
+            new () { Name = "StafiLynx" },
             new () { Name = "Aster" },
             new () { Name = "Niko" },
             new () { Name = "o2o" },
