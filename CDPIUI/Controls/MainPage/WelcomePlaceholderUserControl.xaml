@@ -15,7 +15,7 @@
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Button x:Name="GetNewComponentsFromStoreButton" Height="35" Click="GetNewComponentsFromStoreButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="16" ShowAsMonochrome="True"/>
+                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="16"/>
                         <TextBlock l:Uids.Uid="GetNewComponentsFromStoreTextBlock" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
