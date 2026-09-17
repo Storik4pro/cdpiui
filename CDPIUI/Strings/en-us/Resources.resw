@@ -6166,4 +6166,7 @@ By enabling this setting, you acknowledge that you have read this information.</
   <data name="CL_ActionToggleComponent" xml:space="preserve">
     <value>Toggle component state (runed/stopped)</value>
   </data>
+  <data name="ConnectToProxyTextBlock.Text" xml:space="preserve">
+    <value>Connect Telegram to proxy</value>
+  </data>
 </root>

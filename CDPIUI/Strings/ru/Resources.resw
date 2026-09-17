@@ -6169,4 +6169,7 @@ https://discord.com/app</value>
   <data name="CL_ActionToggleComponent" xml:space="preserve">
     <value>Переключить состояние компонента (запущен/остановлен)</value>
   </data>
+  <data name="ConnectToProxyTextBlock.Text" xml:space="preserve">
+    <value>Подключить Telegram к прокси</value>
+  </data>
 </root>
