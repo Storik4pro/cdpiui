@@ -199,7 +199,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Grid CornerRadius="5">
                                                 <Rectangle Fill="{x:Bind CardBackgroundBrush}"/>
-                                                <Image Source="{x:Bind CardImageSource}" Width="45" Margin="10"/>
+                                                <Image Source="{x:Bind CardImageSource}" Width="45" Height="45" Margin="10"/>
                                             </Grid>
                                             <Grid Grid.Column="2" VerticalAlignment="Center">
                                                 <Grid.RowDefinitions>
