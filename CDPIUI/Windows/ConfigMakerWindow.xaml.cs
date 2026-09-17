@@ -50,7 +50,7 @@ public sealed partial class ConfigMakerWindow : TemplateWindow
         WindowsPositionHelper.TrySetMicaBackdrop(true, this, RootGrid);
 
         WindowTitle = Localizer.Get().GetLocalizedString("ConfigMakerWindowTitle");
-        IconUri = @"Assets/Icons/Edit.png";
+        IconUri = @"Assets/Icons/Edit.ico";
         CustomTitleBarUserControl = TitleBarUserControl;
         WindowMinSize = new System.Windows.Size(960, 620);
         ConfigMaker.DocumentStateChanged += ConfigMaker_StateChanged;
