@@ -18,6 +18,9 @@
         <File Source="$(var.SourceDir)\Assets\Icons\ConditionalUtil.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\donate.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\DragReorder.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
@@ -31,9 +34,6 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\EditHostsFile.ico" KeyPath="yes" />
-      </Component>
-      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
-        <File Source="$(var.SourceDir)\Assets\Icons\donate.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Error.ico" KeyPath="yes" />
@@ -70,6 +70,9 @@
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Pseudoconsole.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
+        <File Source="$(var.SourceDir)\Assets\Icons\Store.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Icons">
         <File Source="$(var.SourceDir)\Assets\Icons\Store.png" KeyPath="yes" />
@@ -110,11 +113,29 @@
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\empty.png" KeyPath="yes" />
       </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store\Files">
+        <File Source="$(var.SourceDir)\Assets\Store\Files\ConfigKit.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store\Files">
+        <File Source="$(var.SourceDir)\Assets\Store\Files\ConfigKitPack.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store\Files">
+        <File Source="$(var.SourceDir)\Assets\Store\Files\List.ico" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store\Files">
+        <File Source="$(var.SourceDir)\Assets\Store\Files\Pack.ico" KeyPath="yes" />
+      </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\goodbyedpi.png" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\GoodCheck.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\nodpi.png" KeyPath="yes" />
+      </Component>
+      <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
+        <File Source="$(var.SourceDir)\Assets\Store\proxifyre.ico" KeyPath="yes" />
       </Component>
       <Component Directory="INSTALLLOCATION" Subdirectory="Assets\Store">
         <File Source="$(var.SourceDir)\Assets\Store\spoofdpi.png" KeyPath="yes" />
