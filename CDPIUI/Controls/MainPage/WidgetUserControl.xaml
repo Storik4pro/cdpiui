@@ -14,6 +14,8 @@
 
     <UserControl.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:ReversedBoolToVisibilityConverter x:Key="RBoolToVis"/>
+        <conv:UriToImageSourceConverter x:Key="UriToImg"/>
     </UserControl.Resources>
     
     <Grid>
@@ -50,7 +52,21 @@
                         <Grid>
                             <FontIcon Glyph="&#xE8A7;" FontSize="12" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{x:Bind ShowOpenInNewWindowBadge, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
 
-                            <BitmapIcon UriSource="{x:Bind UriImageSource, Mode=OneWay}" ShowAsMonochrome="{x:Bind ShowAsMonochrome, Mode=OneWay}" Height="20" Width="20" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                            <Image 
+                                Source="{x:Bind UriImageSource, Mode=OneWay, Converter={StaticResource UriToImg}}" 
+                                Visibility="{x:Bind ShowAsMonochrome, Mode=OneWay, Converter={StaticResource RBoolToVis}}"
+                                Height="20"
+                                Width="20"
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Left"/>
+                            <BitmapIcon 
+                                UriSource="{x:Bind UriImageSource, Mode=OneWay}" 
+                                ShowAsMonochrome="{x:Bind ShowAsMonochrome, Mode=OneWay}" 
+                                Visibility="{x:Bind ShowAsMonochrome, Mode=OneWay, Converter={StaticResource BoolToVis}}"
+                                Height="20" 
+                                Width="20" 
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Left"/>
 
                             <TextBlock Text="{x:Bind Name, Mode=OneWay}" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextWrapping="Wrap"/>
                         </Grid>
