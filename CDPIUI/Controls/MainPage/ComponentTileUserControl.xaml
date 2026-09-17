@@ -12,7 +12,12 @@
     xmlns:controls="using:CommunityToolkit.WinUI.Controls" 
     xmlns:componentControls="using:CDPIUI.Controls.ComponentSettings"
     xmlns:viewmodels="using:CDPIUI.ViewModels"
-    xmlns:l="using:WinUI3Localizer">
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:conv="using:CDPIUI.Converters">
+
+    <UserControl.Resources>
+        <conv:UriToImageSourceConverter x:Key="UriToImg"/>
+    </UserControl.Resources>
 
 
     <Grid x:Name="MainGrid">
@@ -134,7 +139,7 @@
                                                 HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6"
                                                 Tag="{x:Bind Id, Mode=OneWay}" Click="AvailableFeaturesButton_Click">
                                             <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <BitmapIcon UriSource="{x:Bind Image, Mode=OneWay}"  ShowAsMonochrome="False" Width="14"/>
+                                                <Image Source="{x:Bind Image, Mode=OneWay, Converter={StaticResource UriToImg}}" Width="14"/>
                                                 <TextBlock Text="{x:Bind DisplayName, Mode=OneWay}"/>
                                             </StackPanel>
                                         </Button>
