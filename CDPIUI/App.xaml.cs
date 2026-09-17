@@ -181,7 +181,7 @@ namespace CDPIUI
 
                     if (!isActionPreffered)
                     {
-                        CommandsHandler.HandleCommand(value);
+                        isActionPreffered = CommandsHandler.HandleCommand(value);
                     }
                 }
             }
