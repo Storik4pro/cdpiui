@@ -42,7 +42,7 @@ namespace CDPIUI.Shared.Logger
                 if (!Directory.Exists(logFileDir)) Directory.CreateDirectory(logFileDir);
                 if (!File.Exists(logFilePath))
                 {
-                    File.WriteAllText(logFilePath, LoggerResources.LoggerReadyMessage + Environment.NewLine);
+                    File.WriteAllText(logFilePath, LoggerResources.LoggerReadyMessage + $" {LogLevel} " + Environment.NewLine);
                 }
 
                 using StreamWriter w = File.AppendText(logFilePath);
