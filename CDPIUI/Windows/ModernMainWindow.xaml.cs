@@ -55,8 +55,8 @@ namespace CDPIUI
 
             if (!SettingsManager.Instance.GetValue<bool>("AD", "welcomeToPreview"))
             {
-                ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
-                SettingsManager.Instance.SetValue("AD", "welcomeToPreview", true);
+                // ShowDialog(localizer.GetLocalizedString("PreviewVersionDescription"), localizer.GetLocalizedString("PreviewVersion"));
+                // SettingsManager.Instance.SetValue("AD", "welcomeToPreview", true);
             }
         }
 
