@@ -70,7 +70,7 @@ namespace CDPIUI.Helper.ViewModels
                     "OpenStore", 
                     "OpenStoreDescription", 
                     UIHelper.GetUriFromString("ms-appx:///Assets/Icons/Store.png"),
-                    true));
+                    false));
 
             widgets.Add(
                 CreateWidget(
