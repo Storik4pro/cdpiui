@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="CDPIUI.Controls.Dialogs.CreateConfigHelper.ConfigMakerSavePresetContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="using:WinUI3Localizer"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    Style="{ThemeResource DefaultContentDialogStyle}"
+    xmlns:navcontrols="using:CDPIUI.Controls.Navigation">
+    <StackPanel Width="400" Spacing="10">
+        <navcontrols:AnimatedSelectorBar x:Name="SelectorBar" SelectionChanged="SelectorBar_SelectionChanged">
+            <navcontrols:AnimatedSelectorBarItem
+                x:Name="SaveAsNewItem"
+                l:Uids.Uid="SaveAsNewAnimatedSelectorBarItem">
+                <StackPanel Spacing="10">
+                    <TextBlock l:Uids.Uid="ConfigMakerSavePresetDescription" TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="PresetNameTextBox"
+                        l:Uids.Uid="ConfigMakerPresetNameTextBox"
+                        TextChanged="PresetNameTextBox_TextChanged" />
+                </StackPanel>
+            </navcontrols:AnimatedSelectorBarItem>
+            <navcontrols:AnimatedSelectorBarItem
+                x:Name="SaveOverwriteItem"
+                l:Uids.Uid="SaveOverwriteSelectorBarItem"
+                IsEnabled="{x:Bind OverwriteEnable, Mode=OneWay}">
+                <StackPanel Spacing="10">
+                    <TextBlock l:Uids.Uid="ConfigMakerSaveOverwriteConfigDescription" TextWrapping="Wrap" />
+                </StackPanel>
+            </navcontrols:AnimatedSelectorBarItem>
+        </navcontrols:AnimatedSelectorBar>
+    </StackPanel>
+</ContentDialog>

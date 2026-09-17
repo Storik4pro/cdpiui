@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CDPIUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CDPIUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

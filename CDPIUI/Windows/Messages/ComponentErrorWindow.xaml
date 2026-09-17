@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.ComponentErrorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:l="using:WinUI3Localizer">
+    <template:TemplateWindow.SystemBackdrop><MicaBackdrop/></template:TemplateWindow.SystemBackdrop>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl x:Name="TitleBarControl" Height="48"/>
+        <ScrollViewer Grid.Row="1" Padding="24,8,24,20">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <FontIcon Glyph="&#xEA39;" Foreground="{ThemeResource SystemFillColorCriticalBrush}" FontSize="28"/>
+                    <TextBlock x:Name="Heading" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap"/>
+                </StackPanel>
+                <TextBlock x:Name="Description" TextWrapping="Wrap"/>
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="12">
+                    <TextBlock x:Name="ErrorCode" FontFamily="Consolas" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
+                </Border>
+                <StackPanel Spacing="4">
+                    <HyperlinkButton x:Name="ConsoleLink" l:Uids.Uid="ComponentFailureConsoleLink" Click="ConsoleLink_Click" Padding="0"/>
+                    <HyperlinkButton l:Uids.Uid="ComponentFailureTroubleshootingLink" Tag="cdpiui://Tools/Troubleshooting" Click="Link_Click" Padding="0"/>
+                    <HyperlinkButton l:Uids.Uid="ComponentFailureHelpLink" Tag="cdpiui://Help/TroubleshootingComponentExceptions/BasicTroubleshooting" Click="Link_Click" Padding="0"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <Border Grid.Row="2" Background="{ThemeResource ControlFillColorSecondaryBrush}" Padding="24,16">
+            <Button HorizontalAlignment="Right" Content="OK" MinWidth="120" Click="Close_Click" Style="{ThemeResource AccentButtonStyle}"/>
+        </Border>
+    </Grid>
+</template:TemplateWindow>

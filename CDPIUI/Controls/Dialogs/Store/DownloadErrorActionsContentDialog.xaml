@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="CDPIUI.Controls.Dialogs.Store.DownloadErrorActionsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="using:WinUI3Localizer"
+    l:Uids.Uid="DownloadErrorActionsDialog"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+    <ScrollViewer>
+        <StackPanel Spacing="12">
+            <TextBlock l:Uids.Uid="DownloadErrorActionsDescription" TextWrapping="Wrap" />
+            <HyperlinkButton l:Uids.Uid="DownloadTroubleshootingButton" Click="Troubleshooting_Click" />
+            <HyperlinkButton l:Uids.Uid="DownloadSupportButton" Click="Support_Click" />
+            <TextBlock l:Uids.Uid="DownloadAntivirusAdvice" TextWrapping="Wrap" />
+            <TextBlock l:Uids.Uid="DownloadDnsAdvice" TextWrapping="Wrap" />
+            <HyperlinkButton l:Uids.Uid="DownloadNetworkHelpButton" Click="NetworkHelp_Click" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

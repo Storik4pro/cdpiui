@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tpl:TemplatePage
+    x:Class="CDPIUI.Views.BlockCheck2.PresetReviewPage"
+    x:Name="RootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bc="using:CDPIUI.Controls.BlockCheck2"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:menu="using:CDPIUI.Controls.MenuManagement"
+    xmlns:tpl="using:CDPIUI.Controls.Default"
+    xmlns:universal="using:CDPIUI.Controls.Universal">
+
+    <tpl:TemplatePage.MenuBarTemplate>
+        <DataTemplate>
+            <MenuBar>
+                <MenuBarItem
+                    l:Uids.Uid="FileMenuItem"
+                    menu:MenuBarNode.Id="file"
+                    menu:MenuBarNode.Order="100">
+                    <MenuFlyoutSeparator menu:MenuBarNode.Order="150"/>
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerSaveTextMenuItem"
+                        Click="SaveEditorTextMenuItem_Click"
+                        Icon="Save"
+                        menu:MenuBarNode.Id="review.save-editor-text"
+                        menu:MenuBarNode.Order="200">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control,Shift" Key="S" />
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator
+                        menu:MenuBarNode.Id="review.file-separator"
+                        menu:MenuBarNode.Order="400" />
+                </MenuBarItem>
+                <MenuBarItem
+                    l:Uids.Uid="EditMenuItem"
+                    menu:MenuBarNode.Id="edit"
+                    menu:MenuBarNode.Order="200">
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerFormatMenuItem"
+                        Click="FormatEditorMenuItem_Click"
+                        IsEnabled="{Binding CanFormatEditor, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.format-editor"
+                        menu:MenuBarNode.Order="100">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8D2;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem x:Name="Search" l:Uids.Uid="SearchMenuItem" Icon="Find" Command="{Binding Editor.Search, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="F"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem x:Name="SearchAndReplace" l:Uids.Uid="SearchAndReplaceMenuItem" Command="{Binding Editor.Replace, Mode=OneTime}">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="H"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+                <MenuBarItem
+                    l:Uids.Uid="ViewMenuItem"
+                    menu:MenuBarNode.Id="view"
+                    menu:MenuBarNode.Order="300">
+
+                    <MenuFlyoutItem l:Uids.Uid="ZoomInMenuItem" x:Name="ZoomInMenuItem" Command="{Binding Editor.ZoomIn, Mode=OneTime}" menu:MenuBarNode.Order="10">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Add"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE8A3;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem l:Uids.Uid="ZoomOutMenuItem" x:Name="ZoomOutMenuItem" Command="{Binding Editor.ZoomOut, Mode=OneTime}" menu:MenuBarNode.Order="20">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Subtract"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE71F;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem l:Uids.Uid="ZoomReturnMenuItem" x:Name="ZoomReturnMenuItem" Command="{Binding Editor.ZoomReset, Mode=OneTime}" menu:MenuBarNode.Order="30">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="Number0"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator menu:MenuBarNode.Order="40"/>
+                    <ToggleMenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerPresetFilesPanelMenuItem"
+                        Click="EditorFilesPanelMenuItem_Click"
+                        IsChecked="{Binding IsEditorFilesPanelVisible, Mode=OneWay}"
+                        IsEnabled="{Binding HasEditorFiles, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.files-panel"
+                        menu:MenuBarNode.Order="100" />
+                    <ToggleMenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerCommandPanelMenuItem"
+                        Click="EditorCommandPanelMenuItem_Click"
+                        IsChecked="{Binding IsEditorCommandPanelVisible, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.command-panel"
+                        menu:MenuBarNode.Order="200" />
+                    <ToggleMenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerBottomPanelMenuItem"
+                        Click="EditorBottomPanelMenuItem_Click"
+                        IsChecked="{Binding IsEditorBottomPanelVisible, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.bottom-panel"
+                        menu:MenuBarNode.Order="300" />
+                    <MenuFlyoutSeparator
+                        menu:MenuBarNode.Id="review.view-separator"
+                        menu:MenuBarNode.Order="400" />
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerShowOutputMenuItem"
+                        Click="ShowEditorOutputMenuItem_Click"
+                        menu:MenuBarNode.Id="review.show-output"
+                        menu:MenuBarNode.Order="500" />
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerShowDiagnosticsMenuItem"
+                        Click="ShowEditorDiagnosticsMenuItem_Click"
+                        menu:MenuBarNode.Id="review.show-diagnostics"
+                        menu:MenuBarNode.Order="600" />
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerShowPresetGroupsMenuItem"
+                        Click="ShowEditorGroupsMenuItem_Click"
+                        IsEnabled="{Binding HasEditorGroups, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.show-groups"
+                        menu:MenuBarNode.Order="700" />
+                </MenuBarItem>
+                <MenuBarItem
+                    l:Uids.Uid="ProcessMenuItem"
+                    menu:MenuBarNode.Id="process"
+                    menu:MenuBarNode.Order="400">
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerStartTestMenuItem"
+                        Click="StartEditorTestMenuItem_Click"
+                        Icon="Play"
+                        IsEnabled="{Binding CanStartEditorTest, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.start-test"
+                        menu:MenuBarNode.Order="100" >
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="F5"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerStopTestMenuItem"
+                        Click="StopEditorTestMenuItem_Click"
+                        Icon="Stop"
+                        IsEnabled="{Binding CanStopEditorTest, Mode=OneWay}"
+                        menu:MenuBarNode.Id="review.stop-test"
+                        menu:MenuBarNode.Order="200">
+                        <MenuFlyoutItem.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Shift" Key="F5"/>
+                        </MenuFlyoutItem.KeyboardAccelerators>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+                <MenuBarItem
+                    l:Uids.Uid="HelpMenuItem"
+                    menu:MenuBarNode.Id="help"
+                    menu:MenuBarNode.Order="500">
+                    <MenuFlyoutItem
+                        l:Uids.Uid="ConfigMakerRefreshHelpMenuItem"
+                        Click="RefreshEditorHelpMenuItem_Click"
+                        menu:MenuBarNode.Id="review.refresh-help"
+                        menu:MenuBarNode.Order="100">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE72C;" />
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                </MenuBarItem>
+            </MenuBar>
+        </DataTemplate>
+    </tpl:TemplatePage.MenuBarTemplate>
+
+    <Grid MinWidth="900" MinHeight="560" Padding="12,8,12,12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="8">
+                <TextBlock l:Uids.Uid="BlockCheck2PresetReviewTitle" Style="{ThemeResource SubtitleTextBlockStyle}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                <ProgressRing
+                    x:Name="SaveToApplicationProgressRing"
+                    Width="18"
+                    Height="18"
+                    IsActive="False" />
+                <Button
+                    x:Name="BlockCheck2SaveToApplicationButton"
+                    
+                    Style="{ThemeResource AccentButtonStyle}"
+                    Click="BlockCheck2SaveToApplicationButton_Click">
+                    <TextBlock l:Uids.Uid="BlockCheck2SaveToApplicationButtonText"/>
+                </Button>
+                <universal:ContentSeparator/>
+                <CheckBox
+                    x:Name="AllowEditingCheckBox"
+                    l:Uids.Uid="BlockCheck2AllowExpertEditingCheckBox"
+                    Click="AllowEditingCheckBox_Click" />
+                <FontIcon FontSize="13" Glyph="&#xE946;">
+                    <ToolTipService.ToolTip>
+                        <ToolTip l:Uids.Uid="BlockCheck2AllowExpertEditingToolTip" />
+                    </ToolTipService.ToolTip>
+                </FontIcon>
+            </StackPanel>
+        </Grid>
+
+        <InfoBar
+            x:Name="ExpertInfoBar"
+            Grid.Row="1"
+            IsClosable="True"
+            IsOpen="False"
+            Severity="Warning"
+            l:Uids.Uid="BlockCheck2ExpertEditingInfoBar" />
+
+        <bc:BlockCheck2PresetEditorControl
+            x:Name="PresetEditor"
+            Grid.Row="2" />
+    </Grid>
+</tpl:TemplatePage>

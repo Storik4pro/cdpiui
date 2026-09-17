@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.Universal.ViewConfigOutput"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:uexp="using:CDPIUI.Helper.UserExperience">
+
+    <Grid x:Name="RootGrid" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
+        </Grid.RowDefinitions>
+
+        <Grid Background="Black" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        
+
+            <InfoBar
+                x:Name="StatusInfoBar"
+                Margin="12,12,12,0"
+                IsOpen="False"
+                IsClosable="True"
+                IsIconVisible="True" />
+
+            <ScrollViewer
+                x:Name="OutputScrollViewer"
+                Grid.Row="1"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto"
+                >
+                <RichTextBlock
+                    x:Name="OutputRichTextBlock"
+                    Padding="16"
+                    Foreground="#DCDCDC"
+                    IsTextSelectionEnabled="True"
+                    SelectionHighlightColor="Gray"
+                    TextWrapping="NoWrap"
+                    FontSize="{x:Bind uexp:ConsoleFontHelper.Instance.FontSize, Mode=OneWay}" 
+                    FontFamily="{x:Bind uexp:ConsoleFontHelper.Instance.FontFamily, Mode=OneWay}">
+                    <Paragraph x:Name="OutputParagraph" />
+                </RichTextBlock>
+            </ScrollViewer>
+        </Grid>
+        <Border
+            Grid.Row="2"
+            Padding="10,0"
+            Background="{ThemeResource LayerOnMicaBaseAltFillColorDefault}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="8" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    x:Name="SelectedComponentTextBlock"
+                    VerticalAlignment="Center"
+                    TextTrimming="CharacterEllipsis"
+                    Foreground="{ThemeResource TextFillColorSecondary}"/>
+                <FontIcon
+                    x:Name="StatusIcon"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Glyph="&#xEB90;" />
+                <TextBlock
+                    x:Name="StatusTextBlock"
+                    Grid.Column="3"
+                    VerticalAlignment="Center" 
+                    Foreground="{ThemeResource TextFillColorSecondary}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

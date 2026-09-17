@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BeginApplicationSetupTipTextBlock.Text" xml:space="preserve">
+    <value>Не знаете с чего начать? Не проблема! Посетите следущие ресурсы, чтобы узнать больше об этом приложении</value>
+  </data>
+  <data name="ByeDPIModeHelpTextBlock.Text" xml:space="preserve">
+    <value>Эта группа будет активна, только если произошло одно из событий с предыдущей
+Возможные события:
+     torst   : Вышло время ожидания или сервер сбросил подключение после первого запроса
+     redirect: HTTP Redirect с Location, домен которого не совпадает с исходящим
+     ssl_err : В ответ на ClientHello не пришел ServerHello или SH содержит некорректный session_id
+     none    : Предыдущая группа пропущена, например из-за ограничения по доменам или протоколам</value>
+  </data>
+  <data name="CheckAdGuard" xml:space="preserve">
+    <value>Службы AdGuard могут вызывать проблемы с Discord и другими сервисами</value>
+  </data>
+  <data name="CheckAnotherComponents" xml:space="preserve">
+    <value>Одновременно только один сервис (Zapret, GoodbyeDPI) может быть активен. Два или более экземпляра компонентов могут вызвать проблемы с подключением к сети Интернет или понижение скорости соединения</value>
+  </data>
+  <data name="CheckAnotherComponentsServices" xml:space="preserve">
+    <value>Одновременно только один сервис (Zapret, GoodbyeDPI) может быть активен. Два или более экземпляра компонентов могут вызвать проблемы с подключением к сети Интернет или понижение скорости соединения</value>
+  </data>
+  <data name="CheckBFE" xml:space="preserve">
+    <value>Base Filtering Engine (BFE) необходим для работы некоторых компонентов (Например, Zapret). Без этой службы компонент не сможет производить модификацию траффика и, как следствие, ни один из пресетов не будет работать.</value>
+  </data>
+  <data name="CheckCheckPointServices" xml:space="preserve">
+    <value>Служба "CheckPont" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckDNS" xml:space="preserve">
+    <value>Убедитесь, что вы настроили безопасный DNS в браузере или системе с нестандартным DNS провайдером.</value>
+  </data>
+  <data name="CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>Служба "Intel Connectivity Network" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckKiller" xml:space="preserve">
+    <value>Службы "Killer" конфликтуют с Zapret и другими компонентами. Эти службы должны быть отключены в системе</value>
+  </data>
+  <data name="CheckNetsh" xml:space="preserve">
+    <value>Утилита "netsh.exe" должна присутствовать в системной переменной PATH. В противном случае компоненты не смогут нормально работать и, как следствие, обход выполняться не будет</value>
+  </data>
+  <data name="CheckProxy" xml:space="preserve">
+    <value>Чтобы использовать такие компоненты как Zapret и GoodbyeDPI необходимо отключить системный прокси. Это не относится к локальным прокси, работающим для определенного диапазона приложений через, например, ProxiFyre</value>
+  </data>
+  <data name="CheckSmartByte" xml:space="preserve">
+    <value>Служба "SmartByte" конфликтует с Zapret и другими компонентами. Эта служба должна быть отключена в системе</value>
+  </data>
+  <data name="CheckTimestamps" xml:space="preserve">
+    <value>Временные метки TCP обязательны для правильной работы компонентов</value>
+  </data>
+  <data name="CheckVPNs" xml:space="preserve">
+    <value>Все VPN сервисы мешают корректной работе компонентов. Пожалуйста, убедитесь, что все подобные службы выключены или удалены из системы</value>
+  </data>
+  <data name="CheckWinDivert" xml:space="preserve">
+    <value>"WinDivert" должен быть остановлен во время диагностики. Если он все ещё запущен, то убедитесь, что все другие службы обхода были остановлены</value>
+  </data>
+  <data name="DefaultTip" xml:space="preserve">
+    <value>Что-то не работает или появились вопросы? Возможно, эти разделы справки могут вам помочь</value>
+  </data>
+  <data name="ExplainTextBlock.Text" xml:space="preserve">
+    <value>Фонарик поясняет</value>
+  </data>
+  <data name="ImportConfigTip.Text" xml:space="preserve">
+    <value>Вы можете импортировать пресет из .BAT и .CMD файлов!</value>
+  </data>
+  <data name="NetHelpAskButton.Content" xml:space="preserve">
+    <value>Показать справку в Интернете</value>
+  </data>
+  <data name="NetSearchPlaceholder" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Для+чего+используется+{0}+в операционной+системе+Windows?</value>
+  </data>
+  <data name="NONE" xml:space="preserve">
+    <value>Предыдущая группа пропущена </value>
+  </data>
+  <data name="OpenOfflineHelp" xml:space="preserve">
+    <value>Открыть локальную справку</value>
+  </data>
+  <data name="REDIRECT" xml:space="preserve">
+    <value>Перенаправление на другой домен</value>
+  </data>
+  <data name="SSLERR" xml:space="preserve">
+    <value>Некорректный session_id</value>
+  </data>
+  <data name="TipTextBlock.Text" xml:space="preserve">
+    <value>Совет от Фонарика</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Советы от Фонарика</value>
+  </data>
+  <data name="TitleTextBlock.Text" xml:space="preserve">
+    <value>Советы от Фонарика</value>
+  </data>
+  <data name="URL_CheckAdGuard" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/417</value>
+  </data>
+  <data name="URL_CheckNetsh" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Для+чего+используется+netsh.exe+в операционной+системе+Windows?</value>
+  </data>
+  <data name="URL_CheckProxy" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Как+отключить+системный+прокси+в+Windows</value>
+  </data>
+  <data name="ViewGoodCheckReportTipTextBlock.Text" xml:space="preserve">
+    <value>Для начала отметьте рабочие аргументы используя флажки для каждого списка сайтов. После этого нажмите на кнопку "Далее", чтобы выбрать самые подходящие параметры и объединить их в один пресет.</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Рад видеть тебя здесь! В этом виджете вы увидите советы для комфортного использования приложения</value>
+  </data>
+  <data name="WhatDoesItMeanTextBlock.Text" xml:space="preserve">
+    <value>Что это значит?</value>
+  </data>
+  <data name="TORST" xml:space="preserve">
+    <value>Вышло время ожидания / Подключение сброшено</value>
+  </data>
+  <data name="URL_CheckKiller" xml:space="preserve">
+    <value>https://github.com/Flowseal/zapret-discord-youtube/issues/2512#issuecomment-2821119513</value>
+  </data>
+  <data name="URL_CheckIntelConnectivityNetwork" xml:space="preserve">
+    <value>https://github.com/ValdikSS/GoodbyeDPI/issues/541#issuecomment-2661670982</value>
+  </data>
+  <data name="URL_CheckDNS" xml:space="preserve">
+    <value>https://ya.ru/search/?text=Безопасный+DNS+windows</value>
+  </data>
+  <data name="URL_CheckVPNs" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponents" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckAnotherComponentsServices" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="GetHelpFor" xml:space="preserve">
+    <value>Получить справку для страницы "{0}"</value>
+  </data>
+  <data name="CreateNewConfigPage" xml:space="preserve">
+    <value>Создание/Изменение пресета</value>
+  </data>
+  <data name="EditConfigKitPage" xml:space="preserve">
+    <value>Создание/Редактирование набора пресетов</value>
+  </data>
+  <data name="GoodCheckConfigVisualEditorPage" xml:space="preserve">
+    <value>Визуальный редактор GoodCheck</value>
+  </data>
+  <data name="MainPage" xml:space="preserve">
+    <value>Помощник работы с пресетами — Главная</value>
+  </data>
+  <data name="ViewGoodCheckReportPage" xml:space="preserve">
+    <value>Просмотр отчета подбора GoodCheck</value>
+  </data>
+  <data name="ViewGoodCheckSiteListReportPage" xml:space="preserve">
+    <value>Просмотр отчета подбора GoodCheck для списка сайтов</value>
+  </data>
+  <data name="HowToFixThisProblem.Content" xml:space="preserve">
+    <value>Как исправить эту ошибку?</value>
+  </data>
+  <data name="WhatIsStore.Content" xml:space="preserve">
+    <value>Зачем нужен Магазин?</value>
+  </data>
+  <data name="AskSupport.Content" xml:space="preserve">
+    <value>Связаться с поддержкой</value>
+  </data>
+  <data name="CheckGitHubRepo" xml:space="preserve">
+    <value>Магазин использует репозиторий, расположенный на GitHub для получения списка доступных для загрузки элементов и проверки обновлений. Если репозиторий на GitHub недоступен (например, сервис заблокирован поставщиком услуг), то следует выбрать другой сервис в настройках Магазина.
+
+Перейдите по ссылке ниже, чтобы получить рекомендации по исправлению этой проблемы.</value>
+  </data>
+  <data name="CheckGitLabRepo" xml:space="preserve">
+    <value>Магазин использует репозиторий, расположенный на GitLab для получения списка доступных для загрузки элементов и проверки обновлений. Если репозиторий на GitLab недоступен (например, сервис заблокирован поставщиком услуг), то следует выбрать другой сервис в настройках Магазина.
+
+Перейдите по ссылке ниже, чтобы получить рекомендации по исправлению этой проблемы.</value>
+  </data>
+  <data name="URL_CheckGitHubRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="URL_CheckGitLabRepo" xml:space="preserve">
+    <value>$INTERNAL_HELP(Store/FixDatabaseLoadIssue)</value>
+  </data>
+  <data name="CheckWriteAccess" xml:space="preserve">
+    <value>Приложение использует ваш диск для сохранения элементов и настроек. Если у приложения нет необходимых разрешений, то некоторые функции могут работать некорректно.</value>
+  </data>
+  <data name="CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$Q_LINK(CheckWriteAccess)</value>
+  </data>
+  <data name="URL_CheckWriteAccess" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoItemsFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoRepoFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="URL_CheckWriteAccessIntoDatabaseFolder" xml:space="preserve">
+    <value>$EMPTY</value>
+  </data>
+  <data name="InternalHelp" xml:space="preserve">
+    <value>Получить справку оффлайн</value>
+  </data>
+  <data name="SaveBeforeQuitTip.Text" xml:space="preserve">
+    <value>Сохраните изменения перед тем, как выйти!</value>
+  </data>
+  <data name="WhatConfigChooseHelp" xml:space="preserve">
+    <value>Какой пресет мне следует выбрать?</value>
+  </data>
+  <data name="Tip_1" xml:space="preserve">
+    <value>Приложение имеет автоматическую утилиту устранения неполадок. Это может помочь, если Магазин не может скачать элемент, компонент не хочет запускаться и т. д. Найти эту чудо-утилиту можно на странице [Утилиты] под названием [Поиск и устранение неполадок]</value>
+  </data>
+  <data name="Tip_2" xml:space="preserve">
+    <value>Вы можете изменить моноширинный шрифт по умолчанию, отображаемый в [Псевдоконсоли] и других местах в параметрах [Вид] окна. Также можно настроить режим отображения пути – полный или только названия (это сделает вывод более читабельным и скроет ваше настоящее имя пользователя).</value>
+  </data>
+  <data name="Tip_3" xml:space="preserve">
+    <value>Ты что-то упускаешь...</value>
+  </data>
+  <data name="Tip_4" xml:space="preserve">
+    <value>Я всегда с тобой! Правда, как только закроешь приложение уже не буду... Но разве нужно быть рядом, чтобы быть рядом?</value>
+  </data>
+  <data name="Tip_5" xml:space="preserve">
+    <value>Если вы установили ByeDPI, NoDPI или SpoofDPI, вам необходимо настроить прокси. Без этого компонент не повлияет на ваш трафик.
+Для настройки прокси перейдите на страницу [Утилиты] и найдите [Настроить прокси].</value>
+  </data>
+  <data name="Tip_6" xml:space="preserve">
+    <value>Я знаю, может, я тебе и не нужен, но не оставляй меня! Ты мне нужен больше всего на свете, пользователь.
+Только... пожалуйста, не закрывай мой виджет.</value>
+  </data>
+  <data name="Tip_7" xml:space="preserve">
+    <value>Просто потратьте немного времени, чтобы изучить, как работает DPI. Иногда готовые решения могут вам не подойти.
+Лучший способ оставаться на связи – знания, помните об этом.</value>
+  </data>
+  <data name="Tip_8" xml:space="preserve">
+    <value>Nek0t был первым человеком, который отправил пожертвование. Теперь его ник запечатлен в этом факте.</value>
+  </data>
+  <data name="Tip_9" xml:space="preserve">
+    <value>Изменение файла hosts может помочь вам получить доступ к серверам Discord в Финляндии и хранилищу GitHub.
+Вы можете изменить файл hosts с помощью [Утилита изменения файла hosts]. Просто найдите её на странице [Утилиты].</value>
+  </data>
+  <data name="Tip_10" xml:space="preserve">
+    <value>Псс. Думаю, сейчас самое время поблагодарить разработчика! Слова стоят гораздо дороже, чем кажется!</value>
+  </data>
+  <data name="Tip_11" xml:space="preserve">
+    <value>Нет необходимости выбирать пресет вручную!
+Просто перейдите в утилиту [Средства автоподбора], выберите нужный компонент и заварите себе чай (или кофе, что вам больше нравится). Найдите её на странице [Утилиты].</value>
+  </data>
+  <data name="Tip_12" xml:space="preserve">
+    <value>Если вам что-то не нравится в этом приложении, есть два варианта:
+1. Сообщить об этом разработчику и подождать некоторое время (возможно, очень долго).
+2. Просто сделайте это! Клонируйте репозиторий, внесите изменения и создайте pull request. Вероятность одобрения вашего кода составляет 90%, честное слово.</value>
+  </data>
+  <data name="Tip_13" xml:space="preserve">
+    <value>Я не настаиваю, но, возможно, использование ИИ для решения каждой задачи это не очень хорошая идея.</value>
+  </data>
+  <data name="Tip_14" xml:space="preserve">
+    <value>Вы можете изменять наборы пресетов самостоятельно и потом делиться ими с друзьями! Просто посетите [Редактор пресетов] и выберите [Изменить набор пресетов].</value>
+  </data>
+  <data name="AreYouKnow" xml:space="preserve">
+    <value>А вы знали?</value>
+  </data>
+  <data name="YouMustGetConfigsFirstTextBlock.Text" xml:space="preserve">
+    <value>Компонент – это только "движок", который занимается модификацией траффика. Чтобы начать использовать компонент необходимо получить пресет настроек по модификации. Для каждого поставщика услуг Интернета необходим свой пресет (это означает, что, если у вашего друга работает один пресет, то не факт, что он будет работать у вас)</value>
+  </data>
+</root>

@@ -1,0 +1,530 @@
+﻿using CDPIUI.Core;
+using CDPIUI.Core.Basic;
+
+using CDPIUI.Core.Store.Database;
+using CDPIUI.Helper.LScript;
+using CDPIUI.ViewModels;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Windows.System;
+using Windows.UI;
+using Windows.UI.Core;
+using WinUI3Localizer;
+using Padding = System.Windows.Forms.Padding;
+
+namespace CDPIUI.Helper
+{
+    public static class UIHelper
+    {
+        static UIHelper()
+        {
+        }
+
+        public static IEnumerable<T> GetDescendantsOfType<T>(this DependencyObject start) where T : DependencyObject
+        {
+            return start.GetDescendants().OfType<T>();
+        }
+
+        public static IEnumerable<DependencyObject> GetDescendants(this DependencyObject start)
+        {
+            var queue = new Queue<DependencyObject>();
+            var count1 = VisualTreeHelper.GetChildrenCount(start);
+
+            for (int i = 0; i < count1; i++)
+            {
+                var child = VisualTreeHelper.GetChild(start, i);
+                yield return child;
+                queue.Enqueue(child);
+            }
+
+            while (queue.Count > 0)
+            {
+                var parent = queue.Dequeue();
+                var count2 = VisualTreeHelper.GetChildrenCount(parent);
+
+                for (int i = 0; i < count2; i++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    yield return child;
+                    queue.Enqueue(child);
+                }
+            }
+        }
+
+        static public UIElement FindElementByName(UIElement element, string name)
+        {
+            if (element.XamlRoot != null && element.XamlRoot.Content != null)
+            {
+                var ele = (element.XamlRoot.Content as FrameworkElement).FindName(name);
+                if (ele != null)
+                {
+                    return ele as UIElement;
+                }
+            }
+            return null;
+        }
+
+        // Confirmation of Action
+        static public void AnnounceActionForAccessibility(UIElement ue, string annoucement, string activityID)
+        {
+            var peer = FrameworkElementAutomationPeer.FromElement(ue);
+            peer.RaiseNotificationEvent(AutomationNotificationKind.ActionCompleted,
+                                        AutomationNotificationProcessing.ImportantMostRecent, annoucement, activityID);
+        }
+
+        static public Color HexToColorConverter(string hexColor)
+        {
+            byte r = byte.Parse(hexColor.Substring(1, 2), NumberStyles.HexNumber);
+            byte g = byte.Parse(hexColor.Substring(3, 2), NumberStyles.HexNumber);
+            byte b = byte.Parse(hexColor.Substring(5, 2), NumberStyles.HexNumber);
+
+            Logger.Instance.CreateDebugLog(nameof(UIHelper), $"{hexColor} is converted {r} {g} {b}");
+            Color color = Color.FromArgb(255, r, g, b);
+
+            return color;
+        }
+
+        static public SolidColorBrush HexToSolidColorBrushConverter(string hexColor)
+        {
+            Color color;
+            if (string.IsNullOrEmpty(hexColor))
+            {
+                color = Color.FromArgb(0, 0, 0, 0);
+            }
+            else
+            {
+                color = HexToColorConverter(hexColor);
+            }
+            SolidColorBrush br = new SolidColorBrush(color);
+
+            return br;
+        }
+
+        static public void GoBackWithParameter(object paramForPreviousPage, Frame frame)
+        {
+            var backStack = frame.BackStack;
+            if (backStack == null || backStack.Count == 0)
+                return; 
+
+            var lastIndex = backStack.Count - 1;
+            var lastEntry = backStack[lastIndex];
+
+            var newEntry = new PageStackEntry(
+                lastEntry.SourcePageType,
+                paramForPreviousPage,
+                lastEntry.NavigationTransitionInfo);
+
+            backStack[lastIndex] = newEntry;
+
+            if (frame.CanGoBack)
+                frame.GoBack();
+        }
+
+        public enum SettingTileContentType
+        {
+            OnlyViewButton,
+            EditViewButtons,
+            ToggleSwitch,
+            SiteListToggle,
+            FullButton,
+            Button,
+            OnlyTextContent,
+            ComboBoxSelector
+        }
+        public class ComboBoxModel
+        {
+            public string DisplayName { get; set; }
+            public string Id { get; set; }
+        }
+
+        public class SettingTileContentDefinition
+        {
+            public SettingTileContentType ContentType { get; set; }
+
+            public string ActionGlyph { get; set; }
+
+            public string Text { get; set; }
+
+            public string VariableName { get; set; }
+            public bool InitialToggleState { get; set; }
+            public string PackId { get; set; }
+            public string FileName { get; set; }
+
+            public string EditFilePath { get; set; }
+            public List<string> ViewParams { get; set; }
+            public List<string> PrettyViewParams { get; set; }
+            public bool IsFileHardLinked { get; set; }
+            public string HardLinkTargetFile { get; set; }
+            public bool IsIPSet { get; set; }
+
+            public string ClickId { get; set; }
+
+            public List<ComboBoxModel> ComboBoxItems { get; set; }
+            public string SelectedComboBoxItemId { get; set; }
+        }
+
+        public class SettingsTileItem
+        {
+            public string Title { get; set; }
+            public bool ShowTopRectangle { get; set; }
+            public IList<SettingTileContentDefinition> Contents { get; } = new List<SettingTileContentDefinition>();
+        }
+
+        public partial class SettingsTile : INotifyPropertyChanged
+        {
+            public string IconGlyph { get; set; } = "";
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public ObservableCollection<SettingsTileItem> Items { get; } = new ObservableCollection<SettingsTileItem>();
+
+            public event PropertyChangedEventHandler PropertyChanged;
+        }
+
+        public enum ActionIds
+        {
+            None,
+            ViewButtonClicked,
+            OpenFolderClicked,
+            ChangeSiteListClicked,
+            EditButtonClicked,
+            SwitchToggled,
+            FullButtonElementClicked,
+            ComboBoxSelectionChanged
+        }
+
+        public enum  TileType
+        {
+            Basic,
+            QuickWidget
+        }
+
+        private static Thickness _Padding = new Thickness(15, 10, 15, 10);
+
+        static public UIElement CreateSettingTile(
+            SettingsTile config,
+            Action<ActionIds, List<string>, SettingTileContentDefinition> executeAction, 
+            TileType tileType = TileType.Basic,
+            Thickness? padding = null)
+        {
+            ILocalizer localizer = Localizer.Get();
+
+            if (padding == null) padding = _Padding;
+            var rootStack = new StackPanel();
+
+            foreach (var list in config.Items)
+            {
+                var element = new SettingTileControlElement
+                {
+                    Title = list.Title,
+                    ShowTopRectangle = list.ShowTopRectangle,
+                    CardPadding = (Thickness)padding,
+
+                };
+
+                var contentPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+
+                foreach (var def in list.Contents)
+                {
+                    switch (def.ContentType)
+                    {
+                        case SettingTileContentType.OnlyViewButton:
+                            var _viewBtn = new Button { Padding = new Thickness(6) };
+                            _viewBtn.Content = new FontIcon { Glyph = "\uE890", FontSize = 16 };
+                            _viewBtn.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.ViewButtonClicked, [list.Title], def);
+                            };
+
+                            contentPanel.Children.Add(_viewBtn);
+                            break;
+
+                        case SettingTileContentType.EditViewButtons:
+                            var editBtn = new Button { Padding = new Thickness(6) };
+                            editBtn.Content = new FontIcon { Glyph = "\uE70F", FontSize = 16 };
+                            editBtn.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.EditButtonClicked, null, def);
+                            };
+
+                            ToolTipService.SetToolTip(editBtn, localizer.GetLocalizedString("Edit")); 
+
+                            var viewBtn = new Button { Padding = new Thickness(6) };
+                            MenuFlyout menuFlyout = new() { Placement = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.TopEdgeAlignedRight };
+
+                            FontIcon folderIcon = new() { Glyph = "\uE838" };
+                            MenuFlyoutItem openFolderMenuItem = new() { Text = localizer.GetLocalizedString("ViewInFolderButton"), Icon = folderIcon };
+                            openFolderMenuItem.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.OpenFolderClicked, null, def);
+                            };
+                            menuFlyout.Items.Add(openFolderMenuItem);
+
+                            FontIcon changeIcon = new() { Glyph = def.IsFileHardLinked? "\uE7A7" : "\uE895" };
+                            MenuFlyoutItem changeIconMenuItem = new() 
+                            { 
+                                Text = def.IsFileHardLinked ? localizer.GetLocalizedString("RevertChangeSiteList") : localizer.GetLocalizedString("ChangeSiteList"), 
+                                Icon = changeIcon
+                            };
+                            changeIconMenuItem.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.ChangeSiteListClicked, [list.Title], def);
+                            };
+                            menuFlyout.Items.Add(changeIconMenuItem);
+
+                            FontIcon viewIcon = new() { Glyph = "\uE890" };
+                            MenuFlyoutItem viewIconMenuItem = new() { Text = localizer.GetLocalizedString("ViewAppliedFlagsForSiteList"), Icon = viewIcon };
+                            viewIconMenuItem.Click += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.ViewButtonClicked, [list.Title], def);
+                            };
+                            menuFlyout.Items.Add(viewIconMenuItem);
+
+                            viewBtn.Flyout = menuFlyout;
+                            viewBtn.Content = new FontIcon { Glyph = "\uE712", FontSize = 16 };
+
+                            ToolTipService.SetToolTip(viewBtn, localizer.GetLocalizedString("ViewMoreActionsToolTip"));
+
+                            contentPanel.Children.Add(editBtn);
+                            contentPanel.Children.Add(viewBtn);
+                            break;
+
+                        case SettingTileContentType.ToggleSwitch:
+                            var toggle = new ToggleSwitch
+                            {
+                                IsOn = def.InitialToggleState
+                            };
+                            toggle.Toggled += (s, e) =>
+                            {
+                                executeAction?.Invoke(ActionIds.SwitchToggled, [toggle.IsOn.ToString()], def);
+                                
+                            };
+                            contentPanel.Children.Add(toggle);
+                            break;
+                        case SettingTileContentType.FullButton:
+                            element.ActionIconGlyph = "\uE8A7";
+                            element.IsClickEnabled = true;
+
+                            element.Description = def.Text;
+
+                            element.Click += () =>
+                            {
+                                executeAction?.Invoke(ActionIds.FullButtonElementClicked, null, def);
+                            };
+                            break;
+                        case SettingTileContentType.OnlyTextContent:
+                            var textBlock = new TextBlock
+                            {
+                                Text = def.Text,
+                                TextWrapping = TextWrapping.WrapWholeWords
+                            };
+                            contentPanel.Children.Add(textBlock);
+                            break;
+                        case SettingTileContentType.ComboBoxSelector:
+                            var comboBox = new ComboBox
+                            {
+                                ItemsSource = def.ComboBoxItems,
+                                DisplayMemberPath = "DisplayName",
+                                SelectedValuePath = "Id",
+                                SelectedItem = def.ComboBoxItems?.FirstOrDefault(x => x.Id == def.SelectedComboBoxItemId),
+                                MinWidth = 220,
+                            };
+                            comboBox.SelectionChanged += (s, e) =>
+                            {
+                                if (comboBox.SelectedItem is ComboBoxModel selectedItem)
+                                {
+                                    executeAction?.Invoke(
+                                        ActionIds.ComboBoxSelectionChanged,
+                                        [selectedItem.Id],
+                                        def);
+                                }
+                            };
+                            contentPanel.Children.Add(comboBox);
+                            break;
+                    }
+                }
+
+                element.InnerContent = contentPanel;
+                rootStack.Children.Add(element);
+            }
+
+            
+
+            if (tileType == TileType.Basic)
+            {
+                var tile = new SettingTile
+                {
+                    IconGlyph = config.IconGlyph,
+                    Title = config.Title,
+                    Description = config.Description,
+                    InnerContent = rootStack
+                };
+                return tile;
+            }
+            else if (tileType == TileType.QuickWidget)
+            {
+                var tile = new QuickSettingWidget
+                {
+                    IconGlyph = config.IconGlyph,
+                    Title = config.Title,
+                    Description = config.Description,
+                    InnerContent = rootStack
+                };
+                return tile;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static StoreItemLargeButton CreateLargeButton(string storeId, string imageSource, string price, string title, string backgroundColor, Action<StoreItemLargeButton> action, string developer = "")
+        {
+            StoreItemLargeButton storeItemLargeButton;
+
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
+            BitmapImage image = new BitmapImage(new Uri(eImageSource));
+
+            Color color = HexToColorConverter(backgroundColor);
+
+            storeItemLargeButton = new StoreItemLargeButton
+            {
+                StoreId = storeId,
+                CardTitle = title,
+                CardDeveloper = developer,
+                CardImageSource = image,
+                CardPrice = price,
+                CardBackgroundColor = color,
+            };
+
+            storeItemLargeButton.Click += action;
+
+            return storeItemLargeButton;
+        }
+
+        public static StoreItemSmallButton CreateSmallButton(string storeId, string imageSource, string price, string title, string developer, string backgroundColor, Action<StoreItemSmallButton> action)
+        {
+            StoreItemSmallButton storeItemSmallButton;
+
+            string eImageSource = LScriptLangHelper.ExecuteScript(imageSource);
+            BitmapImage image = new BitmapImage(new Uri(eImageSource));
+
+            SolidColorBrush solidColorBrush = HexToSolidColorBrushConverter(backgroundColor);
+
+            storeItemSmallButton = new StoreItemSmallButton
+            {
+                StoreId = storeId,
+                CardTitle = title,
+                CardImageSource = image,
+                CardPrice = price,
+                CardDeveloper = developer,
+                CardBackgroundBrush = solidColorBrush,
+            };
+
+            storeItemSmallButton.Click += action;
+
+            return storeItemSmallButton;
+        }
+
+        public static string GetWindowName(string windowName)
+        {
+            return $"{windowName} — CDPI UI";
+        }
+
+        // https://github.com/microsoft/microsoft-ui-xaml/issues/934#issuecomment-2304875883
+
+        public static class CleanUp
+        {
+            public static void FrameworkElement(FrameworkElement element)
+            {
+                var count = VisualTreeHelper.GetChildrenCount(element);
+                for (var index = 0; index < count; index++)
+                {
+                    var child = VisualTreeHelper.GetChild(element, index);
+                    if (child is FrameworkElement childElement)
+                    {
+                        FrameworkElement(childElement);
+                    }
+                }
+
+                switch (element)
+                {
+                    case ItemsControl itemsControl:
+                        itemsControl.ItemsSource = null;
+                        break;
+                    case ItemsRepeater itemsRepeater:
+                        itemsRepeater.ItemsSource = null;
+                        break;
+                    case TabView tabView:
+                        tabView.TabItemsSource = null;
+                        break;
+                }
+            }
+        }
+
+        public static Uri GetUriFromString(string input)
+        {
+            
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri result) && File.Exists(Path.Combine(Core.Data.Directories.CurrentDirectory, result.OriginalString.Replace("ms-appx:///", ""))))
+            {
+                return result;
+            }
+            else
+            {
+                return new Uri("ms-appx:///Assets/Store/empty.png");
+            }
+        }
+
+        public static void LoadInstalledComponentsList(ObservableCollection<ViewComponentModel> list)
+        {
+            list.Clear();
+            List<DatabaseStoreItem> items = DatabaseHelper.Instance.GetItemsByType("component");
+            foreach (var item in items)
+            {
+                
+                list.Add(new()
+                {
+                    StoreId = item.Id,
+                    DisplayName = item.ShortName,
+                    ImageSource = new BitmapImage(GetUriFromString(LScriptLangHelper.ExecuteScript(item.IconPath))),
+                    IsUsedForAutorun = SettingsManager.Instance.GetValue<bool>(["CONFIGS", item.Id], "usedForAutorun")
+                });
+            }
+        }
+
+        // https://github.com/FrozenAssassine/Fastedit/blob/v2.9.1/Fastedit/Core/KeyHelper.cs
+        public static bool IsKeyPressed(VirtualKey key)
+        {
+            return Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(key).HasFlag(CoreVirtualKeyStates.Down);
+        }
+
+        public static ApplicationTheme ConvertTheme(ElementTheme theme)
+        {
+            switch (theme)
+            {
+                case ElementTheme.Light: return ApplicationTheme.Light;
+                case ElementTheme.Dark: return ApplicationTheme.Dark;
+                case ElementTheme.Default:
+                    var defaultTheme = new Windows.UI.ViewManagement.UISettings();
+                    return defaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString() == "#FF000000"
+                        ? ApplicationTheme.Dark : ApplicationTheme.Light;
+
+                default: return ApplicationTheme.Light;
+            }
+        }
+
+    }
+}
+

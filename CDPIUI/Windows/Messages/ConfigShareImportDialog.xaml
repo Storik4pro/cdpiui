@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.Messages.ConfigShareImportDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+    
+    <template:TemplateWindow.SystemBackdrop>
+        <MicaBackdrop/>
+    </template:TemplateWindow.SystemBackdrop>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl x:Name="TitleBarControl" Height="48"/>
+        <ScrollViewer Grid.Row="1" Padding="20,8,20,16" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="0">
+                <TextBlock x:Name="PresetName" Style="{ThemeResource TitleTextBlockStyle}" TextWrapping="NoWrap" />
+                <TextBlock x:Name="DeveloperName" TextWrapping="Wrap" />
+                <TextBlock x:Name="SourcePath" TextWrapping="Wrap" MaxLines="3" IsTextSelectionEnabled="True" Margin="0 0 0 20"/>
+
+                <controls:SettingsExpander x:Name="DestinationPanel" IsExpanded="True" >
+                    <controls:SettingsExpander.Header>
+                        <TextBlock l:Uids.Uid="InstallSettingsTextBlock"/>
+                    </controls:SettingsExpander.Header>
+                    <ComboBox x:Name="ModeSelectionCombobox" SelectionChanged="ModeSelectionCombobox_SelectionChanged" Width="200"/>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard l:Uids.Uid="AddAsKitSettingsStoreSmallInstallDialogCard" x:Name="DestCard">
+                            <ComboBox x:Name="DestinationCombo" DisplayMemberPath="ShortName" HorizontalAlignment="Stretch" Width="200" />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard l:Uids.Uid="AddAsNewKitSettingsStoreSmallInstallDialogCard" x:Name="NameCard">
+                            <TextBox x:Name="KitName" MaxLength="120" TextChanged="KitName_Changed" Width="200"/>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                
+                <CheckBox x:Name="AlwaysAskCheckBox" l:Uids.Uid="ConfigShareAlwaysAskDrop" Visibility="Collapsed" Click="AlwaysAskCheckBox_Click" Margin="0,12,0,0"/>
+                <InfoBar x:Name="ErrorBar" IsClosable="False" Severity="Error" IsOpen="False" />
+                <InfoBar x:Name="SuccessBar" IsClosable="False" Severity="Success" IsOpen="False" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel x:Name="ProgressPanel" Grid.Row="2" Grid.ColumnSpan="2" Padding="20 10">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock x:Name="ProgressText" Text="Getting ready..."/>
+            </StackPanel>
+            <ProgressBar x:Name="Progress" IsIndeterminate="True"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="20,0,20,20" >
+            <Button x:Name="InstallButton" l:Uids.Uid="AddButton" Style="{ThemeResource AccentButtonStyle}" IsEnabled="False" Click="Install_Click" Width="120" />
+            <Button x:Name="CancelButton" l:Uids.Uid="CancelButton" Style="{ThemeResource AccentButtonStyle}" Click="Cancel_Click" Width="120"/>
+        </StackPanel>
+    </Grid>
+</template:TemplateWindow>

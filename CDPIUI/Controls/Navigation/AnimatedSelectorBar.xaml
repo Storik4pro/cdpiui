@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.Navigation.AnimatedSelectorBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <SelectorBar
+            x:Name="NavigationSelector"
+            SelectionChanged="NavigationSelector_SelectionChanged" />
+
+        <Grid x:Name="ContentHost" Grid.Row="1">
+            <ContentPresenter
+                x:Name="PrimaryPresenter"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch">
+                <ContentPresenter.RenderTransform>
+                    <TranslateTransform />
+                </ContentPresenter.RenderTransform>
+            </ContentPresenter>
+            <ContentPresenter
+                x:Name="SecondaryPresenter"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="Collapsed">
+                <ContentPresenter.RenderTransform>
+                    <TranslateTransform />
+                </ContentPresenter.RenderTransform>
+            </ContentPresenter>
+        </Grid>
+    </Grid>
+</UserControl>

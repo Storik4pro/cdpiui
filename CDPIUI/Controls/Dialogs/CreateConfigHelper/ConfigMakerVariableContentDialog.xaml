@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="CDPIUI.Controls.Dialogs.CreateConfigHelper.ConfigMakerVariableContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="using:WinUI3Localizer"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+
+    <ScrollViewer MaxHeight="560">
+        <StackPanel Width="430" Spacing="10">
+            <TextBox
+                x:Name="NameTextBox"
+                l:Uids.Uid="ConfigMakerVariableNameTextBox"
+                IsSpellCheckEnabled="False"
+                TextChanged="Input_Changed" />
+            <ComboBox
+                x:Name="KindComboBox"
+                l:Uids.Uid="ConfigMakerVariableKindComboBox"
+                HorizontalAlignment="Stretch"
+                SelectionChanged="KindComboBox_SelectionChanged">
+                <ComboBoxItem l:Uids.Uid="ConfigMakerVariableTextKind" Tag="Text" />
+                <ComboBoxItem l:Uids.Uid="ConfigMakerVariableChoiceKind" Tag="Choice" />
+                <ComboBoxItem l:Uids.Uid="ConfigMakerVariableSwitchKind" Tag="Switch" />
+            </ComboBox>
+            <TextBox
+                x:Name="DescriptionTextBox"
+                l:Uids.Uid="ConfigMakerVariableDescriptionTextBox"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                MaxHeight="100" />
+            <StackPanel x:Name="DirectValuePanel" Spacing="10">
+                <TextBox
+                    x:Name="ValueTextBox"
+                    l:Uids.Uid="ConfigMakerVariableValueTextBox"
+                    IsSpellCheckEnabled="False"
+                    TextChanged="Input_Changed" />
+                <TextBox
+                    x:Name="ValuesTextBox"
+                    l:Uids.Uid="ConfigMakerVariableValuesTextBox"
+                    AcceptsReturn="True"
+                    IsSpellCheckEnabled="False"
+                    TextWrapping="NoWrap"
+                    MinHeight="90"
+                    Visibility="Collapsed"
+                    TextChanged="Input_Changed" />
+            </StackPanel>
+            <StackPanel x:Name="SwitchValuePanel" Spacing="10" Visibility="Collapsed">
+                <TextBox
+                    x:Name="OnValueTextBox"
+                    l:Uids.Uid="ConfigMakerVariableOnValueTextBox"
+                    IsSpellCheckEnabled="False"
+                    TextChanged="Input_Changed" />
+                <TextBox
+                    x:Name="OffValueTextBox"
+                    l:Uids.Uid="ConfigMakerVariableOffValueTextBox"
+                    IsSpellCheckEnabled="False"
+                    TextChanged="Input_Changed" />
+                <ToggleSwitch
+                    x:Name="DefaultSwitch"
+                    l:Uids.Uid="ConfigMakerVariableDefaultSwitch" />
+            </StackPanel>
+            <TextBlock
+                x:Name="ValidationTextBlock"
+                Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                TextWrapping="Wrap"
+                Visibility="Collapsed" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

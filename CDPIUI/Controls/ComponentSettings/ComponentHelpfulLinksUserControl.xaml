@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="CDPIUI.Controls.ComponentSettings.ComponentHelpfulLinksUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CDPIUI.Controls.ComponentSettings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:control="using:CommunityToolkit.WinUI.Controls"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:conv="using:CDPIUI.Converters">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Name="BoolToVis"/>
+    </UserControl.Resources>
+    <control:SettingsExpander
+        l:Uids.Uid="ComponentHelpfulLinksSettingsExpander"
+        ItemsSource="{x:Bind Items, Mode=OneWay}"
+        CornerRadius="10"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+        IsExpanded="True">
+        <control:SettingsExpander.ItemTemplate>
+            <DataTemplate x:DataType="local:HelpfulLink">
+                <control:SettingsCard 
+                    Header="{x:Bind Text, Mode=OneWay}"
+                    HeaderIcon="{x:Bind Icon, Mode=OneWay}"
+                    Tag="{x:Bind HelpfulLinkType, Mode=OneWay}"
+                    Visibility="{x:Bind IsVisible, Mode=OneWay, Converter={StaticResource BoolToVis}}"
+                    IsClickEnabled="True"
+                    Click="SettingsCard_Click">
+                    <control:SettingsCard.ActionIcon>
+                        <FontIcon Glyph="&#xE8A7;" />
+                    </control:SettingsCard.ActionIcon>
+                </control:SettingsCard>
+            </DataTemplate>
+        </control:SettingsExpander.ItemTemplate>
+    </control:SettingsExpander>
+</UserControl>

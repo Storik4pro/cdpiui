@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<template:TemplateWindow
+    x:Class="CDPIUI.ServiceWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:template="using:CDPIUI.Default"
+    xmlns:wc="using:CDPIUI.Controls.WindowControls"
+    xmlns:l="using:WinUI3Localizer"
+    xmlns:ucontrol="using:CDPIUI.Controls.Universal">
+    <template:TemplateWindow.SystemBackdrop><MicaBackdrop/></template:TemplateWindow.SystemBackdrop>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <wc:TitleBarUserControl x:Name="TitleBarControl" Height="48"/>
+        <ScrollViewer Grid.Row="1" Padding="24,8,24,24">
+            <StackPanel Spacing="16">
+                <TextBlock x:Name="Heading" Style="{ThemeResource SubtitleTextBlockStyle}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="Description" TextWrapping="Wrap"/>
+                <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="False"/>
+            </StackPanel>
+        </ScrollViewer>
+        <ucontrol:UtilityButtonControls Grid.Row="2">
+            <ucontrol:UtilityButtonControls.Items>
+                <Button x:Name="StopButton" Click="Stop_Click" MinWidth="140" Style="{ThemeResource AccentButtonStyle}"/>
+                <Button x:Name="CancelButton" Click="Cancel_Click" MinWidth="120"/>
+            </ucontrol:UtilityButtonControls.Items>
+        </ucontrol:UtilityButtonControls>
+    </Grid>
+</template:TemplateWindow>
