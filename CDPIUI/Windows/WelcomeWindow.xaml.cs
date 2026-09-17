@@ -84,7 +84,7 @@ namespace CDPIUI
             InitializeComponent();
 
             WindowTitle = localizer.GetLocalizedString("WelcomeWindowTitle");
-            IconUri = @"Assets/Icons/find_error.png";
+            IconUri = @"Assets/favicon.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature();
