@@ -12,15 +12,15 @@ namespace CDPIUI.Helper.Basic
     internal static class FileAssociationService
     {
         private const string AutomaticRegistrationMarkerPath =
-            @"Software\CDPIUI\Registration\{B0DC091F-8A91-4EA4-AC76-ECA28C7ED986}\ConfigShare-v2";
+            @"Software\CDPIUI\Registration\{B0DC091F-8A91-4EA4-AC76-ECA28C7ED986}\FileIcons-v2";
 
         private static readonly Association[] Associations =
         [
-            new(".cdpitask", "CDPIUI.ConditionalTask", "ConditionalTaskFileTypeDisplayName"),
-            new(".cdpiconfigpack", "CDPIUI.ConfigPack", "ConfigPackFileTypeDisplayName"),
-            new(".cdpiconfig", "CDPIUI.SharedConfig", "ConfigShareFileType"),
-            new(".cdpisignedpack", "CDPIUI.SignedPack", "SignedPackFileTypeDisplayName"),
-            new(".cdpipatch", "CDPIUI.Patch", "PatchFileTypeDisplayName")
+            new(".cdpitask", "CDPIUI.ConditionalTask", "ConditionalTaskFileTypeDisplayName", @"Assets\Icons\ConditionalUtil.ico"),
+            new(".cdpiconfigpack", "CDPIUI.ConfigPack", "ConfigPackFileTypeDisplayName", @"Assets\Store\Files\Pack.ico"),
+            new(".cdpiconfig", "CDPIUI.SharedConfig", "ConfigShareFileType", @"Assets\Store\Files\List.ico"),
+            new(".cdpisignedpack", "CDPIUI.SignedPack", "SignedPackFileTypeDisplayName", @"Assets\Store\Files\Pack.ico"),
+            new(".cdpipatch", "CDPIUI.Patch", "PatchFileTypeDisplayName", @"Assets\Store\Files\Pack.ico")
         ];
 
         internal static void EnsureRegistered()
@@ -55,7 +55,6 @@ namespace CDPIUI.Helper.Basic
                 applicationDisplayName);
             var fileActivationRegistered = RegisterFileActivationHandlers(
                 executablePath,
-                executableIcon,
                 localizer);
             var classicAssociationsRegistered = RegisterClassicAssociations(
                 executablePath,
@@ -93,7 +92,6 @@ namespace CDPIUI.Helper.Basic
 
         private static bool RegisterFileActivationHandlers(
             string executablePath,
-            string executableIcon,
             ILocalizer localizer)
         {
             try
@@ -102,7 +100,7 @@ namespace CDPIUI.Helper.Basic
                 {
                     ActivationRegistrationManager.RegisterForFileTypeActivation(
                         [association.Extension],
-                        executableIcon,
+                        GetAssociationIcon(association),
                         localizer.GetLocalizedString(association.DisplayNameResource),
                         [],
                         executablePath);
@@ -151,7 +149,7 @@ namespace CDPIUI.Helper.Basic
                     SetValue($@"Software\Classes\{association.Extension}", null, association.ProgId);
                     SetValue($@"Software\Classes\{association.ProgId}", null, displayName);
                     SetValue($@"Software\Classes\{association.ProgId}", "FriendlyTypeName", displayName);
-                    SetValue($@"Software\Classes\{association.ProgId}\DefaultIcon", null, icon);
+                    SetValue($@"Software\Classes\{association.ProgId}\DefaultIcon", null, GetAssociationIcon(association));
                     SetValue($@"Software\Classes\{association.ProgId}\shell\open\command", null, command);
 
                     using (var openWithKey = Registry.CurrentUser.CreateSubKey(
@@ -186,6 +184,12 @@ namespace CDPIUI.Helper.Basic
                     $"Cannot register classic file associations: {ex.Message}");
                 return false;
             }
+        }
+
+        private static string GetAssociationIcon(Association association)
+        {
+            var iconPath = Path.Combine(AppContext.BaseDirectory, association.IconRelativePath);
+            return $"\"{iconPath}\",0";
         }
 
         private static bool WasAutomaticRegistrationAttempted()
@@ -229,7 +233,8 @@ namespace CDPIUI.Helper.Basic
         private sealed record Association(
             string Extension,
             string ProgId,
-            string DisplayNameResource);
+            string DisplayNameResource,
+            string IconRelativePath);
 
         private const uint SHCNE_ASSOCCHANGED = 0x08000000;
         private const uint SHCNF_IDLIST = 0x0000;
