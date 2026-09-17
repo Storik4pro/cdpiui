@@ -174,7 +174,7 @@
                                         <FontIcon Glyph="&#xE8A7;"/>
                                     </toolkit:SettingsCard.ActionIcon>
                                     <toolkit:SettingsCard.HeaderIcon>
-                                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="23" ShowAsMonochrome="True"/>
+                                        <BitmapIcon UriSource="ms-appx:///Assets/Icons/Store.png" Width="23"/>
                                     </toolkit:SettingsCard.HeaderIcon>
                                 </toolkit:SettingsCard>
                             </Grid>
