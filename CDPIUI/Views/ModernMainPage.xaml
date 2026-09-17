@@ -54,7 +54,7 @@
                                     <mpcontrols:ComponentTileUserControl 
                                         HorizontalAlignment="Stretch"
                                         Height="{x:Bind Height, Mode=OneWay}" 
-                                        StoreId="{x:Bind Id, Mode=OneWay}" 
+                                        StoreId="{x:Bind Id, Mode=OneTime}" 
                                         ImageUrl="{x:Bind ImageSource, Mode=OneWay}" />
                                 </DataTemplate>
                             </GridView.ItemTemplate>
