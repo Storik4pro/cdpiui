@@ -178,6 +178,11 @@ namespace CDPIUI
                     string value = directArgs["--direct:".Length..];
                     isActionPreffered = await CoreCommandsHandler.HandleCommandAsync(
                         PipeModelConvertor.ConvertBack(value));
+
+                    if (!isActionPreffered)
+                    {
+                        CommandsHandler.HandleCommand(value);
+                    }
                 }
             }
             catch (Exception ex)
