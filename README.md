@@ -1,4 +1,4 @@
-![icon](https://github.com/user-attachments/assets/e67c903c-e649-4560-8483-3d0bde4d1e0f)
+<img width="100" height="100" alt="StoreLogo" src="https://github.com/user-attachments/assets/b448f284-4a04-4a65-ac34-f0a0880d01d3" />
 
 Добро пожаловать в **CDPI UI** — современный и мощный инструмент для управления популярными средствами изменения трафика ([Zapret](https://github.com/bol-van/zapret), [TGWSProxy](https://github.com/Flowseal/TgWsProxy), [ByeDPI](https://github.com/hufrea/byedpi), [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) и другие!).
 
@@ -61,4 +61,4 @@
 
 А так же:
 
-Niko, o2o, StafiLynx, Lux Fero, Lumenpearson, Leaftail1880, Nek0t, 🔭 и администрации сообщества ББД
+Niko, MMaxX_ON, o2o, StafiLynx, Lux Fero, Lumenpearson, Leaftail1880, Nek0t, 🔭 и администрации сообщества ББД
