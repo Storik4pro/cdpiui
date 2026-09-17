@@ -96,7 +96,7 @@ public sealed partial class ComponentTileUserControl : UserControl
 
         CheckVisualState();
 
-        this.SizeChanged += (e, a) => CheckVisualState();
+        this.SizeChanged += ComponentTileUserControl_SizeChanged;
 
         ConfigChooseCombobox.ItemsSource = _configItems;
         _configItems.CollectionChanged += ConfigItems_CollectionChanged;
@@ -104,6 +104,28 @@ public sealed partial class ComponentTileUserControl : UserControl
         AdditionalFeaturesListView.ItemsSource = AvailableFeaturesList;
 
         StatusFontIcon.Glyph = SharedUtils.IsOsSupportedNewGlyph() ? "\uF4A5" : "\uE8B0";
+
+        this.Unloaded += ComponentTileUserControl_Unloaded;
+    }
+
+    private void ComponentTileUserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        CheckVisualState();
+    }
+
+    private void ComponentTileUserControl_Unloaded(object sender, RoutedEventArgs e)
+    {
+        this.SizeChanged -= ComponentTileUserControl_SizeChanged;
+        this.Loaded -= ComponentTileUserControl_Unloaded;
+        _configItems.CollectionChanged -= ConfigItems_CollectionChanged;
+        ComponentTasksManager.Instance.TaskStateUpdated -= TaskUpdated;
+
+        ComponentHelper componentHelper =
+            ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
+                StoreId);
+        if (componentHelper is null) return;
+
+        componentHelper.ConfigListUpdated -= LoadConfigItems;
     }
 
     public void CheckVisualState()
@@ -125,8 +147,11 @@ public sealed partial class ComponentTileUserControl : UserControl
     public string StoreId
     {
         get { return (string)GetValue(StoreIdProperty); }
-        set { 
-            SetValue(StoreIdProperty, value); 
+        set {
+            if (string.Equals(value, GetValue(StoreIdProperty))) return;
+            Debug.WriteLine($"Init for {value}, {GetValue(StoreIdProperty)}");
+            SetValue(StoreIdProperty, value);
+            
             Init();
         }
     }
@@ -158,7 +183,7 @@ public sealed partial class ComponentTileUserControl : UserControl
         PreferTaskStateActions();
     }
 
-    private void Init()
+    private async void Init()
     {
         TitleTextBlock.Text = DatabaseHelper.Instance.GetItemById(StoreId)?.ShortName ?? StoreId;
 
@@ -172,33 +197,76 @@ public sealed partial class ComponentTileUserControl : UserControl
             AutorunBadgeGrid.Visibility = isAddToAutorun ? Visibility.Visible : Visibility.Collapsed;
             CheckComponentState();
 
-            LoadConfigItems();
-
-            ComponentHelper componentHelper =
-                ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    StoreId);
-            if (componentHelper is null) return;
-
-            InitConfigSettings();
-
-            componentHelper.ConfigListUpdated += LoadConfigItems;
+            string st = StoreId;
 
             GetAvailableFeaturesForItem();
+
+            await Task.Run(() => LoadConfigInfo(st));
         }
     }
 
-    private void InitConfigSettings()
+    private async Task LoadConfigInfo(string storeId)
     {
-        ConfigSettingsLoadFailureTextBlock.Visibility = Visibility.Visible;
-        ConfigSettingsList.Clear();
-        var sel = ConfigChooseCombobox.SelectedItem as ConfigSelectorItem;
+        LoadConfigItems(storeId);
 
+        ComponentHelper componentHelper =
+            ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
+                storeId);
+        if (componentHelper is null) return;
+
+        await InitConfigSettings(storeId);
+        await Task.CompletedTask;
+
+        componentHelper.ConfigListUpdated += LoadConfigItems;
+    }
+
+    private Task<ConfigSelectorItem> GetSelectedItemAsync()
+    {
+        if (DispatcherQueue.HasThreadAccess)
+        {
+            return Task.FromResult(
+                ConfigChooseCombobox.SelectedItem as ConfigSelectorItem);
+        }
+
+        var tcs = new TaskCompletionSource<ConfigSelectorItem?>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+
+        bool queued = DispatcherQueue.TryEnqueue(() =>
+        {
+            try
+            {
+                tcs.SetResult(
+                    ConfigChooseCombobox.SelectedItem as ConfigSelectorItem);
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+        });
+
+        if (!queued)
+        {
+            tcs.SetException(
+                new InvalidOperationException());
+        }
+
+        return tcs.Task;
+    }
+
+    private async Task InitConfigSettings(string storeId)
+    {
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            ConfigSettingsLoadFailureTextBlock.Visibility = Visibility.Visible;
+            ConfigSettingsList.Clear();
+        });
+        var sel = await GetSelectedItemAsync();
         if (sel == null)
             return;
 
         ComponentHelper componentHelper =
                 ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                    StoreId);
+                    storeId);
         if (componentHelper is null) return;
 
         List<VariableItem> variables = componentHelper.GetConfigHelper().GetVariables(sel.FileName, sel.PackId);
@@ -208,18 +276,24 @@ public sealed partial class ComponentTileUserControl : UserControl
         {
             foreach (var variable in variables)
             {
-                ConfigSettingsList.Add(new()
+                DispatcherQueue.TryEnqueue(() =>
                 {
-                    DisplayName = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.PackId)}",
-                    Id = variable.name,
-                    Value = variable.value
+                    ConfigSettingsList.Add(new()
+                    {
+                        DisplayName = $"{componentHelper.GetConfigHelper().GetLocalizedConfigVarName(variable.name, sel.PackId)}",
+                        Id = variable.name,
+                        Value = variable.value
+                    });
                 });
             }
         }
-        if (ConfigSettingsList.Count > 0)
+        DispatcherQueue.TryEnqueue(() =>
         {
-            ConfigSettingsLoadFailureTextBlock.Visibility = Visibility.Collapsed;
-        }
+            if (ConfigSettingsList.Count > 0)
+            {
+                 ConfigSettingsLoadFailureTextBlock.Visibility = Visibility.Collapsed;
+            }
+        });
     }
 
     private void GetAvailableFeaturesForItem()
@@ -357,16 +431,20 @@ public sealed partial class ComponentTileUserControl : UserControl
                 new DrillInNavigationTransitionInfo());
     }
 
-    private async void LoadConfigItems()
+    private void LoadConfigItems()
+    {
+        LoadConfigItems(StoreId);
+    }
+
+    private async void LoadConfigItems(string storeId)
     {
         int loadVersion = Interlocked.Increment(ref configLoadVersion);
-        string componentId = StoreId;
 
         ComponentItemsLoaderHelper.Instance.Init(forse:false);
 
         ComponentHelper componentHelper =
             ComponentItemsLoaderHelper.Instance.GetComponentHelperFromId(
-                componentId);
+                storeId);
 
         if (componentHelper is null)
             return;
@@ -381,12 +459,12 @@ public sealed partial class ComponentTileUserControl : UserControl
         {
             CDPIUI.Core.Basic.Logger.Instance.CreateWarningLog(
                 nameof(ComponentTileUserControl),
-                $"Cannot load configs for component '{componentId}': {ex}");
+                $"Cannot load configs for component '{storeId}': {ex}");
             items = [];
         }
 
         DispatcherQueue.TryEnqueue(() =>
-            ApplyLoadedConfigItems(componentId, loadVersion, items));
+            ApplyLoadedConfigItems(storeId, loadVersion, items));
     }
 
     private void ApplyLoadedConfigItems(
@@ -465,7 +543,7 @@ public sealed partial class ComponentTileUserControl : UserControl
                 }
             }
 
-            InitConfigSettings();
+            await InitConfigSettings(StoreId);
 
             if ((oldCfg != sel.FileName || oldId != sel.PackId) && await ComponentTasksManager.Instance.IsTaskRunned(StoreId)) await ComponentTasksManager.Instance.RestartTask(StoreId);
         }
