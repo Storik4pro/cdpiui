@@ -26,7 +26,7 @@ namespace CDPIUI.Shared.Logger
         public readonly string? ActualPath = actualPath;
 
         /// <summary>
-        /// Logging level
+        /// Minimum severity written to log files
         /// </summary>
         public readonly LogSelevirity? LogLevel = logLevel;
         private static readonly object _logLock = new object();
@@ -70,7 +70,7 @@ namespace CDPIUI.Shared.Logger
                 bool write = true;
                 try
                 {
-                    if (severity - LogLevel <= 0)
+                    if (severity >= LogLevel)
                     {
                         write = true;
                     }
