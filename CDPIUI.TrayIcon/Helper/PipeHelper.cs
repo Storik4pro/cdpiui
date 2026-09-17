@@ -213,7 +213,9 @@ namespace CDPIUI.TrayIcon.Helper
                     message.Target == PipeMessageTargetIds.CONPTY || 
                     message.Target == PipeMessageTargetIds.Settings ||
                     message.Target == PipeMessageTargetIds.Application ||
-                    message.Target == PipeMessageTargetIds.ConditionalLaunch)
+                    message.Target == PipeMessageTargetIds.ConditionalLaunch ||
+                    message.Target == PipeMessageTargetIds.CompatibilityCheck ||
+                    message.Target == PipeMessageTargetIds.Update)
                 {
                     var backgroundArgument = createNoWindow
                         ? "--create-no-window "
