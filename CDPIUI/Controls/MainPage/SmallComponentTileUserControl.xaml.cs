@@ -2,10 +2,11 @@ using CDPIUI.Controls.Dialogs.ComponentSettings;
 using CDPIUI.Core;
 using CDPIUI.Core.ComponentServices;
 using CDPIUI.Core.Features;
-
+using CDPIUI.Core.Store.Data;
 using CDPIUI.Core.Store.Database;
 using CDPIUI.Helper;
 using CDPIUI.Shared;
+using CDPIUI.Shared.Extentions;
 using CDPIUI.ViewModels;
 using CDPIUI.Views.Main.Components;
 using Microsoft.UI.Xaml;
@@ -30,6 +31,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 using WinUI3Localizer;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -197,6 +199,10 @@ public sealed partial class SmallComponentTileUserControl : UserControl
     {
         ComponentTasksManager.Instance.TaskStateUpdated += TaskUpdated;
 
+        ProxyStackPanel.Visibility = HardcodedItemIds.ComponentIds.GetKeyByValue(StoreId) == Components.TgWsProxy
+            ? Visibility.Visible 
+            : Visibility.Collapsed;
+
         if (DatabaseHelper.Instance.IsItemInstalled(StoreId))
         {
             PreferTaskStateActions();
@@ -353,5 +359,14 @@ public sealed partial class SmallComponentTileUserControl : UserControl
     {
         SettingsManager.Instance.SetValue<bool>(["CONFIGS", StoreId], "usedForAutorun", (bool)AutorunCheckBox.IsChecked);
         if ((bool)AutorunCheckBox.IsChecked) ApplicationAutorunManager.AddToAutorun();
+    }
+
+    private async void ProxyButton_Click(object sender, RoutedEventArgs e)
+    {
+        ConnectTelegramProxyContentDialog dialog = new()
+        {
+            XamlRoot = this.XamlRoot
+        };
+        await dialog.ShowAsync();
     }
 }
