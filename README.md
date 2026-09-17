@@ -2,6 +2,11 @@
 
 Добро пожаловать в **CDPI UI** — современный и мощный инструмент для управления популярными средствами изменения трафика ([Zapret](https://github.com/bol-van/zapret), [TGWSProxy](https://github.com/Flowseal/TgWsProxy), [ByeDPI](https://github.com/hufrea/byedpi), [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) и другие!).
 
+<details>
+<summary>Скриншоты</summary>
+<img width="1280" height="697" alt="изображение" src="https://github.com/user-attachments/assets/9f5e1fc7-3846-4e3f-a1af-204fd30fd7d9" />
+</details>
+
 ## Что изменилось?
 **GoodbyeDPI UI** теперь **CDPI UI**. Изменилось не только название — приложение было переписано с нуля, что позволило снизить потребление оперативной памяти в фоне до 8 МБ, повысить стабильность работы приложения, сделать компонент GoodbyeDPI необязательным для установки. Помимо этого приложение занимает всего 135 МБ на жестком диске*
 
