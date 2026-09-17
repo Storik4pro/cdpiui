@@ -42,7 +42,7 @@ public sealed partial class StoreWindow : TemplateWindow
     {
         this.InitializeComponent();
         WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
-        IconUri = "Assets/Icons/Store.png";
+        IconUri = "Assets/Icons/Store.ico";
         this.CustomTitleBarUserControl = TitleBarUserControl;
 
         Instance = this;

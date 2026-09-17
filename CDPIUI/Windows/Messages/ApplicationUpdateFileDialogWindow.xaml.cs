@@ -31,7 +31,7 @@ namespace CDPIUI.Messages
             InitializeComponent();
 
             WindowTitle = Text("UpdateFileDialogWindowTitle");
-            IconUri = @"Assets/favicon.ico";
+            IconUri = @"Assets/Icons/Store.ico";
             CustomTitleBarUserControl = TitleBarUserControl;
             WindowMinSize = new System.Windows.Size(620, 380);
             DisableResizeFeature();

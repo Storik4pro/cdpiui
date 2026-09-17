@@ -66,7 +66,7 @@ namespace CDPIUI.Messages
             InitializeComponent();
 
             WindowTitle = localizer.GetLocalizedString("StoreWindowsTitle");
-            IconUri = @"Assets/favicon.ico";
+            IconUri = @"Assets/Icons/Store.ico";
             this.CustomTitleBarUserControl = TitleBarUserControl;
 
             DisableResizeFeature();
